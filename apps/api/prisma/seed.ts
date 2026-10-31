@@ -105,6 +105,7 @@ async function main() {
       { slug: 'digital', titleFa: 'کالای دیجیتال و صوتی' },
       { slug: 'home', titleFa: 'روشنایی و دکوراسیون' },
       { slug: 'coffee', titleFa: 'قهوه و تجهیزات تخصصی' },
+      { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
     ];
 
     const categoryMap = new Map<string, string>();
@@ -143,6 +144,94 @@ async function main() {
         },
       });
       vendorMap.set(v.slug, vendor.id);
+    }
+
+    // ── 5b. Brands (PIM) ──
+    const brandsData = [
+      {
+        slug: 'reeskin-clinical',
+        name: 'ReeSkin Clinical',
+        description: 'برند پیشرو در درماتولوژی، فرمولاسیون‌های بالینی و اکتیوهای اثبات‌شده پوستی.',
+        logoUrl: 'https://cdn.commerce-os.local/brands/reeskin.svg',
+        websiteUrl: 'https://reeskin.local',
+        originCountry: 'South Korea',
+      },
+      {
+        slug: 'reemed-laboratories',
+        name: 'ReeMed Laboratories',
+        description: 'لابراتوار درماتولوژی تخصصی سوئیس با تمرکز بر آنتی‌ایجینگ سلولی و پپتیددرمانی.',
+        logoUrl: 'https://cdn.commerce-os.local/brands/reemed.svg',
+        websiteUrl: 'https://reemed.local',
+        originCountry: 'Switzerland',
+      },
+    ];
+    const brandMap = new Map<string, string>();
+    for (const b of brandsData) {
+      const brand = await prisma.brand.upsert({
+        where: { storeId_slug: { storeId: store.id, slug: b.slug } },
+        update: {
+          name: b.name,
+          description: b.description,
+          logoUrl: b.logoUrl,
+          websiteUrl: b.websiteUrl,
+          originCountry: b.originCountry,
+          isPublished: true,
+        },
+        create: {
+          tenantId: tenant.id,
+          storeId: store.id,
+          slug: b.slug,
+          name: b.name,
+          description: b.description,
+          logoUrl: b.logoUrl,
+          websiteUrl: b.websiteUrl,
+          originCountry: b.originCountry,
+          isPublished: true,
+        },
+      });
+      brandMap.set(b.slug, brand.id);
+    }
+
+    // ── 5c. Skin Concerns ──
+    const skinConcernsData = [
+      {
+        slug: 'dullness',
+        name: 'کدری و تیرگی پوست',
+        description: 'پوست‌های کدر و فاقد اکسیژن به دلیل استرس محیطی و آلودگی هوا',
+        iconUrl: 'https://cdn.commerce-os.local/concerns/dullness.svg',
+      },
+      {
+        slug: 'anti-aging',
+        name: 'کاهش الاستیسیته و پیری زودرس',
+        description: 'خطوط ریز، کاهش سفتی پوست و افت سنتز کلاژن',
+        iconUrl: 'https://cdn.commerce-os.local/concerns/anti-aging.svg',
+      },
+      {
+        slug: 'sensitivity-redness',
+        name: 'خشکی، حساسیت و قرمزی',
+        description: 'سد دفاعی آسیب‌دیده، رزاسه و التهاب بعد از لیزر و پیلینگ',
+        iconUrl: 'https://cdn.commerce-os.local/concerns/sensitivity.svg',
+      },
+    ];
+    const concernMap = new Map<string, string>();
+    for (const sc of skinConcernsData) {
+      const concern = await prisma.skinConcern.upsert({
+        where: { storeId_slug: { storeId: store.id, slug: sc.slug } },
+        update: {
+          name: sc.name,
+          description: sc.description,
+          iconUrl: sc.iconUrl,
+        },
+        create: {
+          tenantId: tenant.id,
+          storeId: store.id,
+          slug: sc.slug,
+          name: sc.name,
+          description: sc.description,
+          iconUrl: sc.iconUrl,
+        },
+      });
+      concernMap.set(sc.slug, concern.id);
     }
 
     // 6. Products & Variants

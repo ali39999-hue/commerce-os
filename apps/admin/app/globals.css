@@ -792,3 +792,90 @@ button { font-family: inherit; }
     min-width: 100%;
   }
 }
+
+/* ── AUD-08: Source badges and status banners ── */
+.badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.badge-live::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.badge-offline-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.badge-offline-warning::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.banner-offline-warning {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #9f1239;
+  border-radius: var(--radius);
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.banner-offline-warning strong {
+  font-weight: 800;
+}
+
+.btn-retry {
+  background: #ffffff;
+  border: 1px solid #fda4af;
+  color: #9f1239;
+  padding: 4px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+.btn-retry:hover {
+  background: #ffe4e6;
+}
+
+/* Nav header category separator in sidebar */
+.nav-category-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #8da498;
+  padding: 12px 14px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+

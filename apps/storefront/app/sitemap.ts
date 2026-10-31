@@ -9,7 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticEntries: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/`, lastModified, changeFrequency: 'daily', priority: 1 },
-    { url: `${BASE_URL}/blog`, lastModified, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${BASE_URL}/academy`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/ingredients`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/b2b`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/b2b/protocols`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE_URL}/b2b/workshops`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE_URL}/blog`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE_URL}/about`, lastModified, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${BASE_URL}/contact`, lastModified, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${BASE_URL}/faq`, lastModified, changeFrequency: 'monthly', priority: 0.4 },

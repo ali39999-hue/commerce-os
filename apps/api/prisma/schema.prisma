@@ -147,6 +147,21 @@ enum ProductKind {
   DIGITAL
 }
 
+enum MediaRole {
+  HERO
+  GALLERY
+  LIFESTYLE
+  DETAIL
+  HOW_TO
+  CERTIFICATE
+}
+
+enum ClinicalClaimStatus {
+  APPROVED
+  DRAFT
+  REVIEW_REQUIRED
+}
+
 // ── Multi-Tenant Hierarchy ──
 
 model Tenant {
@@ -191,6 +206,8 @@ model Store {
 
   products        Product[]
   categories      Category[]
+  brands          Brand[]
+  skinConcerns    SkinConcern[]
   orders          Order[]
   carts           Cart[]
   checkoutSessions CheckoutSession[]
@@ -278,6 +295,7 @@ model Product {
   tenantId    String           @db.Uuid
   storeId     String           @db.Uuid
   categoryId  String?          @db.Uuid
+  brandId     String?          @db.Uuid
   vendorId    String?          @db.Uuid
   kind        ProductKind      @default(PHYSICAL)
   slug        String           @db.VarChar(180)
@@ -289,13 +307,20 @@ model Product {
   updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
   store       Store            @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
   category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  brand       Brand?           @relation(fields: [brandId], references: [id], onDelete: SetNull)
   vendor      Vendor?          @relation(fields: [vendorId], references: [id], onDelete: SetNull)
   variants    ProductVariant[]
+  media       ProductMedia[]
+  ingredients ProductIngredient[]
+  claims      ClinicalClaim[]
+  usageSteps  UsageStep[]
+  skinConcerns ProductSkinConcern[]
 
   @@unique([storeId, slug])
   @@unique([tenantId, storeId, id])
   @@index([tenantId, storeId, status, publishedAt])
   @@index([vendorId])
+  @@index([brandId])
   @@map("products")
 }
 
@@ -337,10 +362,150 @@ model ProductVariant {
   reservationLines InventoryReservationLine[]
   orderLines      OrderLine[]
   cartLines       CartLine[]
+  media           ProductMedia[]
 
   @@unique([tenantId, storeId, id])
   @@index([tenantId, storeId, status])
   @@map("product_variants")
+}
+
+// ── PIM, DAM & Clinical / Skincare Product Knowledge ──
+
+model Brand {
+  id            String    @id @default(uuid()) @db.Uuid
+  tenantId      String    @db.Uuid
+  storeId       String    @db.Uuid
+  name          String    @db.VarChar(200)
+  slug          String    @db.VarChar(100)
+  description   String?   @db.Text
+  logoUrl       String?   @db.Text
+  websiteUrl    String?   @db.VarChar(255)
+  originCountry String?   @db.VarChar(100)
+  isPublished   Boolean   @default(true)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
+
+  store         Store     @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
+  products      Product[]
+
+  @@unique([storeId, slug])
+  @@index([tenantId, storeId, isPublished])
+  @@map("brands")
+}
+
+model ProductMedia {
+  id         String         @id @default(uuid()) @db.Uuid
+  tenantId   String         @db.Uuid
+  storeId    String         @db.Uuid
+  productId  String         @db.Uuid
+  variantId  String?        @db.Uuid
+  role       MediaRole      @default(GALLERY)
+  sortOrder  Int            @default(0)
+  altText    String?        @db.VarChar(255)
+  url        String         @db.Text
+  width      Int?
+  height     Int?
+  mimeType   String?        @db.VarChar(100)
+  isPrimary  Boolean        @default(false)
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+
+  product    Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant    ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([productId, sortOrder])
+  @@index([tenantId, storeId, role])
+  @@map("product_media")
+}
+
+model ProductIngredient {
+  id                   String   @id @default(uuid()) @db.Uuid
+  tenantId             String   @db.Uuid
+  storeId              String   @db.Uuid
+  productId            String   @db.Uuid
+  name                 String   @db.VarChar(200)
+  inciName             String?  @db.VarChar(255)
+  concentrationPercent Decimal? @db.Decimal(5, 2)
+  purpose              String?  @db.VarChar(255)
+  isKeyIngredient      Boolean  @default(false)
+  description          String?  @db.Text
+  sortOrder            Int      @default(0)
+
+  product              Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
+  @@index([tenantId, storeId, isKeyIngredient])
+  @@map("product_ingredients")
+}
+
+model SkinConcern {
+  id          String               @id @default(uuid()) @db.Uuid
+  tenantId    String               @db.Uuid
+  storeId     String               @db.Uuid
+  name        String               @db.VarChar(200)
+  slug        String               @db.VarChar(100)
+  description String?              @db.Text
+  iconUrl     String?              @db.Text
+  createdAt   DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime             @updatedAt @db.Timestamptz(6)
+
+  store       Store                @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
+  products    ProductSkinConcern[]
+
+  @@unique([storeId, slug])
+  @@index([tenantId, storeId])
+  @@map("skin_concerns")
+}
+
+model ProductSkinConcern {
+  id            String      @id @default(uuid()) @db.Uuid
+  tenantId      String      @db.Uuid
+  storeId       String      @db.Uuid
+  productId     String      @db.Uuid
+  concernId     String      @db.Uuid
+
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  concern       SkinConcern @relation(fields: [concernId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, concernId])
+  @@index([tenantId, storeId, concernId])
+  @@map("product_skin_concerns")
+}
+
+model ClinicalClaim {
+  id              String              @id @default(uuid()) @db.Uuid
+  tenantId        String              @db.Uuid
+  storeId         String              @db.Uuid
+  productId       String              @db.Uuid
+  claimText       String              @db.VarChar(500)
+  evidenceSummary String?             @db.Text
+  studyReference  String?             @db.Text
+  approvedBy      String?             @db.VarChar(150)
+  status          ClinicalClaimStatus @default(DRAFT)
+  createdAt       DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime            @updatedAt @db.Timestamptz(6)
+
+  product         Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, status])
+  @@index([tenantId, storeId, status])
+  @@map("clinical_claims")
+}
+
+model UsageStep {
+  id              String   @id @default(uuid()) @db.Uuid
+  tenantId        String   @db.Uuid
+  storeId         String   @db.Uuid
+  productId       String   @db.Uuid
+  stepNumber      Int      @default(1)
+  title           String   @db.VarChar(200)
+  instruction     String   @db.Text
+  iconOrImageUrl  String?  @db.Text
+
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, stepNumber])
+  @@index([productId, stepNumber])
+  @@map("usage_steps")
 }
 
 // ── Inventory & Reservation ──

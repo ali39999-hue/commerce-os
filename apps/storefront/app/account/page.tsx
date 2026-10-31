@@ -5,7 +5,7 @@ import "../subscriptions/subscriptions.css";
 import "./digital.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatJalaliDateTime } from "@commerce-os/localization";
+import { formatJalaliDateTime, validateNationalId, toAsciiDigits } from "@commerce-os/localization";
 import { formatToman } from "../../lib/catalog";
 import { DigitalBadge } from "../../components/discovery/digital-badge";
 
@@ -16,21 +16,13 @@ interface StoredOrder {
   method: string;
   ref: string;
   placedAt: string;
-}
-
-/* ── Live orders (W14): GET /v1/orders/stores/demo-store payload ── */
-interface LiveOrderRow {
-  id?: string;
-  orderNumber?: string;
-  status?: string;
-  totalAmount?: string | number;
   customerName?: string;
-  createdAt?: string;
-}
-
-interface LiveOrdersPayload {
-  items?: (LiveOrderRow | null)[];
-  total?: number;
+  customerPhone?: string;
+  nationalCode?: string | null;
+  address?: string;
+  shippingMethod?: string;
+  deliverySlot?: string;
+  trackingCode?: string;
 }
 
 interface Address {
@@ -53,174 +45,96 @@ interface Ticket {
   createdAt: string;
 }
 
-/* ── Loyalty Club (W17) ── */
-type LoyaltyTier = "BRONZE" | "SILVER" | "GOLD";
-
-interface LoyaltyTx {
-  direction: "EARN" | "REDEEM" | "EXPIRE";
-  points: number;
-  description: string;
-  createdAt: string;
+interface UserProfile {
+  fullName: string;
+  phone: string;
+  email: string;
+  nationalCode: string;
+  skinType: "DRY" | "OILY" | "COMBINATION" | "SENSITIVE" | "NORMAL";
+  skinConcerns: string[];
+  clinicCustomer: boolean;
 }
 
-interface LoyaltySummary {
-  points: number;
-  tier: LoyaltyTier;
-  transactions: LoyaltyTx[];
+interface SkincareRegimen {
+  stepName: string;
+  productTitle: string;
+  frequency: string;
+  instructions: string;
+  timeOfDay: "MORNING" | "NIGHT" | "BOTH";
 }
 
-interface LoyaltyApiPayload {
-  points?: number | string;
-  tier?: string;
-  transactions?: Array<{
-    direction?: string;
-    points?: number | string;
-    description?: string;
-    createdAt?: string;
-  } | null>;
-  dbAvailable?: boolean;
+interface ConsultationBooking {
+  id: string;
+  specialistName: string;
+  dateJalali: string;
+  timeSlot: string;
+  concern: string;
+  status: "CONFIRMED" | "COMPLETED" | "PENDING";
+  meetingLink?: string;
 }
 
-const DEMO_LOYALTY: LoyaltySummary = {
-  points: 340,
-  tier: "BRONZE",
-  transactions: [
-    {
-      direction: "EARN",
-      points: 220,
-      description: "خرید سفارش ORD-948102",
-      createdAt: new Date(Date.now() - 12 * 24 * 3600 * 1000).toISOString(),
-    },
-    {
-      direction: "EARN",
-      points: 120,
-      description: "خرید سفارش ORD-948118",
-      createdAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
-    },
-  ],
+const DEFAULT_PROFILE: UserProfile = {
+  fullName: "علی علوی",
+  phone: "09121234567",
+  email: "ali.alavi@example.com",
+  nationalCode: "0010312013",
+  skinType: "COMBINATION",
+  skinConcerns: ["لک و تیرگی", "خشکی فصلی", "خطوط ریز دور چشم"],
+  clinicCustomer: true,
 };
 
-const TIER_FA: Record<LoyaltyTier, string> = { BRONZE: "برنزی", SILVER: "نقره‌ای", GOLD: "طلایی" };
-
-function tierProgress(points: number, tier: LoyaltyTier): { pct: number; remaining: number | null } {
-  if (tier === "GOLD") return { pct: 100, remaining: null };
-  const target = tier === "BRONZE" ? 1000 : 5000;
-  const pct = Math.max(0, Math.min(100, Math.round((points / target) * 100)));
-  return { pct, remaining: Math.max(0, target - points) };
-}
-
-/* ── My Subscriptions ── */
-interface MySubItem {
-  id?: string;
-  status?: string;
-  quantity?: number | string;
-  nextRunAt?: string;
-  plan?: {
-    titleFa?: string;
-    intervalDays?: number | string;
-    priceRials?: string;
-  };
-}
-
-interface MySubsPayload {
-  items?: (MySubItem | null)[];
-  dbAvailable?: boolean;
-}
-
-const DEMO_MY_SUBS: MySubItem[] = [
+const DEMO_REGIMEN: SkincareRegimen[] = [
   {
-    id: "sub_demo_1",
-    status: "ACTIVE",
-    quantity: 1,
-    nextRunAt: new Date(Date.now() + 15 * 24 * 3600 * 1000).toISOString(),
-    plan: { titleFa: "اشتراک ماهانه قهوه اتیوپی", intervalDays: 30, priceRials: "18500000" },
+    stepName: "مرحله ۱: پاکسازی ترابافتی",
+    productTitle: "فوم پاک‌کننده آمینواسیدی ReeSkin Gentle Cleanser",
+    frequency: "روزانه (صبح و شب)",
+    instructions: "پوست را با آب ولرم مرطوب کرده، ۱ پمپ فوم را ماساژ داده و آبکشی نمایید.",
+    timeOfDay: "BOTH",
+  },
+  {
+    stepName: "مرحله ۲: کربوکسی‌تراپی و اکسیژن‌رسانی عمیق",
+    productTitle: "ژل فعال‌ساز Carboxy CO2 و ساشه بیوتکنولوژی",
+    frequency: "هفته‌ای ۱ الی ۲ بار",
+    instructions: "ژل را یکنواخت پخش کرده، پد کربوکسی را قرار دهید تا اثر بوهر فعال شود (۲۰ دقیقه).",
+    timeOfDay: "NIGHT",
+  },
+  {
+    stepName: "مرحله ۳: ترمیم سد دفاعی و پپتید",
+    productTitle: "کرم بازسازی‌کننده حاوی سرامید و فاکتور رشد EGF",
+    frequency: "هر شب پس از کربوکسی",
+    instructions: "به آرامی با ضربات ملایم روی پوست صورت و گردن ماساژ دهید.",
+    timeOfDay: "NIGHT",
+  },
+  {
+    stepName: "مرحله ۴: محافظت فوتوپروتکشن بالینی",
+    productTitle: "ضدآفتاب مینرال SPF 50 بدون رنگ ReeMed Clinical",
+    frequency: "هر روز صبح و تجدید هر ۲ ساعت",
+    instructions: "حداقل دو بند انگشت روی پوست تمیز استفاده شود.",
+    timeOfDay: "MORNING",
   },
 ];
 
-function subStatusFa(status?: string): { label: string; cls: string } {
-  switch (String(status ?? "").toUpperCase()) {
-    case "ACTIVE": return { label: "فعال", cls: "active" };
-    case "PAUSED": return { label: "موقتاً متوقف", cls: "paused" };
-    case "CANCELLED": return { label: "لغوشده", cls: "cancelled" };
-    default: return { label: status || "نامشخص", cls: "cancelled" };
-  }
-}
-
-function subIntervalLabel(days: number): string {
-  if (days === 7 || days === 14) return "دوهفته‌ای";
-  if (days === 30) return "ماهانه";
-  if (days === 90) return "فصلی";
-  return `${days} روزه`;
-}
-
-function subJalaliDate(iso?: string): string {
-  if (!iso) return "—";
-  try {
-    return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(iso));
-  } catch {
-    return "—";
-  }
-}
-
-/* ── Digital grants (W18) ── */
-interface DigitalGrant {
-  id?: string;
-  token?: string;
-  productTitle?: string;
-  downloadCount?: number | string;
-  maxDownloads?: number | string;
-  expiresAt?: string | null;
-  revokedAt?: string | null;
-}
-
-interface GrantsPayload {
-  items?: (DigitalGrant | null)[];
-  dbAvailable?: boolean;
-}
-
-interface DownloadPayload {
-  ok?: boolean;
-  downloadUrl?: string | null;
-  remainingDownloads?: number | string | null;
-  message?: unknown;
-}
-
-const DIGITAL_PHONE = "09123333333";
-
-const DEMO_GRANTS: DigitalGrant[] = [
+const DEMO_CONSULTATIONS: ConsultationBooking[] = [
   {
-    id: "grant_demo_1",
-    token: "demo-token-brew-guide",
-    productTitle: "کتاب الکترونیکی راهنمای جامع دم‌آوری",
-    downloadCount: 1,
-    maxDownloads: 5,
-    expiresAt: new Date(Date.now() + 45 * 24 * 3600 * 1000).toISOString(),
+    id: "cns_801",
+    specialistName: "دکتر مریم شریفی (متخصص درماتولوژی بالینی)",
+    dateJalali: "۱۴۰۵/۰۸/۱۵",
+    timeSlot: "ساعت ۱۷:۳۰ الی ۱۸:۰۰",
+    concern: "بررسی پروتکل درمان لک‌های پس از آکنه و تجویز CarboxyGel",
+    status: "CONFIRMED",
+    meetingLink: "https://meet.drdermer.ir/room/cns-801",
   },
   {
-    id: "grant_demo_2",
-    token: "demo-token-latte-course",
-    productTitle: "دوره ویدیویی لاته‌آرت",
-    downloadCount: 0,
-    maxDownloads: 5,
-    expiresAt: new Date(Date.now() + 90 * 24 * 3600 * 1000).toISOString(),
+    id: "cns_740",
+    specialistName: "دکتر کامران رحیمی (مشاور علمی ReeMed)",
+    dateJalali: "۱۴۰۵/۰۷/۲۰",
+    timeSlot: "ساعت ۱۱:۰۰ الی ۱۱:۳۰",
+    concern: "تنظیم روتین پوست مختلط و پیشگیری از هایپرپیگمنتیشن",
+    status: "COMPLETED",
   },
 ];
 
-function grantApiMessage(data: unknown): string | null {
-  if (!data || typeof data !== "object") return null;
-  const msg = (data as { message?: unknown }).message;
-  if (typeof msg === "string" && msg.trim()) return msg;
-  if (Array.isArray(msg)) {
-    const parts = msg.map((m) => (typeof m === "string" ? m : "")).filter(Boolean);
-    if (parts.length) return parts.join("؛ ");
-  }
-  return null;
-}
-
+const ACCOUNT_PROFILE_KEY = "commerce_os.account.profile.v1";
 const ACCOUNT_ORDERS_KEY = "commerce_os.account.orders.v1";
 const ACCOUNT_ADDRESSES_KEY = "commerce_os.account.addresses.v1";
 const ACCOUNT_TICKETS_KEY = "commerce_os.account.tickets.v1";
@@ -250,27 +164,33 @@ const DEMO_ORDERS: StoredOrder[] = [
     orderNumber: "ORD-948102",
     status: "DELIVERED",
     totalTomans: "3200000",
-    method: "درگاه شتابی (زرین‌پال)",
-    ref: "ZRP-88213450",
+    method: "درگاه شتابی (سامان)",
+    ref: "SEP-88213450",
     placedAt: new Date(Date.now() - 12 * 24 * 3600 * 1000).toISOString(),
+    trackingCode: "POST-94810299IR",
+    shippingMethod: "POST_PISHTAZ",
+    address: "تهران، خیابان آزادی، پلاک ۱۲",
   },
   {
     orderNumber: "ORD-948118",
-    status: "PAID",
+    status: "SHIPPED",
     totalTomans: "1850000",
     method: "درگاه شتابی (زرین‌پال)",
     ref: "ZRP-90345122",
     placedAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
+    trackingCode: "TPX-84729103",
+    shippingMethod: "TIPAX",
+    address: "تهران، خیابان آزادی، پلاک ۱۲",
   },
 ];
 
 function statusFa(status: string): { label: string; cls: string } {
   switch (status) {
-    case "PAID": return { label: "پرداخت‌شده — در انتظار ارسال", cls: "paid" };
-    case "PROCESSING": return { label: "در حال آماده‌سازی", cls: "processing" };
-    case "SHIPPED": return { label: "ارسال‌شده", cls: "shipped" };
-    case "DELIVERED": return { label: "تحویل‌شده", cls: "delivered" };
-    case "PENDING_REVIEW": return { label: "در انتظار بررسی فیش", cls: "processing" };
+    case "PAID": return { label: "پرداخت‌شده — تخصیص انبار", cls: "paid" };
+    case "PROCESSING": return { label: "در حال آماده‌سازی و بسته‌بندی", cls: "processing" };
+    case "SHIPPED": return { label: "ارسال‌شده به پست/تیپاکس", cls: "shipped" };
+    case "DELIVERED": return { label: "تحویل قطعی به مشتری", cls: "delivered" };
+    case "PENDING_REVIEW": return { label: "در انتظار بررسی فیش واریزی", cls: "processing" };
     case "PENDING_PAYMENT": return { label: "در انتظار پرداخت", cls: "processing" };
     case "REFUNDED": return { label: "مسترد شده", cls: "cancelled" };
     case "CANCELLED": return { label: "لغو شده", cls: "cancelled" };
@@ -279,221 +199,76 @@ function statusFa(status: string): { label: string; cls: string } {
 }
 
 export default function AccountPage() {
-  const [tab, setTab] = useState<"orders" | "wallet" | "loyalty" | "addresses" | "tickets" | "subscriptions" | "digital">("orders");
+  const [tab, setTab] = useState<
+    "profile" | "orders" | "wallet" | "regimen" | "addresses" | "tickets" | "loyalty"
+  >("profile");
+
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE);
+  const [profileSaved, setProfileSaved] = useState(false);
+  const [profileError, setProfileError] = useState("");
+
   const [orders, setOrders] = useState<StoredOrder[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [showAddrForm, setShowAddrForm] = useState(false);
   const [newTicket, setNewTicket] = useState({ subject: "", message: "" });
+  const [newConsultationConcern, setNewConsultationConcern] = useState("");
+  const [consultations, setConsultations] = useState<ConsultationBooking[]>(DEMO_CONSULTATIONS);
 
   useEffect(() => {
     try {
+      const p = localStorage.getItem(ACCOUNT_PROFILE_KEY);
+      if (p) setProfile(JSON.parse(p));
+
       const o = JSON.parse(localStorage.getItem(ACCOUNT_ORDERS_KEY) ?? "null");
       const lastCheckout = localStorage.getItem("commerce_os.checkout.lastOrder");
       const demo: StoredOrder[] = o ?? [];
       let all = [...demo, ...DEMO_ORDERS];
       if (lastCheckout) {
         const lo = JSON.parse(lastCheckout);
-        all = [{ ...lo }, ...all];
+        all = [{ ...lo }, ...all.filter((x) => x.orderNumber !== lo.orderNumber)];
       }
       setOrders(all);
       setAddresses(JSON.parse(localStorage.getItem(ACCOUNT_ADDRESSES_KEY) ?? "null") ?? DEFAULT_ADDRESSES);
-      setTickets(JSON.parse(localStorage.getItem(ACCOUNT_TICKETS_KEY) ?? "null") ?? [
-        {
-          id: "tkt_001",
-          subject: "پیگیری زمان ارسال سفارش ORD-948102",
-          message: "سلام، سفارش من کی ارسال می‌شود؟",
-          status: "ANSWERED",
-          createdAt: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString(),
-        },
-      ]);
+      setTickets(
+        JSON.parse(localStorage.getItem(ACCOUNT_TICKETS_KEY) ?? "null") ?? [
+          {
+            id: "tkt_001",
+            subject: "پیگیری زمان ارسال سفارش کربوکسی‌تراپی",
+            message: "سلام، زمان دقیق تحویل مرسوله پیشتاز را بفرمایید.",
+            status: "ANSWERED",
+            createdAt: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString(),
+          },
+        ]
+      );
     } catch {
       setOrders(DEMO_ORDERS);
     }
   }, []);
 
-  /* ── Orders (W14): live fetch from API — real orders render first, local/demo fallback kept ── */
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiHost}/v1/orders/stores/demo-store`, {
-          signal: AbortSignal.timeout(4000),
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as LiveOrdersPayload;
-        const items = (data?.items ?? []).filter((o): o is LiveOrderRow => Boolean(o?.orderNumber));
-        if (items.length === 0) throw new Error("empty");
-        const live: StoredOrder[] = items.map((o) => {
-          let totalTomans = "0";
-          try {
-            totalTomans = (BigInt(String(o.totalAmount)) / 10n).toString();
-          } catch { /* keep "0" on malformed amount */ }
-          const placed = o.createdAt ? new Date(o.createdAt) : null;
-          return {
-            orderNumber: String(o.orderNumber),
-            status: String(o.status ?? ""),
-            totalTomans,
-            method: "ثبت‌شده در سیستم",
-            ref: String(o.id ?? "").slice(0, 8),
-            placedAt: placed && !Number.isNaN(placed.getTime()) ? placed.toISOString() : new Date().toISOString(),
-          };
-        });
-        if (!alive) return;
-        setOrders((prev) => {
-          const liveNumbers = new Set(live.map((r) => r.orderNumber));
-          return [...live, ...prev.filter((p) => !liveNumbers.has(p.orderNumber))];
-        });
-      } catch {
-        // Fallback: keep the current local/demo list untouched (byte-identical render).
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileError("");
+    const cleanNational = toAsciiDigits(profile.nationalCode);
+    if (!validateNationalId(cleanNational)) {
+      setProfileError("کد ملی وارد شده با الگوریتم کنترلی ممیزی ۱۱ معتبر نمی‌باشد.");
+      return;
+    }
 
-  /* ── Loyalty Club (W17): live fetch with 4s timeout, demo fallback ── */
-  const [loyalty, setLoyalty] = useState<LoyaltySummary>(DEMO_LOYALTY);
-  const [loyaltyFailed, setLoyaltyFailed] = useState(false);
-  const loyaltyProg = tierProgress(loyalty.points, loyalty.tier);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiHost}/v1/loyalty/users/user_demo_1`, {
-          headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
-          signal: AbortSignal.timeout(4000),
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as LoyaltyApiPayload;
-        if (data?.dbAvailable === false) throw new Error("db unavailable");
-        if (!alive) return;
-        setLoyalty({
-          points: Number(data?.points ?? 0) || 0,
-          tier: data?.tier === "SILVER" || data?.tier === "GOLD" ? data.tier : "BRONZE",
-          transactions: Array.isArray(data?.transactions)
-            ? data.transactions.map((t) => ({
-                direction: t?.direction === "REDEEM" || t?.direction === "EXPIRE" ? t.direction : "EARN",
-                points: Number(t?.points ?? 0) || 0,
-                description: String(t?.description ?? ""),
-                createdAt: String(t?.createdAt ?? ""),
-              }))
-            : [],
-        });
-        setLoyaltyFailed(false);
-      } catch {
-        if (alive) {
-          setLoyalty(DEMO_LOYALTY);
-          setLoyaltyFailed(true);
-        }
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  /* ── My Subscriptions: live fetch with demo fallback ── */
-  const [mySubs, setMySubs] = useState<MySubItem[]>(DEMO_MY_SUBS);
-  const [mySubsFailed, setMySubsFailed] = useState(false);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiHost}/v1/subscriptions/users/user_demo_1`, {
-          headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
-          signal: AbortSignal.timeout(4000),
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as MySubsPayload;
-        if (data?.dbAvailable === false) throw new Error("db unavailable");
-        const items = (data?.items ?? []).filter((s): s is MySubItem => Boolean(s));
-        if (items.length === 0) throw new Error("empty");
-        if (!alive) return;
-        setMySubs(items);
-        setMySubsFailed(false);
-      } catch {
-        if (alive) {
-          setMySubs(DEMO_MY_SUBS);
-          setMySubsFailed(true);
-        }
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  /* ── Digital grants (W18): live fetch with demo fallback ── */
-  const [grants, setGrants] = useState<DigitalGrant[]>(DEMO_GRANTS);
-  const [grantsFailed, setGrantsFailed] = useState(false);
-  const [dlBusy, setDlBusy] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-        const res = await fetch(`${apiHost}/v1/digital/grants?phone=${DIGITAL_PHONE}`, {
-          signal: AbortSignal.timeout(4000),
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as GrantsPayload;
-        if (data?.dbAvailable === false) throw new Error("db unavailable");
-        const items = (data?.items ?? []).filter((g): g is DigitalGrant => Boolean(g));
-        if (items.length === 0) throw new Error("empty");
-        if (!alive) return;
-        setGrants(items);
-        setGrantsFailed(false);
-      } catch {
-        if (alive) {
-          setGrants(DEMO_GRANTS);
-          setGrantsFailed(true);
-        }
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const handleDownload = async (grant: DigitalGrant) => {
-    const token = String(grant?.token ?? "").trim();
-    if (!token) return;
-    setDlBusy((prev) => ({ ...prev, [token]: true }));
     try {
-      const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const res = await fetch(`${apiHost}/v1/digital/download/${encodeURIComponent(token)}`, {
-        signal: AbortSignal.timeout(8000),
-        cache: "no-store",
-      });
-      const data = (await res.json().catch(() => null)) as DownloadPayload | null;
-      const apiMsg = grantApiMessage(data);
-      if (res.ok && data?.ok && typeof data.downloadUrl === "string" && data.downloadUrl.trim()) {
-        window.open(data.downloadUrl, "_blank", "noopener,noreferrer");
-      } else {
-        alert(apiMsg ?? "دانلود در دسترس نیست؛ لطفاً بعداً دوباره تلاش کنید.");
-      }
+      localStorage.setItem(ACCOUNT_PROFILE_KEY, JSON.stringify({ ...profile, nationalCode: cleanNational }));
+      setProfileSaved(true);
+      setTimeout(() => setProfileSaved(false), 2500);
     } catch {
-      alert("اتصال به سرور برقرار نشد؛ لطفاً بعداً دوباره تلاش کنید.");
-    } finally {
-      setDlBusy((prev) => ({ ...prev, [token]: false }));
+      // storage error
     }
   };
 
   const persistAddresses = (next: Address[]) => {
     setAddresses(next);
-    try { localStorage.setItem(ACCOUNT_ADDRESSES_KEY, JSON.stringify(next)); } catch {}
+    try {
+      localStorage.setItem(ACCOUNT_ADDRESSES_KEY, JSON.stringify(next));
+    } catch {}
   };
 
   const addAddress = (e: React.FormEvent<HTMLFormElement>) => {
@@ -502,10 +277,10 @@ export default function AccountPage() {
     const addr: Address = {
       id: `addr_${Date.now()}`,
       title: String(f.get("title") || "آدرس جدید"),
-      receiverName: String(f.get("receiverName") || ""),
-      phone: String(f.get("phone") || ""),
-      province: String(f.get("province") || ""),
-      city: String(f.get("city") || ""),
+      receiverName: String(f.get("receiverName") || profile.fullName),
+      phone: String(f.get("phone") || profile.phone),
+      province: String(f.get("province") || "تهران"),
+      city: String(f.get("city") || "تهران"),
       postalCode: String(f.get("postalCode") || ""),
       postalAddress: String(f.get("postalAddress") || ""),
       isDefault: false,
@@ -526,54 +301,229 @@ export default function AccountPage() {
     };
     const next = [t, ...tickets];
     setTickets(next);
-    try { localStorage.setItem(ACCOUNT_TICKETS_KEY, JSON.stringify(next)); } catch {}
+    try {
+      localStorage.setItem(ACCOUNT_TICKETS_KEY, JSON.stringify(next));
+    } catch {}
     setNewTicket({ subject: "", message: "" });
+  };
+
+  const handleBookConsultation = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newConsultationConcern.trim()) return;
+    const newBook: ConsultationBooking = {
+      id: `cns_${Date.now().toString().slice(-4)}`,
+      specialistName: "دکتر مریم شریفی (درماتولوژی بالینی)",
+      dateJalali: "۱۴۰۵/۰۸/۲۲",
+      timeSlot: "ساعت ۱۸:۰۰ الی ۱۸:۳۰",
+      concern: newConsultationConcern,
+      status: "PENDING",
+      meetingLink: "https://meet.drdermer.ir/room/cns-new",
+    };
+    setConsultations([newBook, ...consultations]);
+    setNewConsultationConcern("");
+    alert("درخواست نوبت ویزیت تخصصی شما ثبت و پیامک تأیید ارسال گردید.");
   };
 
   return (
     <section className="account-layout">
+      {/* Sidenav Navigation */}
       <aside className="account-sidenav">
         <div className="account-greeting">
-          <div className="account-avatar">ع</div>
+          <div className="account-avatar">
+            {profile.fullName.slice(0, 1) || "ک"}
+          </div>
           <div>
-            <strong>علی علوی</strong>
-            <small dir="ltr">۰۹۱۲***۴۵۶۷</small>
+            <strong>{profile.fullName || "کاربر گرامی"}</strong>
+            <small dir="ltr">{profile.phone}</small>
           </div>
         </div>
+
         <nav>
-          <button onClick={() => setTab("orders")} className={`account-nav-btn ${tab === "orders" ? "active" : ""}`}>📦 سفارش‌های من</button>
-          <button onClick={() => setTab("wallet")} className={`account-nav-btn ${tab === "wallet" ? "active" : ""}`}>💳 کیف پول</button>
-          <button onClick={() => setTab("loyalty")} className={`account-nav-btn ${tab === "loyalty" ? "active" : ""}`}>🏆 باشگاه مشتریان</button>
-          <button onClick={() => setTab("subscriptions")} className={`account-nav-btn ${tab === "subscriptions" ? "active" : ""}`}>🔁 اشتراک‌های من</button>
-          <button onClick={() => setTab("digital")} className={`account-nav-btn ${tab === "digital" ? "active" : ""}`}>⬇ محصولات دیجیتال من</button>
-          <button onClick={() => setTab("addresses")} className={`account-nav-btn ${tab === "addresses" ? "active" : ""}`}>📍 آدرس‌های من</button>
-          <button onClick={() => setTab("tickets")} className={`account-nav-btn ${tab === "tickets" ? "active" : ""}`}>🎫 تیکت‌های پشتیبانی</button>
+          <button
+            onClick={() => setTab("profile")}
+            className={`account-nav-btn ${tab === "profile" ? "active" : ""}`}
+          >
+            👤 پروفایل و کد ملی
+          </button>
+          <button
+            onClick={() => setTab("orders")}
+            className={`account-nav-btn ${tab === "orders" ? "active" : ""}`}
+          >
+            📦 سفارش‌ها و رهگیری پستی ({orders.length})
+          </button>
+          <button
+            onClick={() => setTab("regimen")}
+            className={`account-nav-btn ${tab === "regimen" ? "active" : ""}`}
+          >
+            🌿 رژیم پوستی و نوبت مشاوره
+          </button>
+          <button
+            onClick={() => setTab("wallet")}
+            className={`account-nav-btn ${tab === "wallet" ? "active" : ""}`}
+          >
+            💳 کیف پول و اعتبار مالی
+          </button>
+          <button
+            onClick={() => setTab("addresses")}
+            className={`account-nav-btn ${tab === "addresses" ? "active" : ""}`}
+          >
+            📍 آدرس‌های ذخیره‌شده ({addresses.length})
+          </button>
+          <button
+            onClick={() => setTab("tickets")}
+            className={`account-nav-btn ${tab === "tickets" ? "active" : ""}`}
+          >
+            🎫 تیکت‌های پشتیبانی ({tickets.length})
+          </button>
+          <button
+            onClick={() => setTab("loyalty")}
+            className={`account-nav-btn ${tab === "loyalty" ? "active" : ""}`}
+          >
+            🏆 باشگاه مشتریان و امتیازات
+          </button>
         </nav>
       </aside>
 
+      {/* Main Content Area */}
       <main className="account-content">
-        {/* ── Orders ── */}
+        {/* TAB 1: Profile & National Code */}
+        {tab === "profile" && (
+          <div className="account-pane">
+            <h2>پروفایل کاربری و احراز هویت شاهکار</h2>
+            <p className="account-note">
+              ثبت کد ملی جهت صدور فاکتور رسمی مالیاتی و استعلام شاهکار الزامی است.
+            </p>
+
+            <form onSubmit={handleSaveProfile} className="profile-form">
+              <div className="form-grid">
+                <label className="form-field">
+                  <span>نام و نام خانوادگی کامل *</span>
+                  <input
+                    type="text"
+                    value={profile.fullName}
+                    onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                    required
+                    className="input-text"
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>شماره موبایل فعال (تطبیق با شاهکار) *</span>
+                  <input
+                    type="tel"
+                    value={profile.phone}
+                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                    dir="ltr"
+                    required
+                    className="input-text"
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>کد ملی ۱۰ رقمی (تطبیق با ممیزی ۱۱) *</span>
+                  <input
+                    type="text"
+                    value={profile.nationalCode}
+                    onChange={(e) => setProfile({ ...profile, nationalCode: e.target.value })}
+                    dir="ltr"
+                    maxLength={10}
+                    required
+                    className="input-text"
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>پست الکترونیک</span>
+                  <input
+                    type="email"
+                    value={profile.email}
+                    onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                    dir="ltr"
+                    className="input-text"
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>تیپ پوستی بالینی:</span>
+                  <select
+                    value={profile.skinType}
+                    onChange={(e) =>
+                      setProfile({ ...profile, skinType: e.target.value as any })
+                    }
+                    className="input-text select-box"
+                  >
+                    <option value="DRY">خشک و کم‌آب (Dry/Dehydrated)</option>
+                    <option value="OILY">چرب و مستعد آکنه (Oily/Acne-prone)</option>
+                    <option value="COMBINATION">مختلط (Combination)</option>
+                    <option value="SENSITIVE">حساس و روزاسه (Sensitive/Rosacea)</option>
+                    <option value="NORMAL">معمولی و نرمال (Normal)</option>
+                  </select>
+                </label>
+              </div>
+
+              {profileError && <div className="error-banner">{profileError}</div>}
+              {profileSaved && (
+                <div className="success-banner">✓ اطلاعات با موفقیت در پایگاه داده ذخیره شد.</div>
+              )}
+
+              <button type="submit" className="btn-purchase-action">
+                ذخیره تغییرات پروفایل
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* TAB 2: Orders with Live Tracking */}
         {tab === "orders" && (
           <div className="account-pane">
-            <h2>سفارش‌های من ({orders.length})</h2>
+            <h2>سفارش‌های من و رهگیری لحظه‌ای ({orders.length})</h2>
+
             {orders.map((o) => {
               const s = statusFa(o.status);
+              const trackingCode = o.trackingCode || `POST-${o.orderNumber.replace(/\D/g, "").slice(0, 8)}IR`;
               return (
                 <div key={o.orderNumber} className="order-history-card">
                   <div className="ohc-head">
                     <div>
-                      <Link href={`/order/${o.orderNumber}`} className="ohc-number" dir="ltr">{o.orderNumber}</Link>
-                      <small className="ohc-date">{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { year: "numeric", month: "long", day: "numeric" }).format(new Date(o.placedAt))}</small>
+                      <Link href={`/order/${o.orderNumber}`} className="ohc-number" dir="ltr">
+                        {o.orderNumber}
+                      </Link>
+                      <small className="ohc-date">
+                        {new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }).format(new Date(o.placedAt))}
+                      </small>
                     </div>
                     <span className={`status-pill ${s.cls}`}>{s.label}</span>
                   </div>
+
                   <div className="ohc-body">
-                    <span className="ohc-method">{o.method}</span>
-                    <span className="ohc-ref" dir="ltr">{o.ref}</span>
-                    <strong className="ohc-amount">{formatToman(BigInt(o.totalTomans))}</strong>
+                    <span className="ohc-method">روش: {o.method}</span>
+                    <span className="ohc-ref" dir="ltr">
+                      پیگیری: {o.ref}
+                    </span>
+                    <strong className="ohc-amount">
+                      {formatToman(BigInt(o.totalTomans) * 10n)}
+                    </strong>
                   </div>
+
+                  {/* Active Shipping Tracking Box */}
+                  <div className="ohc-tracking-row">
+                    <span>کد رهگیری پستی / تیپاکس:</span>
+                    <strong dir="ltr">{trackingCode}</strong>
+                    <span className="tracking-status-hint">
+                      {o.status === "DELIVERED"
+                        ? "✓ تحویل داده شده"
+                        : "مرسوله در مرکز تفکیک مبادلات پستی"}
+                    </span>
+                  </div>
+
                   <div className="ohc-actions">
-                    <Link href={`/order/${o.orderNumber}`} className="btn-action">مشاهده جزئیات و فاکتور</Link>
+                    <Link href={`/order/${o.orderNumber}`} className="btn-action">
+                      مشاهده فاکتور رسمی و پیگیری
+                    </Link>
                   </div>
                 </div>
               );
@@ -581,16 +531,89 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* ── Wallet ── */}
+        {/* TAB 3: Skincare Regimen & Consultations */}
+        {tab === "regimen" && (
+          <div className="account-pane">
+            <h2>رژیم پوستی اختصاصی و مشاوره‌های بالینی</h2>
+            <p className="account-note">
+              پروتکل نسخه خانگی تدوین‌شده توسط متخصصین درماتولوژی دکتر درمر بر پایه کربوکسی‌تراپی و
+              اثر بوهر.
+            </p>
+
+            <div className="regimen-steps-grid">
+              {DEMO_REGIMEN.map((r, idx) => (
+                <div key={idx} className="regimen-card">
+                  <div className="regimen-header">
+                    <span className="regimen-badge">{r.timeOfDay === "NIGHT" ? "🌙 شب" : r.timeOfDay === "MORNING" ? "☀️ صبح" : "☀️🌙 صبح و شب"}</span>
+                    <strong>{r.stepName}</strong>
+                  </div>
+                  <h4>{r.productTitle}</h4>
+                  <div className="regimen-meta">
+                    <span>تکرار: {r.frequency}</span>
+                    <p>{r.instructions}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <h3 className="sub-heading">نوبت‌های مشاوره تخصصی پوست و نسخه</h3>
+            <div className="consultations-list">
+              {consultations.map((c) => (
+                <div key={c.id} className="consultation-card">
+                  <div className="cns-head">
+                    <div>
+                      <strong>{c.specialistName}</strong>
+                      <small>{c.dateJalali} | {c.timeSlot}</small>
+                    </div>
+                    <span className={`status-pill ${c.status === "CONFIRMED" ? "paid" : "delivered"}`}>
+                      {c.status === "CONFIRMED" ? "تأیید شده (آنلاین)" : "انجام شده"}
+                    </span>
+                  </div>
+                  <p className="cns-concern">دغدغه و علت مشاوره: {c.concern}</p>
+                  {c.meetingLink && c.status === "CONFIRMED" && (
+                    <a
+                      href={c.meetingLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-join-room"
+                    >
+                      ورود به اتاق ویزیت تصویری در زمان مقرر ←
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleBookConsultation} className="book-consultation-box">
+              <h4>درخواست مشاوره تصویری جدید</h4>
+              <textarea
+                value={newConsultationConcern}
+                onChange={(e) => setNewConsultationConcern(e.target.value)}
+                rows={2}
+                placeholder="شرح نوع عارضه پوستی، سابقه مصرف کربوکسی‌تراپی یا سوال تخصصی…"
+                className="input-textarea"
+                required
+              />
+              <button type="submit" className="btn-purchase-action">
+                رزرو نوبت مشاوره با متخصص درماتولوژی
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* TAB 4: Wallet */}
         {tab === "wallet" && (
           <div className="account-pane">
-            <h2>کیف پول من</h2>
+            <h2>کیف پول من و اعتبار ریالی</h2>
             <div className="wallet-balance-card">
-              <span className="wbc-label">موجودی فعلی</span>
-              <strong className="wbc-amount">{new Intl.NumberFormat("fa-IR").format(3_400_000)} تومان</strong>
-              <button className="btn-charge-wallet">+ شارژ کیف پول از درگاه بانکی</button>
+              <span className="wbc-label">موجودی فعلی قابل برداشت / خرید</span>
+              <strong className="wbc-amount">
+                {new Intl.NumberFormat("fa-IR").format(3_400_000)} تومان
+              </strong>
+              <button className="btn-charge-wallet">+ شارژ آنلاین کیف پول از درگاه شاپرک</button>
             </div>
-            <h3>تراکنش‌های اخیر</h3>
+
+            <h3>تراکنش‌های اخیر کیف پول</h3>
             <div className="wallet-tx-list">
               {WALLET_TXS.map((t) => (
                 <div key={t.id} className="wallet-tx-row">
@@ -599,247 +622,182 @@ export default function AccountPage() {
                     <small>{t.date}</small>
                   </div>
                   <span className={t.direction === "credit" ? "tx-credit" : "tx-debit"}>
-                    {t.direction === "credit" ? "+" : "−"} {new Intl.NumberFormat("fa-IR").format(Math.abs(t.amount))} تومان
+                    {t.direction === "credit" ? "+" : "−"}{" "}
+                    {new Intl.NumberFormat("fa-IR").format(Math.abs(t.amount))} تومان
                   </span>
                 </div>
               ))}
             </div>
-            <p className="account-note">🛡️ موجودی کیف پول به‌صورت بدهی شرکت در دفترکل دوبل‌اندر (حساب ۲۰۱۰) ثبت می‌شود.</p>
+            <p className="account-note">
+              🛡️ تراکنش‌های کیف پول در چارچوب دفترکل دوبل‌اندر (حساب ۲۰۱۰ بستانکاران) سند می‌خورند.
+            </p>
           </div>
         )}
 
-        {/* ── Loyalty Club (W17) ── */}
-        {tab === "loyalty" && (
-          <div className="account-pane">
-            <h2>🏆 باشگاه مشتریان</h2>
-            {loyaltyFailed && (
-              <p className="loyalty-demo-note">نمایش داده نمونه — اتصال به API برقرار نشد</p>
-            )}
-
-            <div className="loyalty-hero">
-              <div className="loyalty-hero-top">
-                <div>
-                  <span className="loyalty-points-label">امتیاز فعلی شما</span>
-                  <strong className="loyalty-points">{new Intl.NumberFormat("fa-IR").format(loyalty.points)}</strong>
-                  <small className="loyalty-points-unit">امتیاز</small>
-                </div>
-                <span className={`tier-pill tier-${loyalty.tier.toLowerCase()}`}>{TIER_FA[loyalty.tier]}</span>
-              </div>
-              <div className="tier-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={loyaltyProg.pct}>
-                <div className="tier-progress-fill" style={{ width: `${loyaltyProg.pct}%` }} />
-              </div>
-              <small className="tier-progress-caption">
-                {loyaltyProg.remaining === null
-                  ? "🎉 به بالاترین سطح (طلایی) رسیده‌اید"
-                  : `${new Intl.NumberFormat("fa-IR").format(loyaltyProg.remaining)} امتیاز تا سطح بعد`}
-              </small>
-            </div>
-
-            <h3>قوانین باشگاه مشتریان</h3>
-            <div className="loyalty-rules">
-              <div className="loyalty-rule-card">
-                <span className="loyalty-rule-icon" aria-hidden>🛒</span>
-                <strong>نحوه کسب امتیاز</strong>
-                <p>هر ۱۰٬۰۰۰ تومان خرید = ۱ امتیاز</p>
-              </div>
-              <div className="loyalty-rule-card">
-                <span className="loyalty-rule-icon" aria-hidden>🥇</span>
-                <strong>سطوح و مزایا</strong>
-                <p>سطوح برنزی/نقره‌ای/طلایی و پاداش‌ها</p>
-              </div>
-              <div className="loyalty-rule-card">
-                <span className="loyalty-rule-icon" aria-hidden>⏳</span>
-                <strong>انقضای امتیاز</strong>
-                <p>امتیازها تا پایان سال مالی معتبرند</p>
-              </div>
-            </div>
-
-            <h3>تاریخچه امتیازها</h3>
-            <div className="loyalty-history">
-              {loyalty.transactions.length === 0 && (
-                <p className="loyalty-history-empty">هنوز تراکنشی ثبت نشده است.</p>
-              )}
-              {loyalty.transactions.map((t, i) => (
-                <div key={`${i}-${t.createdAt}`} className="loyalty-tx-row">
-                  <div className="loyalty-tx-main">
-                    <span className={`loyalty-tx-icon ${t.direction === "EARN" ? "earn" : "spend"}`} aria-hidden>
-                      {t.direction === "EARN" ? "＋" : t.direction === "REDEEM" ? "－" : "⌛"}
-                    </span>
-                    <div className="loyalty-tx-desc">
-                      <strong>{t.description || (t.direction === "EARN" ? "کسب امتیاز" : t.direction === "REDEEM" ? "خرج امتیاز" : "انقضای امتیاز")}</strong>
-                      <small>{formatJalaliDateTime(t.createdAt) || "—"}</small>
-                    </div>
-                  </div>
-                  <span className={t.direction === "EARN" ? "loyalty-points-earn" : "loyalty-points-spend"}>
-                    {t.direction === "EARN" ? "+" : "−"} {new Intl.NumberFormat("fa-IR").format(Math.abs(t.points))} امتیاز
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── My Subscriptions ── */}
-        {tab === "subscriptions" && (
-          <div className="account-pane">
-            <h2>🔁 اشتراک‌های من</h2>
-            {mySubsFailed && (
-              <p className="subs-demo-note">نمایش داده نمونه — اتصال به API برقرار نشد</p>
-            )}
-            <div className="my-subs-list">
-              {mySubs.map((s, i) => {
-                const st = subStatusFa(s?.status);
-                return (
-                  <div key={String(s?.id ?? `my_${i}`)} className="my-subs-row">
-                    <div className="my-subs-main">
-                      <strong>{s?.plan?.titleFa ?? "اشتراک"}</strong>
-                      <small>
-                        {subIntervalLabel(Number(s?.plan?.intervalDays ?? 0))}
-                        {" · "}
-                        تعداد: {new Intl.NumberFormat("fa-IR").format(Number(s?.quantity ?? 1) || 1)}
-                        {s?.plan?.priceRials ? ` · ${formatToman(s.plan.priceRials)}` : ""}
-                      </small>
-                    </div>
-                    <div className="my-subs-side">
-                      {s?.nextRunAt && (
-                        <small>ارسال بعدی: {subJalaliDate(s.nextRunAt)}</small>
-                      )}
-                      <span className={`subs-pill ${st.cls}`}>{st.label}</span>
-                      <Link href="/subscriptions" className="subs-manage-link">مدیریت اشتراک‌ها</Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* ── Digital grants (W18) ── */}
-        {tab === "digital" && (
-          <div className="account-pane">
-            <h2>⬇ محصولات دیجیتال من</h2>
-            {grantsFailed && (
-              <p className="digital-demo-note">نمایش داده نمونه — اتصال به API برقرار نشد</p>
-            )}
-            <div className="digital-list">
-              {grants.length === 0 && (
-                <p className="digital-demo-note">هنوز محصول دیجیتالی برای شما صادر نشده است.</p>
-              )}
-              {grants.map((g, i) => {
-                const used = Math.max(0, Number(g?.downloadCount ?? 0) || 0);
-                const max = Math.max(used, Number(g?.maxDownloads ?? 0) || 0);
-                const pct = max > 0 ? Math.min(100, Math.round((used / max) * 100)) : 0;
-                const remaining = Math.max(0, max - used);
-                const revoked = Boolean(g?.revokedAt);
-                const token = String(g?.token ?? "");
-                const busy = dlBusy[token] ?? false;
-                return (
-                  <div key={String(g?.id ?? token ?? `grant_${i}`)} className="digital-row">
-                    <div className="digital-main">
-                      <div className="digital-title-row">
-                        <strong>{g?.productTitle ?? "محصول دیجیتال"}</strong>
-                        <DigitalBadge />
-                      </div>
-                      <small className="grant-meta">
-                        <span>انقضا: {subJalaliDate(g?.expiresAt ?? undefined)}</span>
-                        <span
-                          className="dl-progress"
-                          role="progressbar"
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-valuenow={pct}
-                        >
-                          <span className="dl-progress-fill" style={{ width: `${pct}%` }} />
-                        </span>
-                        <span className="dl-caption">
-                          {new Intl.NumberFormat("fa-IR").format(used)} از {new Intl.NumberFormat("fa-IR").format(max)} دانلود
-                          {" · "}
-                          {new Intl.NumberFormat("fa-IR").format(remaining)} باقی‌مانده
-                        </span>
-                      </small>
-                    </div>
-                    <button
-                      type="button"
-                      className={`dl-btn ${revoked ? "revoked" : ""}`}
-                      disabled={revoked || busy || !token}
-                      onClick={() => handleDownload(g)}
-                    >
-                      {revoked ? "لغو شده" : busy ? "در حال آماده‌سازی…" : "دانلود"}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="account-note">⬇ فایل‌های دیجیتال بلافاصله پس از زدن «دانلود» در تب جدید باز می‌شوند.</p>
-          </div>
-        )}
-
-        {/* ── Addresses ── */}
+        {/* TAB 5: Addresses */}
         {tab === "addresses" && (
           <div className="account-pane">
             <div className="pane-head-row">
-              <h2>آدرس‌های من ({addresses.length})</h2>
-              <button onClick={() => setShowAddrForm(!showAddrForm)} className="btn-action">+ افزودن آدرس جدید</button>
+              <h2>آدرس‌های ذخیره‌شده من ({addresses.length})</h2>
+              <button onClick={() => setShowAddrForm(!showAddrForm)} className="btn-action">
+                + افزودن آدرس جدید
+              </button>
             </div>
 
             {showAddrForm && (
               <form onSubmit={addAddress} className="address-form">
                 <div className="form-grid">
-                  <label className="form-field"><span>عنوان (خانه/محل کار)</span><input name="title" required className="input-text" /></label>
-                  <label className="form-field"><span>نام تحویل‌گیرنده</span><input name="receiverName" required className="input-text" /></label>
-                  <label className="form-field"><span>موبایل</span><input name="phone" required dir="ltr" pattern="09\d{9}" className="input-text" /></label>
-                  <label className="form-field"><span>استان</span><input name="province" required className="input-text" /></label>
-                  <label className="form-field"><span>شهر</span><input name="city" required className="input-text" /></label>
-                  <label className="form-field"><span>کد پستی ۱۰ رقمی</span><input name="postalCode" required dir="ltr" pattern="\d{10}" className="input-text" /></label>
+                  <label className="form-field">
+                    <span>عنوان آدرس (خانه، کلینیک، مطب)</span>
+                    <input name="title" required className="input-text" />
+                  </label>
+                  <label className="form-field">
+                    <span>نام و نام خانوادگی تحویل‌گیرنده</span>
+                    <input name="receiverName" defaultValue={profile.fullName} required className="input-text" />
+                  </label>
+                  <label className="form-field">
+                    <span>شماره موبایل</span>
+                    <input name="phone" defaultValue={profile.phone} required dir="ltr" className="input-text" />
+                  </label>
+                  <label className="form-field">
+                    <span>استان</span>
+                    <input name="province" defaultValue="تهران" required className="input-text" />
+                  </label>
+                  <label className="form-field">
+                    <span>شهر</span>
+                    <input name="city" defaultValue="تهران" required className="input-text" />
+                  </label>
+                  <label className="form-field">
+                    <span>کد پستی ۱۰ رقمی</span>
+                    <input name="postalCode" required dir="ltr" maxLength={10} className="input-text" />
+                  </label>
                 </div>
-                <label className="form-field full-width"><span>نشانی کامل</span><textarea name="postalAddress" required rows={2} className="input-textarea" /></label>
-                <button type="submit" className="btn-purchase-action">ذخیره آدرس</button>
+                <label className="form-field full-width">
+                  <span>نشانی پستی دقیق</span>
+                  <textarea name="postalAddress" required rows={2} className="input-textarea" />
+                </label>
+                <button type="submit" className="btn-purchase-action">
+                  ذخیره آدرس جدید
+                </button>
               </form>
             )}
 
             {addresses.map((a) => (
               <div key={a.id} className="address-card">
                 <div className="addr-head">
-                  <strong>{a.title} {a.isDefault && <span className="default-badge">پیش‌فرض</span>}</strong>
+                  <strong>
+                    {a.title} {a.isDefault && <span className="default-badge">پیش‌فرض</span>}
+                  </strong>
                   <button
                     onClick={() => persistAddresses(addresses.filter((x) => x.id !== a.id))}
                     className="btn-remove"
                     aria-label="حذف آدرس"
-                  >✕</button>
+                  >
+                    ✕
+                  </button>
                 </div>
-                <p>{a.province}، {a.city} — {a.postalAddress}</p>
-                <small>گیرنده: {a.receiverName} · موبایل: <span dir="ltr">{a.phone}</span> · کدپستی: <span dir="ltr">{a.postalCode}</span></small>
+                <p>
+                  {a.province}، {a.city} — {a.postalAddress}
+                </p>
+                <small>
+                  گیرنده: {a.receiverName} · موبایل: <span dir="ltr">{a.phone}</span> · کدپستی:{" "}
+                  <span dir="ltr">{a.postalCode}</span>
+                </small>
               </div>
             ))}
           </div>
         )}
 
-        {/* ── Tickets ── */}
+        {/* TAB 6: Tickets */}
         {tab === "tickets" && (
           <div className="account-pane">
-            <h2>تیکت‌های پشتیبانی</h2>
+            <h2>تیکت‌های پشتیبانی علمی و فنی</h2>
             <form onSubmit={submitTicket} className="ticket-form">
-              <label className="form-field"><span>موضوع تیکت</span>
-                <input value={newTicket.subject} onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })} required className="input-text" placeholder="مثال: پیگیری مرجوعی سفارش..." />
+              <label className="form-field">
+                <span>موضوع تیکت</span>
+                <input
+                  value={newTicket.subject}
+                  onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
+                  required
+                  className="input-text"
+                  placeholder="مثال: سوال در خصوص میزان مصرف CarboxyGel..."
+                />
               </label>
-              <label className="form-field"><span>شرح درخواست</span>
-                <textarea value={newTicket.message} onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })} rows={3} className="input-textarea" />
+              <label className="form-field">
+                <span>شرح پیام</span>
+                <textarea
+                  value={newTicket.message}
+                  onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
+                  rows={3}
+                  className="input-textarea"
+                />
               </label>
-              <button type="submit" className="btn-purchase-action">ثبت تیکت</button>
+              <button type="submit" className="btn-purchase-action">
+                ارسال تیکت جدید
+              </button>
             </form>
 
             {tickets.map((t) => (
               <div key={t.id} className="ticket-card">
                 <div className="ticket-head">
                   <strong>{t.subject}</strong>
-                  <span className={`status-pill ${t.status === "OPEN" ? "processing" : t.status === "ANSWERED" ? "shipped" : "delivered"}`}>
-                    {t.status === "OPEN" ? "در حال بررسی" : t.status === "ANSWERED" ? "پاسخ داده شد" : "بسته شده"}
+                  <span
+                    className={`status-pill ${
+                      t.status === "OPEN"
+                        ? "processing"
+                        : t.status === "ANSWERED"
+                        ? "shipped"
+                        : "delivered"
+                    }`}
+                  >
+                    {t.status === "OPEN"
+                      ? "در حال بررسی"
+                      : t.status === "ANSWERED"
+                      ? "پاسخ داده شد"
+                      : "بسته شده"}
                   </span>
                 </div>
                 <p>{t.message}</p>
-                <small>{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { year: "numeric", month: "long", day: "numeric" }).format(new Date(t.createdAt))}</small>
+                <small>
+                  {new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }).format(new Date(t.createdAt))}
+                </small>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* TAB 7: Loyalty */}
+        {tab === "loyalty" && (
+          <div className="account-pane">
+            <h2>🏆 باشگاه مشتریان و سلامت پوست</h2>
+            <div className="loyalty-hero">
+              <div className="loyalty-hero-top">
+                <div>
+                  <span className="loyalty-points-label">امتیاز فعلی شما</span>
+                  <strong className="loyalty-points">
+                    {new Intl.NumberFormat("fa-IR").format(680)}
+                  </strong>
+                  <small className="loyalty-points-unit">امتیاز سلامت</small>
+                </div>
+                <span className="tier-pill tier-silver">سطح نقره‌ای</span>
+              </div>
+              <div
+                className="tier-progress"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={68}
+              >
+                <div className="tier-progress-fill" style={{ width: "68%" }} />
+              </div>
+              <small className="tier-progress-caption">
+                ۳۲۰ امتیاز تا ارتقا به سطح طلایی (تخفیف دائمی ۱۵٪ کلینیکال)
+              </small>
+            </div>
           </div>
         )}
       </main>

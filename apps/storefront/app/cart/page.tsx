@@ -6,44 +6,135 @@ import { useCart } from "../../components/cart";
 import { formatToman } from "../../lib/catalog";
 
 export default function CartPage() {
-  const { items, setQty, removeItem, clearCart, itemCount, totalAmountRials, isReady } = useCart();
-  const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const {
+    items,
+    setQty,
+    removeItem,
+    clearCart,
+    isReady,
+    couponCode,
+    setCouponCode,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
+    calculations,
+    isSyncing,
+    syncWarnings,
+    clearSyncWarnings,
+  } = useCart();
+
+  const [couponInput, setCouponInput] = useState(couponCode || "");
+  const [couponFeedback, setCouponFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   if (!isReady) {
-    return <div className="state-panel">در حال بارگذاری سبد خرید…</div>;
+    return (
+      <div className="state-panel loading-state">
+        <div className="spinner"></div>
+        <p>در حال همگام‌سازی و بارگذاری سبد خرید نسخه…</p>
+      </div>
+    );
   }
 
   if (items.length === 0) {
     return (
       <section className="state-panel empty-cart-box">
-        <h2>سبد خرید شما خالی است</h2>
-        <p>هنوز کالایی به سبد خرید خود اضافه نکرده‌اید.</p>
+        <div className="empty-cart-graphic" aria-hidden="true">🛒</div>
+        <h2>سبد خرید و نسخه شما خالی است</h2>
+        <p>
+          هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد خود
+          اضافه نکرده‌اید.
+        </p>
         <Link href="/#catalog" className="primary-link">
-          بازگشت به فروشگاه و مشاهده کالاها
+          مشاهده کاتالوگ درمانی و محصولات ReeSkin & ReeMed
         </Link>
       </section>
     );
   }
 
-  // Estimated calculation
-  const subtotalTomans = totalAmountRials / 10n;
-  const discountTomans = appliedCoupon === "OFF10" ? (subtotalTomans * 10n) / 100n : 0n;
-  const taxableTomans = subtotalTomans - discountTomans;
-  const vatTomans = (taxableTomans * 10n) / 100n; // 10%
-  const shippingTomans = subtotalTomans >= 3_000_000n ? 0n : 150_000n;
-  const totalTomans = taxableTomans + vatTomans + shippingTomans;
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCouponFeedback(null);
+    if (!couponInput.trim()) {
+      setCouponFeedback({
+        type: "error",
+        message: "لطفاً کد تخفیف را وارد کنید.",
+      });
+      return;
+    }
+    const res = applyCoupon(couponInput);
+    if (res.success) {
+      setCouponFeedback({ type: "success", message: res.message });
+    } else {
+      setCouponFeedback({ type: "error", message: res.message });
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    removeCoupon();
+    setCouponInput("");
+    setCouponFeedback(null);
+  };
 
   return (
     <section className="cart-page-layout">
       <div className="cart-items-column">
+        {/* Header & Clear */}
         <div className="cart-header-row">
-          <h1>سبد خرید ({itemCount} کالا)</h1>
+          <div>
+            <h1>سبد خرید نسخه ({calculations.itemCount} کالا)</h1>
+            {isSyncing && <span className="sync-badge">در حال بررسی موجودی زنده…</span>}
+          </div>
           <button onClick={clearCart} className="btn-text-danger">
             پاک کردن کل سبد
           </button>
         </div>
 
+        {/* Free Shipping Progress */}
+        <div className="free-shipping-card">
+          <div className="free-shipping-info">
+            <span className="free-shipping-title">{calculations.freeShippingMessage}</span>
+            {calculations.isFreeShipping && (
+              <span className="free-shipping-qualified">واجد شرایط ارسال رایگان</span>
+            )}
+          </div>
+          <div
+            className="free-shipping-progress"
+            role="progressbar"
+            aria-valuenow={calculations.freeShippingProgressPct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
+            <div
+              className={`progress-fill ${calculations.isFreeShipping ? "free" : ""}`}
+              style={{ width: `${calculations.freeShippingProgressPct}%` }}
+            />
+          </div>
+          <small className="free-shipping-hint">
+            سقف خرید برای ارسال رایگان پیشتاز سراسری: ۳,۰۰۰,۰۰۰ تومان
+          </small>
+        </div>
+
+        {/* Server Sync / Stock Warnings */}
+        {syncWarnings.length > 0 && (
+          <div className="cart-sync-warnings">
+            <div className="warning-header">
+              <strong>توجه به آخرین تغییرات انبار و قیمت:</strong>
+              <button onClick={clearSyncWarnings} className="btn-close-notice">
+                بستن اعلان
+              </button>
+            </div>
+            <ul>
+              {syncWarnings.map((w, idx) => (
+                <li key={idx}>{w}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Items List */}
         <div className="cart-items-list">
           {items.map((item) => {
             const lineTotalRials = BigInt(item.priceAmount) * BigInt(item.qty);
@@ -55,7 +146,14 @@ export default function CartPage() {
                 <div className="cart-item-info">
                   <h3>{item.title}</h3>
                   <div className="sku-tag">کد کالا: {item.sku}</div>
-                  <div className="price-unit">قیمت واحد: {formatToman(item.priceAmount)}</div>
+                  <div className="price-unit">
+                    قیمت پایه: {formatToman(item.priceAmount)}
+                  </div>
+                  {item.qty >= 3 && (
+                    <span className="volume-discount-tag">
+                      {item.qty >= 6 ? "۸٪ تخفیف پلکانی تعداد" : "۵٪ تخفیف پلکانی تعداد"}
+                    </span>
+                  )}
                 </div>
 
                 <div className="cart-qty-control">
@@ -82,6 +180,7 @@ export default function CartPage() {
                     onClick={() => removeItem(item.variantId)}
                     className="btn-remove"
                     title="حذف کالا"
+                    aria-label={`حذف ${item.title}`}
                   >
                     ✕
                   </button>
@@ -96,60 +195,79 @@ export default function CartPage() {
         <div className="summary-card">
           <h2>خلاصه پیش‌فاکتور</h2>
 
-          <div className="coupon-box">
+          {/* Coupon Code Section */}
+          <form onSubmit={handleApplyCoupon} className="coupon-box">
             <input
               type="text"
-              placeholder="کد تخفیف (مثال: OFF10)"
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
+              placeholder="کد تخفیف (مثال: OFF10 یا WELCOME10)"
+              value={couponInput}
+              onChange={(e) => setCouponInput(e.target.value)}
               className="input-text"
+              disabled={Boolean(appliedCoupon)}
             />
-            <button
-              onClick={() => {
-                if (couponCode.trim().toUpperCase() === "OFF10") {
-                  setAppliedCoupon("OFF10");
-                } else if (couponCode.trim()) {
-                  alert("کد تخفیف آزمایشی: OFF10");
-                }
-              }}
-              className="btn-coupon"
+            {appliedCoupon ? (
+              <button
+                type="button"
+                onClick={handleRemoveCoupon}
+                className="btn-coupon remove"
+              >
+                حذف
+              </button>
+            ) : (
+              <button type="submit" className="btn-coupon">
+                اعمال
+              </button>
+            )}
+          </form>
+
+          {couponFeedback && (
+            <div
+              className={`coupon-feedback-message ${
+                couponFeedback.type === "success" ? "success" : "error"
+              }`}
             >
-              اعمال
-            </button>
-          </div>
+              {couponFeedback.message}
+            </div>
+          )}
+
+          {appliedCoupon && (
+            <div className="active-coupon-tag">
+              <span>کوپن فعال: {appliedCoupon}</span>
+            </div>
+          )}
 
           <div className="summary-rows">
             <div className="summary-row">
               <span>جمع قیمت کالاها:</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(subtotalTomans)} تومان</span>
+              <span>{new Intl.NumberFormat("fa-IR").format(calculations.subtotalTomans)} تومان</span>
             </div>
 
-            {discountTomans > 0n && (
-              <div className="summary-row discount">
-                <span>تخفیف اعمال‌شده:</span>
-                <span>- {new Intl.NumberFormat("fa-IR").format(discountTomans)} تومان</span>
+            {calculations.discounts.map((d, index) => (
+              <div key={index} className="summary-row discount">
+                <span>{d.title}:</span>
+                <span>- {new Intl.NumberFormat("fa-IR").format(d.amountTomans)} تومان</span>
               </div>
-            )}
+            ))}
 
             <div className="summary-row">
-              <span>مالیات بر ارزش افزوده (۱۰٪):</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(vatTomans)} تومان</span>
+              <span>مالیات بر ارزش افزوده (۱۰٪ قانونی):</span>
+              <span>{new Intl.NumberFormat("fa-IR").format(calculations.vatTomans)} تومان</span>
             </div>
 
             <div className="summary-row">
-              <span>هزینه ارسال:</span>
+              <span>هزینه ارسال پیش‌فرض:</span>
               <span>
-                {shippingTomans === 0n
-                  ? "رایگان (خرید بالای ۳ میلیون)"
-                  : `${new Intl.NumberFormat("fa-IR").format(shippingTomans)} تومان`}
+                {calculations.isFreeShipping
+                  ? "رایگان (خرید بیش از ۳ میلیون)"
+                  : `${new Intl.NumberFormat("fa-IR").format(calculations.shippingTomans)} تومان`}
               </span>
             </div>
 
             <hr className="summary-divider" />
 
             <div className="summary-row total">
-              <span>مبلغ نهایی قابل پرداخت:</span>
-              <strong>{new Intl.NumberFormat("fa-IR").format(totalTomans)} تومان</strong>
+              <span>مبلغ نهایی پیش‌فاکتور:</span>
+              <strong>{new Intl.NumberFormat("fa-IR").format(calculations.grandTotalTomans)} تومان</strong>
             </div>
           </div>
 
@@ -158,7 +276,7 @@ export default function CartPage() {
           </Link>
 
           <p className="summary-note">
-            🛡️ تمام پرداخت‌ها از طریق شبکه شاپرک و درگاه‌های امن بانکی انجام می‌پذیرد.
+            محاسبه قطعی و صدور شناسه جلسه تسویه‌حساب با رزرو موجودی ۱۵ دقیقه‌ای بر روی سرور انجام می‌شود.
           </p>
         </div>
       </aside>
