@@ -110,30 +110,22 @@ export function PdpInteractiveSection({
 
             <div className="pdp-discovery-actions-wrap">
               <WishlistButton
-                item={{
-                  id: productData.id,
-                  slug: productData.slug,
-                  title: productData.title,
-                  priceRials: selectedVariant.priceAmount,
-                  priceTomans: (BigInt(selectedVariant.priceAmount) / 10n).toString(),
-                  inStock: selectedVariant.inStock,
-                  sku: selectedVariant.sku,
-                  variantId: selectedVariant.id,
-                }}
+                variantId={selectedVariant.id}
+                productId={productData.id}
+                slug={productData.slug}
+                title={productData.title}
+                sku={selectedVariant.sku}
+                priceAmount={selectedVariant.priceAmount}
               />
               <CompareButton
-                item={{
-                  id: productData.id,
-                  slug: productData.slug,
-                  title: productData.title,
-                  priceRials: selectedVariant.priceAmount,
-                  priceTomans: (BigInt(selectedVariant.priceAmount) / 10n).toString(),
-                  inStock: selectedVariant.inStock,
-                  categorySlug: 'skincare',
-                  categoryTitleFa: 'مراقبت بالینی پوست',
-                  sku: selectedVariant.sku,
-                  variantId: selectedVariant.id,
-                }}
+                variantId={selectedVariant.id}
+                productId={productData.id}
+                slug={productData.slug}
+                title={productData.title}
+                sku={selectedVariant.sku}
+                priceAmount={selectedVariant.priceAmount}
+                inStock={selectedVariant.inStock}
+                categoryTitleFa="مراقبت بالینی پوست"
               />
             </div>
           </div>

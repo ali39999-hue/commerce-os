@@ -1,7 +1,9 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { formatToman, formatPrice, getProduct } from '../../../lib/catalog';
-import { ProductDetailAction } from '../../../components/product-detail-action';
+import { getProduct } from '../../../lib/catalog';
+import { buildExtendedProductData } from '../../../lib/pdp-data';
+import { PdpInteractiveSection } from '../../../components/pdp/pdp-interactive-section';
 import { ProductReviews } from '../../../components/product-reviews';
 import { ProductRail } from '../../../components/discovery/product-rail';
 import { DigitalBadge } from '../../../components/discovery/digital-badge';
@@ -10,34 +12,98 @@ export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ slug: string }> };
 
-/* Additive W18 fields on catalog products (kind / vendor) — not yet in the shared Product type. */
 type ProductExtras = { kind?: string; vendor?: { slug?: string; titleFa?: string } | null };
+
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+  if (!product) {
+    return {
+      title: 'محصول یافت نشد | دکتر درمر',
+      description: 'کالای مورد نظر در کاتالوگ فروشگاه موجود نمی‌باشد.',
+    };
+  }
+
+  const extended = buildExtendedProductData(product);
+  const primaryMedia = extended.media[0];
+
+  return {
+    title: extended.title,
+    description: extended.description ?? extended.subtitleFa,
+    alternates: {
+      canonical: `/products/${encodeURIComponent(product.slug)}`,
+    },
+    openGraph: {
+      title: `${extended.title} | ${extended.brand.name}`,
+      description: extended.description ?? extended.subtitleFa,
+      url: `${SITE_URL}/products/${encodeURIComponent(product.slug)}`,
+      siteName: 'دکتر درمر | Dr Dermer Clinical Skin & Health',
+      locale: 'fa_IR',
+      type: 'website',
+      images: primaryMedia?.url
+        ? [
+            {
+              url: primaryMedia.url,
+              alt: primaryMedia.altText,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: extended.title,
+      description: extended.description ?? extended.subtitleFa,
+    },
+  };
+}
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) notFound();
 
-  const variant = product.variants[0];
   const extras = product as typeof product & ProductExtras;
   const isDigital = extras.kind === 'DIGITAL';
   const vendorTitleFa = typeof extras.vendor?.titleFa === 'string' ? extras.vendor.titleFa : '';
   const vendorSlug = typeof extras.vendor?.slug === 'string' ? extras.vendor.slug : '';
 
+  const extendedData = buildExtendedProductData(product);
+  const primaryVariant = extendedData.variants[0];
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.title,
-    description: product.description ?? 'توضیحات تکمیلی برای این محصول به زودی اضافه خواهد شد.',
-    sku: variant?.sku,
+    name: extendedData.title,
+    description: extendedData.description ?? extendedData.subtitleFa,
+    sku: primaryVariant?.sku,
+    image: extendedData.media.map((m) => m.url).filter(Boolean),
+    brand: {
+      '@type': 'Brand',
+      name: extendedData.brand.name,
+    },
     offers: {
       '@type': 'Offer',
       priceCurrency: 'IRR',
-      price: variant?.priceAmount,
-      availability: variant?.inStock
+      price: primaryVariant?.priceAmount,
+      priceValidUntil: '2027-12-31',
+      availability: primaryVariant?.inStock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
+      url: `${SITE_URL}/products/${encodeURIComponent(product.slug)}`,
+      seller: {
+        '@type': 'Organization',
+        name: 'دکتر درمر | Dr Dermer Clinical Skin & Health',
+      },
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: extendedData.ratingSummary.ratingValue,
+      reviewCount: extendedData.ratingSummary.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
     },
   };
 
@@ -45,14 +111,15 @@ export default async function ProductPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'خانه', item: '/' },
-      { '@type': 'ListItem', position: 2, name: 'محصولات', item: '/products' },
-      { '@type': 'ListItem', position: 3, name: product.title },
+      { '@type': 'ListItem', position: 1, name: 'صفحه اصلی', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'محصولات و کاتالوگ', item: `${SITE_URL}/search` },
+      { '@type': 'ListItem', position: 3, name: extendedData.title },
     ],
   };
 
   return (
     <div className="product-detail-container">
+      {/* Structured Data (JSON-LD Product, Offer, AggregateRating, BreadcrumbList) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
@@ -61,91 +128,40 @@ export default async function ProductPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <nav className="breadcrumbs-nav">
+
+      {/* Accessible Breadcrumbs Navigation */}
+      <nav className="breadcrumbs-nav" aria-label="موقعیت فعلی در سایت">
         <Link href="/">صفحه اصلی</Link>
-        <span>/</span>
-        <Link href="/#catalog">محصولات</Link>
-        <span>/</span>
-        <span>{product.title}</span>
+        <span aria-hidden="true">/</span>
+        <Link href="/search">محصولات و تجهیزات</Link>
+        <span aria-hidden="true">/</span>
+        <span className="current-crumb" aria-current="page">{extendedData.title}</span>
       </nav>
 
-      <section className="detail-layout">
-        <div className="detail-art-box">
-          <div className="detail-art-visual" aria-hidden="true">
-            {product.title.slice(0, 1)}
-          </div>
-          <div className="art-stock-status">
-            {variant?.inStock ? '✓ آماده ارسال از انبار مرکزی' : 'ناموجود'}
-          </div>
-          {isDigital && <DigitalBadge />}
+      {isDigital && (
+        <div className="pdp-digital-badge-banner">
+          <DigitalBadge />
         </div>
+      )}
 
-        <div className="detail-copy-box">
-          <div className="eyebrow">مشخصات و سفارش کالا</div>
-          {vendorTitleFa && (
-            <p className="product-vendor-fa">
-              فروشنده:{' '}
-              {vendorSlug ? (
-                <Link href={`/vendors/${encodeURIComponent(vendorSlug)}`}>{vendorTitleFa}</Link>
-              ) : (
-                vendorTitleFa
-              )}
-            </p>
-          )}
-          <h1>{product.title}</h1>
-          <p className="product-main-desc">
-            {product.description ?? 'توضیحات تکمیلی برای این محصول به زودی اضافه خواهد شد.'}
-          </p>
-
-          <div className="product-highlights-grid">
-            <div className="highlight-item">
-              <span>🛡️ ضمانت اصالت</span>
-              <small>۱۰۰٪ کالای اصل با تضمین کیفیت</small>
-            </div>
-            <div className="highlight-item">
-              <span>🚀 ارسال سریع</span>
-              <small>پست پیشتاز و تیپاکس سراسری</small>
-            </div>
-            <div className="highlight-item">
-              <span>💳 پرداخت امن</span>
-              <small>شاپرک، کارت‌به‌کارت و کیف پول</small>
-            </div>
-          </div>
-
-          {variant ? (
-            <div className="variant-action-card">
-              <div className="variant-header-info">
-                <div>
-                  <strong>{variant.title}</strong>
-                  <div className="sku-code">کد کالا (SKU): {variant.sku}</div>
-                </div>
-                <div className="price-tag-big">
-                  <span className="toman-price">{formatToman(variant.priceAmount)}</span>
-                  <small className="rial-price">({formatPrice(variant.priceAmount)})</small>
-                </div>
-              </div>
-
-              <ProductDetailAction
-                variantId={variant.id}
-                productId={product.id}
-                title={product.title}
-                sku={variant.sku}
-                priceAmount={variant.priceAmount}
-                inStock={variant.inStock}
-              />
-            </div>
-          ) : (
-            <div className="state-panel">واریانت فعالی برای این کالا تعریف نشده است.</div>
-          )}
-        </div>
-      </section>
-
-      <ProductReviews slug={product.slug} productTitle={product.title} />
-
-      <ProductRail
-        endpoint={`/recommendations/products/${product.id}?limit=6`}
-        titleFa="محصولات مرتبط"
+      {/* Interactive PDP Section: Gallery, Variant Selector, Pricing, Add-to-Cart & Tabs */}
+      <PdpInteractiveSection
+        productData={extendedData}
+        isDigital={isDigital}
+        vendorTitleFa={vendorTitleFa}
+        vendorSlug={vendorSlug}
+        reviewsElement={
+          <ProductReviews slug={product.slug} productTitle={extendedData.title} />
+        }
       />
+
+      {/* Recommended & Related Skincare Rail */}
+      <div className="pdp-rail-container">
+        <ProductRail
+          endpoint={`/recommendations/products/${product.id}?limit=6`}
+          titleFa="محصولات مکمل و پروتکل‌های مرتبط"
+        />
+      </div>
     </div>
   );
 }

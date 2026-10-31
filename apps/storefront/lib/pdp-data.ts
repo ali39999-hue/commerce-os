@@ -298,13 +298,8 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
           roleInRoutine: 'گام ۳: تقویت سد دفاعی',
           inStock: true,
         },
-      ],
-    },
-    ratingSummary: {
-      ratingValue: 4.9,
-      reviewCount: 38,
-    },
-  },
+        {
+          id: 'bundle_reemed_cica',
           slug: 'reemed-cica-barrier-serum',
           title: 'سرم ترمیم‌کننده و آرام‌بخش سیکا بریر ReeMed',
           brand: 'ReeMed',
