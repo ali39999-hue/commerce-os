@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../cart';
-import { formatToman } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { SkincareBundleItem } from '../../lib/pdp-types';
 
 interface BundleRecommendationsProps {
@@ -14,12 +14,13 @@ interface BundleRecommendationsProps {
 }
 
 export function BundleRecommendations({
-  bundleTitle = 'پروتکل پیشنهادی و کیت مکمل درمانی',
+  bundleTitle = 'پروتکل کامل درمان (Complete Treatment Regimen)',
   bundleDescription = 'ترکیب محصولات مکمل بر اساس پروتکل کلینیکال جهت تسریع نتایج درمانی با تخفیف ویژه خرید همزمان',
   savingsText = '۱۵٪ تخفیف روی کیت کامل',
   items = [],
 }: BundleRecommendationsProps) {
   const { addItem } = useCart();
+  const { formatToman } = useLocalizedFormatter();
   const [selectedItemIds, setSelectedItemIds] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     items.forEach((item) => {
@@ -133,7 +134,7 @@ export function BundleRecommendations({
               disabled={selectedItems.length === 0}
               className={`pdp-bundle-add-btn ${addedBundle ? 'btn-added' : ''}`}
             >
-              {addedBundle ? '✓ کیت به سبد خرید اضافه شد' : '🛒 افزودن کیت کامل به سبد خرید'}
+              {addedBundle ? '✓ کیت به سبد خرید اضافه شد' : 'افزودن کل پکیج با ۱۵٪ تخفیف'}
             </button>
             {addedBundle && (
               <Link href="/cart" className="pdp-bundle-go-cart">

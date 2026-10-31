@@ -16,6 +16,7 @@ import {
   validateCoupon,
   MAX_QTY_PER_ITEM,
 } from "../lib/cart";
+import { trackAddToCart, trackRemoveFromCart } from "../lib/analytics";
 
 export type { CartItem, CartCalculation };
 
@@ -159,11 +160,34 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...item, qty: Math.min(MAX_QTY_PER_ITEM, qty) }];
     });
+    trackAddToCart({
+      item_id: item.productId,
+      item_name: item.title,
+      item_variant: item.variantId,
+      sku: item.sku,
+      price: Number(item.priceAmount) || 0,
+      quantity: qty,
+      currency: "IRR",
+    });
     setIsDrawerOpen(true);
   }, []);
 
   const removeItem = useCallback((variantId: string) => {
-    setItems((prev) => prev.filter((i) => i.variantId !== variantId));
+    setItems((prev) => {
+      const target = prev.find((i) => i.variantId === variantId);
+      if (target) {
+        trackRemoveFromCart({
+          item_id: target.productId,
+          item_name: target.title,
+          item_variant: target.variantId,
+          sku: target.sku,
+          price: Number(target.priceAmount) || 0,
+          quantity: target.qty,
+          currency: "IRR",
+        });
+      }
+      return prev.filter((i) => i.variantId !== variantId);
+    });
   }, []);
 
   const setQty = useCallback((variantId: string, qty: number) => {

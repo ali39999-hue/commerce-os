@@ -1,0 +1,233 @@
+/* Locale & Currency Selector Component Styles */
+.locale-currency-selector-root {
+  position: relative;
+  display: inline-block;
+  font-family: inherit;
+  z-index: 50;
+}
+
+.selector-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  color: var(--ink, #0f172a);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.selector-trigger:hover {
+  background: #ffffff;
+  border-color: var(--brand, #0f766e);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.08);
+}
+
+.locale-currency-selector-root.compact .selector-trigger {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(226, 232, 240, 0.8);
+}
+
+.selector-flag {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.selector-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lang-label {
+  font-weight: 600;
+  color: var(--ink, #0f172a);
+}
+
+.sep-dot {
+  color: var(--muted, #64748b);
+  opacity: 0.6;
+}
+
+.curr-symbol {
+  color: var(--brand, #0f766e);
+  font-weight: 600;
+}
+
+.chevron-icon {
+  color: var(--muted, #64748b);
+  transition: transform 0.2s ease;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Flyout Dialog */
+.selector-flyout {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 320px;
+  max-width: 90vw;
+  background: #ffffff;
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 18px;
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.15), 0 0 1px rgba(15, 23, 42, 0.2);
+  padding: 16px;
+  z-index: 1000;
+  animation: flyoutFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] .selector-flyout {
+  left: auto;
+  right: 0;
+}
+
+@keyframes flyoutFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.flyout-header {
+  border-bottom: 1px solid var(--line, #e2e8f0);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+
+.flyout-header h4 {
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink, #0f172a);
+}
+
+.flyout-desc {
+  font-size: 0.75rem;
+  color: var(--muted, #64748b);
+  display: block;
+}
+
+.flyout-section {
+  margin-bottom: 14px;
+}
+
+.section-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted, #64748b);
+  letter-spacing: 0.03em;
+  margin-bottom: 8px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.options-grid.currencies {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface-tint, #f8fafc);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: inherit;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.option-btn:hover {
+  background: #ffffff;
+  border-color: var(--brand, #0f766e);
+  transform: translateY(-1px);
+}
+
+.option-btn.active {
+  background: var(--brand-tint, #f0fdfa);
+  border-color: var(--brand, #0f766e);
+  box-shadow: 0 0 0 1px var(--brand, #0f766e);
+}
+
+.flag-icon {
+  font-size: 1.15rem;
+}
+
+.market-meta,
+.lang-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.market-meta strong,
+.lang-meta strong {
+  font-size: 0.82rem;
+  color: var(--ink, #0f172a);
+}
+
+.market-meta small,
+.lang-meta small {
+  font-size: 0.7rem;
+  color: var(--muted, #64748b);
+}
+
+.curr-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.curr-meta .symbol {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand, #0f766e);
+}
+
+.curr-meta .code {
+  font-size: 0.7rem;
+  color: var(--muted, #64748b);
+}
+
+.check-indicator {
+  color: var(--brand, #0f766e);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.flyout-footer {
+  border-top: 1px solid var(--line, #e2e8f0);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+.flyout-footer small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted, #64748b);
+  line-height: 1.4;
+}

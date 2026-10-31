@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../../components/cart";
-import { formatToman } from "../../lib/catalog";
+import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
+import { trackViewCart, trackBeginCheckout } from "../../lib/analytics";
 
 export default function CartPage() {
   const {
@@ -22,12 +23,31 @@ export default function CartPage() {
     syncWarnings,
     clearSyncWarnings,
   } = useCart();
+  const { formatToman, formatMoney } = useLocalizedFormatter();
 
   const [couponInput, setCouponInput] = useState(couponCode || "");
   const [couponFeedback, setCouponFeedback] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  useEffect(() => {
+    if (isReady && items.length > 0) {
+      trackViewCart(
+        items.map((i) => ({
+          item_id: i.productId,
+          item_name: i.title,
+          item_variant: i.variantId,
+          sku: i.sku,
+          price: Number(i.priceAmount) || 0,
+          quantity: i.qty,
+          currency: "IRR",
+        })),
+        Number(calculations.totalRials) || 0,
+        "IRR"
+      );
+    }
+  }, [isReady, items, calculations.totalRials]);
 
   if (!isReady) {
     return (
@@ -95,9 +115,19 @@ export default function CartPage() {
         {/* Free Shipping Progress */}
         <div className="free-shipping-card">
           <div className="free-shipping-info">
-            <span className="free-shipping-title">{calculations.freeShippingMessage}</span>
-            {calculations.isFreeShipping && (
-              <span className="free-shipping-qualified">واجد شرایط ارسال رایگان</span>
+            <span className="free-shipping-title">
+              {calculations.isFreeShipping ? (
+                <strong className="shipping-unlocked-text">
+                  🎉 تبریک! ارسال سفارش شما کاملاً رایگان شد
+                </strong>
+              ) : (
+                calculations.freeShippingMessage
+              )}
+            </span>
+            {calculations.isFreeShipping ? (
+              <span className="free-shipping-qualified celebratory">ارسال رایگان پیشتاز فعال شد</span>
+            ) : (
+              <span className="free-shipping-qualified">پست پیشتاز سراسری</span>
             )}
           </div>
           <div
@@ -239,27 +269,27 @@ export default function CartPage() {
           <div className="summary-rows">
             <div className="summary-row">
               <span>جمع قیمت کالاها:</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(calculations.subtotalTomans)} تومان</span>
+              <span>{formatMoney(calculations.subtotalRials, "IRR")}</span>
             </div>
 
             {calculations.discounts.map((d, index) => (
               <div key={index} className="summary-row discount">
                 <span>{d.title}:</span>
-                <span>- {new Intl.NumberFormat("fa-IR").format(d.amountTomans)} تومان</span>
+                <span>- {formatMoney(d.amountRials, "IRR")}</span>
               </div>
             ))}
 
             <div className="summary-row">
               <span>مالیات بر ارزش افزوده (۱۰٪ قانونی):</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(calculations.vatTomans)} تومان</span>
+              <span>{formatMoney(calculations.vatRials, "IRR")}</span>
             </div>
 
             <div className="summary-row">
               <span>هزینه ارسال پیش‌فرض:</span>
               <span>
                 {calculations.isFreeShipping
-                  ? "رایگان (خرید بیش از ۳ میلیون)"
-                  : `${new Intl.NumberFormat("fa-IR").format(calculations.shippingTomans)} تومان`}
+                  ? "رایگان (خرید بیش از سقف)"
+                  : formatMoney(calculations.shippingRials, "IRR")}
               </span>
             </div>
 
@@ -267,11 +297,30 @@ export default function CartPage() {
 
             <div className="summary-row total">
               <span>مبلغ نهایی پیش‌فاکتور:</span>
-              <strong>{new Intl.NumberFormat("fa-IR").format(calculations.grandTotalTomans)} تومان</strong>
+              <strong>{formatMoney(calculations.totalRials, "IRR")}</strong>
             </div>
           </div>
 
-          <Link href="/checkout" className="btn-checkout">
+          <Link
+            href="/checkout"
+            onClick={() => {
+              trackBeginCheckout(
+                items.map((i) => ({
+                  item_id: i.productId,
+                  item_name: i.title,
+                  item_variant: i.variantId,
+                  sku: i.sku,
+                  price: Number(i.priceAmount) || 0,
+                  quantity: i.qty,
+                  currency: "IRR",
+                })),
+                Number(calculations.totalRials) || 0,
+                appliedCoupon || undefined,
+                "IRR"
+              );
+            }}
+            className="btn-checkout"
+          >
             ادامه فرآیند خرید و پرداخت ←
           </Link>
 

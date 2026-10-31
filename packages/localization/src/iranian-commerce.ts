@@ -3,6 +3,8 @@
  * Synthesized from aroux30/site and itrip-platform.
  */
 
+import { toAsciiDigits, toPersianDigits } from "./bidi.js";
+
 export interface ShetabBank {
   bin: string;
   nameFa: string;
@@ -34,24 +36,6 @@ export const SHETAB_BANKS: Record<string, Omit<ShetabBank, "bin">> = {
   "606373": { nameFa: "بانک مهر ایران", nameEn: "Mehr Iran Bank", slug: "mehr", color: "#2E7D32", bgColor: "#E8F5E9" },
   "505801": { nameFa: "بانک کوثر", nameEn: "Kosar Bank", slug: "kosar", color: "#1565C0", bgColor: "#E3F2FD" },
 };
-
-/**
- * Normalizes Arabic-Indic (۰-۹) and Eastern Arabic (٠-٩) digits to ASCII (0-9).
- */
-export function toAsciiDigits(input: string): string {
-  if (!input) return "";
-  return input
-    .replace(/[۰-۹]/g, (char) => String(char.charCodeAt(0) - 1776))
-    .replace(/[٠-٩]/g, (char) => String(char.charCodeAt(0) - 1632));
-}
-
-/**
- * Converts ASCII digits to Persian digits.
- */
-export function toPersianDigits(input: string | number | bigint): string {
-  const str = String(input);
-  return str.replace(/[0-9]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 1728));
-}
 
 /**
  * Normalizes Persian text and digits.

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ExtendedProductData, ProductVariantItem } from '../../lib/pdp-types';
 import { ProductGallery } from './product-gallery';
@@ -9,9 +9,10 @@ import { StickyCartBar } from './sticky-cart-bar';
 import { ClinicalTabs } from './clinical-tabs';
 import { BundleRecommendations } from './bundle-recommendations';
 import { useCart } from '../cart';
-import { formatToman } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from '../discovery/wishlist-button';
 import { CompareButton } from '../discovery/compare-button';
+import { trackViewItem } from '../../lib/analytics';
 
 interface PdpInteractiveSectionProps {
   productData: ExtendedProductData;
@@ -29,6 +30,7 @@ export function PdpInteractiveSection({
   reviewsElement,
 }: PdpInteractiveSectionProps) {
   const { addItem } = useCart();
+  const { formatToman } = useLocalizedFormatter();
   const [selectedVariant, setSelectedVariant] = useState<ProductVariantItem>(
     () => productData.variants[0] || {
       id: 'default',
@@ -42,6 +44,23 @@ export function PdpInteractiveSection({
   );
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+
+  // Track view_item on mount and when variant changes
+  useEffect(() => {
+    trackViewItem(
+      {
+        item_id: productData.id,
+        item_name: productData.title,
+        item_variant: selectedVariant.id,
+        sku: selectedVariant.sku,
+        item_brand: productData.brand.name,
+        price: Number(selectedVariant.priceAmount) || 0,
+        quantity: 1,
+        currency: selectedVariant.currency || 'IRR',
+      },
+      selectedVariant.currency || 'IRR'
+    );
+  }, [productData.id, productData.title, productData.brand.name, selectedVariant]);
 
   const handleAddToCart = () => {
     if (!selectedVariant.inStock) return;
@@ -256,6 +275,7 @@ export function PdpInteractiveSection({
       <StickyCartBar
         productId={productData.id}
         productTitle={productData.title}
+        thumbnailUrl={productData.media[0]?.url}
         variant={selectedVariant}
         qty={qty}
         onQtyChange={setQty}

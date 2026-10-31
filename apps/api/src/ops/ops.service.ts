@@ -6,6 +6,7 @@ import {
   PaymentIntentStatus,
   ReservationStatus,
 } from "../generated/prisma/client";
+import { pingRedisServer } from "../health/health.service";
 
 const MAX_ITEMS_PER_BLOCK = 10;
 
@@ -61,6 +62,33 @@ export interface OpsExceptionBlock<TItem> {
 export interface OpsExceptionsReport {
   dbAvailable: boolean;
   blocks: OpsExceptionBlock<OpsExceptionItem>[];
+}
+
+export interface OpsMetricsReport {
+  timestamp: string;
+  uptimeSeconds: number;
+  db: {
+    available: boolean;
+    latencyMs: number;
+  };
+  redis: {
+    available: boolean;
+    latencyMs: number;
+    error?: string;
+  };
+  queues: {
+    outboxPending: number;
+    outboxProcessing: number;
+    outboxDeadLetter: number;
+    webhookFailed: number;
+  };
+  inventory: {
+    staleReservations: number;
+  };
+  payments: {
+    unknownOrFailed: number;
+    pendingC2c: number;
+  };
 }
 
 interface BlockLoad<TItem> {
@@ -125,6 +153,107 @@ export class OpsService {
           items: webhooks.items,
         },
       ],
+    };
+  }
+
+  async metrics(): Promise<OpsMetricsReport> {
+    const started = Date.now();
+    let dbAvailable = false;
+    let dbLatencyMs = 0;
+
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+      dbAvailable = true;
+      dbLatencyMs = Date.now() - started;
+    } catch {
+      dbAvailable = false;
+      dbLatencyMs = Date.now() - started;
+    }
+
+    const redisRes = await pingRedisServer();
+
+    let outboxPending = 0;
+    let outboxProcessing = 0;
+    let outboxDeadLetter = 0;
+    let webhookFailed = 0;
+    let staleReservations = 0;
+    let unknownOrFailed = 0;
+    let pendingC2c = 0;
+
+    if (dbAvailable) {
+      try {
+        const [
+          pendingCnt,
+          procCnt,
+          dlqCnt,
+          whFailedCnt,
+          staleResCnt,
+          payFailedCnt,
+          c2cCnt,
+        ] = await Promise.all([
+          this.prisma.outboxEvent.count({ where: { status: OutboxStatus.PENDING } }),
+          this.prisma.outboxEvent.count({ where: { status: OutboxStatus.PROCESSING } }),
+          this.prisma.outboxEvent.count({
+            where: { status: { in: [OutboxStatus.FAILED, OutboxStatus.DEAD_LETTER] } },
+          }),
+          this.prisma.webhookDelivery.count({
+            where: {
+              OR: [{ status: "FAILED" }, { status: "PENDING", attempts: { gt: 0 } }],
+            },
+          }),
+          this.prisma.inventoryReservation.count({
+            where: {
+              status: ReservationStatus.ACTIVE,
+              expiresAt: { lt: new Date() },
+            },
+          }),
+          this.prisma.paymentIntent.count({
+            where: {
+              status: { in: [PaymentIntentStatus.UNKNOWN, PaymentIntentStatus.FAILED] },
+            },
+          }),
+          this.prisma.cardToCardReceipt.count({
+            where: { status: CardToCardStatus.PENDING_REVIEW },
+          }),
+        ]);
+
+        outboxPending = pendingCnt;
+        outboxProcessing = procCnt;
+        outboxDeadLetter = dlqCnt;
+        webhookFailed = whFailedCnt;
+        staleReservations = staleResCnt;
+        unknownOrFailed = payFailedCnt;
+        pendingC2c = c2cCnt;
+      } catch {
+        // Fallback on partial metrics count failure
+      }
+    }
+
+    return {
+      timestamp: new Date().toISOString(),
+      uptimeSeconds: Math.floor(process.uptime()),
+      db: {
+        available: dbAvailable,
+        latencyMs: dbLatencyMs,
+      },
+      redis: {
+        available: redisRes.status === "ok",
+        latencyMs: redisRes.latencyMs,
+        ...(redisRes.error ? { error: redisRes.error } : {}),
+      },
+      queues: {
+        outboxPending,
+        outboxProcessing,
+        outboxDeadLetter,
+        webhookFailed,
+      },
+      inventory: {
+        staleReservations,
+      },
+      payments: {
+        unknownOrFailed,
+        pendingC2c,
+      },
     };
   }
 

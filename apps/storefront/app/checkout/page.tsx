@@ -4,13 +4,20 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "../../components/cart";
-import { formatToman, apiBase, storeSlug } from "../../lib/catalog";
+import { apiBase, storeSlug } from "../../lib/catalog";
+import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
 import {
   validateIranianMobile,
   validatePostalCode,
   validateNationalId,
   toAsciiDigits,
 } from "@commerce-os/localization";
+import {
+  trackBeginCheckout,
+  trackAddShippingInfo,
+  trackAddPaymentInfo,
+  trackPurchase,
+} from "../../lib/analytics";
 
 export interface ProvinceCityMap {
   [province: string]: string[];
@@ -37,6 +44,7 @@ export const IRAN_PROVINCES: ProvinceCityMap = {
 
 export default function CheckoutPage() {
   const { items, clearCart, isReady, calculations, shippingMethod, setShippingMethod, appliedCoupon } = useCart();
+  const { formatToman, formatMoney } = useLocalizedFormatter();
   const router = useRouter();
 
   // Active step: 1 (Contact & Tax), 2 (Shipping & Slot), 3 (Payment Method), 4 (Review & Place)
@@ -53,6 +61,7 @@ export default function CheckoutPage() {
   // Step 2: Shipping & Delivery Slot
   const [province, setProvince] = useState("تهران");
   const [city, setCity] = useState("تهران");
+  const [citySearch, setCitySearch] = useState("");
   const [postalCode, setPostalCode] = useState("1458963214");
   const [postalAddress, setPostalAddress] = useState(
     "خیابان آزادی، خیابان حبیب‌الهی، پلاک ۱۲، واحد ۴"
@@ -79,10 +88,14 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  // Update cities when province changes
+  // Update cities when province changes, with smooth filtering
   const availableCities = useMemo(() => {
-    return IRAN_PROVINCES[province] || ["تهران"];
-  }, [province]);
+    const list = IRAN_PROVINCES[province] || ["تهران"];
+    if (!citySearch.trim()) return list;
+    const q = citySearch.trim();
+    const filtered = list.filter((c) => c.includes(q));
+    return filtered.length > 0 ? filtered : list;
+  }, [province, citySearch]);
 
   useEffect(() => {
     if (!availableCities.includes(city)) {
@@ -153,6 +166,41 @@ export default function CheckoutPage() {
     setStepErrors(errors);
     return Object.keys(errors).length === 0;
   };
+
+  // Track checkout funnel progress on step changes
+  useEffect(() => {
+    if (!isReady || items.length === 0) return;
+    const analyticsItems = items.map((i) => ({
+      item_id: i.productId,
+      item_name: i.title,
+      item_variant: i.variantId,
+      sku: i.sku,
+      price: Number(i.priceAmount) || 0,
+      quantity: i.qty,
+      currency: "IRR",
+    }));
+
+    if (currentStep === 1) {
+      trackBeginCheckout(
+        analyticsItems,
+        Number(calculations.totalRials) || 0,
+        appliedCoupon || undefined,
+        "IRR"
+      );
+    } else if (currentStep === 2) {
+      trackAddShippingInfo(
+        shippingMethod,
+        Number(calculations.totalRials) || 0,
+        "IRR"
+      );
+    } else if (currentStep === 3) {
+      trackAddPaymentInfo(
+        paymentCategory,
+        Number(calculations.totalRials) || 0,
+        "IRR"
+      );
+    }
+  }, [currentStep, isReady, items, calculations.totalRials, appliedCoupon, shippingMethod, paymentCategory]);
 
   const goToNextStep = () => {
     if (currentStep === 1) {
@@ -248,6 +296,25 @@ export default function CheckoutPage() {
       const orderResult = await placeRes.json();
       const confirmedOrderNumber = orderResult.orderNumber || orderNumberGenerated;
 
+      // Track purchase event with zero PII
+      trackPurchase({
+        transactionId: confirmedOrderNumber,
+        value: Number(calculations.totalRials) || 0,
+        currency: "IRR",
+        tax: Number(calculations.vatRials) || 0,
+        shipping: Number(calculations.shippingRials) || 0,
+        coupon: appliedCoupon || undefined,
+        items: items.map((i) => ({
+          item_id: i.productId,
+          item_name: i.title,
+          item_variant: i.variantId,
+          sku: i.sku,
+          price: Number(i.priceAmount) || 0,
+          quantity: i.qty,
+          currency: "IRR",
+        })),
+      });
+
       // Save order snapshot in account history
       try {
         const orderHistoryItem = {
@@ -299,6 +366,25 @@ export default function CheckoutPage() {
         );
       }
     } catch (err: any) {
+      // Track purchase event even in offline fallback simulation
+      trackPurchase({
+        transactionId: orderNumberGenerated,
+        value: Number(calculations.totalRials) || 0,
+        currency: "IRR",
+        tax: Number(calculations.vatRials) || 0,
+        shipping: Number(calculations.shippingRials) || 0,
+        coupon: appliedCoupon || undefined,
+        items: items.map((i) => ({
+          item_id: i.productId,
+          item_name: i.title,
+          item_variant: i.variantId,
+          sku: i.sku,
+          price: Number(i.priceAmount) || 0,
+          quantity: i.qty,
+          currency: "IRR",
+        })),
+      });
+
       // Offline/Demo Simulation Safeguard:
       const simulatedIntent = `mock_intent_${Date.now()}`;
       try {
@@ -354,15 +440,15 @@ export default function CheckoutPage() {
   return (
     <section className="checkout-layout">
       <div className="checkout-main-content">
-        {/* Stepper Header */}
-        <div className="checkout-stepper-bar">
+        {/* Stepper Header (Visual Progress Bar) */}
+        <div className="checkout-stepper-bar" role="navigation" aria-label="مراحل خرید">
           <button
             type="button"
             onClick={() => setCurrentStep(1)}
             className={`step-bubble ${currentStep === 1 ? "active" : currentStep > 1 ? "completed" : ""}`}
           >
             <span className="step-num">{currentStep > 1 ? "✓" : "۱"}</span>
-            <span className="step-text">اطلاعات و کد ملی</span>
+            <span className="step-text">اطلاعات خریدار</span>
           </button>
           <div className={`step-connector ${currentStep >= 2 ? "active" : ""}`} />
           <button
@@ -373,7 +459,7 @@ export default function CheckoutPage() {
             className={`step-bubble ${currentStep === 2 ? "active" : currentStep > 2 ? "completed" : ""}`}
           >
             <span className="step-num">{currentStep > 2 ? "✓" : "۲"}</span>
-            <span className="step-text">آدرس و زمان ارسال</span>
+            <span className="step-text">آدرس و ارسال</span>
           </button>
           <div className={`step-connector ${currentStep >= 3 ? "active" : ""}`} />
           <button
@@ -395,7 +481,7 @@ export default function CheckoutPage() {
             className={`step-bubble ${currentStep === 4 ? "active" : ""}`}
           >
             <span className="step-num">۴</span>
-            <span className="step-text">پیش‌فاکتور و ثبت</span>
+            <span className="step-text">ثبت نهایی</span>
           </button>
         </div>
 
@@ -515,7 +601,10 @@ export default function CheckoutPage() {
                 <span>استان *</span>
                 <select
                   value={province}
-                  onChange={(e) => setProvince(e.target.value)}
+                  onChange={(e) => {
+                    setProvince(e.target.value);
+                    setCitySearch("");
+                  }}
                   className="input-text select-box"
                 >
                   {Object.keys(IRAN_PROVINCES).map((p) => (
@@ -526,8 +615,17 @@ export default function CheckoutPage() {
                 </select>
               </label>
 
-              <label className="form-field">
-                <span>شهر *</span>
+              <div className="form-field">
+                <div className="city-label-filter-row">
+                  <span>شهر *</span>
+                  <input
+                    type="text"
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.target.value)}
+                    placeholder="جستجوی سریع شهر…"
+                    className="city-filter-inline"
+                  />
+                </div>
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -539,21 +637,26 @@ export default function CheckoutPage() {
                     </option>
                   ))}
                 </select>
-              </label>
+              </div>
 
               <label className="form-field full-width">
-                <span>کد پستی ۱۰ رقمی *</span>
+                <span>کد پستی ۱۰ رقمی * (فرمت استاندارد شرکت ملی پست)</span>
                 <input
                   type="text"
                   value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  placeholder="1458963214"
+                  onChange={(e) => {
+                    const raw = toAsciiDigits(e.target.value).replace(/\D/g, "").slice(0, 10);
+                    setPostalCode(raw);
+                  }}
+                  placeholder="۱۰ رقم بدون خط تیره (مثال: ۱۴۵۸۹۶۳۲۱۴)"
                   dir="ltr"
                   maxLength={10}
                   className={`input-text ${stepErrors.postalCode ? "input-error" : ""}`}
                 />
-                {stepErrors.postalCode && (
+                {stepErrors.postalCode ? (
                   <span className="field-error-msg">{stepErrors.postalCode}</span>
+                ) : (
+                  <small className="field-hint">فرمت ۱۰ رقمی بدون صفر ابتدایی و رقم تکراری پیوسته</small>
                 )}
               </label>
 
@@ -880,7 +983,7 @@ export default function CheckoutPage() {
                   <span>در حال رزرو قطعی انبار و ارجاع به درگاه بانکی…</span>
                 ) : (
                   <span>
-                    تأیید و پرداخت نهایی ({new Intl.NumberFormat("fa-IR").format(calculations.grandTotalTomans)} تومان)
+                    تأیید و پرداخت نهایی ({formatMoney(calculations.totalRials, "IRR")})
                   </span>
                 )}
               </button>
@@ -923,27 +1026,27 @@ export default function CheckoutPage() {
           <div className="summary-rows">
             <div className="summary-row">
               <span>جمع قیمت اقلام:</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(calculations.subtotalTomans)} تومان</span>
+              <span>{formatMoney(calculations.subtotalRials, "IRR")}</span>
             </div>
 
             {calculations.discounts.map((d, index) => (
               <div key={index} className="summary-row discount">
                 <span>{d.title}:</span>
-                <span>- {new Intl.NumberFormat("fa-IR").format(d.amountTomans)} تومان</span>
+                <span>- {formatMoney(d.amountRials, "IRR")}</span>
               </div>
             ))}
 
             <div className="summary-row">
               <span>مالیات بر ارزش افزوده (۱۰٪):</span>
-              <span>{new Intl.NumberFormat("fa-IR").format(calculations.vatTomans)} تومان</span>
+              <span>{formatMoney(calculations.vatRials, "IRR")}</span>
             </div>
 
             <div className="summary-row">
               <span>هزینه ارسال:</span>
               <span>
                 {calculations.isFreeShipping
-                  ? "رایگان (خرید بالای ۳ میلیون)"
-                  : `${new Intl.NumberFormat("fa-IR").format(calculations.shippingTomans)} تومان`}
+                  ? "رایگان (خرید بالای سقف)"
+                  : formatMoney(calculations.shippingRials, "IRR")}
               </span>
             </div>
 
@@ -951,8 +1054,12 @@ export default function CheckoutPage() {
 
             <div className="summary-row total">
               <span>مبلغ نهایی پیش‌فاکتور:</span>
-              <strong>{new Intl.NumberFormat("fa-IR").format(calculations.grandTotalTomans)} تومان</strong>
+              <strong>{formatMoney(calculations.totalRials, "IRR")}</strong>
             </div>
+          </div>
+
+          <div className="checkout-tax-note">
+            <span>✓ شامل ۱۰٪ مالیات بر ارزش افزوده و صدور فاکتور رسمی سامانه مودیان</span>
           </div>
 
           <div className="checkout-security-badges">

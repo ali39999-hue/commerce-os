@@ -191,23 +191,35 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
             </div>
 
             <div className="pdp-steps-timeline">
-              {productData.usageProtocol.steps.map((st) => (
-                <div key={st.stepNumber} className="pdp-step-card">
-                  <div className="pdp-step-circle">{st.stepNumber}</div>
-                  <div className="pdp-step-body">
-                    <div className="pdp-step-title-row">
-                      <h5>{st.title}</h5>
-                      {st.frequency && <span className="pdp-step-freq">{st.frequency}</span>}
+              {productData.usageProtocol.steps.map((st) => {
+                const STEP_ICONS: Record<number, string> = {
+                  1: '🧴', // Cleansing
+                  2: '🧪', // Application
+                  3: '🫧', // Activation
+                  4: '💧', // Rinse
+                  5: '✨', // Recovery
+                };
+                return (
+                  <div key={st.stepNumber} className="pdp-step-card">
+                    <div className="pdp-step-circle">
+                      <span className="step-icon-badge" aria-hidden="true">{STEP_ICONS[st.stepNumber] || '✦'}</span>
+                      <span className="step-index-num">{st.stepNumber}</span>
                     </div>
-                    <p className="pdp-step-inst">{st.instruction}</p>
-                    {st.warning && (
-                      <div className="pdp-step-subwarn">
-                        <span aria-hidden="true">⚠️</span> {st.warning}
+                    <div className="pdp-step-body">
+                      <div className="pdp-step-title-row">
+                        <h5>{st.title}</h5>
+                        {st.frequency && <span className="pdp-step-freq">{st.frequency}</span>}
                       </div>
-                    )}
+                      <p className="pdp-step-inst">{st.instruction}</p>
+                      {st.warning && (
+                        <div className="pdp-step-subwarn">
+                          <span aria-hidden="true">⚠️</span> {st.warning}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="pdp-pre-post-cards-grid">

@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '../cart';
-import { formatToman } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { ProductVariantItem } from '../../lib/pdp-types';
 
 interface StickyCartBarProps {
   productId: string;
   productTitle: string;
+  thumbnailUrl?: string;
   variant: ProductVariantItem;
   qty: number;
   onQtyChange: (qty: number) => void;
@@ -17,12 +18,14 @@ interface StickyCartBarProps {
 export function StickyCartBar({
   productId,
   productTitle,
+  thumbnailUrl,
   variant,
   qty,
   onQtyChange,
 }: StickyCartBarProps) {
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
+    const { addItem } = useCart();
+    const { formatToman } = useLocalizedFormatter();
+    const [added, setAdded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -70,6 +73,14 @@ export function StickyCartBar({
     >
       <div className="pdp-sticky-inner page-shell">
         <div className="pdp-sticky-info">
+          {thumbnailUrl ? (
+            <img src={thumbnailUrl} alt="" className="pdp-sticky-thumb" />
+          ) : (
+            <div className="pdp-sticky-thumb-fallback">
+              <span>{productTitle.charAt(0)}</span>
+            </div>
+          )}
+
           <div className="pdp-sticky-title-wrap">
             <strong className="pdp-sticky-title">{productTitle}</strong>
             <span className="pdp-sticky-variant-tag">{variant.title}</span>

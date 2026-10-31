@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { ProductVariantItem } from '../../lib/pdp-types';
-import { formatToman, formatPrice } from '../../lib/catalog';
+import { formatPrice } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 
 interface VariantSelectorProps {
   variants: ProductVariantItem[];
@@ -15,6 +16,8 @@ export function VariantSelector({
   selectedVariant,
   onSelectVariant,
 }: VariantSelectorProps) {
+  const { formatToman } = useLocalizedFormatter();
+
   if (variants.length <= 1) {
     return null;
   }
@@ -45,7 +48,7 @@ export function VariantSelector({
               <div className="pdp-chip-top">
                 <span className="pdp-chip-size">{v.sizeOrVolume}</span>
                 {v.discountPercent && v.discountPercent > 0 ? (
-                  <span className="pdp-chip-discount-tag">{v.discountPercent}٪-</span>
+                  <span className="pdp-chip-discount-tag">{v.discountPercent}٪ تخفیف</span>
                 ) : null}
               </div>
 
@@ -55,9 +58,12 @@ export function VariantSelector({
 
               {v.inStock ? (
                 isLowStock ? (
-                  <span className="pdp-chip-stock-warn">تنها {v.inventoryQty} عدد در انبار</span>
+                  <span className="pdp-chip-stock-warn">
+                    <span className="stock-fire-icon" aria-hidden="true">🔥</span>
+                    تنها ۳ عدد در انبار باقیست
+                  </span>
                 ) : (
-                  <span className="pdp-chip-stock-ok">موجود</span>
+                  <span className="pdp-chip-stock-ok">موجود و آماده ارسال</span>
                 )
               ) : (
                 <span className="pdp-chip-stock-none">ناموجود</span>
@@ -75,6 +81,7 @@ interface PriceDisplayProps {
 }
 
 export function ServerAuthoritativePrice({ variant }: PriceDisplayProps) {
+  const { formatToman, formatNumber } = useLocalizedFormatter();
   const rialsBig = BigInt(variant.priceAmount);
   const tomansBig = rialsBig / 10n;
   const installmentToman = tomansBig / 4n;
@@ -121,9 +128,9 @@ export function ServerAuthoritativePrice({ variant }: PriceDisplayProps) {
       <div className="pdp-installment-banner" role="note" aria-label="پرداخت اقساطی اسنپ‌پی">
         <div className="pdp-installment-icon" aria-hidden="true">💳</div>
         <div className="pdp-installment-text">
-          <span>خرید اقساطی اسنپ‌پی: ۴ قسط ماهانه </span>
-          <strong>{new Intl.NumberFormat('fa-IR').format(installmentToman)} تومانی</strong>
-          <span> (بدون سود و کارمزد با کارت‌های شتاب)</span>
+          <span>خرید اقساطی: ۴ قسط ماهانه </span>
+          <strong>{formatNumber(installmentToman)} تومانی</strong>
+          <span> (بدون سود و کارمزد با کارت‌های بانکی)</span>
         </div>
       </div>
 

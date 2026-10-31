@@ -11,7 +11,7 @@
  * codebase touches this store directly — only RateLimitGuard consumes it.
  */
 
-export type RateLimitScope = "global" | "auth";
+export type RateLimitScope = "global" | "auth" | "checkout" | "search" | "reviews";
 
 export interface RateLimitResult {
   allowed: boolean;
@@ -38,8 +38,17 @@ export class RateLimitService {
   /** Requests per minute per IP for ordinary API traffic. Env: RATE_LIMIT_GLOBAL_PER_MIN (default 300). */
   private readonly globalLimit: number;
 
-  /** Requests per minute per IP for /v1/auth endpoints (brute-force protection). Env: RATE_LIMIT_AUTH_PER_MIN (default 10). */
+  /** Requests per minute per IP for /v1/auth and /v1/identity endpoints (brute-force protection). Env: RATE_LIMIT_AUTH_PER_MIN (default 10). */
   private readonly authLimit: number;
+
+  /** Requests per minute per IP for order placement. Env: RATE_LIMIT_CHECKOUT_PER_MIN (default 20). */
+  private readonly checkoutLimit: number;
+
+  /** Requests per minute per IP for search queries. Env: RATE_LIMIT_SEARCH_PER_MIN (default 60). */
+  private readonly searchLimit: number;
+
+  /** Requests per minute per IP for reviews submission and browsing. Env: RATE_LIMIT_REVIEWS_PER_MIN (default 40). */
+  private readonly reviewsLimit: number;
 
   private readonly buckets = new Map<string, BucketState>();
 
@@ -49,9 +58,28 @@ export class RateLimitService {
   constructor() {
     this.globalLimit = parsePositiveIntEnv("RATE_LIMIT_GLOBAL_PER_MIN", 300);
     this.authLimit = parsePositiveIntEnv("RATE_LIMIT_AUTH_PER_MIN", 10);
+    this.checkoutLimit = parsePositiveIntEnv("RATE_LIMIT_CHECKOUT_PER_MIN", 20);
+    this.searchLimit = parsePositiveIntEnv("RATE_LIMIT_SEARCH_PER_MIN", 60);
+    this.reviewsLimit = parsePositiveIntEnv("RATE_LIMIT_REVIEWS_PER_MIN", 40);
     this.cleanupTimer = setInterval(() => this.sweep(), WINDOW_MS);
     // Guard against very old runtimes without unref.
     this.cleanupTimer.unref?.();
+  }
+
+  private resolveLimit(scope: RateLimitScope): number {
+    switch (scope) {
+      case "auth":
+        return this.authLimit;
+      case "checkout":
+        return this.checkoutLimit;
+      case "search":
+        return this.searchLimit;
+      case "reviews":
+        return this.reviewsLimit;
+      case "global":
+      default:
+        return this.globalLimit;
+    }
   }
 
   /**
@@ -59,7 +87,7 @@ export class RateLimitService {
    * Pure in-memory read/increment — no store side effects beyond the counter.
    */
   check(ip: string, scope: RateLimitScope): RateLimitResult {
-    const limit = scope === "auth" ? this.authLimit : this.globalLimit;
+    const limit = this.resolveLimit(scope);
     const now = Date.now();
     const key = `${scope}:${ip}`;
 

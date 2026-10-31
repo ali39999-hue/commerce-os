@@ -48,11 +48,58 @@ const PROTOCOL_TRACKS = [
   },
 ];
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
+
 export default function AcademyPage() {
   const clinicalPosts = BLOG_POSTS.filter((p) => p.isPeerReviewed);
 
+  const academyJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": `${SITE_URL}/academy#organization`,
+        name: "آکادمی علوم پوست دکتر درمر | Dr Dermer Clinical Academy",
+        url: `${SITE_URL}/academy`,
+        description:
+          "مرجع علمی پژوهش‌های فیزیولوژی پوست، آموزش متدهای پیشرفته درمان ترنس‌درمال، کربوکسی‌تراپی بدون سوزن و آنالیز بالینی فرمولاسیون‌های درموسوتیکال.",
+        parentOrganization: {
+          "@type": "MedicalBusiness",
+          name: "دکتر درمر | Dr Dermer Clinical Skin & Health",
+          url: SITE_URL,
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${SITE_URL}/academy#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "صفحه اصلی", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "آکادمی علوم پوست", item: `${SITE_URL}/academy` },
+        ],
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE_URL}/academy#protocols`,
+        name: "پروتکل‌های آموزشی و بالینی مصوب",
+        itemListElement: PROTOCOL_TRACKS.map((track, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: track.title,
+          url: `${SITE_URL}/blog/${track.slug}`,
+          description: `${track.level} - تارگت: ${track.target}`,
+        })),
+      },
+    ],
+  };
+
   return (
     <div style={{ padding: "40px 0 90px" }}>
+      {/* ── JSON-LD Structured Data (EducationalOrganization, BreadcrumbList, ItemList) ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(academyJsonLd) }}
+      />
+
       {/* ── Breadcrumb ── */}
       <nav className="breadcrumbs-nav" style={{ marginBottom: "24px" }}>
         <Link href="/">صفحه اصلی</Link>

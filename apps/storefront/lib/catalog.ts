@@ -1,3 +1,9 @@
+import {
+  formatCurrencyAmount,
+  formatRialsAsTomans,
+  toAsciiDigits,
+} from '@commerce-os/localization';
+
 export type Product = {
   id: string;
   slug: string;
@@ -117,9 +123,8 @@ export async function getProduct(slug: string): Promise<Product | null> {
 
 export function formatPrice(amount: string | number | bigint, currency = 'IRR'): string {
   try {
-    const wholeUnits = BigInt(amount);
-    const formatted = new Intl.NumberFormat('fa-IR').format(wholeUnits);
-    return currency === 'IRR' ? `${formatted} ریال` : `${formatted} ${currency}`;
+    const raw = typeof amount === 'bigint' ? amount : BigInt(toAsciiDigits(String(amount)).replace(/\..*$/, '') || '0');
+    return formatCurrencyAmount(raw, currency, { locale: 'fa-IR' });
   } catch {
     return 'قیمت نامعتبر';
   }
@@ -127,9 +132,7 @@ export function formatPrice(amount: string | number | bigint, currency = 'IRR'):
 
 export function formatToman(amountRials: string | number | bigint): string {
   try {
-    const rials = BigInt(amountRials);
-    const tomans = rials / 10n;
-    return `${new Intl.NumberFormat('fa-IR').format(tomans)} تومان`;
+    return formatRialsAsTomans(amountRials, 'fa-IR');
   } catch {
     return 'مبلغ نامعتبر';
   }

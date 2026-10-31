@@ -1,20 +1,22 @@
 export function TrustCredibilityBar() {
   const items = [
     {
-      title: 'تأییدیه‌های بین‌المللی',
-      desc: 'مطابق استانداردهای سختگیرانه CE اروپا و استاندارد دارویی GMP انگلستان',
+      badge: 'CE 0123 / ISO 13485',
+      title: 'نشان رسمی CE Medical اروپا',
+      desc: 'انطباق کامل با استاندارد مدیریت کیفیت تجهیزات پزشکی و استاندارد GMP دارویی بریتانیا',
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-          <polyline points="9 12 11 14 15 10"></polyline>
+          <path d="m9 12 2 2 4-4"></path>
         </svg>
       ),
     },
     {
-      title: 'آزموده شده توسط درماتولوژیست‌ها',
-      desc: 'ارزیابی اثربخشی و عدم سمیت سلولی در کلینیک‌های پوست لندن و کمبریج',
+      badge: 'CAMBRIDGE DERMA',
+      title: 'تأییدیه متخصصین درماتولوژی',
+      desc: 'سنجش عدم سمیت سلولی (Cytotoxicity) و اثربخشی بالینی در کلینیک‌های پوست لندن و کمبریج',
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"></circle>
           <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
           <line x1="9" y1="9" x2="9.01" y2="9"></line>
@@ -23,21 +25,25 @@ export function TrustCredibilityBar() {
       ),
     },
     {
-      title: '۱۰۰٪ تضمین اصالت و پلمپ آزمایشگاهی',
-      desc: 'کد رهگیری اصالت TTAC و ضمانت مرجوعی بی‌قیدوشرط در صورت نقض پلمپ',
+      badge: 'TTAC BATCH VERIFIED',
+      title: '۱۰۰٪ اصالت و پلمپ آزمایشگاهی',
+      desc: 'قابلیت استعلام برخط شناسه رهگیری TTAC وزارت بهداشت به همراه ضمانت مرجوعی نقض پلمپ',
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          <circle cx="12" cy="16" r="1"></circle>
         </svg>
       ),
     },
     {
+      badge: '2°C - 8°C MONITORED',
       title: 'لجستیک کنترل دما (Cold Chain)',
-      desc: 'نگهداری و ارسال در بسته‌بندی عایق حرارتی جهت حفظ فعالیت زیستی پپتیدها',
+      desc: 'بسته‌بندی عایق حرارتی ویژه و حفظ زنجیره سرمایی برای صیانت از فعالیت زیستی پپتیدها و آنزیم‌ها',
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="12"></line>
         </svg>
       ),
     },
@@ -48,8 +54,11 @@ export function TrustCredibilityBar() {
       <div className="trust-bar-grid">
         {items.map((item, idx) => (
           <div className="trust-card" key={idx}>
-            <div className="trust-icon-box" aria-hidden="true">
-              {item.icon}
+            <div className="trust-card-top">
+              <div className="trust-icon-box" aria-hidden="true">
+                {item.icon}
+              </div>
+              <span className="trust-micro-badge">{item.badge}</span>
             </div>
             <div className="trust-text-box">
               <h3 className="trust-title">{item.title}</h3>

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CartProvider } from '../components/cart';
 import { CartDrawer } from '../components/cart-drawer';
+import { LocalizationProvider } from '../lib/localization-context';
 import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
 import { PwaRegister } from '../components/pwa-register';
@@ -115,16 +116,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
-        <CartProvider>
-          <div className="page-shell-wrapper">
-            <SiteHeader />
-            <main id="main-content" tabIndex={-1}>
-              {children}
-            </main>
-            <SiteFooter />
-          </div>
-          <CartDrawer />
-        </CartProvider>
+        <LocalizationProvider>
+          <CartProvider>
+            <div className="page-shell-wrapper">
+              <SiteHeader />
+              <main id="main-content" tabIndex={-1}>
+                {children}
+              </main>
+              <SiteFooter />
+            </div>
+            <CartDrawer />
+          </CartProvider>
+        </LocalizationProvider>
         <PwaRegister />
       </body>
     </html>

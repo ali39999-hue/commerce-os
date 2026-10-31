@@ -8,14 +8,14 @@ interface ProductGalleryProps {
   productTitle: string;
 }
 
-const ROLE_BADGE_MAP: Record<string, { label: string; color: string }> = {
-  HERO: { label: 'تصویر اصلی', color: 'var(--brand)' },
-  TEXTURE: { label: 'بافت و فرمولاسیون', color: '#b45309' },
-  IN_CLINIC: { label: 'کاربرد کلینیکال', color: '#0369a1' },
-  PACKAGING: { label: 'بسته‌بندی و پلمپ', color: '#4338ca' },
-  HOW_TO: { label: 'راهنمای مصرف', color: '#047857' },
-  CERTIFICATE: { label: 'گواهی اصالت', color: '#6d28d9' },
-  GALLERY: { label: 'نمای تکمیلی', color: 'var(--muted)' },
+const ROLE_BADGE_MAP: Record<string, { label: string; color: string; short: string }> = {
+  HERO: { label: 'تصویر اصلی', color: 'var(--brand)', short: 'اصلی' },
+  TEXTURE: { label: 'بافت و فرمولاسیون (Texture)', color: '#b45309', short: 'Texture' },
+  IN_CLINIC: { label: 'کاربرد کلینیکال (Clinic)', color: '#0369a1', short: 'Clinic' },
+  HOW_TO: { label: 'راهنمای مصرف (In-Use)', color: '#047857', short: 'In-Use' },
+  PACKAGING: { label: 'بسته‌بندی و پلمپ', color: '#4338ca', short: 'پلمپ' },
+  CERTIFICATE: { label: 'گواهی اصالت', color: '#6d28d9', short: 'گواهی' },
+  GALLERY: { label: 'نمای تکمیلی', color: 'var(--muted)', short: 'گالری' },
 };
 
 export function ProductGallery({ media, productTitle }: ProductGalleryProps) {
@@ -47,12 +47,25 @@ export function ProductGallery({ media, productTitle }: ProductGalleryProps) {
     setSelectedIndex((prev) => (prev - 1 + media.length) % media.length);
   };
 
-  const roleMeta = activeMedia ? ROLE_BADGE_MAP[activeMedia.role] ?? { label: activeMedia.roleFa, color: 'var(--brand)' } : null;
+  const roleMeta = activeMedia ? ROLE_BADGE_MAP[activeMedia.role] ?? { label: activeMedia.roleFa, color: 'var(--brand)', short: activeMedia.roleFa } : null;
 
   return (
     <div className="pdp-gallery-root" role="region" aria-label="گالری تصاویر و رسانه‌های محصول">
       {/* Main Display Stage */}
       <div className="pdp-gallery-stage">
+        {/* Verification & Certification Floating Badges */}
+        <div className="pdp-gallery-trust-overlays">
+          <span className="pdp-trust-pill verified">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            مورد تایید متخصصین
+          </span>
+          <span className="pdp-trust-pill medical-ce">
+            CE Medical
+          </span>
+        </div>
+
         {roleMeta && (
           <span
             className="pdp-gallery-role-badge"
@@ -155,7 +168,14 @@ export function ProductGallery({ media, productTitle }: ProductGalleryProps) {
                     <span>{idx + 1}</span>
                   </div>
                 )}
-                {badge && <span className="pdp-thumb-tag">{badge.label.slice(0, 6)}</span>}
+                {badge && (
+                  <span
+                    className="pdp-thumb-tag"
+                    style={{ borderColor: badge.color }}
+                  >
+                    {badge.short}
+                  </span>
+                )}
               </button>
             );
           })}

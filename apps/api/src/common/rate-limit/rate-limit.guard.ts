@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus } from "@nestjs/common";
-import { RateLimitService } from "./rate-limit.service";
+import { RateLimitService, RateLimitScope } from "./rate-limit.service";
 
 /**
  * Global rate-limit guard (threat model T-12: DoS -> rate limit).
@@ -9,8 +9,11 @@ import { RateLimitService } from "./rate-limit.service";
  * instantiable without the AppModule/DI container.
  *
  * Scopes:
- *  - "auth":   any path starting with /v1/auth  (default 10 req/min/IP)
- *  - "global": everything else                  (default 300 req/min/IP)
+ *  - "auth":     any path starting with /v1/auth or /v1/identity (default 10 req/min/IP)
+ *  - "checkout": /v1/checkout/place-order (default 20 req/min/IP)
+ *  - "search":   any path starting with /v1/search (default 60 req/min/IP)
+ *  - "reviews":  any path starting with /v1/reviews (default 40 req/min/IP)
+ *  - "global":   everything else (default 300 req/min/IP)
  * Skipped: OPTIONS preflights, /v1/health, /v1/ready.
  */
 
@@ -23,7 +26,12 @@ interface RateLimitedRequest {
   socket?: { remoteAddress?: string | undefined } | undefined;
 }
 
-const SKIPPED_PATHS = new Set<string>(["/v1/health", "/v1/ready"]);
+const SKIPPED_PATHS = new Set<string>([
+  "/v1/health",
+  "/v1/ready",
+  "/v1/health/liveness",
+  "/v1/health/readiness",
+]);
 
 export class RateLimitGuard implements CanActivate {
   private readonly rateLimitService = new RateLimitService();
@@ -39,7 +47,7 @@ export class RateLimitGuard implements CanActivate {
     const path = request.path ?? request.url ?? "";
     if (SKIPPED_PATHS.has(path)) return true;
 
-    const scope = path.startsWith("/v1/auth") ? "auth" : "global";
+    const scope = this.resolveScope(path);
     const ip = request.ip ?? request.socket?.remoteAddress ?? "unknown";
 
     const result = this.rateLimitService.check(ip, scope);
@@ -56,5 +64,23 @@ export class RateLimitGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private resolveScope(path: string): RateLimitScope {
+    const cleanPath = path.split("?")[0].toLowerCase();
+
+    if (cleanPath.startsWith("/v1/auth") || cleanPath.startsWith("/v1/identity")) {
+      return "auth";
+    }
+    if (cleanPath === "/v1/checkout/place-order" || cleanPath.startsWith("/v1/checkout/place-order")) {
+      return "checkout";
+    }
+    if (cleanPath.startsWith("/v1/search")) {
+      return "search";
+    }
+    if (cleanPath.startsWith("/v1/reviews")) {
+      return "reviews";
+    }
+    return "global";
   }
 }

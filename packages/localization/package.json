@@ -10,6 +10,9 @@
     "test": "vitest run",
     "clean": "rimraf dist"
   },
+  "dependencies": {
+    "@commerce-os/domain": "workspace:*"
+  },
   "devDependencies": {
     "rimraf": "^6.0.1",
     "typescript": "^5.7.0",

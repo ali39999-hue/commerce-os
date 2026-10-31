@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { CryptoVault, timingSafeEqualStrings, verifyHmacSha256 } from "../src/index.js";
+import { CryptoVault, timingSafeEqualStrings, verifyHmacSha256, isPrivateIp, assertSafeExternalUrl } from "../src/index.js";
 
 describe("CryptoVault & Timing-Safe Security", () => {
   const vault = new CryptoVault("test_master_secret_key_32_bytes_ok");
@@ -29,5 +29,27 @@ describe("CryptoVault & Timing-Safe Security", () => {
     // Timing-safe strings check
     expect(timingSafeEqualStrings("secret_token_123", "secret_token_123")).toBe(true);
     expect(timingSafeEqualStrings("secret_token_123", "wrong_token_456")).toBe(false);
+  });
+
+  it("identifies private, loopback and cloud-metadata IP addresses correctly", () => {
+    expect(isPrivateIp("127.0.0.1")).toBe(true);
+    expect(isPrivateIp("10.0.0.1")).toBe(true);
+    expect(isPrivateIp("192.168.1.1")).toBe(true);
+    expect(isPrivateIp("169.254.169.254")).toBe(true);
+    expect(isPrivateIp("172.16.0.1")).toBe(true);
+    expect(isPrivateIp("172.31.255.255")).toBe(true);
+    expect(isPrivateIp("0.0.0.0")).toBe(true);
+    expect(isPrivateIp("::1")).toBe(true);
+    expect(isPrivateIp("8.8.8.8")).toBe(false);
+    expect(isPrivateIp("1.1.1.1")).toBe(false);
+  });
+
+  it("rejects SSRF attempts to private networks and AWS metadata", async () => {
+    await expect(assertSafeExternalUrl("http://127.0.0.1/admin", { allowLocalhostInDev: false })).rejects.toThrow("SSRF blocked");
+    await expect(assertSafeExternalUrl("http://10.0.0.5:8080/data", { allowLocalhostInDev: false })).rejects.toThrow("SSRF blocked");
+    await expect(assertSafeExternalUrl("http://192.168.1.50/keys", { allowLocalhostInDev: false })).rejects.toThrow("SSRF blocked");
+    await expect(assertSafeExternalUrl("http://169.254.169.254/latest/meta-data/", { allowLocalhostInDev: false })).rejects.toThrow("SSRF blocked");
+    await expect(assertSafeExternalUrl("ftp://example.com/file")).rejects.toThrow("only HTTP and HTTPS");
+    await expect(assertSafeExternalUrl("http://user:pass@example.com")).rejects.toThrow("embedded credentials");
   });
 });

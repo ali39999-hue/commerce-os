@@ -9,4 +9,9 @@ export class OpsController {
   exceptions() {
     return this.opsService.exceptions();
   }
+
+  @Get("metrics")
+  metrics() {
+    return this.opsService.metrics();
+  }
 }

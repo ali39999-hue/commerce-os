@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiBase, formatToman, listProducts, type Product } from '../../lib/catalog';
+import { apiBase, listProducts, type Product } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from '../../components/discovery/wishlist-button';
 import { CompareButton } from '../../components/discovery/compare-button';
+import { trackSearch, trackViewItemList } from '../../lib/analytics';
+import { RECOMMENDED_CLINICAL_PRODUCTS, type CuratedProductItem } from '../../lib/clinical-specs';
 
 interface SearchItem {
   id: string;
@@ -57,7 +60,7 @@ interface Filters {
 }
 
 const SORT_OPTIONS: Array<{ value: SortValue; label: string }> = [
-  { value: 'popular', label: 'محبوب‌ترین و پرفروش‌ترین' },
+  { value: 'popular', label: 'محبوب‌ترین' },
   { value: 'newest', label: 'جدیدترین' },
   { value: 'price_asc', label: 'ارزان‌ترین' },
   { value: 'price_desc', label: 'گران‌ترین' },
@@ -70,22 +73,22 @@ const BRAND_FACETS = [
 ];
 
 const CONCERN_FACETS = [
-  { slug: 'dullness', label: 'کدری و تیرگی چهره (Dullness)' },
-  { slug: 'anti-aging', label: 'افتادگی و خطوط پیری (Anti-Aging)' },
-  { slug: 'scars-pores', label: 'منافذ باز و اسکار (Pores & Scars)' },
-  { slug: 'sensitivity-barrier', label: 'ترمیم سد دفاعی و خشکی (Barrier Recovery)' },
+  { slug: 'acne', label: 'آکنه و جای جوش (Acne & Scars)' },
+  { slug: 'anti-aging', label: 'ضدچروک و جوانسازی (Anti-Aging)' },
+  { slug: 'barrier', label: 'سد دفاعی و خشکی (Barrier Recovery)' },
+  { slug: 'dullness', label: 'تیرگی و کدری (Dullness & Glow)' },
 ];
 
 const FORMULATION_FACETS = [
   { slug: 'gel', label: 'ژل ۲ فاز فعال‌شونده (CO2 Gel)' },
   { slug: 'serum', label: 'سرم کنسانتره پپتیدی (Peptide Serum)' },
-  { slug: 'pads', label: 'پد فیبری میکروکپسوله (Fiber Pads)' },
   { slug: 'cream', label: 'کرم سد دفاعی لاملار (Barrier Cream)' },
+  { slug: 'pads', label: 'پد فیبری میکروکپسوله (Fiber Pads)' },
 ];
 
 const PRODUCT_TYPE_FACETS = [
   { slug: 'physical', label: 'کالای فیزیکی و کلینیکال' },
-  { slug: 'bundle', label: 'کیت و پروتکل کامل (Bundle & Save)' },
+  { slug: 'bundle', label: 'کیت و پروتکل کامل (Bundle)' },
   { slug: 'digital', label: 'آموزش و هندبوک دیجیتال' },
 ];
 
@@ -106,7 +109,8 @@ const SYNONYMS_MAP: Record<string, string[]> = {
   reemed: ['ری‌مد', 'درمر', 'dermer'],
   پد: ['pad', 'carboxypod', 'پاد', 'ماسک'],
   سرم: ['serum', 'پپتید', 'egf'],
-  قهوه: ['اسپرسو', 'عربیکا', 'دمی', 'v60'],
+  آکنه: ['acne', 'جوش', 'اسکار', 'scar', 'منافذ'],
+  چروک: ['anti-aging', 'aging', 'خطوط', 'لیفت', 'lift'],
 };
 
 const SUGGESTED_QUICK_SEARCHES = [
@@ -128,7 +132,7 @@ const EMPTY_FACETS: SearchFacets = {
 
 const SEARCH_PAGE_SIZE = 24;
 const SEARCH_FETCH_TIMEOUT_MS = 3500;
-const SEARCH_DEBOUNCE_MS = 300;
+const SEARCH_DEBOUNCE_MS = 250;
 
 function readFilters(sp: URLSearchParams): Filters {
   const sortRaw = sp.get('sort');
@@ -203,7 +207,6 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   const slug = typeof raw.slug === 'string' ? raw.slug : '';
   const title = typeof raw.title === 'string' ? raw.title : '';
 
-  // Classify clinical properties if present
   let brandObj = brandRaw
     ? { slug: String(brandRaw.slug || ''), name: String(brandRaw.name || '') }
     : null;
@@ -218,10 +221,10 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   }
 
   let concern: string | null = null;
-  if (slug.includes('carboxy') || title.includes('کربوکسی')) concern = 'dullness';
-  else if (slug.includes('serum') || title.includes('سلولی') || title.includes('رتینول')) concern = 'anti-aging';
-  else if (slug.includes('pad') || title.includes('پد')) concern = 'scars-pores';
-  else if (slug.includes('cream') || slug.includes('barrier') || title.includes('بریر') || title.includes('ترمیم')) concern = 'sensitivity-barrier';
+  if (slug.includes('carboxy') || title.includes('کربوکسی') || title.includes('تیرگی')) concern = 'dullness';
+  else if (slug.includes('serum') || title.includes('سلولی') || title.includes('رتینول') || title.includes('چروک')) concern = 'anti-aging';
+  else if (slug.includes('pad') || title.includes('پد') || title.includes('اسکار') || title.includes('آکنه')) concern = 'acne';
+  else if (slug.includes('cream') || slug.includes('barrier') || title.includes('بریر') || title.includes('ترمیم') || title.includes('خشکی')) concern = 'barrier';
 
   let formulation: string | null = null;
   if (slug.includes('gel') || title.includes('ژل')) formulation = 'gel';
@@ -282,6 +285,22 @@ function productToSearchItem(product: Product): SearchItem {
     inStock: variant?.inStock ?? false,
     sku: variant?.sku ?? null,
     variantId: variant?.id ?? null,
+  });
+}
+
+function curatedToSearchItem(item: CuratedProductItem): SearchItem {
+  return normalizeSearchItem({
+    id: item.id,
+    slug: item.slug,
+    title: item.title,
+    description: item.description,
+    priceRials: item.priceAmount,
+    priceTomans: rialsToTomansString(item.priceAmount),
+    inStock: item.inStock,
+    sku: item.sku,
+    variantId: item.id,
+    category: { slug: 'skincare', titleFa: item.categoryTitleFa },
+    brand: { slug: item.brand.toLowerCase().includes('reemed') ? 'reemed' : 'reeskin', name: item.brand },
   });
 }
 
@@ -349,14 +368,35 @@ function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const serialized = searchParams.toString();
+  const { formatToman } = useLocalizedFormatter();
 
   const filters = useMemo(() => readFilters(new URLSearchParams(serialized)), [serialized]);
 
   const [queryInput, setQueryInput] = useState(filters.q);
   const [minInput, setMinInput] = useState(filters.min);
   const [maxInput, setMaxInput] = useState(filters.max);
+  const [priceSliderVal, setPriceSliderVal] = useState<number>(
+    filters.max ? Number(filters.max) || 6000000 : 6000000
+  );
   const [result, setResult] = useState<SearchState | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // View Mode: grid vs list
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Collapsible Facet Sections (desktop & drawer)
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    brand: false,
+    concern: false,
+    formulation: false,
+    stock: false,
+    price: false,
+    type: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setCollapsedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
   // Autocomplete state
   const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false);
@@ -370,6 +410,9 @@ function SearchPageContent() {
     setQueryInput(filters.q);
     setMinInput(filters.min);
     setMaxInput(filters.max);
+    if (filters.max) {
+      setPriceSliderVal(Number(filters.max) || 6000000);
+    }
   }, [filters]);
 
   const navigate = useCallback(
@@ -398,7 +441,6 @@ function SearchPageContent() {
       const matches = SUGGESTED_QUICK_SEARCHES.filter((s) =>
         matchesQueryWithSynonyms(s, qLower)
       );
-      // Also inject synonyms
       for (const [k, syns] of Object.entries(SYNONYMS_MAP)) {
         if (k.includes(qLower) || syns.some((s) => s.includes(qLower))) {
           syns.slice(0, 2).forEach((s) => {
@@ -457,7 +499,9 @@ function SearchPageContent() {
           const payload = (await response.json()) as { items?: unknown; total?: unknown; facets?: unknown };
           if (cancelled) return;
           const rawItems = normalizeSearchItems(payload.items);
-          const filtered = applyLocalFilters(rawItems, sp);
+          const combinedItems =
+            rawItems.length > 0 ? rawItems : RECOMMENDED_CLINICAL_PRODUCTS.map(curatedToSearchItem);
+          const filtered = applyLocalFilters(combinedItems, sp);
           setResult({
             source: 'api',
             items: filtered,
@@ -472,15 +516,32 @@ function SearchPageContent() {
               brands: BRAND_FACETS,
               concerns: CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
-              inStockTotal: rawItems.filter((item) => item.inStock).length,
+              inStockTotal: combinedItems.filter((item) => item.inStock).length,
             },
           });
+          if (filters.q) {
+            trackSearch(filters.q, filtered.length);
+          }
+          trackViewItemList(
+            filters.category || 'all-products',
+            filters.category || 'کاتالوگ محصولات',
+            filtered.map((it) => ({
+              item_id: it.id,
+              item_name: it.title,
+              item_brand: it.brand?.name,
+              item_category: it.category?.titleFa,
+              price: Number(it.priceRials) || 0,
+              currency: 'IRR',
+            }))
+          );
         } catch {
           if (cancelled) return;
           const catalog = await listProducts();
           if (cancelled) return;
-          const mapped = (catalog?.data ?? []).map(productToSearchItem);
-          const filtered = applyLocalFilters(mapped, sp).slice(0, SEARCH_PAGE_SIZE);
+          const mappedCatalog = (catalog?.data ?? []).map(productToSearchItem);
+          const curatedItems = RECOMMENDED_CLINICAL_PRODUCTS.map(curatedToSearchItem);
+          const allPool = [...curatedItems, ...mappedCatalog.filter((c) => !curatedItems.some((m) => m.slug === c.slug))];
+          const filtered = applyLocalFilters(allPool, sp).slice(0, SEARCH_PAGE_SIZE);
           setResult({
             source: 'fallback',
             items: filtered,
@@ -495,9 +556,24 @@ function SearchPageContent() {
               brands: BRAND_FACETS,
               concerns: CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
-              inStockTotal: mapped.filter((item) => item.inStock).length,
+              inStockTotal: allPool.filter((item) => item.inStock).length,
             },
           });
+          if (filters.q) {
+            trackSearch(filters.q, filtered.length);
+          }
+          trackViewItemList(
+            filters.category || 'all-products',
+            filters.category || 'کاتالوگ محصولات',
+            filtered.map((it) => ({
+              item_id: it.id,
+              item_name: it.title,
+              item_brand: it.brand?.name,
+              item_category: it.category?.titleFa,
+              price: Number(it.priceRials) || 0,
+              currency: 'IRR',
+            }))
+          );
         } finally {
           window.clearTimeout(abortTimer);
           if (!cancelled) setLoading(false);
@@ -518,160 +594,308 @@ function SearchPageContent() {
   const items = result?.items ?? [];
   const totalLabel = new Intl.NumberFormat('fa-IR').format(result?.total ?? 0);
 
-  // Count active filters for badge
-  const activeFiltersCount = useMemo(() => {
-    let count = 0;
-    if (filters.q) count++;
-    if (filters.category) count++;
-    if (filters.brand) count++;
-    if (filters.concern) count++;
-    if (filters.type) count++;
-    if (filters.formulation) count++;
-    if (filters.min || filters.max) count++;
-    if (filters.stock) count++;
-    return count;
-  }, [filters]);
+  // Active filters list for chips
+  const activeChips = useMemo(() => {
+    const list: Array<{ id: string; label: string; onRemove: () => void }> = [];
+    if (filters.q) {
+      list.push({
+        id: 'q',
+        label: `عبارت: «${filters.q}»`,
+        onRemove: () => {
+          setQueryInput('');
+          navigate({ ...filters, q: '' });
+        },
+      });
+    }
+    if (filters.brand) {
+      const bObj = BRAND_FACETS.find((b) => b.slug === filters.brand);
+      list.push({
+        id: 'brand',
+        label: `برند: ${bObj ? bObj.name : filters.brand}`,
+        onRemove: () => navigate({ ...filters, brand: '' }),
+      });
+    }
+    if (filters.concern) {
+      const cObj = CONCERN_FACETS.find((c) => c.slug === filters.concern);
+      list.push({
+        id: 'concern',
+        label: `دغدغه: ${cObj ? cObj.label : filters.concern}`,
+        onRemove: () => navigate({ ...filters, concern: '' }),
+      });
+    }
+    if (filters.formulation) {
+      const fObj = FORMULATION_FACETS.find((f) => f.slug === filters.formulation);
+      list.push({
+        id: 'formulation',
+        label: `فرمولاسیون: ${fObj ? fObj.label : filters.formulation}`,
+        onRemove: () => navigate({ ...filters, formulation: '' }),
+      });
+    }
+    if (filters.type) {
+      const tObj = PRODUCT_TYPE_FACETS.find((t) => t.slug === filters.type);
+      list.push({
+        id: 'type',
+        label: `نوع: ${tObj ? tObj.label : filters.type}`,
+        onRemove: () => navigate({ ...filters, type: '' }),
+      });
+    }
+    if (filters.stock) {
+      list.push({
+        id: 'stock',
+        label: 'فقط کالاهای موجود',
+        onRemove: () => navigate({ ...filters, stock: false }),
+      });
+    }
+    if (filters.min || filters.max) {
+      const minTxt = filters.min ? `${new Intl.NumberFormat('fa-IR').format(Number(filters.min))} تومان` : '۰';
+      const maxTxt = filters.max ? `${new Intl.NumberFormat('fa-IR').format(Number(filters.max))} تومان` : 'بی‌نهایت';
+      list.push({
+        id: 'price',
+        label: `قیمت: از ${minTxt} تا ${maxTxt}`,
+        onRemove: () => {
+          setMinInput('');
+          setMaxInput('');
+          navigate({ ...filters, min: '', max: '' });
+        },
+      });
+    }
+    return list;
+  }, [filters, navigate]);
+
+  const activeFiltersCount = activeChips.length;
 
   const renderFilterControls = () => (
     <>
-      {/* Brand facet */}
-      <div className="filter-group">
-        <span className="filter-label">برند محصول (Brand)</span>
-        <label className="filter-option">
-          <input
-            type="radio"
-            name="search-brand"
-            checked={filters.brand === ''}
-            onChange={() => navigate({ ...filters, brand: '' })}
-          />
-          همه برندها
-        </label>
-        {facets.brands.map((b) => (
-          <label className="filter-option" key={b.slug}>
-            <input
-              type="radio"
-              name="search-brand"
-              checked={filters.brand === b.slug}
-              onChange={() => navigate({ ...filters, brand: b.slug })}
-            />
-            {b.name}
-          </label>
-        ))}
+      {/* 1. Brand facet (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('brand')}
+          aria-expanded={!collapsedSections.brand}
+        >
+          <span>برند محصول (Brand)</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.brand ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.brand && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="radio"
+                name="search-brand"
+                checked={filters.brand === ''}
+                onChange={() => navigate({ ...filters, brand: '' })}
+              />
+              همه برندها
+            </label>
+            {facets.brands.map((b) => (
+              <label className="filter-option" key={b.slug}>
+                <input
+                  type="radio"
+                  name="search-brand"
+                  checked={filters.brand === b.slug}
+                  onChange={() => navigate({ ...filters, brand: b.slug })}
+                />
+                {b.name}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Skin Concern facet */}
-      <div className="filter-group">
-        <span className="filter-label">دغدغه پوستی و درمانی</span>
-        <label className="filter-option">
-          <input
-            type="radio"
-            name="search-concern"
-            checked={filters.concern === ''}
-            onChange={() => navigate({ ...filters, concern: '' })}
-          />
-          همه دغدغه‌ها
-        </label>
-        {facets.concerns.map((c) => (
-          <label className="filter-option" key={c.slug}>
-            <input
-              type="radio"
-              name="search-concern"
-              checked={filters.concern === c.slug}
-              onChange={() => navigate({ ...filters, concern: c.slug })}
-            />
-            {c.label}
-          </label>
-        ))}
+      {/* 2. Skin Concern facet (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('concern')}
+          aria-expanded={!collapsedSections.concern}
+        >
+          <span>دغدغه پوستی و درمانی</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.concern ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.concern && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="radio"
+                name="search-concern"
+                checked={filters.concern === ''}
+                onChange={() => navigate({ ...filters, concern: '' })}
+              />
+              همه دغدغه‌ها
+            </label>
+            {facets.concerns.map((c) => (
+              <label className="filter-option" key={c.slug}>
+                <input
+                  type="radio"
+                  name="search-concern"
+                  checked={filters.concern === c.slug}
+                  onChange={() => navigate({ ...filters, concern: c.slug })}
+                />
+                {c.label}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Formulation facet */}
-      <div className="filter-group">
-        <span className="filter-label">شکل فرمولاسیون و بافت</span>
-        <label className="filter-option">
-          <input
-            type="radio"
-            name="search-formulation"
-            checked={filters.formulation === ''}
-            onChange={() => navigate({ ...filters, formulation: '' })}
-          />
-          همه بافت‌ها
-        </label>
-        {facets.formulations.map((f) => (
-          <label className="filter-option" key={f.slug}>
-            <input
-              type="radio"
-              name="search-formulation"
-              checked={filters.formulation === f.slug}
-              onChange={() => navigate({ ...filters, formulation: f.slug })}
-            />
-            {f.label}
-          </label>
-        ))}
+      {/* 3. Formulation facet (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('formulation')}
+          aria-expanded={!collapsedSections.formulation}
+        >
+          <span>نوع فرمولاسیون (بافت کالا)</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.formulation ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.formulation && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="radio"
+                name="search-formulation"
+                checked={filters.formulation === ''}
+                onChange={() => navigate({ ...filters, formulation: '' })}
+              />
+              همه بافت‌ها
+            </label>
+            {facets.formulations.map((f) => (
+              <label className="filter-option" key={f.slug}>
+                <input
+                  type="radio"
+                  name="search-formulation"
+                  checked={filters.formulation === f.slug}
+                  onChange={() => navigate({ ...filters, formulation: f.slug })}
+                />
+                {f.label}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Product Type facet */}
-      <div className="filter-group">
-        <span className="filter-label">نوع کالا</span>
-        <label className="filter-option">
-          <input
-            type="radio"
-            name="search-type"
-            checked={filters.type === ''}
-            onChange={() => navigate({ ...filters, type: '' })}
-          />
-          همه انواع کالا
-        </label>
-        {PRODUCT_TYPE_FACETS.map((pt) => (
-          <label className="filter-option" key={pt.slug}>
-            <input
-              type="radio"
-              name="search-type"
-              checked={filters.type === pt.slug}
-              onChange={() => navigate({ ...filters, type: pt.slug })}
-            />
-            {pt.label}
-          </label>
-        ))}
+      {/* 4. In-Stock Availability (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('stock')}
+          aria-expanded={!collapsedSections.stock}
+        >
+          <span>وضعیت موجودی کالا</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.stock ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.stock && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="checkbox"
+                checked={filters.stock}
+                onChange={(e) => navigate({ ...filters, stock: e.target.checked })}
+              />
+              فقط کالاهای موجود در انبار مرکزی
+            </label>
+          </div>
+        )}
       </div>
 
-      {/* Price Range */}
-      <div className="filter-group">
-        <span className="filter-label">محدوده قیمت (تومان)</span>
-        <div className="filter-price-row">
-          <input
-            type="number"
-            min={0}
-            className="input-text"
-            placeholder="از"
-            aria-label="حداقل قیمت به تومان"
-            value={minInput}
-            onChange={(e) => setMinInput(e.target.value)}
-          />
-          <input
-            type="number"
-            min={0}
-            className="input-text"
-            placeholder="تا"
-            aria-label="حداکثر قیمت به تومان"
-            value={maxInput}
-            onChange={(e) => setMaxInput(e.target.value)}
-          />
-        </div>
+      {/* 5. Price Range with Inputs & Slider (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('price')}
+          aria-expanded={!collapsedSections.price}
+        >
+          <span>محدوده قیمت (تومان)</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.price ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.price && (
+          <div className="facet-accordion-body">
+            <div className="filter-price-row">
+              <input
+                type="number"
+                min={0}
+                className="input-text"
+                placeholder="از (تومان)"
+                aria-label="حداقل قیمت به تومان"
+                value={minInput}
+                onChange={(e) => setMinInput(e.target.value)}
+              />
+              <input
+                type="number"
+                min={0}
+                className="input-text"
+                placeholder="تا (تومان)"
+                aria-label="حداکثر قیمت به تومان"
+                value={maxInput}
+                onChange={(e) => setMaxInput(e.target.value)}
+              />
+            </div>
+
+            <div style={{ marginTop: '8px' }}>
+              <label style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginBottom: '4px' }}>
+                حداکثر سقف بودجه: {new Intl.NumberFormat('fa-IR').format(priceSliderVal)} تومان
+              </label>
+              <input
+                type="range"
+                min={500000}
+                max={8000000}
+                step={250000}
+                value={priceSliderVal}
+                style={{ width: '100%', accentColor: 'var(--brand)' }}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setPriceSliderVal(val);
+                  setMaxInput(String(val));
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* In-Stock Filter */}
-      <div className="filter-group">
-        <label className="filter-option">
-          <input
-            type="checkbox"
-            checked={filters.stock}
-            onChange={(e) => navigate({ ...filters, stock: e.target.checked })}
-          />
-          فقط کالاهای موجود در انبار مرکزی
-        </label>
+      {/* 6. Product Type (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('type')}
+          aria-expanded={!collapsedSections.type}
+        >
+          <span>نوع ارائه و بسته‌بندی</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.type ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.type && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="radio"
+                name="search-type"
+                checked={filters.type === ''}
+                onChange={() => navigate({ ...filters, type: '' })}
+              />
+              همه انواع کالا
+            </label>
+            {PRODUCT_TYPE_FACETS.map((pt) => (
+              <label className="filter-option" key={pt.slug}>
+                <input
+                  type="radio"
+                  name="search-type"
+                  checked={filters.type === pt.slug}
+                  onChange={() => navigate({ ...filters, type: pt.slug })}
+                />
+                {pt.label}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Clear Filters */}
+      {/* Clear Filters CTA */}
       <button
         type="button"
         className="btn-clear-filters"
@@ -687,13 +911,13 @@ function SearchPageContent() {
 
   return (
     <div className="search-page-container page-shell">
-      {/* Header and Quick Search Autocomplete Bar */}
+      {/* 1. Header and Quick Search Autocomplete Bar */}
       <div className="search-hero-bar">
         <div className="search-hero-content">
           <h1>کاتالوگ و کاوش تخصصی محصولات</h1>
           <p>
             جست‌وجوی پیشرفته در میان محصولات کربوکسی‌تراپی، لاین‌های بالینی ReeSkin و ReeMed، فرمولاسیون‌های
-            پپتیدی و تجهیزات مراقبت پوست
+            پپتیدی و تجهیزات مراقبت پوست با استانداردهای درموسوتیکال انگلستان.
           </p>
         </div>
 
@@ -708,7 +932,7 @@ function SearchPageContent() {
               aria-controls="search-autocomplete-list"
               aria-autocomplete="list"
               className="search-large-input"
-              placeholder="جست‌وجوی کربوکسی، رتینول، سد دفاعی، نام لاتین (Carboxy, Retinol, ReeSkin)..."
+              placeholder="جست‌وجوی کربوکسی، رتینول، سد دفاعی، پپتید، نام لاتین (Carboxy, Retinol, ReeSkin)..."
               value={queryInput}
               onChange={(e) => handleQueryInputChange(e.target.value)}
               onFocus={() => {
@@ -756,7 +980,7 @@ function SearchPageContent() {
         </div>
       </div>
 
-      {/* Mobile Filters Drawer Trigger & Sort Row */}
+      {/* 2. Mobile Filters Drawer Trigger & Toolbar Row */}
       <div className="search-mobile-bar-row">
         <button
           type="button"
@@ -766,12 +990,35 @@ function SearchPageContent() {
           aria-controls="mobile-filter-drawer"
         >
           <span aria-hidden="true">⚙️</span>
-          <span>فیلترهای پیشرفته</span>
+          <span>فیلتر و دسته‌بندی</span>
           {activeFiltersCount > 0 && (
             <span className="filter-badge-count">{activeFiltersCount}</span>
           )}
         </button>
 
+        {/* View Mode Toggle (Grid vs List) */}
+        <div className="search-view-mode-toggle" aria-label="تغییر نحوه نمایش کالاها">
+          <button
+            type="button"
+            className={`view-mode-btn ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+            aria-pressed={viewMode === 'grid'}
+          >
+            <span>⊞</span>
+            <span>شبکه‌ای</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn ${viewMode === 'list' ? 'active' : ''}`}
+            onClick={() => setViewMode('list')}
+            aria-pressed={viewMode === 'list'}
+          >
+            <span>☰</span>
+            <span>لیستی</span>
+          </button>
+        </div>
+
+        {/* Sort Dropdown */}
         <div className="search-sort-inline">
           <label htmlFor="search-sort-select">مرتب‌سازی:</label>
           <select
@@ -789,12 +1036,12 @@ function SearchPageContent() {
         </div>
       </div>
 
-      {/* Main Layout: Desktop Sidebar + Search Results */}
+      {/* 3. Main Layout: Desktop Sidebar + Search Results */}
       <section className="search-layout">
-        {/* Desktop Persistent Sidebar */}
+        {/* Desktop Multi-Facet Sidebar with Collapsible Accordions */}
         <aside className="search-sidebar" aria-label="فیلترهای کاتالوگ و محصولات">
           <div className="sidebar-header-row">
-            <h3>فیلترهای کاوش</h3>
+            <h3>فیلترهای پیشرفته</h3>
             {activeFiltersCount > 0 && (
               <span className="sidebar-active-tag">{activeFiltersCount} فیلتر فعال</span>
             )}
@@ -803,7 +1050,7 @@ function SearchPageContent() {
           {renderFilterControls()}
         </aside>
 
-        {/* Mobile Slide-Out Drawer */}
+        {/* Mobile Slide-Up Drawer with Floating Bottom Apply Button */}
         {isMobileDrawerOpen && (
           <div
             className="mobile-drawer-backdrop"
@@ -819,7 +1066,7 @@ function SearchPageContent() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mobile-drawer-header">
-                <h3>فیلترهای پیشرفته کاتالوگ</h3>
+                <h3>فیلتر و پالایش کاتالوگ</h3>
                 <button
                   type="button"
                   className="mobile-drawer-close"
@@ -840,15 +1087,43 @@ function SearchPageContent() {
                   className="mobile-drawer-apply-btn"
                   onClick={() => setIsMobileDrawerOpen(false)}
                 >
-                  مشاهده نتایج ({totalLabel})
+                  مشاهده نتایج ({totalLabel} کالا)
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Results Stream */}
+        {/* Results Stream Area */}
         <div className="search-results">
+          {/* Active Filter Chips / Badges */}
+          {activeChips.length > 0 && (
+            <div className="active-filters-bar" aria-label="فیلترهای اعمال‌شده">
+              <span className="active-filters-title">فیلترهای فعال:</span>
+              {activeChips.map((chip) => (
+                <span className="filter-chip" key={chip.id}>
+                  <span>{chip.label}</span>
+                  <button
+                    type="button"
+                    className="filter-chip-remove"
+                    onClick={chip.onRemove}
+                    aria-label={`حذف فیلتر ${chip.label}`}
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              <button
+                type="button"
+                className="filter-clear-all-chip"
+                onClick={() => router.push('/search')}
+              >
+                پاک‌کردن همه
+              </button>
+            </div>
+          )}
+
+          {/* Header Count & Status */}
           <div className="search-results-header">
             <div>
               <div className="eyebrow">
@@ -864,29 +1139,78 @@ function SearchPageContent() {
           </div>
 
           {loading ? (
-            <div className="product-grid" aria-hidden="true">
+            <div className={`product-grid ${viewMode === 'list' ? 'view-list' : ''}`} aria-hidden="true">
               {Array.from({ length: 6 }, (_, index) => (
                 <div key={index} className="rail-skeleton" />
               ))}
             </div>
           ) : items.length === 0 ? (
-            <div className="state-panel search-empty" role="status">
+            /* Empty State with Curated Clinical Recommendations */
+            <div className="search-empty-container" role="status">
+              <div className="search-empty-icon" aria-hidden="true">🔍</div>
               <h3>کالایی با فیلترهای انتخابی یافت نشد</h3>
               <p>
-                می‌توانید از عبارات مترادف نظیر «کربوکسی»، «Carboxy»، «سرم» یا «سد دفاعی» استفاده کنید یا
-                فیلترهای اعمال‌شده را پاک نمایید.
+                می‌توانید عبارات عمومی‌تر مانند «کربوکسی»، «سرم» یا «سد دفاعی» را جست‌وجو نموده یا فیلترهای اعمال‌شده را ریست کنید.
               </p>
               <button
                 type="button"
                 className="btn-clear-filters"
-                style={{ margin: '16px auto 0' }}
+                style={{ margin: '0 auto', display: 'inline-block' }}
                 onClick={() => router.push('/search')}
               >
                 پاک‌سازی همه فیلترها
               </button>
+
+              <div className="empty-recommendations-section">
+                <h4 className="empty-recommendations-title">
+                  <span aria-hidden="true">✨</span>
+                  <span>پیشنهادات پرطرفدار کلینیکال برای شما</span>
+                </h4>
+                <div className="empty-recommendations-grid">
+                  {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => (
+                    <article className="product-card" key={rec.id}>
+                      <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
+                        <span className="art-index">{rec.title.slice(0, 1)}</span>
+                        <span className="art-caption">✓ موجود در انبار</span>
+                      </Link>
+                      <div className="product-copy">
+                        <span className="product-card-brand">{rec.brand}</span>
+                        <h3>
+                          <Link href={`/products/${encodeURIComponent(rec.slug)}`}>{rec.title}</Link>
+                        </h3>
+                        <p>{rec.description}</p>
+                        <div className="product-bottom">
+                          <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
+                          <div className="rail-actions">
+                            <WishlistButton
+                              variantId={rec.id}
+                              productId={rec.id}
+                              slug={rec.slug}
+                              title={rec.title}
+                              sku={rec.sku}
+                              priceAmount={rec.priceAmount}
+                            />
+                            <CompareButton
+                              variantId={rec.id}
+                              productId={rec.id}
+                              slug={rec.slug}
+                              title={rec.title}
+                              sku={rec.sku}
+                              priceAmount={rec.priceAmount}
+                              inStock={rec.inStock}
+                              categoryTitleFa={rec.categoryTitleFa}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
-            <div className="product-grid">
+            /* Product Cards (Grid or List View) */
+            <div className={`product-grid ${viewMode === 'list' ? 'view-list' : ''}`}>
               {items.map((item) => {
                 const href = `/products/${encodeURIComponent(item.slug)}`;
                 const variantId = item.variantId ?? item.id;

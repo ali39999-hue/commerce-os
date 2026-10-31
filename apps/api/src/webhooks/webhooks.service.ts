@@ -1,8 +1,6 @@
 import { Injectable, Logger, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
-import { computeHmacSha256 } from "@commerce-os/security";
-
-const BLOCKED_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
+import { computeHmacSha256, assertSafeExternalUrl } from "@commerce-os/security";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -22,26 +20,17 @@ export class WebhooksService {
   }
 
   /**
-   * SSRF guard: only http(s) targets are ever allowed. Loopback hostnames are
-   * rejected in production (local test receivers are legitimate in dev).
+   * SSRF guard: only http(s) targets are ever allowed. Loopback, private network IPs
+   * (127.0.0.1, 10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12, 169.254.169.254) are rejected
+   * in production or when local target testing is disabled.
    */
-  private assertSafeTarget(targetUrl: string): void {
-    let parsed: URL;
+  private async assertSafeTarget(targetUrl: string): Promise<void> {
     try {
-      parsed = new URL(targetUrl);
-    } catch {
-      throw new BadRequestException("آدرس مقصد وب‌هوک نامعتبر است");
-    }
-
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      throw new BadRequestException("تنها پروتکل‌های HTTP و HTTPS برای وب‌هوک مجاز هستند");
-    }
-
-    // URL.hostname keeps IPv6 literals bracketed ("[::1]"); normalize before matching.
-    const hostname = parsed.hostname.replace(/^\[/, "").replace(/\]$/, "").toLowerCase();
-
-    if (process.env.NODE_ENV === "production" && BLOCKED_HOSTNAMES.has(hostname)) {
-      throw new BadRequestException("ارسال وب‌هوک به آدرس‌های داخلی در محیط تولید مجاز نیست");
+      await assertSafeExternalUrl(targetUrl, {
+        allowLocalhostInDev: process.env.NODE_ENV !== "production",
+      });
+    } catch (err: any) {
+      throw new BadRequestException(err?.message || "آدرس مقصد وب‌هوک نامعتبر یا غیرمجاز است");
     }
   }
 
@@ -69,7 +58,7 @@ export class WebhooksService {
     targetUrl: string,
     tenantId: string
   ) {
-    this.assertSafeTarget(targetUrl);
+    await this.assertSafeTarget(targetUrl);
 
     const canonicalJson = JSON.stringify(payload ?? {});
     const signature = computeHmacSha256(canonicalJson, this.resolveSecret());

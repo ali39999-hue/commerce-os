@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { apiBase, formatToman, listProducts, type Product } from '../../lib/catalog';
+import { apiBase, listProducts, type Product } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from './wishlist-button';
 import { CompareButton } from './compare-button';
 
@@ -89,6 +90,7 @@ function productToRailItem(product: Product): RailItem {
  * یا فهرست خالی → فراخوانی listProducts() و نمایش ۶ کالای اول فروشگاه.
  */
 export function ProductRail({ endpoint, titleFa }: { endpoint: string; titleFa: string }) {
+  const { formatToman } = useLocalizedFormatter();
   const [items, setItems] = useState<RailItem[] | null>(null);
   const [degraded, setDegraded] = useState(false);
 

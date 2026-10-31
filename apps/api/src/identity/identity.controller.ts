@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Body, Headers, UnauthorizedException } from "@nestjs/common";
 import { IdentityService } from "./identity.service";
 
-@Controller("auth")
+@Controller(["auth", "identity"])
 export class IdentityController {
   constructor(private readonly identityService: IdentityService) {}
 

@@ -72,31 +72,52 @@ export default async function ProductPage({ params }: Props) {
   const extendedData = buildExtendedProductData(product);
   const primaryVariant = extendedData.variants[0];
 
+  const variantOffers = extendedData.variants.map((v) => ({
+    '@type': 'Offer',
+    name: v.title,
+    sku: v.sku,
+    price: v.priceAmount,
+    priceCurrency: v.currency || 'IRR',
+    priceValidUntil: '2027-12-31',
+    availability: v.inStock
+      ? 'https://schema.org/InStock'
+      : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    url: `${SITE_URL}/products/${encodeURIComponent(product.slug)}?variant=${encodeURIComponent(v.id)}`,
+    seller: {
+      '@type': 'Organization',
+      name: 'دکتر درمر | Dr Dermer Clinical Skin & Health',
+    },
+  }));
+
+  const prices = extendedData.variants
+    .map((v) => Number(v.priceAmount) || 0)
+    .filter((p) => p > 0);
+  const lowPrice = prices.length ? Math.min(...prices).toString() : primaryVariant?.priceAmount;
+  const highPrice = prices.length ? Math.max(...prices).toString() : primaryVariant?.priceAmount;
+
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: extendedData.title,
     description: extendedData.description ?? extendedData.subtitleFa,
     sku: primaryVariant?.sku,
+    mpn: primaryVariant?.sku,
     image: extendedData.media.map((m) => m.url).filter(Boolean),
     brand: {
       '@type': 'Brand',
       name: extendedData.brand.name,
     },
     offers: {
-      '@type': 'Offer',
-      priceCurrency: 'IRR',
-      price: primaryVariant?.priceAmount,
-      priceValidUntil: '2027-12-31',
-      availability: primaryVariant?.inStock
+      '@type': 'AggregateOffer',
+      priceCurrency: primaryVariant?.currency || 'IRR',
+      lowPrice,
+      highPrice,
+      offerCount: extendedData.variants.length,
+      availability: extendedData.variants.some((v) => v.inStock)
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      url: `${SITE_URL}/products/${encodeURIComponent(product.slug)}`,
-      seller: {
-        '@type': 'Organization',
-        name: 'دکتر درمر | Dr Dermer Clinical Skin & Health',
-      },
+      offers: variantOffers,
     },
     aggregateRating: {
       '@type': 'AggregateRating',
@@ -113,7 +134,12 @@ export default async function ProductPage({ params }: Props) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'صفحه اصلی', item: `${SITE_URL}/` },
       { '@type': 'ListItem', position: 2, name: 'محصولات و کاتالوگ', item: `${SITE_URL}/search` },
-      { '@type': 'ListItem', position: 3, name: extendedData.title },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: extendedData.title,
+        item: `${SITE_URL}/products/${encodeURIComponent(product.slug)}`,
+      },
     ],
   };
 

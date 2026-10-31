@@ -19,15 +19,26 @@ export class InventoryService {
     const { tenantId, storeId, items, ttlMinutes = 15 } = params;
     const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
 
+    // Helper regex to test standard UUID format
+    const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+    const validUuidVariantIds = items.map((i) => i.variantId).filter(isUuid);
+
     // Digital variants (ADR-012) are exempt from stock reservation:
     // they have no on-hand inventory and are delivered via DigitalGrant.
-    const variantKinds = await this.prisma.productVariant.findMany({
-      where: { id: { in: items.map((i) => i.variantId) } },
-      select: { id: true, product: { select: { kind: true } } },
-    });
-    const digitalVariantIds = new Set(
-      variantKinds.filter((v) => v.product.kind === "DIGITAL").map((v) => v.id)
-    );
+    let digitalVariantIds = new Set<string>();
+    if (validUuidVariantIds.length > 0) {
+      try {
+        const variantKinds = await this.prisma.productVariant.findMany({
+          where: { id: { in: validUuidVariantIds } },
+          select: { id: true, product: { select: { kind: true } } },
+        });
+        digitalVariantIds = new Set(
+          variantKinds.filter((v) => v.product.kind === "DIGITAL").map((v) => v.id)
+        );
+      } catch {
+        // DB fallback or resilient catch
+      }
+    }
     const physicalItems = items.filter((i) => !digitalVariantIds.has(i.variantId));
 
     // Sort variant IDs deterministically to avoid database deadlocks

@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { Money, CurrencyMismatchError } from "../src/money.js";
+import {
+  Money,
+  CurrencyMismatchError,
+  CURRENCY_SCALES,
+  getCurrencyScale,
+  convertMoney,
+  AppendOnlyConversionAuditLog,
+  ExchangeRate,
+} from "../src/money.js";
 import { calculateQuote, computeQuoteFingerprint } from "../src/pricing.js";
 import {
   canTransitionOrder,
@@ -54,6 +62,74 @@ describe("Money Primitive", () => {
     expect(parts[0].amount).toBe(34n);
     expect(parts[1].amount).toBe(33n);
     expect(parts[2].amount).toBe(33n);
+  });
+
+  it("defines multi-currency scales correctly", () => {
+    expect(CURRENCY_SCALES.IRT.decimals).toBe(0);
+    expect(CURRENCY_SCALES.IRT.minorUnitFactor).toBe(1n);
+
+    expect(CURRENCY_SCALES.IRR.decimals).toBe(0);
+    expect(CURRENCY_SCALES.IRR.minorUnitFactor).toBe(1n);
+
+    expect(CURRENCY_SCALES.GBP.decimals).toBe(2);
+    expect(CURRENCY_SCALES.GBP.minorUnitFactor).toBe(100n);
+
+    expect(CURRENCY_SCALES.USD.decimals).toBe(2);
+    expect(CURRENCY_SCALES.USD.minorUnitFactor).toBe(100n);
+
+    expect(CURRENCY_SCALES.EUR.decimals).toBe(2);
+    expect(CURRENCY_SCALES.EUR.minorUnitFactor).toBe(100n);
+
+    expect(CURRENCY_SCALES.AED.decimals).toBe(2);
+    expect(CURRENCY_SCALES.AED.minorUnitFactor).toBe(100n);
+
+    const fallback = getCurrencyScale("XYZ");
+    expect(fallback.decimals).toBe(2);
+  });
+
+  it("creates Money from major units without float imprecision", () => {
+    const gbp = Money.fromMajorUnits("19.99", "GBP");
+    expect(gbp.amount).toBe(1999n);
+    expect(gbp.currency).toBe("GBP");
+    expect(gbp.toMajorUnitsString()).toBe("19.99");
+
+    const usd = Money.fromMajorUnits(25, "USD");
+    expect(usd.amount).toBe(2500n);
+    expect(usd.toMajorUnitsString()).toBe("25.00");
+
+    const toman = Money.fromMajorUnits("1500000", "IRT");
+    expect(toman.amount).toBe(1500000n);
+    expect(toman.toMajorUnitsString()).toBe("1500000");
+
+    const rials = Money.fromMajorUnits(50000n, "IRR");
+    expect(rials.amount).toBe(50000n);
+  });
+
+  it("converts currencies safely and maintains append-only audit log", () => {
+    const auditLog = new AppendOnlyConversionAuditLog();
+    const gbpMoney = Money.fromMajorUnits("100.00", "GBP"); // 10,000 minor units (pence)
+
+    // Rate: 1 GBP = 110,000 IRT
+    const rate: ExchangeRate = {
+      fromCurrency: "GBP",
+      toCurrency: "IRT",
+      rateNumerator: 110_000n,
+      rateDenominator: 1n,
+      source: "drdermer_uk_hq",
+    };
+
+    const { money: converted, audit } = gbpMoney.convertWithAudit(rate, auditLog);
+
+    expect(converted.currency).toBe("IRT");
+    // 100 GBP = 11,000,000 IRT
+    expect(converted.amount).toBe(11_000_000n);
+    expect(audit.sourceAmount).toBe("10000");
+    expect(audit.targetAmount).toBe("11000000");
+    expect(audit.source).toBe("drdermer_uk_hq");
+
+    const entries = auditLog.getEntries();
+    expect(entries.length).toBe(1);
+    expect(entries[0].targetCurrency).toBe("IRT");
   });
 });
 

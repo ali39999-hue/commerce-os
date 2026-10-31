@@ -5,6 +5,8 @@ import { BLOG_POSTS, getPost } from "../../../lib/blog";
 
 type Props = { params: Promise<{ slug: string }> };
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
+
 export function generateStaticParams() {
   return BLOG_POSTS.map((p) => ({ slug: p.slug }));
 }
@@ -16,10 +18,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title} | آکادمی تخصصی علوم پوست و درماتولوژی`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blog/${encodeURIComponent(post.slug)}`,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: "article",
+      url: `${SITE_URL}/blog/${encodeURIComponent(post.slug)}`,
     },
   };
 }
@@ -29,12 +35,14 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getPost(slug);
   if (!post) notFound();
 
-  const jsonLd = {
+  const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalScholarlyArticle",
+    "@id": `${SITE_URL}/blog/${encodeURIComponent(post.slug)}#article`,
     headline: post.title,
     description: post.excerpt,
     datePublished: post.publishedAt,
+    url: `${SITE_URL}/blog/${encodeURIComponent(post.slug)}`,
     author: {
       "@type": "Organization",
       name: post.author,
@@ -50,18 +58,39 @@ export default async function BlogPostPage({ params }: Props) {
       : {}),
     publisher: {
       "@type": "Organization",
-      name: "Commerce OS Clinical Academy & Storefront",
+      name: "دکتر درمر | Dr Dermer Clinical Skin & Health",
+      url: SITE_URL,
     },
     articleSection: post.category,
     keywords: post.tags.join(", "),
     inLanguage: "fa-IR",
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "صفحه اصلی", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "آکادمی علوم پوست", item: `${SITE_URL}/academy` },
+      { "@type": "ListItem", position: 3, name: "وبلاگ و مقالات", item: `${SITE_URL}/blog` },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: post.title,
+        item: `${SITE_URL}/blog/${encodeURIComponent(post.slug)}`,
+      },
+    ],
+  };
+
   return (
     <article className="blog-post-layout">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <nav className="breadcrumbs-nav">

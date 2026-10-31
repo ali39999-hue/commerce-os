@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { STATUS_CODES } from "node:http";
 import * as crypto from "node:crypto";
+import { maskPii } from "../logging/pii-sanitizer";
 
 /**
  * Global exception filter (§۶.۱ API contract: structured errors with code + correlationId).
@@ -15,13 +16,17 @@ import * as crypto from "node:crypto";
  * The resolved id is echoed back on the "x-correlation-id" response header.
  *
  * PII rule (§۷.۱): request/response bodies are NEVER logged, at any level.
+ * Any exception messages or stack traces logged server-side are automatically PII sanitized.
  */
 
 interface ExceptionHttpRequest {
   method?: string | undefined;
   url?: string | undefined;
   originalUrl?: string | undefined;
-  headers?: { "x-correlation-id"?: string | string[] | undefined } | undefined;
+  headers?: {
+    "x-correlation-id"?: string | string[] | undefined;
+    "x-tenant-id"?: string | string[] | undefined;
+  } | undefined;
 }
 
 interface ExceptionHttpResponse {
@@ -45,7 +50,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     if (host.getType() !== "http") {
       // This API exposes HTTP only; non-HTTP transports are out of scope.
-      console.error(JSON.stringify({ level: "error", code: "INTERNAL_ERROR", error: describeException(exception) }));
+      console.error(
+        JSON.stringify({
+          level: "error",
+          code: "INTERNAL_ERROR",
+          error: maskPii(describeException(exception)),
+        }),
+      );
       return;
     }
 
@@ -54,8 +65,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = http.getResponse<ExceptionHttpResponse>();
 
     const correlationId = this.resolveCorrelationId(request, response);
+    const tenantId = this.resolveTenantId(request);
     const method = request.method ?? "UNKNOWN";
-    const url = request.originalUrl ?? request.url ?? "";
+    const rawUrl = request.originalUrl ?? request.url ?? "";
+    const url = maskPii(rawUrl);
 
     const isHttpException = exception instanceof HttpException;
     const status = isHttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
@@ -110,31 +123,52 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (isHttpException && status < HttpStatus.INTERNAL_SERVER_ERROR) {
       // 4xx: status + exception class only — messages can echo user input, so they stay out of logs.
       console.warn(
-        JSON.stringify({ level: "warn", correlationId, method, url, statusCode: status, error: exception.name }),
+        JSON.stringify({
+          level: "warn",
+          correlationId,
+          tenantId,
+          method,
+          url,
+          statusCode: status,
+          error: exception.name,
+        }),
       );
     } else if (isHttpException) {
-      console.error(
-        JSON.stringify({ level: "error", correlationId, method, url, statusCode: status, error: exception.name }),
-      );
-    } else {
-      // Unknown 500: full stack stays server-side, keyed by the same correlationId sent to the client.
-      const logged = exception instanceof Error ? exception : new Error(describeException(exception));
       console.error(
         JSON.stringify({
           level: "error",
           correlationId,
+          tenantId,
+          method,
+          url,
+          statusCode: status,
+          error: exception.name,
+        }),
+      );
+    } else {
+      // Unknown 500: full stack stays server-side, keyed by the same correlationId sent to the client.
+      const logged =
+        exception instanceof Error ? exception : new Error(describeException(exception));
+      console.error(
+        JSON.stringify({
+          level: "error",
+          correlationId,
+          tenantId,
           method,
           url,
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           code: "INTERNAL_ERROR",
-          message: logged.message,
-          stack: logged.stack ?? null,
+          message: maskPii(logged.message),
+          stack: logged.stack ? maskPii(logged.stack) : null,
         }),
       );
     }
   }
 
-  private resolveCorrelationId(request: ExceptionHttpRequest, response: ExceptionHttpResponse): string {
+  private resolveCorrelationId(
+    request: ExceptionHttpRequest,
+    response: ExceptionHttpResponse,
+  ): string {
     // Prefer the id LoggingInterceptor already echoed onto the response, so the
     // interceptor's log line and this error body always share one id.
     const echoed = response.getHeader("x-correlation-id");
@@ -145,6 +179,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (typeof incoming === "string" && incoming.length > 0) return incoming;
 
     return crypto.randomUUID();
+  }
+
+  private resolveTenantId(request: ExceptionHttpRequest): string | null {
+    const rawHeader = request.headers?.["x-tenant-id"];
+    const incoming = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader;
+    if (typeof incoming === "string" && incoming.length > 0) return incoming;
+    return null;
   }
 }
 

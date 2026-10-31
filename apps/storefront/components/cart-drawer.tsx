@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./cart";
-import { formatToman } from "../lib/catalog";
+import { useLocalizedFormatter } from "../lib/use-localized-formatter";
+import { trackViewCart, trackBeginCheckout } from "../lib/analytics";
 
 export function CartDrawer() {
   const {
@@ -16,7 +17,17 @@ export function CartDrawer() {
     isSyncing,
     syncWarnings,
     clearSyncWarnings,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
   } = useCart();
+  const { formatToman, formatMoney } = useLocalizedFormatter();
+
+  const [drawerCouponInput, setDrawerCouponInput] = useState("");
+  const [couponFeedback, setCouponFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -31,17 +42,56 @@ export function CartDrawer() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isDrawerOpen, closeDrawer]);
 
-  // Lock body scroll when drawer is open
+  // Lock body scroll and track view_cart when drawer opens
   useEffect(() => {
     if (isDrawerOpen) {
       document.body.style.overflow = "hidden";
+      if (items.length > 0) {
+        trackViewCart(
+          items.map((i) => ({
+            item_id: i.productId,
+            item_name: i.title,
+            item_variant: i.variantId,
+            sku: i.sku,
+            price: Number(i.priceAmount) || 0,
+            quantity: i.qty,
+            currency: "IRR",
+          })),
+          Number(calculations.totalRials) || 0,
+          "IRR"
+        );
+      }
     } else {
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isDrawerOpen]);
+  }, [isDrawerOpen, items, calculations.totalRials]);
+
+  const handleApplyDrawerCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCouponFeedback(null);
+    if (!drawerCouponInput.trim()) {
+      setCouponFeedback({
+        type: "error",
+        message: "لطفاً کد تخفیف را وارد کنید.",
+      });
+      return;
+    }
+    const res = applyCoupon(drawerCouponInput);
+    if (res.success) {
+      setCouponFeedback({ type: "success", message: res.message });
+      setDrawerCouponInput("");
+    } else {
+      setCouponFeedback({ type: "error", message: res.message });
+    }
+  };
+
+  const handleRemoveDrawerCoupon = () => {
+    removeCoupon();
+    setCouponFeedback(null);
+  };
 
   if (!isDrawerOpen) return null;
 
@@ -68,11 +118,23 @@ export function CartDrawer() {
           </button>
         </div>
 
-        {/* Free Shipping Progress */}
+        {/* Free Shipping Progress with Celebratory Badge */}
         <div className="free-shipping-bar-container">
           <div className="free-shipping-text">
-            <span>{calculations.freeShippingMessage}</span>
-            {calculations.isFreeShipping && <span className="badge-free">رایگان</span>}
+            <span>
+              {calculations.isFreeShipping ? (
+                <strong className="shipping-unlocked-text">
+                  🎉 تبریک! ارسال این سفارش رایگان شد
+                </strong>
+              ) : (
+                calculations.freeShippingMessage
+              )}
+            </span>
+            {calculations.isFreeShipping ? (
+              <span className="badge-free celebratory">ارسال رایگان فعال شد</span>
+            ) : (
+              <span className="badge-free">پیشتاز سراسری</span>
+            )}
           </div>
           <div
             className="free-shipping-track"
@@ -130,12 +192,14 @@ export function CartDrawer() {
                     </div>
                     <div className="drawer-item-details">
                       <h4>{item.title}</h4>
-                      <span className="drawer-item-sku">کد: {item.sku}</span>
+                      <div className="drawer-item-meta">
+                        <span className="drawer-item-sku">کد کالا: {item.sku}</span>
+                      </div>
                       <div className="drawer-item-price">
-                        {formatToman(item.priceAmount)}
+                        قیمت واحد: {formatToman(item.priceAmount)}
                       </div>
                       <div className="drawer-item-actions">
-                        <div className="drawer-qty-control">
+                        <div className="drawer-qty-control" aria-label="تنظیم تعداد کالا">
                           <button
                             type="button"
                             onClick={() => setQty(item.variantId, item.qty + 1)}
@@ -144,7 +208,7 @@ export function CartDrawer() {
                           >
                             +
                           </button>
-                          <span className="qty-value">{item.qty}</span>
+                          <span className="qty-value" aria-live="polite">{item.qty}</span>
                           <button
                             type="button"
                             onClick={() => setQty(item.variantId, item.qty - 1)}
@@ -175,38 +239,97 @@ export function CartDrawer() {
           )}
         </div>
 
-        {/* Footer Summary */}
+        {/* Footer Summary & Coupon Section */}
         {items.length > 0 && (
           <div className="cart-drawer-footer">
+            {/* Drawer Coupon Input */}
+            <div className="drawer-coupon-box">
+              <form onSubmit={handleApplyDrawerCoupon} className="drawer-coupon-form">
+                <input
+                  type="text"
+                  placeholder="کد تخفیف (مثال: WELCOME10)"
+                  value={drawerCouponInput}
+                  onChange={(e) => setDrawerCouponInput(e.target.value)}
+                  className="input-text drawer-coupon-input"
+                  disabled={Boolean(appliedCoupon)}
+                />
+                {appliedCoupon ? (
+                  <button
+                    type="button"
+                    onClick={handleRemoveDrawerCoupon}
+                    className="btn-coupon remove"
+                  >
+                    حذف
+                  </button>
+                ) : (
+                  <button type="submit" className="btn-coupon">
+                    اعمال
+                  </button>
+                )}
+              </form>
+
+              {couponFeedback && (
+                <div
+                  className={`drawer-coupon-feedback ${
+                    couponFeedback.type === "success" ? "success" : "error"
+                  }`}
+                >
+                  {couponFeedback.message}
+                </div>
+              )}
+
+              {appliedCoupon && (
+                <div className="active-coupon-tag drawer-active-coupon">
+                  <span>کوپن فعال: {appliedCoupon}</span>
+                </div>
+              )}
+            </div>
+
             <div className="drawer-summary-rows">
               <div className="drawer-sum-row">
                 <span>جمع قیمت کالاها:</span>
-                <span>{new Intl.NumberFormat("fa-IR").format(calculations.subtotalTomans)} تومان</span>
+                <span>{formatMoney(calculations.subtotalRials, "IRR")}</span>
               </div>
               {calculations.discountTomans > 0n && (
                 <div className="drawer-sum-row discount">
                   <span>تخفیف کل:</span>
-                  <span>- {new Intl.NumberFormat("fa-IR").format(calculations.discountTomans)} تومان</span>
+                  <span>- {formatMoney(calculations.discountRials, "IRR")}</span>
                 </div>
               )}
               <div className="drawer-sum-row">
                 <span>هزینه ارسال:</span>
                 <span>
                   {calculations.isFreeShipping
-                    ? "رایگان"
-                    : `${new Intl.NumberFormat("fa-IR").format(calculations.shippingTomans)} تومان`}
+                    ? "رایگان (پیشتاز)"
+                    : formatMoney(calculations.shippingRials, "IRR")}
                 </span>
               </div>
               <div className="drawer-sum-row total">
                 <span>مبلغ نهایی:</span>
-                <strong>{new Intl.NumberFormat("fa-IR").format(calculations.grandTotalTomans)} تومان</strong>
+                <strong>{formatMoney(calculations.totalRials, "IRR")}</strong>
               </div>
             </div>
 
             <div className="drawer-action-buttons">
               <Link
                 href="/checkout"
-                onClick={closeDrawer}
+                onClick={() => {
+                  trackBeginCheckout(
+                    items.map((i) => ({
+                      item_id: i.productId,
+                      item_name: i.title,
+                      item_variant: i.variantId,
+                      sku: i.sku,
+                      price: Number(i.priceAmount) || 0,
+                      quantity: i.qty,
+                      currency: "IRR",
+                    })),
+                    Number(calculations.totalRials) || 0,
+                    appliedCoupon || undefined,
+                    "IRR"
+                  );
+                  closeDrawer();
+                }}
                 className="btn-drawer-checkout"
               >
                 ادامه و ثبت سفارش

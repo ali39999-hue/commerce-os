@@ -32,6 +32,8 @@ export interface CartCalculation {
   shippingTomans: bigint;
   grandTotalRials: bigint;
   grandTotalTomans: bigint;
+  totalRials: bigint;
+  totalTomans: bigint;
   itemCount: number;
   freeShippingProgressPct: number;
   freeShippingRemainingTomans: bigint;
@@ -224,6 +226,8 @@ export function calculateCartTotals(
     shippingTomans: shippingRials / 10n,
     grandTotalRials,
     grandTotalTomans: grandTotalRials / 10n,
+    totalRials: grandTotalRials,
+    totalTomans: grandTotalRials / 10n,
     itemCount,
     freeShippingProgressPct: freeShipping.progressPct,
     freeShippingRemainingTomans: freeShipping.remainingTomans,

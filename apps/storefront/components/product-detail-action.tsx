@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useCart } from "./cart";
-import { formatToman } from "../lib/catalog";
+import { useLocalizedFormatter } from "../lib/use-localized-formatter";
 import Link from "next/link";
 
 export function ProductDetailAction(props: {
@@ -14,6 +14,7 @@ export function ProductDetailAction(props: {
   inStock: boolean;
 }) {
   const { addItem } = useCart();
+  const { formatToman } = useLocalizedFormatter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
