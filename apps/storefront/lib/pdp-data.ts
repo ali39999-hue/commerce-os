@@ -1,16 +1,16 @@
 import { ExtendedProductData } from './pdp-types';
 
 export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
-  'carboxygel-advanced-system': {
-    id: 'prod_clinical_carboxygel',
-    slug: 'carboxygel-advanced-system',
+  'carboxygel-professional-therapy': {
+    id: 'prod_skin_001',
+    slug: 'carboxygel-professional-therapy',
     brand: {
       name: 'ReeSkin Clinical',
       slug: 'reeskin',
       originCountry: 'انگلستان (United Kingdom)',
       tagline: 'فرمولاسیون تخصصی کربوکسی‌تراپی غیرتهاجمی و اکسیژن‌رسانی عمقی بافت',
     },
-    title: 'سیستم پیشرفته کربوکسی‌ژل بالینی CarboxyGel CO2',
+    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
     subtitleFa: 'ژل نوسازی سلولی با تحریک اثر بوهر (Bohr Effect) و اکسیژن‌رسانی مویرگی',
     scientificName: 'Non-Invasive Transdermal CO2 Carboxy Therapy Matrix',
     description:
@@ -61,43 +61,43 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     ],
     variants: [
       {
-        id: 'var_cbg_50ml',
-        sku: 'REE-CBG-050',
-        title: 'تیوب ۵۰ میلی‌لیتر (مصرف هوم‌کر / ۵ جلسه)',
-        sizeOrVolume: '50ml',
-        priceAmount: '38500000', // 3,850,000 Tomans
-        originalPriceAmount: '45000000',
-        discountPercent: 14,
+        id: 'var_skin_001_single',
+        sku: 'CBG-PRO-500ML',
+        title: 'پک حرفه‌ای کلینیکال ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
+        sizeOrVolume: '500ml کلینیکال',
+        priceAmount: '48500000', // 4,850,000 Tomans
+        originalPriceAmount: '56000000',
+        discountPercent: 13,
         currency: 'IRR',
         inStock: true,
-        inventoryQty: 24,
-        mediaRoleMatch: 'HERO',
-      },
-      {
-        id: 'var_cbg_100ml',
-        sku: 'REE-CBG-100',
-        title: 'تیوب ۱۰۰ میلی‌لیتر (پک اقتصادی هوم‌کر / ۱۰ جلسه)',
-        sizeOrVolume: '100ml',
-        priceAmount: '69000000', // 6,900,000 Tomans
-        originalPriceAmount: '82000000',
-        discountPercent: 16,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 12,
-        mediaRoleMatch: 'HERO',
-      },
-      {
-        id: 'var_cbg_pro5',
-        sku: 'REE-CBG-PRO5',
-        title: 'باکس کلینیکال ۵ عددی ویژه پزشکان و اسکین‌تراپیست‌ها',
-        sizeOrVolume: 'باکس ۵ عددی کلینیکال',
-        priceAmount: '165000000', // 16,500,000 Tomans
-        originalPriceAmount: '198000000',
-        discountPercent: 17,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 8,
+        inventoryQty: 18,
         mediaRoleMatch: 'PACKAGING',
+      },
+      {
+        id: 'var_skin_001_home',
+        sku: 'CBG-HOME-5X',
+        title: 'کیت خانگی ۵ عددی (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
+        sizeOrVolume: 'باکس ۵ عددی هوم‌کر',
+        priceAmount: '19500000', // 1,950,000 Tomans
+        originalPriceAmount: '23000000',
+        discountPercent: 15,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 32,
+        mediaRoleMatch: 'HERO',
+      },
+      {
+        id: 'var_skin_001_50ml',
+        sku: 'CBG-TUBE-50ML',
+        title: 'تیوب ۵۰ میلی‌لیتر تک‌نفره (۲ جلسه‌ای)',
+        sizeOrVolume: '50ml',
+        priceAmount: '8900000', // 890,000 Tomans
+        originalPriceAmount: '10500000',
+        discountPercent: 15,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 45,
+        mediaRoleMatch: 'HERO',
       },
     ],
     scienceMechanism: {
@@ -125,6 +125,14 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
         description: 'ایجاد حباب‌های کربنی بدون ایجاد تحریک سوزش شیمیایی.',
       },
       {
+        nameFa: 'عصاره سنتلا آسیاتیکا (مادکاسوساید ۴۰٪)',
+        inciName: 'Centella Asiatica Extract',
+        percentage: '5.0%',
+        purpose: 'ترمیم‌کننده و ضدالتهاب',
+        isKeyActive: true,
+        description: 'تسکین‌دهنده قوی التهاب و تسریع روند بازسازی اپیدرم.',
+      },
+      {
         nameFa: 'نیاسینامید خالص (ویتامین B3)',
         inciName: 'Niacinamide (Cosmetic Grade 99.8%)',
         percentage: '4.0%',
@@ -139,13 +147,6 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
         purpose: 'آبرسانی چندلایه از سطح اپیدرم تا اعماق درم',
         isKeyActive: true,
         description: 'مولکول‌های ریز برای تحریک ساخت کلاژن و مولکول‌های بزرگ برای حفظ رطوبت سطحی.',
-      },
-      {
-        nameFa: 'عصاره گیاه سنتلا آسیاتیکا (سیکا)',
-        inciName: 'Centella Asiatica (Madecassoside 40%) Leaf Extract',
-        percentage: '1.5%',
-        purpose: 'تسکین سریع گرگرفتگی، ضدالتهاب و تسریع بازسازی بافت',
-        isKeyActive: true,
       },
       {
         nameFa: 'آب دیونیزه گرید دارویی',
@@ -258,18 +259,18 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     ],
     bundleRecommendation: {
       bundleTitle: 'کیت تخصصی نوسازی سلولی Carboxy Complete Kit',
-      bundleDescription: 'ترکیب سیستم کربوکسی‌ژل با پدهای یدک CarboxyPod و سرم سیکا برای بالاترین اثربخشی بالینی و ۱۵٪ صرفه‌جویی اقتصادی',
+      bundleDescription: 'ترکیب سیستم کربوکسی‌ژل با پدهای یدک CarboxyPod و کرم سد دفاعی برای بالاترین اثربخشی بالینی و ۱۵٪ صرفه‌جویی اقتصادی',
       savingsText: '۱۵٪ تخفیف روی باندل کامل',
       items: [
         {
           id: 'bundle_cbg_gel',
-          slug: 'carboxygel-advanced-system',
-          title: 'سیستم کربوکسی‌ژل CarboxyGel CO2 (تیوب ۵۰ میلی‌لیتر)',
+          slug: 'carboxygel-professional-therapy',
+          title: 'ژل کربوکسی‌تراپی CarboxyGel (کیت خانگی ۵ عددی)',
           brand: 'ReeSkin',
           subtitle: 'ژل پایه القای اثر بوهر',
-          priceAmount: '38500000',
-          originalPriceAmount: '45000000',
-          discountBadge: '۱۴٪ تخفیف',
+          priceAmount: '19500000',
+          originalPriceAmount: '23000000',
+          discountBadge: '۱۵٪ تخفیف',
           roleInRoutine: 'گام ۱: اکسیژن‌رسانی عمیق',
           inStock: true,
         },
@@ -287,6 +288,23 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
         },
         {
           id: 'bundle_cca_serum',
+          slug: 'barrier-recovery-cream',
+          title: 'کرم ترمیم‌کننده و آرام‌بخش بریر پوست ReeSkin',
+          brand: 'ReeSkin',
+          subtitle: 'مادکاسوساید ۹۵٪ و لیپیدهای لاملار',
+          priceAmount: '14800000',
+          originalPriceAmount: '17500000',
+          discountBadge: '۱۵٪ تخفیف',
+          roleInRoutine: 'گام ۳: تقویت سد دفاعی',
+          inStock: true,
+        },
+      ],
+    },
+    ratingSummary: {
+      ratingValue: 4.9,
+      reviewCount: 38,
+    },
+  },
           slug: 'reemed-cica-barrier-serum',
           title: 'سرم ترمیم‌کننده و آرام‌بخش سیکا بریر ReeMed',
           brand: 'ReeMed',

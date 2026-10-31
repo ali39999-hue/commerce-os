@@ -416,6 +416,531 @@ async function main() {
       });
     }
 
+    // ── 6c. Clinical Skincare Products (PIM/DAM/Clinical Knowledge) ──
+    const clinicalProducts = [
+      {
+        slug: 'carboxygel-professional-therapy',
+        titleFa: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
+        description: 'سیستم کربوکسی تراپی غیرتهاجمی با تولید دی‌اکسید کربن فعال (Bohr Effect) جهت اکسیژن‌رسانی عمیق بافتی، تحریک فیبروبلاست‌ها و کلاژن‌سازی تخصصی در کلینیک.',
+        categorySlug: 'skincare',
+        brandSlug: 'reeskin-clinical',
+        vendorSlug: null,
+        variants: [
+          {
+            sku: 'CBG-PRO-500ML',
+            titleFa: 'پک حرفه‌ای کلینیکال ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک صورت)',
+            price: '48500000',
+            stock: 25,
+          },
+          {
+            sku: 'CBG-HOME-5X',
+            titleFa: 'کیت خانگی ۵ عددی (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
+            price: '19500000',
+            stock: 40,
+          },
+        ],
+        media: [
+          {
+            role: 'HERO' as const,
+            sortOrder: 1,
+            altText: 'ژل کربوکسی تراپی تخصصی ۵۰۰ میلی‌لیتر کلینیکال',
+            url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: true,
+          },
+          {
+            role: 'GALLERY' as const,
+            sortOrder: 2,
+            altText: 'بسته‌بندی حرفه‌ای پک کامل کربوکسی ژل و پد فعال‌ساز',
+            url: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: false,
+          },
+          {
+            role: 'HOW_TO' as const,
+            sortOrder: 3,
+            altText: 'نحوه استفاده از کربوکسی ژل روی پوست صورت',
+            url: 'https://images.unsplash.com/photo-1512290900672-1f41d9961be4?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: false,
+          },
+        ],
+        ingredients: [
+          {
+            name: 'سدیم بی‌کربنات',
+            inciName: 'Sodium Bicarbonate',
+            concentrationPercent: '8.50',
+            purpose: 'واکنش گاز CO2 و اکسیژن‌رسانی',
+            isKeyIngredient: true,
+            description: 'ماده پایه ایجاد گاز دی‌اکسید کربن در سطح پوست و تحریک جریان خون میکروسکوپی.',
+            sortOrder: 1,
+          },
+          {
+            name: 'عصاره سنتلا آسیاتیکا',
+            inciName: 'Centella Asiatica Extract',
+            concentrationPercent: '5.00',
+            purpose: 'ترمیم‌کننده و ضدالتهاب',
+            isKeyIngredient: true,
+            description: 'تسکین‌دهنده قوی التهاب و تسریع روند بازسازی اپیدرم.',
+            sortOrder: 2,
+          },
+          {
+            name: 'هیالورونیک اسید با وزن مولکولی چندگانه',
+            inciName: 'Sodium Hyaluronate',
+            concentrationPercent: '2.00',
+            purpose: 'آبرسانی عمقی',
+            isKeyIngredient: true,
+            description: 'جذب رطوبت لایه‌های اپیدرم و هیدراتاسیون پایدار.',
+            sortOrder: 3,
+          },
+        ],
+        claims: [
+          {
+            claimText: 'افزایش ۴۵ درصدی میزان اکسیژن‌رسانی ریزگردشی پوستی طی ۲۰ دقیقه پس از مصرف',
+            evidenceSummary: 'سنجش ترنس‌کیوتانیوس اکسیژن با پالس اکسی‌متری بافتی در کارآزمایی بالینی تصادفی دو سو کور.',
+            studyReference: 'Journal of Clinical Dermatology, Vol 42, 2024, pp 112-119',
+            approvedBy: 'دکتر مریم رادمنش (مسئول فنی درماتولوژی)',
+            status: 'APPROVED' as const,
+          },
+          {
+            claimText: 'روشن‌کنندگی و بهبود بافت خسته و کدری پوست از جلسه نخست',
+            evidenceSummary: 'ثبت اسپکتروفتومتری ملانین و زبری پوست روی ۵۰ داوطلب کلینیکی.',
+            studyReference: 'ReeSkin Clinical Evaluation Trial RS-2024-CBG',
+            approvedBy: 'دکتر نوید کمالی (پاتولوژیست و رگولاتوری)',
+            status: 'APPROVED' as const,
+          },
+        ],
+        usageSteps: [
+          {
+            stepNumber: 1,
+            title: 'پاکسازی اولیه',
+            instruction: 'پوست را با شوینده ملایم غیرصابونی شسته و کاملاً خشک نمایید.',
+          },
+          {
+            stepNumber: 2,
+            title: 'اپلیکیشن ژل',
+            instruction: 'مقدار مناسبی از ژل را با کاردک استریل به ضخامت ۲ میلی‌متر روی کل پوست صورت بمالید.',
+          },
+          {
+            stepNumber: 3,
+            title: 'قرار دادن ماسک فعال‌ساز و جذب',
+            instruction: 'ماسک فعال‌کننده خشک را روی صورت قرار دهید و به آرامی فشار دهید تا واکنش حباب‌های CO2 آغاز شود. پس از ۲۰ دقیقه بردارید و با آب ولرم آبکشی نمایید.',
+          },
+        ],
+        concernSlugs: ['dullness', 'anti-aging'],
+      },
+      {
+        slug: 'reeskin-gentle-hydrating-cleanser',
+        titleFa: 'شوینده ملایم و آبرسان پوست حساس ReeSkin Gentle Hydrating Cleanser',
+        description: 'فرمولاسیون سیندت ژل بدون صابون با سرامیدهای بیومیمتیک، آمینواسیدهای خالص و پنتنول برای محافظت از سد دفاعی پوست.',
+        categorySlug: 'skincare',
+        brandSlug: 'reeskin-clinical',
+        vendorSlug: null,
+        variants: [
+          {
+            sku: 'RS-CLN-200ML',
+            titleFa: 'حجم ۲۰۰ میلی‌لیتر پمپی',
+            price: '8900000',
+            stock: 60,
+          },
+          {
+            sku: 'RS-CLN-500ML',
+            titleFa: 'حجم سالنی و کلینیکی ۵۰۰ میلی‌لیتر',
+            price: '17200000',
+            stock: 30,
+          },
+        ],
+        media: [
+          {
+            role: 'HERO' as const,
+            sortOrder: 1,
+            altText: 'شوینده آبرسان ملایم ری‌اسکین ۲۰۰ میلی‌لیتر',
+            url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: true,
+          },
+        ],
+        ingredients: [
+          {
+            name: 'کمپلکس سرامید NP, AP, EOP',
+            inciName: 'Ceramide NP, Ceramide AP, Ceramide EOP',
+            concentrationPercent: '1.50',
+            purpose: 'ترمیم سد دفاعی',
+            isKeyIngredient: true,
+            description: 'لیپیدهای ساختاری مشابه پوست جهت جلوگیری از خشکی و احساس کشیدگی.',
+            sortOrder: 1,
+          },
+          {
+            name: 'پنتنول (پروویتامین B5)',
+            inciName: 'Panthenol',
+            concentrationPercent: '3.00',
+            purpose: 'تسکین‌دهنده و آبرسان',
+            isKeyIngredient: true,
+            description: 'افزایش فاکتورهای مرطوب‌کننده طبیعی پوست (NMF).',
+            sortOrder: 2,
+          },
+        ],
+        claims: [
+          {
+            claimText: 'عدم تضعیف سد لیپیدی پوست و حفظ pH فیزیولوژیک ۵.۵ پس از شستشو',
+            evidenceSummary: 'ارزیابی TEWL و ترانسیدرمال واتر لوس در آزمون کلینیکی ۶ ساعته.',
+            studyReference: 'Dermatological Safety Profile RS-CL-101',
+            approvedBy: 'دکتر مریم رادمنش',
+            status: 'APPROVED' as const,
+          },
+        ],
+        usageSteps: [
+          {
+            stepNumber: 1,
+            title: 'ماساژ روی پوست مرطوب',
+            instruction: 'مقدار یک تا دو پمپ را روی صورت مرطوب به مدت ۶۰ ثانیه به آرامی با حرکات دورانی ماساژ دهید.',
+          },
+          {
+            stepNumber: 2,
+            title: 'آبکشی',
+            instruction: 'با آب ولرم شسته و با حوله تمیز با ضربات ملایم خشک نمایید.',
+          },
+        ],
+        concernSlugs: ['sensitivity-redness'],
+      },
+      {
+        slug: 'reemed-cellular-renewal-serum',
+        titleFa: 'سرم بازسازی سلولی پیشرفته ReeMed Cellular Renewal Serum',
+        description: 'فرمولاسیون بیوتکنولوژی متشکل از فاکتورهای رشد پپتیدی (EGF/FGF)، باکوچیول خالص ۱.۵٪ و نیاسینامید ۴٪ برای تجدید لایه درمیس و رفع خطوط پیری.',
+        categorySlug: 'skincare',
+        brandSlug: 'reemed-laboratories',
+        vendorSlug: null,
+        variants: [
+          {
+            sku: 'RM-SER-30ML',
+            titleFa: 'شیشه قطره‌چکانی ۳۰ میلی‌لیتر',
+            price: '28500000',
+            stock: 35,
+          },
+          {
+            sku: 'RM-SER-100ML',
+            titleFa: 'پک کلینیکی و کابین ۱۰۰ میلی‌لیتر',
+            price: '64000000',
+            stock: 15,
+          },
+        ],
+        media: [
+          {
+            role: 'HERO' as const,
+            sortOrder: 1,
+            altText: 'سرم سلولی بازسازی پوست ری‌مد ۳۰ میلی‌لیتر',
+            url: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: true,
+          },
+        ],
+        ingredients: [
+          {
+            name: 'کمپلکس فاکتورهای رشد بیومیمتیک (sh-Oligopeptide-1)',
+            inciName: 'sh-Oligopeptide-1 (EGF)',
+            concentrationPercent: '0.20',
+            purpose: 'تحریک تکثیر سلولی و فیبروبلاست‌ها',
+            isKeyIngredient: true,
+            description: 'افزایش ساخت کلاژن نوع یک و الاستین در عمق درم.',
+            sortOrder: 1,
+          },
+          {
+            name: 'باکوچیول خالص',
+            inciName: 'Bakuchiol',
+            concentrationPercent: '1.50',
+            purpose: 'جایگزین ملایم رتینول بدون تحریک پوستی',
+            isKeyIngredient: true,
+            description: 'تسریع گردش سلولی و بهبود بافت پوست بدون ایجاد حساسیت نوری.',
+            sortOrder: 2,
+          },
+          {
+            name: 'نیاسینامید دارویی',
+            inciName: 'Niacinamide',
+            concentrationPercent: '4.00',
+            purpose: 'تقویت بریر و یکدست‌کننده رنگ پوست',
+            isKeyIngredient: true,
+            description: 'مهار انتقال ملانوزوم‌ها و تقویت سنتز سرامید طبیعی پوست.',
+            sortOrder: 3,
+          },
+        ],
+        claims: [
+          {
+            claimText: 'کاهش ۳۱ درصدی عمق چروک‌های پنجه کلاغی پس از ۲۸ روز مصرف منظم',
+            evidenceSummary: 'تحلیل پرفیلوگرام سه‌بعدی پوستی در مطالعه بالینی ۵۰ نفره.',
+            studyReference: 'European Journal of Aesthetic Medicine, Vol 18, 2024',
+            approvedBy: 'دکتر مارکوس وبر (لابراتوار سوئیس)',
+            status: 'APPROVED' as const,
+          },
+        ],
+        usageSteps: [
+          {
+            stepNumber: 1,
+            title: 'مصرف شبانه',
+            instruction: 'شب‌ها ۴ تا ۵ قطره از سرم را روی پوست تمیز صورت و گردن پخش نمایید.',
+          },
+          {
+            stepNumber: 2,
+            title: 'جذب و استفاده از مرطوب‌کننده',
+            instruction: '۲ دقیقه صبر کنید تا سرم به طور کامل نفوذ کند، سپس از کرم ترمیم‌کننده بریر استفاده نمایید.',
+          },
+        ],
+        concernSlugs: ['anti-aging'],
+      },
+      {
+        slug: 'barrier-recovery-cream',
+        titleFa: 'کرم ترمیم‌کننده و آرام‌بخش بریر Barrier Recovery Cream',
+        description: 'فرمولاسیون درماتولوژیک با لیپیدهای لاملار، فیتواسترول‌ها، مادکاسوساید و سنتلا جهت بازسازی سریع آسیب‌های لایزر، پیلینگ، خشکی شدید و درماتیت آتوپیک.',
+        categorySlug: 'skincare',
+        brandSlug: 'reeskin-clinical',
+        vendorSlug: null,
+        variants: [
+          {
+            sku: 'RS-BRC-50ML',
+            titleFa: 'تیوب ایرلس ۵۰ میلی‌لیتر',
+            price: '14800000',
+            stock: 45,
+          },
+          {
+            sku: 'RS-BRC-100ML',
+            titleFa: 'حجم حرفه‌ای ۱۰۰ میلی‌لیتر',
+            price: '24800000',
+            stock: 25,
+          },
+        ],
+        media: [
+          {
+            role: 'HERO' as const,
+            sortOrder: 1,
+            altText: 'کرم بازسازی سد دفاعی پوست ۵۰ میلی‌لیتر',
+            url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: true,
+          },
+          {
+            role: 'DETAIL' as const,
+            sortOrder: 2,
+            altText: 'بافت کرمی بدون چربی و جذب سریع',
+            url: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80',
+            width: 800,
+            height: 800,
+            mimeType: 'image/jpeg',
+            isPrimary: false,
+          },
+        ],
+        ingredients: [
+          {
+            name: 'مادکاسوساید خالص ۹۵٪',
+            inciName: 'Madecassoside',
+            concentrationPercent: '0.50',
+            purpose: 'ترمیم و التیام بافت پوست',
+            isKeyIngredient: true,
+            description: 'فعال‌ترین مولکول مشتق‌شده از سنتلا برای مهار سریع سایتوکین‌های التهابی.',
+            sortOrder: 1,
+          },
+          {
+            name: 'فیتواسترول‌ها و کلسترول گیاهی',
+            inciName: 'Phytosterols',
+            concentrationPercent: '2.00',
+            purpose: 'بازسازی ماتریس بین‌سلولی',
+            isKeyIngredient: true,
+            description: 'تطابق کامل با نسبت فیزیولوژیک لیپیدهای اپیدرم (سرامید ۳ : کلسترول ۱ : اسید چرب ۱).',
+            sortOrder: 2,
+          },
+        ],
+        claims: [
+          {
+            claimText: 'ترمیم ۷۸ درصدی سد دفاعی آسیب‌دیده پوست ظرف مدت ۴۸ ساعت',
+            evidenceSummary: 'سنجش ترنس‌اپیدرمال واتر لوس پس از تخریب عمدی استراتوم کورنئوم با SLS.',
+            studyReference: 'Clinical Skin Research RS-BRC-2024',
+            approvedBy: 'دکتر مریم رادمنش',
+            status: 'APPROVED' as const,
+          },
+        ],
+        usageSteps: [
+          {
+            stepNumber: 1,
+            title: 'استفاده روزانه',
+            instruction: 'صبح و شب پس از سرم یا روی پوست تمیز به عنوان مرحله محافظت نهایی استفاده کنید.',
+          },
+        ],
+        concernSlugs: ['sensitivity-redness'],
+      },
+    ];
+
+    for (const item of clinicalProducts) {
+      const brandId = item.brandSlug ? brandMap.get(item.brandSlug) ?? null : null;
+      const product = await prisma.product.upsert({
+        where: { storeId_slug: { storeId: store.id, slug: item.slug } },
+        update: {
+          tenantId: tenant.id,
+          titleFa: item.titleFa,
+          description: item.description,
+          categoryId: categoryMap.get(item.categorySlug),
+          brandId,
+          kind: 'PHYSICAL',
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+        },
+        create: {
+          tenantId: tenant.id,
+          storeId: store.id,
+          categoryId: categoryMap.get(item.categorySlug),
+          brandId,
+          kind: 'PHYSICAL',
+          slug: item.slug,
+          titleFa: item.titleFa,
+          description: item.description,
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+        },
+      });
+
+      // Clear & Seed Media
+      await prisma.productMedia.deleteMany({ where: { productId: product.id } });
+      for (const m of item.media) {
+        await prisma.productMedia.create({
+          data: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            role: m.role,
+            sortOrder: m.sortOrder,
+            altText: m.altText,
+            url: m.url,
+            width: m.width,
+            height: m.height,
+            mimeType: m.mimeType,
+            isPrimary: m.isPrimary,
+          },
+        });
+      }
+
+      // Clear & Seed Ingredients
+      await prisma.productIngredient.deleteMany({ where: { productId: product.id } });
+      for (const ing of item.ingredients) {
+        await prisma.productIngredient.create({
+          data: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            name: ing.name,
+            inciName: ing.inciName,
+            concentrationPercent: ing.concentrationPercent,
+            purpose: ing.purpose,
+            isKeyIngredient: ing.isKeyIngredient,
+            description: ing.description,
+            sortOrder: ing.sortOrder,
+          },
+        });
+      }
+
+      // Clear & Seed Claims
+      await prisma.clinicalClaim.deleteMany({ where: { productId: product.id } });
+      for (const c of item.claims) {
+        await prisma.clinicalClaim.create({
+          data: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            claimText: c.claimText,
+            evidenceSummary: c.evidenceSummary,
+            studyReference: c.studyReference,
+            approvedBy: c.approvedBy,
+            status: c.status,
+          },
+        });
+      }
+
+      // Clear & Seed Usage Steps
+      await prisma.usageStep.deleteMany({ where: { productId: product.id } });
+      for (const step of item.usageSteps) {
+        await prisma.usageStep.create({
+          data: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            stepNumber: step.stepNumber,
+            title: step.title,
+            instruction: step.instruction,
+          },
+        });
+      }
+
+      // Clear & Seed Skin Concerns
+      await prisma.productSkinConcern.deleteMany({ where: { productId: product.id } });
+      for (const slug of item.concernSlugs) {
+        const concernId = concernMap.get(slug);
+        if (concernId) {
+          await prisma.productSkinConcern.create({
+            data: {
+              tenantId: tenant.id,
+              storeId: store.id,
+              productId: product.id,
+              concernId,
+            },
+          });
+        }
+      }
+
+      // Seed Variants & Inventory
+      for (const v of item.variants) {
+        const variant = await prisma.productVariant.upsert({
+          where: { sku: v.sku },
+          update: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            titleFa: v.titleFa,
+            priceAmount: v.price,
+            currency: 'IRR',
+            status: 'ACTIVE',
+          },
+          create: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            productId: product.id,
+            sku: v.sku,
+            titleFa: v.titleFa,
+            priceAmount: v.price,
+            currency: 'IRR',
+            status: 'ACTIVE',
+          },
+        });
+
+        await prisma.inventoryLevel.upsert({
+          where: {
+            tenantId_storeId_variantId_warehouseCode: {
+              tenantId: tenant.id,
+              storeId: store.id,
+              variantId: variant.id,
+              warehouseCode: 'MAIN',
+            },
+          },
+          update: { onHandQty: v.stock, reservedQty: 0 },
+          create: {
+            tenantId: tenant.id,
+            storeId: store.id,
+            variantId: variant.id,
+            warehouseCode: 'MAIN',
+            onHandQty: v.stock,
+            reservedQty: 0,
+          },
+        });
+      }
+    }
+
     // 6b. Subscription Plans (ADR-009)
     const plansData = [
       { slug: 'coffee-monthly-ethiopia', titleFa: 'اشتراک ماهانه قهوه اتیوپی', description: 'هر ماه یک کیسه ۲۵۰ گرمی قهوه تازه‌برشت درِ خانه شما.', intervalDays: 30, price: '4500000', variantSku: 'COF-ETH-250' },
