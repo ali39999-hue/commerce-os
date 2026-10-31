@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>اتصال اینترنت قطع است | بازارک</title>
+    <style>
+      :root {
+        --brand-deep: #084f4a;
+        --brand: #0b6e66;
+        --accent: #f2a33a;
+        --paper: #fbf4ee;
+        --surface: #ffffff;
+        --line: #eadccf;
+        --muted: #66736b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--paper);
+        color: var(--brand-deep);
+        font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+        line-height: 1.9;
+      }
+      .offline-card {
+        max-width: 460px;
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        padding: 44px 36px;
+        text-align: center;
+        box-shadow: 0 10px 30px -4px rgba(11, 110, 102, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+      }
+      .offline-mark {
+        width: 84px;
+        height: 84px;
+        margin: 0 auto 20px;
+        display: grid;
+        place-items: center;
+        border-radius: 47% 53% 58% 42%;
+        background: var(--brand-deep);
+        color: #fffdf6;
+        font-size: 2.6rem;
+        font-weight: 900;
+      }
+      h1 { margin: 0 0 10px; font-size: 1.55rem; letter-spacing: -.03em; }
+      p { margin: 0 0 26px; color: var(--muted); font-size: .95rem; }
+      .retry-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--accent);
+        color: #211910;
+        border: none;
+        border-radius: 999px;
+        padding: 13px 30px;
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: background 0.18s ease, transform 0.18s ease;
+      }
+      .retry-btn:hover { background: #d98822; transform: translateY(-2px); }
+      .offline-hint { margin-top: 18px; font-size: .78rem; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <main class="offline-card">
+      <div class="offline-mark" aria-hidden="true">ب</div>
+      <h1>اتصال اینترنت قطع است</h1>
+      <p>
+        در حال حاضر امکان دسترسی به بازارک وجود ندارد. اتصال اینترنت خود را بررسی کنید و دوباره
+        تلاش کنید.
+      </p>
+      <button type="button" class="retry-btn" onclick="location.reload()">تلاش مجدد ↺</button>
+      <p class="offline-hint">سیستم‌عامل تجارت Commerce OS · نسخه ۲.۰</p>
+    </main>
+  </body>
+</html>

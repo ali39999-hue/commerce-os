@@ -1,0 +1,22 @@
+{
+  "name": "@commerce-os/finance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@commerce-os/domain": "workspace:*",
+    "@commerce-os/localization": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.5"
+  }
+}

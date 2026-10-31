@@ -1,0 +1,245 @@
+/* ── Vendors (W18) — colocated, imported by app/vendors/page.tsx and app/vendors/[slug]/page.tsx ── */
+
+.vendors-page {
+  padding: 40px 0 90px;
+}
+
+.vendors-demo-note {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+/* ── Vendors index ── */
+.vendors-head {
+  margin-bottom: 24px;
+}
+
+.vendors-head h1 {
+  margin: 4px 0 0;
+  font-size: 1.8rem;
+  color: var(--brand-deep);
+  letter-spacing: -0.02em;
+}
+
+.vendors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.vendor-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  padding: 22px 20px;
+}
+
+.vendor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-elevated, var(--shadow-card));
+}
+
+.vendor-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  color: #ffffff;
+  font-size: 1.7rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  user-select: none;
+}
+
+.vendor-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--brand-deep);
+}
+
+.vendor-desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  flex: 1;
+}
+
+.vendor-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.vendor-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+  border-radius: 999px;
+  padding: 4px 13px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.vendor-visit {
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.vendor-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ── Vendor storefront ── */
+.vendor-banner {
+  position: relative;
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #0d4239 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 30px 28px;
+  margin-bottom: 26px;
+  box-shadow: 0 8px 24px rgba(8, 79, 74, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.vendor-banner .vendor-avatar {
+  width: 66px;
+  height: 66px;
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+}
+
+.vendor-banner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.vendor-banner-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.vendor-banner h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+}
+
+.vendor-banner-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.88;
+  line-height: 1.9;
+  max-width: 640px;
+}
+
+.vendor-banner-count {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Product grid of one vendor (cards reuse .product-card from globals) */
+.vendor-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.vendor-products-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.vendor-products-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--brand-deep);
+}
+
+.vendor-back-link {
+  color: var(--brand);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.vendor-back-link:hover {
+  color: var(--brand-deep);
+}
+
+.vendor-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0 0 4px;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .vendors-grid,
+  .vendor-product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vendor-banner {
+    padding: 22px 18px;
+  }
+
+  .vendor-banner h1 {
+    font-size: 1.35rem;
+  }
+
+  .vendor-products-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

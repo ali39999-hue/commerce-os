@@ -1,0 +1,18 @@
+node_modules/
+.next/
+dist/
+build/
+.turbo/
+*.log
+.env
+.env.local
+.DS_Store
+_reference/
+coverage/
+.mimosa/
+apps/api/src/generated/
+apps/api/prisma/diff-err.txt
+
+# Embedded PostgreSQL data directory (scripts/embedded-postgres.mjs)
+.pgdata/
+

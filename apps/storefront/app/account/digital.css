@@ -1,0 +1,124 @@
+/* ── Digital grants tab (W18) — colocated, imported by app/account/page.tsx ──
+   Note: .digital-badge lives in components/discovery/digital-badge.css (owned by <DigitalBadge />). */
+
+.digital-demo-note {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.digital-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.digital-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 18px;
+}
+
+.digital-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.digital-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.digital-title-row strong {
+  font-size: 0.94rem;
+  color: var(--ink, #1f2a24);
+}
+
+.grant-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.dl-progress {
+  position: relative;
+  width: 150px;
+  max-width: 100%;
+  height: 7px;
+  background: #eef1ee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dl-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.dl-caption {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* Download button (primary, small) */
+.dl-btn {
+  flex: none;
+  background: var(--brand-deep);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.dl-btn:hover:not(:disabled) {
+  background: var(--brand);
+}
+
+.dl-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.dl-btn.revoked {
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .digital-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dl-progress {
+    width: 100%;
+  }
+}

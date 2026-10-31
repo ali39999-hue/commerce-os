@@ -1,0 +1,128 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Commerce OS — PRODUCTION compose file (modern spec: no `version:` key).
+#
+# Usage (from the repository root):
+#   docker compose -f docker-compose.prod.yml build
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Secrets & configuration:
+#   - There are NO hardcoded credentials in this file.
+#   - Compose interpolates ${VAR} values from the root `.env` file
+#     (auto-loaded from the directory containing this compose file).
+#   - Every application container additionally receives the whole `.env`
+#     through `env_file`.
+#   - `.env` must never be committed; start from `.env.example`.
+#   - Build contexts are the repo ROOT (pnpm workspace), so the single root
+#     `.dockerignore` applies to all four images.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Databases / infrastructure ─────────────────────────────────────────────
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    # POSTGRES_PASSWORD is mandatory in .env (the ":?" syntax fails loudly
+    # if it is missing). DATABASE_URL in .env must match these values, with
+    # the host set to the service name `postgres`.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-commerce_os}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # Deliberately NOT published: reachable only from the compose network.
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # Deliberately NOT published: reachable only from the compose network.
+
+  # ── Applications ───────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Image-level HEALTHCHECK (GET /v1/health) is defined in apps/api/Dockerfile.
+    # .env must point DATABASE_URL/REDIS_URL at the service names below:
+    #   DATABASE_URL=postgresql://<user>:<password>@postgres:5432/commerce_os
+    #   REDIS_URL=redis://redis:6379
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Image-level HEALTHCHECK (process check) is defined in apps/worker/Dockerfile.
+
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile
+      args:
+        # Baked into the client bundle at build time (NEXT_PUBLIC_*).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    restart: unless-stopped
+    env_file:
+      - .env
+    # Next standalone reads HOSTNAME to pick the bind address; Docker injects
+    # the container hostname otherwise, which would bind to the loopback of
+    # the container only. Force 0.0.0.0.
+    environment:
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000"
+    # Image-level HEALTHCHECK (GET /) is defined in apps/storefront/Dockerfile.
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+      args:
+        # Baked into the client bundle at build time (NEXT_PUBLIC_*).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3001}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3001:3001"
+    # Image-level HEALTHCHECK (GET /) is defined in apps/admin/Dockerfile.
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,794 @@
+:root {
+  --ink: #18221d;
+  --muted: #66736b;
+  --paper: #f8f6f0;
+  --surface: #ffffff;
+  --line: #e6dfd5;
+  --brand: #0b6e66;
+  --brand-deep: #084f4a;
+  --brand-tint: #e6f3f1;
+  --accent: #f2a33a;
+  --danger: #ef4444;
+  --success: #10b981;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Vazirmatn, IRANSansX, Tahoma, system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+button { font-family: inherit; }
+
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.admin-sidebar {
+  width: 270px;
+  background: var(--brand-deep);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  flex-shrink: 0;
+}
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.admin-logo-mark {
+  width: 44px;
+  height: 44px;
+  background: var(--accent);
+  color: #1a1a1a;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+.admin-brand strong { display: block; font-size: 1.1rem; }
+.admin-brand small { font-size: .75rem; opacity: .7; }
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  color: #dce7df;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: .92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: right;
+  transition: all .15s;
+}
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+.nav-btn.active {
+  background: var(--brand);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.badge-count {
+  background: var(--accent);
+  color: #1a1a1a;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: .75rem;
+  font-weight: 900;
+}
+.badge-alert {
+  background: var(--danger);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
+.admin-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.user-info strong { display: block; font-size: .88rem; }
+.user-info small { font-size: .75rem; opacity: .65; }
+
+/* ── Content Area ── */
+.admin-content {
+  flex-grow: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+}
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+.admin-topbar h1 {
+  font-size: 1.7rem;
+  color: var(--brand-deep);
+  margin: 0 0 6px;
+}
+.admin-topbar p {
+  color: var(--muted);
+  font-size: .9rem;
+  margin: 0;
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-sepidar-export {
+  background: var(--brand-deep);
+  color: #ffffff;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-sepidar-export:hover {
+  background: var(--brand);
+  transform: translateY(-1px);
+}
+.server-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #10b981;
+}
+
+/* ── KPIs ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.kpi-card.highlight {
+  border-color: var(--accent);
+  background: #fffcf8;
+}
+.kpi-title {
+  display: block;
+  font-size: .82rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.kpi-value {
+  display: block;
+  font-size: 1.45rem;
+  color: var(--brand-deep);
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+.kpi-value.status-ok { color: var(--success); }
+.kpi-sub {
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+/* ── Tables & Boxes ── */
+.admin-section-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.box-header { margin-bottom: 20px; }
+.box-header h2 {
+  font-size: 1.2rem;
+  margin: 0 0 4px;
+  color: var(--brand-deep);
+}
+.box-header small {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  font-size: .88rem;
+}
+.admin-table th {
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 700;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.admin-table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.bold { font-weight: 700; }
+.accent-text { color: var(--accent); font-weight: 700; }
+.muted-text { color: var(--muted); font-size: .82rem; }
+
+.status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+.status-pill.paid, .status-pill.approved, .status-pill.active {
+  background: #ecfdf5;
+  color: #047857;
+}
+.status-pill.processing, .status-pill.pending_review {
+  background: #fffbeb;
+  color: #b45309;
+}
+.status-pill.shipped {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.status-pill.rejected {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.stock-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: .84rem;
+}
+.stock-tag.ok { background: #ecfdf5; color: #047857; }
+.stock-tag.low { background: #fef2f2; color: #b91c1c; }
+
+.category-pill {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: .78rem;
+  font-family: monospace;
+}
+
+.action-button-group {
+  display: flex;
+  gap: 8px;
+}
+.btn-action {
+  background: var(--brand-tint);
+  border: 1px solid var(--brand);
+  color: var(--brand-deep);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-action:hover {
+  background: var(--brand);
+  color: #ffffff;
+}
+.btn-approve {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  color: #047857;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: .8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-approve:hover { background: #10b981; color: #ffffff; }
+.btn-reject {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--danger);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-reject:hover { background: #fef2f2; }
+
+/* ════════════════════════════════════════════════════════════════════
+   APPENDED STYLES — Analytics / Exceptions / Coupons tabs
+   (new rules only; everything above is untouched)
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Analytics: 5-column KPI row */
+.kpi-grid.kpi-grid-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+/* Analytics: fallback note when API unreachable / dbAvailable false */
+.api-fallback-note {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: .82rem;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+/* Analytics: funnel list */
+.funnel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.funnel-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.funnel-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.funnel-stage-name {
+  font-weight: 800;
+  font-size: .92rem;
+  color: var(--brand-deep);
+  min-width: 140px;
+}
+.funnel-stage-count {
+  font-size: .84rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.funnel-stage-pct {
+  font-size: .78rem;
+  color: var(--muted);
+}
+.funnel-bar-track {
+  height: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.funnel-bar-fill {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 999px;
+  transition: width .3s ease;
+}
+
+/* Exceptions center */
+.exception-summary-box {
+  margin-bottom: 18px;
+}
+.exception-summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.exceptions-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.exceptions-toolbar .btn-action:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+.exception-block {
+  margin-bottom: 18px;
+}
+.exception-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.exception-block-header h2 {
+  margin: 0;
+}
+.exception-empty {
+  margin: 4px 0 0;
+  font-weight: 700;
+  color: #047857;
+}
+
+/* Green zero-state count pill (companion to .badge-alert) */
+.badge-ok {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: .75rem;
+  font-weight: 900;
+}
+
+/* Coupons: inline create form */
+.coupon-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin-bottom: 16px;
+}
+.coupon-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coupon-field label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.admin-input {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: .88rem;
+  font-family: inherit;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .15s, background .15s;
+  width: 100%;
+}
+.admin-input:focus {
+  border-color: var(--brand);
+  background: #ffffff;
+}
+.coupon-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--brand);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: .88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-primary:hover {
+  background: var(--brand-deep);
+}
+.form-feedback-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: .82rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.form-feedback-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: .82rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.feedback-list {
+  margin: 0;
+  padding-right: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Responsive behaviour for the new grids */
+@media (max-width: 1200px) {
+  .kpi-grid.kpi-grid-5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .coupon-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Subscriptions & B2B (W17)
+   (new rules only; everything above is untouched)
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Subscription status pills — ACTIVE reuses the existing green .status-pill.active */
+.status-pill.paused {
+  background: #fffbeb;
+  color: #b45309;
+}
+.status-pill.cancelled,
+.status-pill.b2b-closed {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.status-pill.expired {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+/* B2B quote status pills */
+.status-pill.b2b-new {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.status-pill.b2b-inreview {
+  background: #fffbeb;
+  color: #b45309;
+}
+.status-pill.b2b-quoted {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+/* Subscriptions KPI row (grid columns borrowed from .kpi-grid) */
+.subs-kpi-row {
+  margin-bottom: 22px;
+}
+
+/* B2B status filter chips */
+.b2b-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.b2b-chip {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.b2b-chip:hover {
+  border-color: var(--brand);
+  color: var(--brand-deep);
+}
+.b2b-chip.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #ffffff;
+}
+.b2b-chip:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+/* B2B expandable rows */
+.b2b-row-clickable {
+  cursor: pointer;
+}
+.b2b-row-clickable:hover td {
+  background: #fbfaf6;
+}
+.b2b-expand-row td {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.b2b-expand {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 6px 10px;
+  font-size: .86rem;
+}
+.b2b-expand strong {
+  font-size: .82rem;
+  color: var(--brand-deep);
+}
+.b2b-expand p {
+  margin: 0;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+.b2b-expand label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.b2b-expand textarea {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: .86rem;
+  color: var(--ink);
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 56px;
+  outline: none;
+  transition: border-color .15s;
+}
+.b2b-expand textarea:focus {
+  border-color: var(--brand);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Vendors & Digital Grants (W18)
+   (new rules only; everything above is untouched)
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Vendors: letter avatar + title/description cell */
+.vendor-avatar-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.vendor-avatar-cell .vendor-avatar-letter {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: .95rem;
+}
+.vendor-avatar-cell > div:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+/* Vendors: inline create form (grid rhythm borrowed from the coupon form) */
+.vendor-form-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin-bottom: 16px;
+}
+.vendor-form-row .admin-input[type="color"] {
+  padding: 3px;
+  height: 42px;
+  cursor: pointer;
+}
+
+/* Digital grants: phone filter row */
+.grant-filter-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.grant-filter-row .coupon-field {
+  min-width: 260px;
+}
+
+/* Digital grants: download counter mini bar */
+.grant-dl-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: .82rem;
+  font-weight: 700;
+}
+.grant-dl-bar {
+  width: 120px;
+  height: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.grant-dl-fill {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 999px;
+  transition: width .3s ease;
+}
+
+/* Digital grant status pills */
+.status-pill.digital-active {
+  background: #ecfdf5;
+  color: #047857;
+}
+.status-pill.digital-revoked {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.status-pill.digital-expired {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+/* Responsive behaviour for the new grids */
+@media (max-width: 1200px) {
+  .vendor-form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .vendor-form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .grant-filter-row .coupon-field {
+    min-width: 100%;
+  }
+}

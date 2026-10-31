@@ -1,0 +1,41 @@
+# ── Commerce OS root .dockerignore ──────────────────────────────────────────
+# Applies to every image build (all Dockerfiles use the repo root as the
+# build context). Keep this list conservative: the builders only need the
+# workspace manifests, sources, and prisma schema/migrations.
+
+# Dependencies (reinstalled inside the builder stage)
+**/node_modules
+**/.pnpm-store
+
+# Build outputs (rebuilt inside the builder stage)
+**/dist
+**/.next
+**/out
+**/.turbo
+**/tsconfig.tsbuildinfo
+**/next-env.d.ts
+
+# Environment files & secrets — never bake them into images.
+# The example stays available for reference inside builds.
+**/.env
+**/.env.*
+!.env.example
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Repo docs & reference material (not needed inside images)
+docs
+_reference
+README_FA.md
+
+# Local tooling / editor / OS noise
+.mimosa
+scripts
+start-dev.bat
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
