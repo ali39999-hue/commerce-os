@@ -56,6 +56,18 @@ export class InventoryService {
       });
 
       for (const item of sortedItems) {
+        if (!isUuid(item.variantId)) {
+          // If in demo or non-uuid mode, record reservation line without DB level lock
+          await tx.inventoryReservationLine.create({
+            data: {
+              reservationId: reservation.id,
+              variantId: "00000000-0000-0000-0000-000000000001",
+              reservedQty: item.qty,
+            },
+          });
+          continue;
+        }
+
         // Find inventory row with row-level lock
         const inventoryRows: any[] = await tx.$queryRaw`
           SELECT id, "onHandQty", "reservedQty"

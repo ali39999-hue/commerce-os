@@ -58,6 +58,12 @@ CREATE TYPE "QuoteRequestStatus" AS ENUM ('NEW', 'IN_REVIEW', 'QUOTED', 'CLOSED'
 -- CreateEnum
 CREATE TYPE "ProductKind" AS ENUM ('PHYSICAL', 'DIGITAL');
 
+-- CreateEnum
+CREATE TYPE "MediaRole" AS ENUM ('HERO', 'GALLERY', 'LIFESTYLE', 'DETAIL', 'HOW_TO', 'CERTIFICATE');
+
+-- CreateEnum
+CREATE TYPE "ClinicalClaimStatus" AS ENUM ('APPROVED', 'DRAFT', 'REVIEW_REQUIRED');
+
 -- CreateTable
 CREATE TABLE "tenants" (
     "id" UUID NOT NULL,
@@ -159,6 +165,7 @@ CREATE TABLE "products" (
     "tenantId" UUID NOT NULL,
     "storeId" UUID NOT NULL,
     "categoryId" UUID,
+    "brandId" UUID,
     "vendorId" UUID,
     "kind" "ProductKind" NOT NULL DEFAULT 'PHYSICAL',
     "slug" VARCHAR(180) NOT NULL,
@@ -204,6 +211,118 @@ CREATE TABLE "product_variants" (
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "product_variants_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "brands" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
+    "slug" VARCHAR(100) NOT NULL,
+    "description" TEXT,
+    "logoUrl" TEXT,
+    "websiteUrl" VARCHAR(255),
+    "originCountry" VARCHAR(100),
+    "isPublished" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "brands_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_media" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "productId" UUID NOT NULL,
+    "variantId" UUID,
+    "role" "MediaRole" NOT NULL DEFAULT 'GALLERY',
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "altText" VARCHAR(255),
+    "url" TEXT NOT NULL,
+    "width" INTEGER,
+    "height" INTEGER,
+    "mimeType" VARCHAR(100),
+    "isPrimary" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "product_media_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_ingredients" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "productId" UUID NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
+    "inciName" VARCHAR(255),
+    "concentrationPercent" DECIMAL(5,2),
+    "purpose" VARCHAR(255),
+    "isKeyIngredient" BOOLEAN NOT NULL DEFAULT false,
+    "description" TEXT,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "product_ingredients_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "skin_concerns" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
+    "slug" VARCHAR(100) NOT NULL,
+    "description" TEXT,
+    "iconUrl" TEXT,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "skin_concerns_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "product_skin_concerns" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "productId" UUID NOT NULL,
+    "concernId" UUID NOT NULL,
+
+    CONSTRAINT "product_skin_concerns_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "clinical_claims" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "productId" UUID NOT NULL,
+    "claimText" VARCHAR(500) NOT NULL,
+    "evidenceSummary" TEXT,
+    "studyReference" TEXT,
+    "approvedBy" VARCHAR(150),
+    "status" "ClinicalClaimStatus" NOT NULL DEFAULT 'DRAFT',
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "clinical_claims_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "usage_steps" (
+    "id" UUID NOT NULL,
+    "tenantId" UUID NOT NULL,
+    "storeId" UUID NOT NULL,
+    "productId" UUID NOT NULL,
+    "stepNumber" INTEGER NOT NULL DEFAULT 1,
+    "title" VARCHAR(200) NOT NULL,
+    "instruction" TEXT NOT NULL,
+    "iconOrImageUrl" TEXT,
+
+    CONSTRAINT "usage_steps_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -803,6 +922,9 @@ CREATE INDEX "products_tenantId_storeId_status_publishedAt_idx" ON "products"("t
 CREATE INDEX "products_vendorId_idx" ON "products"("vendorId");
 
 -- CreateIndex
+CREATE INDEX "products_brandId_idx" ON "products"("brandId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "products_storeId_slug_key" ON "products"("storeId", "slug");
 
 -- CreateIndex
@@ -822,6 +944,48 @@ CREATE INDEX "product_variants_tenantId_storeId_status_idx" ON "product_variants
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_variants_tenantId_storeId_id_key" ON "product_variants"("tenantId", "storeId", "id");
+
+-- CreateIndex
+CREATE INDEX "brands_tenantId_storeId_isPublished_idx" ON "brands"("tenantId", "storeId", "isPublished");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "brands_storeId_slug_key" ON "brands"("storeId", "slug");
+
+-- CreateIndex
+CREATE INDEX "product_media_productId_sortOrder_idx" ON "product_media"("productId", "sortOrder");
+
+-- CreateIndex
+CREATE INDEX "product_media_tenantId_storeId_role_idx" ON "product_media"("tenantId", "storeId", "role");
+
+-- CreateIndex
+CREATE INDEX "product_ingredients_productId_sortOrder_idx" ON "product_ingredients"("productId", "sortOrder");
+
+-- CreateIndex
+CREATE INDEX "product_ingredients_tenantId_storeId_isKeyIngredient_idx" ON "product_ingredients"("tenantId", "storeId", "isKeyIngredient");
+
+-- CreateIndex
+CREATE INDEX "skin_concerns_tenantId_storeId_idx" ON "skin_concerns"("tenantId", "storeId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "skin_concerns_storeId_slug_key" ON "skin_concerns"("storeId", "slug");
+
+-- CreateIndex
+CREATE INDEX "product_skin_concerns_tenantId_storeId_concernId_idx" ON "product_skin_concerns"("tenantId", "storeId", "concernId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "product_skin_concerns_productId_concernId_key" ON "product_skin_concerns"("productId", "concernId");
+
+-- CreateIndex
+CREATE INDEX "clinical_claims_productId_status_idx" ON "clinical_claims"("productId", "status");
+
+-- CreateIndex
+CREATE INDEX "clinical_claims_tenantId_storeId_status_idx" ON "clinical_claims"("tenantId", "storeId", "status");
+
+-- CreateIndex
+CREATE INDEX "usage_steps_productId_stepNumber_idx" ON "usage_steps"("productId", "stepNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "usage_steps_productId_stepNumber_key" ON "usage_steps"("productId", "stepNumber");
 
 -- CreateIndex
 CREATE INDEX "inventory_levels_tenantId_storeId_variantId_idx" ON "inventory_levels"("tenantId", "storeId", "variantId");
@@ -1004,10 +1168,40 @@ ALTER TABLE "products" ADD CONSTRAINT "products_tenantId_storeId_fkey" FOREIGN K
 ALTER TABLE "products" ADD CONSTRAINT "products_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "brands"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_variants" ADD CONSTRAINT "product_variants_tenantId_storeId_productId_fkey" FOREIGN KEY ("tenantId", "storeId", "productId") REFERENCES "products"("tenantId", "storeId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "brands" ADD CONSTRAINT "brands_tenantId_storeId_fkey" FOREIGN KEY ("tenantId", "storeId") REFERENCES "stores"("tenantId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_media" ADD CONSTRAINT "product_media_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_media" ADD CONSTRAINT "product_media_variantId_fkey" FOREIGN KEY ("variantId") REFERENCES "product_variants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_ingredients" ADD CONSTRAINT "product_ingredients_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "skin_concerns" ADD CONSTRAINT "skin_concerns_tenantId_storeId_fkey" FOREIGN KEY ("tenantId", "storeId") REFERENCES "stores"("tenantId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_skin_concerns" ADD CONSTRAINT "product_skin_concerns_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "product_skin_concerns" ADD CONSTRAINT "product_skin_concerns_concernId_fkey" FOREIGN KEY ("concernId") REFERENCES "skin_concerns"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "clinical_claims" ADD CONSTRAINT "clinical_claims_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "usage_steps" ADD CONSTRAINT "usage_steps_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "inventory_levels" ADD CONSTRAINT "inventory_levels_tenantId_storeId_variantId_fkey" FOREIGN KEY ("tenantId", "storeId", "variantId") REFERENCES "product_variants"("tenantId", "storeId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -30,6 +30,8 @@ if (!existsSync(dataDir)) {
 
 console.log("🟡 Starting embedded PostgreSQL (PGlite WASM)…");
 const db = new PGlite(dataDir);
+await db.waitReady;
+console.log("✅ PGlite WASM engine ready");
 
 // Apply the schema once (idempotent — checks for the tenants table)
 const probe = await db.query(`SELECT to_regclass('public.tenants') AS t`);
@@ -54,6 +56,7 @@ const server = new PGLiteSocketServer({
   debug: process.env.PG_INSPECT === "1",
 });
 
+console.log("🟡 Initializing socket server...");
 await server.start();
 console.log(`🟢 Embedded PostgreSQL ready on ${server.getServerConn()}`);
 console.log("   (DATABASE_URL=localhost:5432 — same as docker-compose dev)");
@@ -74,3 +77,6 @@ async function shutdown() {
 
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
+
+// Keep the event loop alive explicitly
+setInterval(() => {}, 1000 * 60 * 60);
