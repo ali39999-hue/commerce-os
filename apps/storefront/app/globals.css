@@ -2,6 +2,8 @@
 @import '../components/localization/locale-currency-selector.css';
 @import '../components/header-elevated.css';
 @import '../components/home/interactive-features.css';
+@import '../components/interactive/canvas-sequence-player.css';
+@import './clinical-station.css';
 
 :root {
   color-scheme: light;

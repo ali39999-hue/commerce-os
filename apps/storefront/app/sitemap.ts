@@ -21,8 +21,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/vendors`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE_URL}/reeskin`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/reemed`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/carbox`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/plasmax`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/carbox`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/plasmax`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/carboxygel`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/carboxypod`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
+    { url: `${BASE_URL}/carboxypad`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/crystalene`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/healene`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/silicalene`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
   ];
 
   // 2. B2B & Clinical Professional Protocols
