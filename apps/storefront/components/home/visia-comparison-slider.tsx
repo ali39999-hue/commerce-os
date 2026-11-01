@@ -196,7 +196,15 @@ export function VisiaTrialComparisonSlider() {
                 left: `${sliderPos}%`,
               }}
             >
-              <div className="visia-handle-knob" aria-label="اهرم کششی مقایسه">
+              <div
+                className="visia-handle-knob"
+                role="slider"
+                aria-label="اهرم کششی مقایسه تصاویر قبل و بعد"
+                aria-valuenow={Math.round(sliderPos)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                tabIndex={0}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polyline points="15 18 9 12 15 6" />
                   <polyline points="9 18 3 12 9 6" />

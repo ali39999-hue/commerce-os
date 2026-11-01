@@ -4012,7 +4012,7 @@ button { font-family: inherit; }
   color: var(--ink);
 }
 .vip-submit-btn {
-  background: #14b8a6;
+  background: #0f766e;
   color: #ffffff;
   border: none;
   padding: 12px 24px;
@@ -4024,7 +4024,7 @@ button { font-family: inherit; }
   transition: all 0.2s ease;
 }
 .vip-submit-btn:hover {
-  background: #0d9488;
+  background: #115e59;
 }
 .vip-privacy-note {
   font-size: 0.74rem;
@@ -4205,7 +4205,7 @@ button { font-family: inherit; }
 }
 .link-sub {
   font-size: 0.74rem;
-  color: #64748b;
+  color: #94a3b8;
 }
 
 /* Newsletter & Trust Column */
@@ -4388,11 +4388,11 @@ button { font-family: inherit; }
   flex-direction: column;
   gap: 4px;
   font-size: 0.82rem;
-  color: #64748b;
+  color: #94a3b8;
 }
 .tech-credit {
   font-size: 0.74rem;
-  color: #475569;
+  color: #64748b;
 }
 .bottom-links {
   display: flex;
