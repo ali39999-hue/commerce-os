@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "کیت‌های مصرفی پروتکل و تجهیزات کلینیک | Commerce OS B2B",
+  title: "کیت‌های مصرفی پروتکل و تجهیزات کلینیک | دکتر درمر B2B",
   description:
     "مشخصات فنی و استانداردهای کیت ژل کربوکسی ۱۵۰۰ میلی‌لیتر، کارتریج‌های تک‌دوز Box of 10/20 و کیت‌های بازسازی سد دفاعی پوست.",
 };

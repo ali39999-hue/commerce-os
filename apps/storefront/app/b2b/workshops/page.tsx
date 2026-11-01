@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "تقویم ورکشاپ‌های تخصصی و گواهینامه‌های بالینی | Commerce OS Academy",
+  title: "تقویم ورکشاپ‌های تخصصی و گواهینامه‌های بالینی | دکتر درمر انگلستان",
   description:
     "دوره‌های آموزشی هندزآن کربوکسی‌تراپی بدون سوزن، پیلینگ شیمیایی و ترمیم سد پوستی با اعطای سرتیفیکیت معتبر آکادمی پوست و زیبایی.",
 };

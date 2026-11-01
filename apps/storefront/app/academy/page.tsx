@@ -4,7 +4,7 @@ import { BLOG_POSTS } from "../../lib/blog";
 import { INGREDIENT_ENCYCLOPEDIA } from "../../lib/ingredients";
 
 export const metadata: Metadata = {
-  title: "آکادمی علوم پوست و پروتکل‌های بالینی | Commerce OS Academy",
+  title: "آکادمی علوم پوست و پروتکل‌های بالینی | دکتر درمر انگلستان",
   description:
     "پایگاه دانش تخصصی پوست و مو، آموزش پروتکل‌های کربوکسی‌تراپی بدون سوزن، لایه‌برداری و درمان‌های سد دفاعی ویژه پزشکان، درماتولوژیست‌ها و بیوتی‌تراپیست‌ها.",
 };
@@ -135,7 +135,7 @@ export default function AcademyPage() {
             }}
           >
             <span>🎓</span>
-            <span>Commerce OS Clinical Academy & Knowledge Base</span>
+            <span>Dr Dermer Clinical Academy &amp; Knowledge Base</span>
           </div>
           <h1 style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", margin: "0 0 16px", lineHeight: "1.4", fontWeight: 900 }}>
             آکادمی تخصصی علوم پوست و پروتکل‌های بالینی

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { INGREDIENT_ENCYCLOPEDIA } from "../../lib/ingredients";
 
 export const metadata: Metadata = {
-  title: "دانشنامه ترکیبات فعال و استانداردهای INCI | Commerce OS Skin Science",
+  title: "دانشنامه ترکیبات فعال و استانداردهای INCI | دکتر درمر انگلستان",
   description:
     "مرجع تخصصی مواد مؤثره آرایشی و درموسوتیکال: اسامی بین‌المللی INCI، نقش بیولوژیک سلولی، پروفایل ایمنی و CIR، تداخلات و سینرژی‌های بالینی.",
 };

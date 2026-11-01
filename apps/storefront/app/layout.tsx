@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     'Bohr Effect',
   ],
   authors: [{ name: 'Dr Dermer Clinical Research Laboratories', url: 'https://www.drdermer.co.uk' }],
-  creator: 'Commerce OS Global Health & Beauty Platform',
+  creator: 'Dr Dermer UK Clinical Laboratories',
   publisher: 'Dr Dermer International',
   applicationName: 'Dr Dermer Storefront',
   formatDetection: {
