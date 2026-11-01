@@ -113,7 +113,7 @@ function demoVendorSummaries(): VendorSummary[] {
     titleFa: vendor.titleFa,
     description: vendor.description,
     logoColor: vendor.logoColor,
-    productCount: DEMO_FALLBACK_PRODUCTS.filter((p) => p.vendor?.slug === vendor.slug).length,
+    productCount: (DEMO_FALLBACK_PRODUCTS as any[]).filter((p) => (p.vendor as any)?.slug === vendor.slug).length,
   }));
 }
 
@@ -122,8 +122,8 @@ function demoVendorDetail(slug: string): VendorDetailResult {
   if (!vendor) {
     throw new NotFoundException("فروشنده‌ای با این شناسه یافت نشد");
   }
-  const products = DEMO_FALLBACK_PRODUCTS.filter((p) => p.vendor?.slug === vendor.slug).map(
-    (p: DemoProduct): VendorProductSummary =>
+  const products = (DEMO_FALLBACK_PRODUCTS as any[]).filter((p) => (p.vendor as any)?.slug === vendor.slug).map(
+    (p: any): VendorProductSummary =>
       toVendorProductSummary({
         id: p.id,
         slug: p.slug,

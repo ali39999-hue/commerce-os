@@ -168,7 +168,9 @@ export class CatalogService {
     try {
       const store = await this.resolveActiveStore(storeSlug);
       if (!store) {
-        const fallback = DEMO_FALLBACK_PRODUCTS.find((p) => p.slug === productSlug);
+        const fallback = DEMO_FALLBACK_PRODUCTS.find(
+          (p) => p.slug === productSlug || (productSlug === 'carboxygel-professional-therapy' && p.slug === 'carboxygel'),
+        );
         if (fallback) return this.toPublicProduct(fallback);
         throw new NotFoundException('کالای مورد نظر یافت نشد.');
       }

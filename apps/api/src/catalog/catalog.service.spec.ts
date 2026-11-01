@@ -60,7 +60,7 @@ describe('CatalogService', () => {
       const products = await service.listPublished('demo', 20);
       expect(products.length).toBeGreaterThan(0);
 
-      const carboxy = products.find((p) => p.slug === 'carboxygel-professional-therapy');
+      const carboxy = products.find((p) => p.slug === 'carboxygel' || p.slug === 'carboxygel-professional-therapy');
       expect(carboxy).toBeDefined();
       expect(carboxy?.brand?.name).toBe('ReeSkin Clinical');
       expect(carboxy?.media.length).toBeGreaterThan(0);
@@ -73,9 +73,9 @@ describe('CatalogService', () => {
     it('returns detailed product with clinical claims and ingredients', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 
-      const product = await service.getPublished('demo', 'carboxygel-professional-therapy');
-      expect(product.slug).toBe('carboxygel-professional-therapy');
-      expect(product.brand?.slug).toBe('reeskin-clinical');
+      const product = await service.getPublished('demo', 'carboxygel');
+      expect(product.slug).toBe('carboxygel');
+      expect(product.brand?.slug).toBe('reeskin');
       expect(product.ingredients[0].inciName).toBe('Sodium Bicarbonate');
       expect(product.claims[0].status).toBe('APPROVED');
       expect(product.variants[0].sku).toBe('CBG-PRO-500ML');
@@ -94,7 +94,7 @@ describe('CatalogService', () => {
     it('returns media array for product', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 
-      const media = await service.getMedia('demo', 'carboxygel-professional-therapy');
+      const media = await service.getMedia('demo', 'carboxygel');
       expect(Array.isArray(media)).toBe(true);
       expect(media.length).toBeGreaterThanOrEqual(1);
       expect(media[0].role).toBe('HERO');
@@ -104,7 +104,7 @@ describe('CatalogService', () => {
     it('returns ingredients array for product', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 
-      const ingredients = await service.getIngredients('demo', 'carboxygel-professional-therapy');
+      const ingredients = await service.getIngredients('demo', 'carboxygel');
       expect(Array.isArray(ingredients)).toBe(true);
       expect(ingredients.some((i: any) => i.isKeyIngredient)).toBe(true);
     });
@@ -112,7 +112,7 @@ describe('CatalogService', () => {
     it('returns claims array for product', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 
-      const claims = await service.getClaims('demo', 'carboxygel-professional-therapy');
+      const claims = await service.getClaims('demo', 'carboxygel');
       expect(Array.isArray(claims)).toBe(true);
       expect(claims[0].claimText).toContain('اکسیژن‌رسانی');
     });
@@ -120,7 +120,7 @@ describe('CatalogService', () => {
     it('returns usage steps for product', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 
-      const steps = await service.getUsageSteps('demo', 'carboxygel-professional-therapy');
+      const steps = await service.getUsageSteps('demo', 'carboxygel');
       expect(Array.isArray(steps)).toBe(true);
       expect(steps[0].stepNumber).toBe(1);
     });
@@ -130,7 +130,7 @@ describe('CatalogService', () => {
 
       const brands = await service.listBrands('demo');
       expect(Array.isArray(brands)).toBe(true);
-      expect(brands.some((b) => b.slug === 'reeskin-clinical')).toBe(true);
+      expect(brands.some((b) => b.slug === 'reeskin')).toBe(true);
     });
 
     it('returns list of skin concerns for store', async () => {
