@@ -1,0 +1,37 @@
+name: CI & Clinical Release Gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Monorepo Build, Unit Tests & Clinical Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Monorepo Full Build
+        run: pnpm run build
+
+      - name: Monorepo Unit & Integration Test Suite (97 Tests)
+        run: pnpm run test
+
+      - name: Clinical Store E2E Life-Cycle Runner (10 Stages)
+        run: node scripts/verify-clinical-store.mjs
