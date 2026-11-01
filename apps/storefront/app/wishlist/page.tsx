@@ -71,7 +71,11 @@ export default function WishlistPage() {
               {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => (
                 <article className="product-card" key={rec.id}>
                   <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
-                    <span className="art-index">{rec.title.slice(0, 1)}</span>
+                    {rec.image ? (
+                      <img src={rec.image} alt={rec.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    ) : (
+                      <span className="art-index">{rec.title.slice(0, 1)}</span>
+                    )}
                     <span className="art-caption">✓ موجود در انبار مرکزی</span>
                   </Link>
                   <div className="product-copy">

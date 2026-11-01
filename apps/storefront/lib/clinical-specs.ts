@@ -21,36 +21,39 @@ export interface CuratedProductItem {
   concern: string;
   volume: string;
   description: string;
+  image?: string;
 }
 
 export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
   {
     id: 'prod_skin_001',
-    slug: 'carboxygel-professional-therapy',
+    slug: 'carboxygel',
     title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
     brand: 'ReeSkin Clinical',
     sku: 'CBG-PRO-500ML',
-    priceAmount: '48500000',
+    priceAmount: '32000000',
     inStock: true,
     categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
     formulation: 'carboxy-gel',
     concern: 'anti-aging-lifting',
     volume: '۵۰۰ میلی‌لیتر کلینیکال',
     description: 'سیستم کربوکسی تراپی غیرتهاجمی با تحریک پدیده اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی عمیق سلولی و لیفتینگ.',
+    image: '/assets/drdermer/2025/07/carboxygel.png',
   },
   {
     id: 'prod_clinical_carboxypod',
-    slug: 'carboxypod-activation-pads',
-    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
-    brand: 'ReeMed Medical Pro',
-    sku: 'RMD-CPD-005',
-    priceAmount: '12500000',
+    slug: 'carboxypod',
+    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌اسکین (بسته ۱۰ عددی)',
+    brand: 'ReeSkin Clinical',
+    sku: 'DD-POD-10X',
+    priceAmount: '12000000',
     inStock: true,
     categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
     formulation: 'activation-pods',
     concern: 'acne-blemish',
-    volume: 'باکس ۵ ساشه وکیوم',
+    volume: 'باکس ۱۰ عددی وکیوم',
     description: 'پدهای فعال‌ساز فیبری متخلخل غنی از اسید سیتریک میکروکپسوله برای فعال‌سازی آنی واکنش گاز CO2.',
+    image: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
   },
   {
     id: 'prod_skin_healene',
@@ -58,13 +61,14 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
     brand: 'ReeSkin Clinical',
     sku: 'DD-HEA-250ML',
-    priceAmount: '16000000',
+    priceAmount: '16500000',
     inStock: true,
     categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
     formulation: 'soothing-gel',
     concern: 'barrier-dryness',
     volume: '۲۵۰ میلی‌لیتر بطری پمپی',
     description: 'ژل سبک التیام‌بخش با پانتنول، نیاسینامید، هیالورونیک اسید و ۷ عصاره گیاهی جهت رفع فوری التهاب و ترمیم سد دفاعی.',
+    image: '/assets/drdermer/2025/08/13healene-1200x1109.webp',
   },
   {
     id: 'prod_skin_crystalene',
@@ -79,6 +83,7 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     concern: 'acne-blemish',
     volume: '۲۰۰ میلی‌لیتر تیوب سالنی',
     description: 'پولیش میکرودرم ابریشمی با کریستال‌های آلومینای میکرونی، نیاسینامید و لاکتیک اسید جهت پاکسازی سلول‌های مرده.',
+    image: '/assets/drdermer/2025/08/15crystalene-1200x1109.webp',
   },
   {
     id: 'prod_drdermer_006',
@@ -93,6 +98,7 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     concern: 'acne-blemish',
     volume: '۲۰۰ میلی‌لیتر تیوب',
     description: 'اسکراب دتوکس روزانه با میکروسفرهای گرد سیلیکا، کربن فعال و سالیسیلیک اسید برای لایروبی عمیق منافذ.',
+    image: '/assets/drdermer/2025/08/14silicalene-1200x1109.webp',
   },
   {
     id: 'prod_drdermer_003',
@@ -107,6 +113,7 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     concern: 'anti-aging-lifting',
     volume: 'بسته ۲۰ عددی صورت و گردن',
     description: 'شیت‌های فیبری یکپارچه صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل کربوکسی.',
+    image: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
   },
   {
     id: 'prod_drdermer_007',
@@ -121,6 +128,7 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     concern: 'scar-recovery',
     volume: 'کنسول پرتابل مدیکال با ترولی',
     description: 'سیستم دوگانه کربوکسی‌تراپی تهاجمی و غیرتهاجمی با کنترل دیجیتال فشار و دوز دی‌اکسید کربن پزشکی.',
+    image: '/assets/drdermer/2025/08/19carbox.webp',
   },
   {
     id: 'prod_drdermer_008',
@@ -128,13 +136,14 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     title: 'دستگاه پیشرفته انرژی پلاسما و جت پلاسمای سرد PlasmaX',
     brand: 'ReeMed Medical Pro',
     sku: 'RM-DEV-PLASMAX-PRO',
-    priceAmount: '580000000',
+    priceAmount: '620000000',
     inStock: true,
     categoryTitleFa: 'تجهیزات و دستگاه‌های کلینیکال',
     formulation: 'clinical-equipment',
     concern: 'anti-aging-lifting',
     volume: 'کنسول ایستاده کلینیکال با پروب‌ها',
     description: 'سیستم مولد انرژی پلاسمای مدیکال مجهز به جت پلاسمای سرد آرگون و هلیوم برای بلفاروپلاستی غیرجراحی و اسکار.',
+    image: '/assets/drdermer/2025/07/1-plasma22-600x600.png',
   },
 ];
 
