@@ -4,6 +4,8 @@
 @import '../components/home/interactive-features.css';
 @import '../components/interactive/canvas-sequence-player.css';
 @import './clinical-station.css';
+@import './clinical-products.css';
+@import './carboxypod/carboxypod.css';
 
 :root {
   color-scheme: light;

@@ -350,27 +350,31 @@ export function SiteHeader() {
                 <div className="mega-grid-layout">
                   {/* Col 1: Links */}
                   <div className="mega-col">
-                    <div className="mega-col-heading">رژیم‌های تخصصی مراقبت در منزل</div>
+                    <div className="mega-col-heading">محصولات لاین ReeSkin™</div>
                     <div className="mega-links-list">
-                      <Link href="/search?q=کربوکسی" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
-                        <strong>کیت‌های خانگی CarboxyGel</strong>
-                        <span>ژل‌های واکنش اکسیژن‌ساز با پادهای فعال‌ساز</span>
+                      <Link href="/carboxygel" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>ژل کربوکسی‌تراپی CarboxyGel™</strong>
+                        <span>تحریک اثر بوهر با ۳ فرمولاسیون گلیکولیک، آزالائیک و مولتی‌اکتیو</span>
                       </Link>
-                      <Link href="/search?q=آزالائیک" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
-                        <strong>کربوکسی‌ژل اسید آزالائیک ۱۵٪</strong>
-                        <span>مهار ملاسما، لک التهابی و کنترل آکنه</span>
+                      <Link href="/carboxypod" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>پادهای فعال‌ساز CarboxyPod™</strong>
+                        <span>کپسول‌های فعال‌ساز گاز CO₂ در انواع Vitamin، Carbon و Hydra</span>
                       </Link>
-                      <Link href="/search?q=گلیکولیک" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
-                        <strong>کربوکسی‌ژل اسید گلیکولیک ۱۰٪</strong>
-                        <span>پیلینگ بیومکانیکال و شفافیت بافت درم</span>
+                      <Link href="/carboxypad" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>پدهای آلکالاین صورت و گردن CarboxyPad™</strong>
+                        <span>ماسک‌های ارگونومیک رهایش یکدست دی‌اکسید کربن</span>
                       </Link>
-                      <Link href="/search?q=پپتید" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
-                        <strong>سرم‌های پپتیدی و EGF مس</strong>
-                        <span>تکثیر فیبروبلاست و تحریک سنتز کلاژن</span>
+                      <Link href="/crystalene" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>خمیر لایه‌بردار کریستالین Crystalene™</strong>
+                        <span>میکرودرم ابریشمی با کریستال‌های فوق‌ریز آلومینا و نیاسینامید</span>
                       </Link>
-                      <Link href="/search?q=سرامید" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
-                        <strong>ترمیم سد دفاعی (Lipid Barrier)</strong>
-                        <span>سرامید خالص NP، اکتوئین و بپانتن التیام‌بخش</span>
+                      <Link href="/healene" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>ژل تسکین‌بخش هیلین Healene™</strong>
+                        <span>التیام فوری قرمزی، پانتنول، نیاسینامید و عصاره‌های آرام‌بخش</span>
+                      </Link>
+                      <Link href="/silicalene" className="mega-link-item" onClick={() => setReeskinDropdownOpen(false)}>
+                        <strong>اسکراب دتوکس سیلیکالین Silicalene™</strong>
+                        <span>تخلیه عمقی منافذ با کره‌های سیلیکا و کربن فعال</span>
                       </Link>
                     </div>
                   </div>
