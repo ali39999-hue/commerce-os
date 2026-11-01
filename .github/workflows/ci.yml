@@ -19,10 +19,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 12.16.1
+      - name: Install pnpm via corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@12.16.1 --activate
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
