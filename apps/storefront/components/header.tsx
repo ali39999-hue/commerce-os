@@ -298,7 +298,7 @@ export function SiteHeader() {
 
               <div className="subnav-dropdown-menu luxury-menu">
                 <Link
-                  href="/#brands"
+                  href="/reeskin"
                   className="dropdown-item brand-item reeskin"
                   onClick={() => setBrandDropdownOpen(false)}
                 >
@@ -306,22 +306,22 @@ export function SiteHeader() {
                   <div className="item-content">
                     <strong>ReeSkin™ Clinical Regimen</strong>
                     <p>مراقبت خانگی تخصصی، ترمیم سد دفاعی لیپیدی، کیت CarboxyGel و سرم‌های پپتیدی</p>
-                    <span className="item-action-hint">مشاهده محصولات خانگی ←</span>
+                    <span className="item-action-hint">مشاهده شوکیس ReeSkin ←</span>
                   </div>
                 </Link>
 
                 <div className="dropdown-divider" aria-hidden="true"></div>
 
                 <Link
-                  href="/#brands"
+                  href="/reemed"
                   className="dropdown-item brand-item reemed"
                   onClick={() => setBrandDropdownOpen(false)}
                 >
                   <div className="item-icon-tag reemed-tag">CLINIC PRO</div>
                   <div className="item-content">
                     <strong>ReeMed™ Medical Pro</strong>
-                    <p>پروتکل‌های کربوکسی‌تراپی مطبی، پادهای ترابافتی CarboxyPod و سیستم‌های کلینیکال</p>
-                    <span className="item-action-hint">پورتال ملزومات پزشکی ←</span>
+                    <p>پروتکل‌های کربوکسی‌تراپی مطبی، دستگاه‌های CarboX و PlasmaX و اقلام مصرفی</p>
+                    <span className="item-action-hint">مشاهده شوکیس ReeMed ←</span>
                   </div>
                 </Link>
               </div>
@@ -450,11 +450,11 @@ export function SiteHeader() {
                   <div className="mega-col">
                     <div className="mega-col-heading">ملزومات پزشکان و کلینیک‌های پوست</div>
                     <div className="mega-links-list">
-                      <Link href="/b2b" className="mega-link-item" onClick={() => setReemedDropdownOpen(false)}>
+                      <Link href="/carbox" className="mega-link-item" onClick={() => setReemedDropdownOpen(false)}>
                         <strong>دستگاه کربوکسی ترابافتی CarboX</strong>
                         <span>انفوزیون بیومکانیک با فرکانس سینوسی ۱۲۰Hz</span>
                       </Link>
-                      <Link href="/b2b" className="mega-link-item" onClick={() => setReemedDropdownOpen(false)}>
+                      <Link href="/plasmax" className="mega-link-item" onClick={() => setReemedDropdownOpen(false)}>
                         <strong>سامانه پلاسما سرد PlasmaX</strong>
                         <span>استریلیزاسیون عمیق و الکتروپوریشن غشای سلول</span>
                       </Link>
@@ -488,8 +488,8 @@ export function SiteHeader() {
                       <p className="mpc-desc">
                         پلاسمای اتمسفری سرد با فناوری میکروجت، نابودی ۹۹.۹٪ باکتری‌های آکنه و افزایش ۵ برابری نفوذ پپتیدها
                       </p>
-                      <Link href="/b2b" className="mpc-cta-link" onClick={() => setReemedDropdownOpen(false)}>
-                        درخواست دموی کلینیکال ←
+                      <Link href="/plasmax" className="mpc-cta-link" onClick={() => setReemedDropdownOpen(false)}>
+                        بررسی تعاملی و ۳۶۰ درجه PlasmaX ←
                       </Link>
                     </div>
                   </div>
@@ -797,7 +797,7 @@ export function SiteHeader() {
                 <div className="drawer-section-title">خانواده برندها (Brand Families)</div>
                 <div className="drawer-brand-cards">
                   <Link
-                    href="/#brands"
+                    href="/reeskin"
                     className="drawer-brand-card reeskin"
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -807,7 +807,7 @@ export function SiteHeader() {
                   </Link>
 
                   <Link
-                    href="/#brands"
+                    href="/reemed"
                     className="drawer-brand-card reemed"
                     onClick={() => setMobileMenuOpen(false)}
                   >

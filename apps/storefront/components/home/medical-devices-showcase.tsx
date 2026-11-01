@@ -2,10 +2,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { CanvasSequencePlayer, HotspotPin } from "../interactive/canvas-sequence-player";
 
 interface DeviceHotspot {
   id: number;
   label: string;
+  frame: number;
   x: number; // percentage left
   y: number; // percentage top
   title: string;
@@ -20,6 +22,11 @@ interface MedicalDevice {
   badge: string;
   classTag: string;
   image: string;
+  frameFolder: string;
+  totalFrames: number;
+  framePrefix: string;
+  padDigits: number;
+  aspectRatio: number;
   overview: string;
   hotspots: DeviceHotspot[];
 }
@@ -36,12 +43,18 @@ export function MedicalDevicesShowcase() {
       badge: "ISO 13485 & CE MEDICAL CLASS IIA",
       classTag: "IN-OFFICE TRANSDERMAL CONSOLE",
       image: "/assets/drdermer/2025/07/carbox-lr-scaled.png",
+      frameFolder: "/assets/drdermer/2025/carbox",
+      totalFrames: 82,
+      framePrefix: "",
+      padDigits: 2,
+      aspectRatio: 1.33,
       overview:
         "کنسول بالینی CarboX پیشرفته‌ترین سامانه اکسیژن‌رسانی عروقی در مطب‌های پوست و مو است. این دستگاه با امواج ارتعاشی سینوسی و همگامی با پادهای ترابافتی CarboxyPod، ریزجریان‌های خونی درمیس را تا ۲۴۰٪ تقویت می‌کند.",
       hotspots: [
         {
           id: 1,
           label: "۱",
+          frame: 1,
           x: 25,
           y: 42,
           title: "هندپیس ارتعاشی سینوسی ۱۲۰Hz (Sinusoidal Acoustic Head)",
@@ -51,6 +64,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 2,
           label: "۲",
+          frame: 22,
           x: 48,
           y: 35,
           title: "محفظه هرمتیک اتصال پادهای ترابافتی (Hermetic CarboxyPod Dock)",
@@ -60,6 +74,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 3,
           label: "۳",
+          frame: 45,
           x: 72,
           y: 50,
           title: "ماژول پایش دیجیتال فلوریت و فشار اسمزی (Osmotic Barometer)",
@@ -69,6 +84,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 4,
           label: "۴",
+          frame: 68,
           x: 52,
           y: 68,
           title: "سیستم تثبیت سرمایشی و پایداری پپتیدها (Cryo Thermal Stabilizer)",
@@ -84,12 +100,18 @@ export function MedicalDevicesShowcase() {
       badge: "COLD ATMOSPHERIC PLASMA (CAP)",
       classTag: "SURGICAL & CLINIC REGENERATIVE JET",
       image: "/assets/drdermer/2025/07/1-plasma22-465x1024.png",
+      frameFolder: "/assets/drdermer/2025/plasmax",
+      totalFrames: 110,
+      framePrefix: "",
+      padDigits: 3,
+      aspectRatio: 1.25,
       overview:
         "دستگاه PlasmaX از فناوری پلاسمای سرد در فشار اتمسفریک بهره می‌برد. این سیستم با تولید گونه‌های فعال اکسیژن و نیتروژن (RONS) بدون ایجاد حرارت یا سوختگی، باکتری‌های مولد آکنه را ریشه‌کن کرده و منافذ غشای سلولی را برای جذب کربوکسی‌ژل باز می‌کند.",
       hotspots: [
         {
           id: 1,
           label: "۱",
+          frame: 1,
           x: 50,
           y: 20,
           title: "نازل میکروجت پلاسمای سرد (Cold Atmospheric Micro-Jet Nozzle)",
@@ -99,6 +121,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 2,
           label: "۲",
+          frame: 28,
           x: 35,
           y: 45,
           title: "بریر دی‌الکتریک کوارتز گرید پزشکی (Medical Quartz DBD Tube)",
@@ -108,6 +131,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 3,
           label: "۳",
+          frame: 58,
           x: 65,
           y: 58,
           title: "ماژول نفوذپذیری الکتروپوریشن گذرا (Cellular Electroporation Trigger)",
@@ -117,6 +141,7 @@ export function MedicalDevicesShowcase() {
         {
           id: 4,
           label: "۴",
+          frame: 85,
           x: 50,
           y: 82,
           title: "رابط کاربری لمسی پروتکل‌های کلینیکال (Smart Clinical Touch Console)",
@@ -188,26 +213,37 @@ export function MedicalDevicesShowcase() {
 
         {/* 360-Style Interactive Hotspot Viewer Stage */}
         <div className="device-stage-grid">
-          {/* Visual Canvas with Hotspot Pins */}
-          <div className="device-hotspot-viewer">
-            <img src={dev.image} alt={dev.name} className="device-main-render" />
-
-            {/* Render Hotspot Pins */}
-            {dev.hotspots.map((hs) => (
-              <button
-                key={hs.id}
-                type="button"
-                className={`hotspot-pin ${selectedHotspotId === hs.id ? "active" : ""}`}
-                style={{
-                  left: `${hs.x}%`,
-                  top: `${hs.y}%`,
-                }}
-                onClick={() => setSelectedHotspotId(hs.id)}
-                aria-label={`هات‌اسپات شماره ${hs.label}: ${hs.title}`}
-              >
-                <span>{hs.label}</span>
-              </button>
-            ))}
+          {/* High-Performance 360 Canvas Sequence Player with Hotspot Pins */}
+          <div className="device-hotspot-viewer" style={{ padding: 0, minHeight: 'unset', background: 'transparent' }}>
+            <CanvasSequencePlayer
+              key={dev.id}
+              frameFolder={dev.frameFolder}
+              totalFrames={dev.totalFrames}
+              framePrefix={dev.framePrefix}
+              padDigits={dev.padDigits}
+              fileExtension=".webp"
+              aspectRatio={dev.aspectRatio}
+              autoRotate={true}
+              autoRotateSpeedMs={60}
+              interactiveDrag={true}
+              overlayHotspots={dev.hotspots.map((hs) => ({
+                id: hs.id,
+                label: hs.label,
+                title: hs.title,
+                desc: hs.desc,
+                spec: hs.spec,
+                frame: hs.frame,
+                x: hs.x,
+                y: hs.y,
+              }))}
+              selectedHotspotId={selectedHotspotId}
+              onHotspotSelect={(hs) => {
+                if (typeof hs.id === 'number') {
+                  setSelectedHotspotId(hs.id);
+                }
+              }}
+              label={dev.name}
+            />
           </div>
 
           {/* Hotspot Technical Detail Card */}
@@ -230,12 +266,17 @@ export function MedicalDevicesShowcase() {
               {dev.overview}
             </p>
 
-            <Link href="/b2b" className="hdp-cta-btn">
-              <span>استعلام قیمت مطبی و درخواست جلسه دموی حضوری</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </Link>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
+              <Link href={activeDevice === "carbox" ? "/carbox" : "/plasmax"} className="hdp-cta-btn" style={{ flex: 1, minWidth: "220px", background: "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)" }}>
+                <span>مشاهده صفحه تخصصی و ۳۶۰° {activeDevice === "carbox" ? "CarboX" : "PlasmaX"}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </Link>
+              <Link href="/b2b" className="hdp-cta-btn" style={{ background: "rgba(255, 255, 255, 0.08)" }}>
+                <span>استعلام پیش‌فاکتور B2B</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

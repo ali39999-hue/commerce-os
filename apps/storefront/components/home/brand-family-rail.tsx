@@ -97,8 +97,8 @@ export function BrandFamilyRail() {
             </div>
 
             <div className="brand-card-footer">
-              <Link href="/search?q=ReeSkin" className="btn-family-link reeskin-btn">
-                <span>کاوش تمام محصولات لاین ReeSkin™</span>
+              <Link href="/reeskin" className="btn-family-link reeskin-btn">
+                <span>مشاهده پورتال و کاتالوگ جامع لاین ReeSkin™</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
@@ -187,8 +187,8 @@ export function BrandFamilyRail() {
             </div>
 
             <div className="brand-card-footer">
-              <Link href="/b2b" className="btn-family-link reemed-btn">
-                <span>درخواست تأمین کلینیکی و کاتالوگ پزشکان (ReeMed™)</span>
+              <Link href="/reemed" className="btn-family-link reemed-btn">
+                <span>مشاهده پورتال تجهیزات پزشکی و آموزش (ReeMed™)</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>

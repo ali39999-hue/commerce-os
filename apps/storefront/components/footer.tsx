@@ -75,15 +75,15 @@ export function SiteFooter() {
             <h4 className="footer-heading">خانواده محصولات و پروتکل‌ها</h4>
             <ul className="footer-links">
               <li>
-                <Link href="/#brands">
+                <Link href="/reeskin">
                   <strong>ReeSkin™ Clinical</strong>
-                  <span className="link-sub">کیت‌های مراقبت خانگی ترابافتی</span>
+                  <span className="link-sub">کیت‌های مراقبت خانگی ترابافتی و رژیم‌ها</span>
                 </Link>
               </li>
               <li>
-                <Link href="/#brands">
+                <Link href="/reemed">
                   <strong>ReeMed™ Medical Pro</strong>
-                  <span className="link-sub">کارتریج‌های کلینیکال و پاد CarboxyPod</span>
+                  <span className="link-sub">تجهیزات پزشکی CarboX و PlasmaX و اقلام مصرفی</span>
                 </Link>
               </li>
               <li>
