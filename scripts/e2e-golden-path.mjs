@@ -52,9 +52,9 @@ async function main() {
 
   // ── 3. Persian Search ──
   try {
-    const s = await api(`/v1/search?q=${encodeURIComponent("قهوه")}`);
+    const s = await api(`/v1/search?q=${encodeURIComponent("کربوکسی")}`);
     const found = s.json?.items ?? [];
-    step("3. جست‌وجوی فارسی با مترادف (قهوه)", found.length > 0 ? "PASS" : "FAIL",
+    step("3. جست‌وجوی فارسی با مترادف (کربوکسی)", found.length > 0 ? "PASS" : "FAIL",
       `${found.length} نتیجه — ${found[0]?.title ?? ""}`);
   } catch (e) {
     step("3. جست‌وجوی فارسی", "FAIL", e.message);
