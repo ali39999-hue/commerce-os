@@ -123,6 +123,4 @@ export const DEMO_PRODUCT_SLUGS = [
   'silicalene',
   'carbox',
   'plasmax',
-  'carboxygel-professional-therapy',
-  'carboxypod-activation-pads',
 ] as const;

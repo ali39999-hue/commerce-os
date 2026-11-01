@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: Props) {
       : {}),
     publisher: {
       "@type": "Organization",
-      name: "دکتر درمر | Dr Dermer Clinical Skin & Health",
+      name: "دکتر درمر | Dr. Dermer UK Clinical Laboratories",
       url: SITE_URL,
     },
     articleSection: post.category,

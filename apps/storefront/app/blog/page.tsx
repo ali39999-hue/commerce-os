@@ -5,7 +5,7 @@ import { BLOG_POSTS } from "../../lib/blog";
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
 export const metadata: Metadata = {
-  title: "وبلاگ و مقالات آموزشی تخصصی | Commerce OS Skin Science",
+  title: "وبلاگ و مقالات آموزشی تخصصی | Dr. Dermer UK Clinical Laboratories",
   description: "مقالات تخصصی و بالینی درماتولوژی، راهنماهای خرید آگاهانه، بررسی ترکیبات و پروتکل‌های ترمیم پوست.",
   alternates: {
     canonical: "/blog",
@@ -27,7 +27,7 @@ export default function BlogIndexPage() {
         url: `${SITE_URL}/blog`,
         publisher: {
           "@type": "MedicalBusiness",
-          name: "دکتر درمر | Dr Dermer Clinical Skin & Health",
+          name: "دکتر درمر | Dr. Dermer UK Clinical Laboratories",
           url: SITE_URL,
         },
       },

@@ -14,11 +14,13 @@ export function SiteHeader() {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [compareCount, setCompareCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
   const [reeskinDropdownOpen, setReeskinDropdownOpen] = useState(false);
   const [reemedDropdownOpen, setReemedDropdownOpen] = useState(false);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
+  const brandMenuRef = useRef<HTMLDivElement>(null);
   const reeskinMenuRef = useRef<HTMLDivElement>(null);
   const reemedMenuRef = useRef<HTMLDivElement>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
@@ -68,6 +70,7 @@ export function SiteHeader() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMobileMenuOpen(false);
+        setBrandDropdownOpen(false);
         setReeskinDropdownOpen(false);
         setReemedDropdownOpen(false);
         setCategoryDropdownOpen(false);
@@ -80,6 +83,9 @@ export function SiteHeader() {
   // Close dropdowns on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
+      if (brandMenuRef.current && !brandMenuRef.current.contains(e.target as Node)) {
+        setBrandDropdownOpen(false);
+      }
       if (reeskinMenuRef.current && !reeskinMenuRef.current.contains(e.target as Node)) {
         setReeskinDropdownOpen(false);
       }

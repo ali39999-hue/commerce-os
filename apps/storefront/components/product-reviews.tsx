@@ -15,12 +15,12 @@ interface Review {
 const REVIEWS_KEY = (slug: string) => `commerce_os.reviews.${slug}.v1`;
 
 const SEED_REVIEWS: Record<string, Review[]> = {
-  "ethiopian-specialty-coffee": [
-    { id: "r1", author: "مهدی ک.", rating: 5, title: "کیفیت برشته‌کاری فوق‌العاده", body: "راستش منتظر یک قهوه با این کیفیت بودم. اسیدیته ملایم و عطر گلی‌اش کاملاً محسوسه. حتماً باز هم می‌خرم.", createdAt: new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
-    { id: "r2", author: "نگار ص.", rating: 4, title: "خیلی خوب، فقط بسته‌بندی", body: "طعم عالیه ولی ای کاش بسته‌بندی زیپ‌کیپ محکم‌تری داشت.", createdAt: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
+  "carboxygel": [
+    { id: "r1", author: "دکتر مهدی ک.", rating: 5, title: "پاسخ بالینی فوق‌العاده در اکسیژن‌رسانی", body: "اثر بوهر بعد از اعمال ژل و ماسک کاملاً مشهوده. قرمزی گذرا و شفافیت بلافاصله بعد از شستشو رضایت بیمار رو جلب کرد.", createdAt: new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
+    { id: "r2", author: "نگار ص. (پزشک پوست)", rating: 5, title: "فرمولاسیون بسیار پایدار و موثر", body: "به عنوان مکمل قبل از مزوتراپی استفاده می‌کنیم و نتایج بسیار درخشانی داشته است.", createdAt: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
   ],
-  "wireless-headphones": [
-    { id: "r1", author: "آرش م.", rating: 5, title: "نویزکنسلینگ واقعی!", body: "تو مترو واقعاً صدای محیط رو حذف می‌کنه. باتری هم واقعاً به ادعای ۴۰ ساعت می‌رسه.", createdAt: new Date(Date.now() - 15 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
+  "carboxypod": [
+    { id: "r1", author: "آرش م. (کلینیکال ادوایزر)", rating: 5, title: "کیفیت فعال‌سازی پدهای فیبری عالی", body: "تراکم اسید سیتریک و ساختار متخلخل پد باعث رهایش یکنواخت گاز CO۲ می‌شه و بدون سوزش یا پارگی عمل می‌کنه.", createdAt: new Date(Date.now() - 15 * 24 * 3600 * 1000).toISOString(), verifiedPurchase: true },
   ],
 };
 

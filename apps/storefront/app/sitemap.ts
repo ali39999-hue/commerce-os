@@ -3,6 +3,8 @@ import { DEMO_PRODUCT_SLUGS } from '../lib/catalog';
 import { BLOG_POSTS } from '../lib/blog';
 import { INGREDIENT_ENCYCLOPEDIA } from '../lib/ingredients';
 
+export { DEMO_PRODUCT_SLUGS };
+
 const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -65,14 +65,14 @@ export default function WishlistPage() {
           <div className="empty-recommendations-section">
             <h3 className="empty-recommendations-title">
               <span aria-hidden="true">⭐</span>
-              <span>پیشنهاد فرمولاسیون‌های محبوب کلینیکال جهت ذخیره</span>
+              <span>پیشنهاد فرمولاسیون‌های شاخص کلینیکال دکتر درمر جهت ذخیره</span>
             </h3>
             <div className="empty-recommendations-grid">
-              {RECOMMENDED_CLINICAL_PRODUCTS.slice(0, 3).map((rec) => (
+              {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => (
                 <article className="product-card" key={rec.id}>
                   <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
                     <span className="art-index">{rec.title.slice(0, 1)}</span>
-                    <span className="art-caption">✓ موجود در انبار</span>
+                    <span className="art-caption">✓ موجود در انبار مرکزی</span>
                   </Link>
                   <div className="product-copy">
                     <span className="product-card-brand">{rec.brand}</span>
@@ -180,8 +180,8 @@ export default function WishlistPage() {
       <div className="product-grid">
         {items.map((item) => {
           const href = `/products/${encodeURIComponent(item.slug)}`;
-          const brandName = item.title.includes('ReeMed') || item.slug.includes('reemed')
-            ? 'ReeMed Laboratories'
+          const brandName = item.title.includes('ReeMed') || item.slug.includes('reemed') || item.slug.includes('pod')
+            ? 'ReeMed Medical Pro'
             : 'ReeSkin Clinical';
 
           return (

@@ -23,20 +23,20 @@ interface VendorsPayload {
 /* ── Demo-equivalent vendors (shown when API is down or source==='FALLBACK') ── */
 const DEMO_VENDORS: VendorItem[] = [
   {
-    id: "vendor_demo_roast",
-    slug: "roast-coffee",
-    titleFa: "روست قهوه",
-    description: "برشته‌کاری تخصصی قهوه اسپشیالتی؛ دانه‌های تک‌خاستگاه با برشت تازه و ارسال هفتگی.",
-    logoColor: "#8b5cf6",
-    productCount: 12,
+    id: "vendor_demo_central",
+    slug: "drdermer-clinic",
+    titleFa: "کلینیک مرکزی دکتر درمر",
+    description: "مرکز تخصصی پروتکل‌های کربوکسی‌تراپی و اکسیژن‌رسانی غیرتهاجمی Dr. Dermer UK Clinical Laboratories.",
+    logoColor: "#084f4a",
+    productCount: 8,
   },
   {
-    id: "vendor_demo_brew",
-    slug: "brew-studio",
-    titleFa: "استودیو دم‌آوری",
-    description: "ابزار و لوازم دم‌آوری حرفه‌ای؛ از دریپر سرامیکی تا ترازو و کتری گووزوم.",
-    logoColor: "#f59e0b",
-    productCount: 8,
+    id: "vendor_demo_partner",
+    slug: "derm-lab-partner",
+    titleFa: "کلینیک و داروخانه تخصصی درماتولوژی",
+    description: "توزیع‌کننده رسمی فرآورده‌های درموسوتیکال، سرم‌های بیومیمتیک و ملزومات کلینیکال پوست.",
+    logoColor: "#0284c7",
+    productCount: 6,
   },
 ];
 

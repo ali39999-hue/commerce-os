@@ -322,7 +322,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     id: 'prod_clinical_carboxypod',
     slug: 'carboxypod-activation-pads',
     brand: {
-      name: 'ReeMed Medical',
+      name: 'ReeMed Medical Pro',
       slug: 'reemed',
       originCountry: 'انگلستان (United Kingdom)',
       tagline: 'تجهیزات مصرفی استاندارد کلینیک‌های پوست و زیبایی',
@@ -1041,7 +1041,7 @@ CLINICAL_SKINCARE_PRODUCTS['carboxypad'] = {
 
 /**
  * Creates extended clinical/e-commerce product information for standard products
- * so that any catalog product (coffee, backpack, lamp, etc.) also renders
+ * so that any catalog product also renders
  * high-fidelity specifications, rich tabs, warranty & authenticity certificates.
  */
 export function buildExtendedProductData(baseProduct: {

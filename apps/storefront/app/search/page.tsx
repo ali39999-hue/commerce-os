@@ -18,6 +18,7 @@ interface SearchItem {
   category: { slug: string; titleFa: string } | null;
   brand?: { slug: string; name: string } | null;
   skinConcern?: string | null;
+  skinConcerns?: string[];
   productType?: 'physical' | 'digital' | 'bundle';
   formulation?: string | null;
   priceRials: string;
@@ -67,23 +68,31 @@ const SORT_OPTIONS: Array<{ value: SortValue; label: string }> = [
 ];
 
 const BRAND_FACETS = [
-  { slug: 'reeskin', name: 'ReeSkin Clinical (ری‌اسکین)' },
-  { slug: 'reemed', name: 'ReeMed Laboratories (ری‌مد)' },
-  { slug: 'dr-dermer', name: 'Dr Dermer Central (دکتر درمر)' },
+  { slug: 'reeskin', name: 'ReeSkin Clinical' },
+  { slug: 'reemed', name: 'ReeMed Medical Pro' },
 ];
 
 const CONCERN_FACETS = [
-  { slug: 'acne', label: 'آکنه و جای جوش (Acne & Scars)' },
-  { slug: 'anti-aging', label: 'ضدچروک و جوانسازی (Anti-Aging)' },
-  { slug: 'barrier', label: 'سد دفاعی و خشکی (Barrier Recovery)' },
-  { slug: 'dullness', label: 'تیرگی و کدری (Dullness & Glow)' },
+  { slug: 'acne-blemish', label: 'آکنه و لک' },
+  { slug: 'anti-aging-lifting', label: 'ضدچروک و لیفتینگ' },
+  { slug: 'barrier-dryness', label: 'سد دفاعی و خشکی' },
+  { slug: 'scar-recovery', label: 'ترمیم اسکار' },
 ];
 
 const FORMULATION_FACETS = [
-  { slug: 'gel', label: 'ژل ۲ فاز فعال‌شونده (CO2 Gel)' },
-  { slug: 'serum', label: 'سرم کنسانتره پپتیدی (Peptide Serum)' },
-  { slug: 'cream', label: 'کرم سد دفاعی لاملار (Barrier Cream)' },
-  { slug: 'pads', label: 'پد فیبری میکروکپسوله (Fiber Pads)' },
+  { slug: 'carboxy-gel', label: 'ژل کربوکسی' },
+  { slug: 'activation-pods', label: 'پادهای فعال‌ساز' },
+  { slug: 'alkaline-pad', label: 'پد آلکالاین' },
+  { slug: 'polish-paste', label: 'خمیر پولیش' },
+  { slug: 'soothing-gel', label: 'ژل تسکین‌بخش' },
+  { slug: 'detox-scrub', label: 'اسکراب دتوکس' },
+  { slug: 'clinical-equipment', label: 'تجهیزات کلینیکال' },
+];
+
+const CATEGORY_FACETS = [
+  { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
+  { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' },
+  { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' },
 ];
 
 const PRODUCT_TYPE_FACETS = [
@@ -98,32 +107,40 @@ const SYNONYMS_MAP: Record<string, string[]> = {
   carboxy: ['کربوکسی', 'carboxygel', 'بوهر', 'co2', 'اکسیژن'],
   carboxygel: ['کربوکسی', 'carboxy', 'ژل کربوکسی', 'bohr effect'],
   بوهر: ['bohr', 'کربوکسی', 'اکسیژن', 'co2'],
-  رتینول: ['retinol', 'باکوچیول', 'bakuchiol', 'ضدچروک', 'پپتید'],
-  retinol: ['رتینول', 'باکوچیول', 'پپتید', 'جوانسازی'],
-  سیکا: ['cica', 'سنتلا', 'centella', 'ترمیم', 'بریر'],
-  بریر: ['barrier', 'سد دفاعی', 'ترمیم', 'سیکا', 'سرامید'],
-  barrier: ['بریر', 'سد دفاعی', 'ترمیم', 'سرامید', 'cica'],
+  پاد: ['pad', 'carboxypod', 'پد', 'اکتیواتور', 'سیتریک اسید'],
+  carboxypod: ['پاد', 'پد', 'pad', 'فعال ساز', 'سیتریک'],
+  هیلین: ['healene', 'تسکین', 'سوتینگ', 'آرام‌بخش', 'التیام'],
+  healene: ['هیلین', 'تسکین', 'سوتینگ', 'پانتنول'],
+  کریستالین: ['crystalene', 'پولیش', 'لایه‌بردار', 'آلومینا', 'میکرودرم'],
+  crystalene: ['کریستالین', 'پولیش', 'paste', 'لایه‌بردار'],
+  سیلیکالین: ['silicalene', 'دتوکس', 'اسکراب', 'سیلیکا', 'منافذ'],
+  silicalene: ['سیلیکالین', 'اسکراب', 'scrub', 'detox'],
+  کربوکس: ['carbox', 'تجهیزات', 'دستگاه', 'دستگاه کربوکسی'],
+  carbox: ['کربوکس', 'دستگاه', 'station', 'co2 injection'],
+  پلاسماکس: ['plasmax', 'پلاسما', 'جت پلاسما', 'دستگاه پلاسما'],
+  plasmax: ['پلاسماکس', 'پلاسما', 'cold jet', 'plasma'],
   ری‌اسکین: ['reeskin', 'درمر', 'dermer'],
   reeskin: ['ری‌اسکین', 'درمر', 'dermer'],
   ری‌مد: ['reemed', 'درمر', 'dermer'],
   reemed: ['ری‌مد', 'درمر', 'dermer'],
-  پد: ['pad', 'carboxypod', 'پاد', 'ماسک'],
-  سرم: ['serum', 'پپتید', 'egf'],
-  آکنه: ['acne', 'جوش', 'اسکار', 'scar', 'منافذ'],
-  چروک: ['anti-aging', 'aging', 'خطوط', 'لیفت', 'lift'],
+  پد: ['pad', 'carboxypad', 'پاد', 'ماسک', 'آلکالاین'],
+  آکنه: ['acne', 'جوش', 'اسکار', 'scar', 'منافذ', 'لک'],
+  چروک: ['anti-aging', 'aging', 'خطوط', 'لیفت', 'lift', 'جوانسازی'],
+  بریر: ['barrier', 'سد دفاعی', 'ترمیم', 'سرامید', 'cica', 'سیکا', 'خشکی'],
+  اسکار: ['scar', 'ترمیم اسکار', 'جای جوش', 'زخم'],
 };
 
 const SUGGESTED_QUICK_SEARCHES = [
   'کربوکسی ژل CarboxyGel',
   'پدهای فعال‌ساز CarboxyPod',
-  'سرم بازسازی سلولی رتینول و پپتید',
-  'کرم ترمیم سد دفاعی بریر (Barrier)',
-  'شوینده ملایم ری‌اسکین',
-  'کیت تخصصی نوسازی سلولی با اثر بوهر',
+  'ژل تسکین‌بخش هیلین Healene',
+  'خمیر پولیش کریستالین Crystalene',
+  'اسکراب دتوکس سیلیکالین Silicalene',
+  'دستگاه مدیکال CarboX و PlasmaX',
 ];
 
 const EMPTY_FACETS: SearchFacets = {
-  categories: [],
+  categories: CATEGORY_FACETS,
   brands: BRAND_FACETS,
   concerns: CONCERN_FACETS,
   formulations: FORMULATION_FACETS,
@@ -204,33 +221,132 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   const categoryRaw = (raw.category ?? null) as Record<string, unknown> | null;
   const brandRaw = (raw.brand ?? null) as Record<string, unknown> | null;
   const priceRials = toRialsString(raw.priceRials);
-  const slug = typeof raw.slug === 'string' ? raw.slug : '';
+  const slug = typeof raw.slug === 'string' ? raw.slug.toLowerCase() : '';
   const title = typeof raw.title === 'string' ? raw.title : '';
 
-  let brandObj = brandRaw
-    ? { slug: String(brandRaw.slug || ''), name: String(brandRaw.name || '') }
-    : null;
-  if (!brandObj) {
-    if (slug.includes('reeskin') || title.includes('ری‌اسکین')) {
-      brandObj = { slug: 'reeskin', name: 'ReeSkin Clinical' };
-    } else if (slug.includes('reemed') || title.includes('ری‌مد')) {
-      brandObj = { slug: 'reemed', name: 'ReeMed Laboratories' };
-    } else if (slug.includes('carboxy') || title.includes('کربوکسی')) {
+  let brandObj: { slug: string; name: string } | null = null;
+  if (brandRaw && typeof brandRaw === 'object') {
+    const bSlug = String(brandRaw.slug || '').toLowerCase();
+    const bName = String(brandRaw.name || '');
+    if (bSlug.includes('reemed') || bName.includes('ReeMed') || bName.includes('ری‌مد')) {
+      brandObj = { slug: 'reemed', name: 'ReeMed Medical Pro' };
+    } else {
       brandObj = { slug: 'reeskin', name: 'ReeSkin Clinical' };
     }
   }
 
-  let concern: string | null = null;
-  if (slug.includes('carboxy') || title.includes('کربوکسی') || title.includes('تیرگی')) concern = 'dullness';
-  else if (slug.includes('serum') || title.includes('سلولی') || title.includes('رتینول') || title.includes('چروک')) concern = 'anti-aging';
-  else if (slug.includes('pad') || title.includes('پد') || title.includes('اسکار') || title.includes('آکنه')) concern = 'acne';
-  else if (slug.includes('cream') || slug.includes('barrier') || title.includes('بریر') || title.includes('ترمیم') || title.includes('خشکی')) concern = 'barrier';
+  if (!brandObj) {
+    if (
+      slug.includes('reemed') ||
+      title.includes('ری‌مد') ||
+      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
+      slug.includes('plasmax') ||
+      slug.includes('pod') ||
+      title.includes('پاد')
+    ) {
+      brandObj = { slug: 'reemed', name: 'ReeMed Medical Pro' };
+    } else {
+      brandObj = { slug: 'reeskin', name: 'ReeSkin Clinical' };
+    }
+  }
 
+  // Category mapping (Dr Dermer 1:1 categories: skincare, consumables, clinical-equipment)
+  let categoryObj: { slug: string; titleFa: string } | null = null;
+  if (categoryRaw && typeof categoryRaw === 'object') {
+    const catSlug = typeof categoryRaw.slug === 'string' ? categoryRaw.slug : '';
+    if (catSlug === 'consumables' || catSlug === 'پد' || catSlug === 'ملزومات') {
+      categoryObj = { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' };
+    } else if (catSlug === 'clinical-equipment' || catSlug === 'دستگاه' || catSlug === 'تجهیزات') {
+      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
+    } else if (catSlug === 'skincare') {
+      categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
+    }
+  }
+  if (!categoryObj) {
+    if (
+      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
+      slug.includes('plasmax') ||
+      title.includes('دستگاه') ||
+      title.includes('ایستگاه') ||
+      title.includes('تجهیزات پزشکی')
+    ) {
+      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
+    } else if (
+      slug.includes('pod') ||
+      slug.includes('pad') ||
+      title.includes('پد') ||
+      title.includes('پاد')
+    ) {
+      categoryObj = { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' };
+    } else {
+      categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
+    }
+  }
+
+  // Formulation mapping
+  // Formulations: ژل کربوکسی، پادهای فعال‌ساز، پد آلکالاین، خمیر پولیش، ژل تسکین‌بخش، اسکراب دتوکس، تجهیزات کلینیکال
   let formulation: string | null = null;
-  if (slug.includes('gel') || title.includes('ژل')) formulation = 'gel';
-  else if (slug.includes('serum') || title.includes('سرم')) formulation = 'serum';
-  else if (slug.includes('pod') || slug.includes('pad') || title.includes('پد')) formulation = 'pads';
-  else if (slug.includes('cream') || title.includes('کرم')) formulation = 'cream';
+  if (slug.includes('carboxypod') || (slug.includes('pod') && !slug.includes('carbox')) || title.includes('پاد')) {
+    formulation = 'activation-pods';
+  } else if (slug.includes('carboxypad') || (slug.includes('pad') && !slug.includes('carboxypod')) || title.includes('پد آلکالاین')) {
+    formulation = 'alkaline-pad';
+  } else if (slug.includes('crystalene') || slug.includes('polish') || title.includes('کریستالین') || title.includes('پولیش')) {
+    formulation = 'polish-paste';
+  } else if (slug.includes('healene') || slug.includes('soothing') || title.includes('هیلین') || title.includes('تسکین‌بخش')) {
+    formulation = 'soothing-gel';
+  } else if (slug.includes('silicalene') || slug.includes('scrub') || title.includes('سیلیکالین') || title.includes('اسکراب')) {
+    formulation = 'detox-scrub';
+  } else if (
+    (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
+    slug.includes('plasmax') ||
+    title.includes('دستگاه') ||
+    title.includes('پلاسما')
+  ) {
+    formulation = 'clinical-equipment';
+  } else if (slug.includes('carboxy') || title.includes('کربوکسی') || slug.includes('gel') || title.includes('ژل')) {
+    formulation = 'carboxy-gel';
+  } else {
+    formulation = 'carboxy-gel';
+  }
+
+  // Skin Concerns mapping:
+  // Concerns: آکنه و لک (acne-blemish), ضدچروک و لیفتینگ (anti-aging-lifting), سد دفاعی و خشکی (barrier-dryness), ترمیم اسکار (scar-recovery)
+  const concernsList: string[] = [];
+  if (slug.includes('carboxy') || title.includes('کربوکسی')) {
+    concernsList.push('anti-aging-lifting', 'acne-blemish', 'scar-recovery');
+  }
+  if (slug.includes('pod') || title.includes('پاد')) {
+    concernsList.push('acne-blemish', 'scar-recovery');
+  }
+  if (slug.includes('pad') || title.includes('پد')) {
+    concernsList.push('anti-aging-lifting', 'barrier-dryness');
+  }
+  if (slug.includes('crystalene') || title.includes('کریستالین') || title.includes('پولیش')) {
+    concernsList.push('acne-blemish', 'anti-aging-lifting');
+  }
+  if (slug.includes('healene') || title.includes('هیلین') || title.includes('تسکین') || title.includes('التیام')) {
+    concernsList.push('barrier-dryness', 'scar-recovery');
+  }
+  if (slug.includes('silicalene') || title.includes('سیلیکالین') || title.includes('اسکراب')) {
+    concernsList.push('acne-blemish');
+  }
+  if (slug.includes('carbox') || slug.includes('plasmax') || title.includes('دستگاه') || title.includes('پلاسما')) {
+    concernsList.push('scar-recovery', 'anti-aging-lifting');
+  }
+  if (title.includes('لک') || title.includes('آکنه') || title.includes('جوش') || title.includes('منافذ')) {
+    if (!concernsList.includes('acne-blemish')) concernsList.push('acne-blemish');
+  }
+  if (title.includes('چروک') || title.includes('لیفت') || title.includes('جوانسازی')) {
+    if (!concernsList.includes('anti-aging-lifting')) concernsList.push('anti-aging-lifting');
+  }
+  if (title.includes('بریر') || title.includes('خشکی') || title.includes('سد دفاعی') || title.includes('سیکا')) {
+    if (!concernsList.includes('barrier-dryness')) concernsList.push('barrier-dryness');
+  }
+  if (title.includes('اسکار') || title.includes('زخم') || title.includes('ترمیم')) {
+    if (!concernsList.includes('scar-recovery')) concernsList.push('scar-recovery');
+  }
+
+  const primaryConcern = concernsList[0] || 'anti-aging-lifting';
 
   const productType: 'physical' | 'digital' | 'bundle' =
     raw.kind === 'DIGITAL' || slug.includes('guide') || slug.includes('course')
@@ -244,15 +360,10 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     slug,
     title,
     description: typeof raw.description === 'string' ? raw.description : null,
-    category:
-      categoryRaw && typeof categoryRaw === 'object'
-        ? {
-            slug: typeof categoryRaw.slug === 'string' ? categoryRaw.slug : '',
-            titleFa: typeof categoryRaw.titleFa === 'string' ? categoryRaw.titleFa : '',
-          }
-        : null,
+    category: categoryObj,
     brand: brandObj,
-    skinConcern: concern,
+    skinConcern: primaryConcern,
+    skinConcerns: concernsList,
     productType,
     formulation,
     priceRials,
@@ -261,7 +372,7 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     availableQty: typeof raw.availableQty === 'number' ? raw.availableQty : 20,
     sku: typeof raw.sku === 'string' ? raw.sku : null,
     variantId: typeof raw.variantId === 'string' ? raw.variantId : null,
-    popularityScore: slug.includes('carboxy') ? 98 : slug.includes('serum') ? 92 : 80,
+    popularityScore: slug.includes('carboxy') ? 98 : slug.includes('healene') ? 94 : 85,
   };
 }
 
@@ -299,8 +410,16 @@ function curatedToSearchItem(item: CuratedProductItem): SearchItem {
     inStock: item.inStock,
     sku: item.sku,
     variantId: item.id,
-    category: { slug: 'skincare', titleFa: item.categoryTitleFa },
-    brand: { slug: item.brand.toLowerCase().includes('reemed') ? 'reemed' : 'reeskin', name: item.brand },
+    category: {
+      slug: item.slug.includes('pod') || item.slug.includes('pad') ? 'consumables' : 'skincare',
+      titleFa: item.categoryTitleFa,
+    },
+    brand: {
+      slug: item.brand.toLowerCase().includes('reemed') ? 'reemed' : 'reeskin',
+      name: item.brand.toLowerCase().includes('reemed') ? 'ReeMed Medical Pro' : 'ReeSkin Clinical',
+    },
+    formulation: item.formulation,
+    skinConcern: item.concern,
   });
 }
 
@@ -344,9 +463,25 @@ function applyLocalFilters(items: SearchItem[], sp: URLSearchParams): SearchItem
     }
     if (category !== '' && item.category?.slug !== category) return false;
     if (brand !== '' && item.brand?.slug !== brand) return false;
-    if (concern !== '' && item.skinConcern !== concern) return false;
+    if (concern !== '') {
+      const matchesConcern =
+        item.skinConcern === concern ||
+        (item.skinConcerns && item.skinConcerns.includes(concern)) ||
+        (concern === 'acne-blemish' && item.skinConcern === 'acne') ||
+        (concern === 'anti-aging-lifting' && item.skinConcern === 'anti-aging') ||
+        (concern === 'barrier-dryness' && item.skinConcern === 'barrier') ||
+        (concern === 'scar-recovery' && item.skinConcern === 'scars');
+      if (!matchesConcern) return false;
+    }
     if (type !== '' && item.productType !== type) return false;
-    if (formulation !== '' && item.formulation !== formulation) return false;
+    if (formulation !== '') {
+      const matchesFormulation =
+        item.formulation === formulation ||
+        (formulation === 'carboxy-gel' && (item.formulation === 'gel' || item.formulation === 'carboxy-gel')) ||
+        (formulation === 'activation-pods' && (item.formulation === 'pads' || item.formulation === 'activation-pods')) ||
+        (formulation === 'soothing-gel' && (item.formulation === 'gel' || item.formulation === 'soothing-gel'));
+      if (!matchesFormulation) return false;
+    }
     if (minRials > 0 && priceOf(item) < minRials) return false;
     if (maxRials > 0 && priceOf(item) > maxRials) return false;
     if (stockOnly && !item.inStock) return false;
@@ -386,6 +521,7 @@ function SearchPageContent() {
 
   // Collapsible Facet Sections (desktop & drawer)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    category: false,
     brand: false,
     concern: false,
     formulation: false,
@@ -507,12 +643,7 @@ function SearchPageContent() {
             items: filtered,
             total: filtered.length,
             facets: {
-              categories: [
-                { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
-                { slug: 'coffee', titleFa: 'قهوه و تجهیزات تخصصی' },
-                { slug: 'home', titleFa: 'روشنایی و دکوراسیون' },
-                { slug: 'digital', titleFa: 'کالای دیجیتال و صوتی' },
-              ],
+              categories: CATEGORY_FACETS,
               brands: BRAND_FACETS,
               concerns: CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
@@ -547,12 +678,7 @@ function SearchPageContent() {
             items: filtered,
             total: filtered.length,
             facets: {
-              categories: [
-                { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
-                { slug: 'coffee', titleFa: 'قهوه و تجهیزات تخصصی' },
-                { slug: 'home', titleFa: 'روشنایی و دکوراسیون' },
-                { slug: 'digital', titleFa: 'کالای دیجیتال و صوتی' },
-              ],
+              categories: CATEGORY_FACETS,
               brands: BRAND_FACETS,
               concerns: CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
@@ -605,6 +731,14 @@ function SearchPageContent() {
           setQueryInput('');
           navigate({ ...filters, q: '' });
         },
+      });
+    }
+    if (filters.category) {
+      const catObj = CATEGORY_FACETS.find((c) => c.slug === filters.category);
+      list.push({
+        id: 'category',
+        label: `دسته: ${catObj ? catObj.titleFa : filters.category}`,
+        onRemove: () => navigate({ ...filters, category: '' }),
       });
     }
     if (filters.brand) {
@@ -666,6 +800,43 @@ function SearchPageContent() {
 
   const renderFilterControls = () => (
     <>
+      {/* 0. Category facet (collapsible) */}
+      <div className="facet-accordion-item">
+        <button
+          type="button"
+          className="facet-accordion-trigger"
+          onClick={() => toggleSection('category')}
+          aria-expanded={!collapsedSections.category}
+        >
+          <span>دسته‌بندی بالینی و تخصصی</span>
+          <span className={`facet-accordion-chevron ${collapsedSections.category ? '' : 'open'}`}>▼</span>
+        </button>
+        {!collapsedSections.category && (
+          <div className="facet-accordion-body">
+            <label className="filter-option">
+              <input
+                type="radio"
+                name="search-category"
+                checked={filters.category === ''}
+                onChange={() => navigate({ ...filters, category: '' })}
+              />
+              همه دسته‌ها
+            </label>
+            {facets.categories.map((c) => (
+              <label className="filter-option" key={c.slug}>
+                <input
+                  type="radio"
+                  name="search-category"
+                  checked={filters.category === c.slug}
+                  onChange={() => navigate({ ...filters, category: c.slug })}
+                />
+                {c.titleFa}
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* 1. Brand facet (collapsible) */}
       <div className="facet-accordion-item">
         <button

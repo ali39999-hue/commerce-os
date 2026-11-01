@@ -42,32 +42,32 @@ interface VendorPayload extends VendorItem {
 /* ── Demo-equivalent vendors (same as app/vendors/page.tsx fallback) ── */
 const DEMO_VENDORS: VendorItem[] = [
   {
-    id: "vendor_demo_roast",
-    slug: "roast-coffee",
-    titleFa: "روست قهوه",
-    description: "برشته‌کاری تخصصی قهوه اسپشیالتی؛ دانه‌های تک‌خاستگاه با برشت تازه و ارسال هفتگی.",
-    logoColor: "#8b5cf6",
-    productCount: 12,
+    id: "vendor_demo_central",
+    slug: "drdermer-clinic",
+    titleFa: "کلینیک مرکزی دکتر درمر",
+    description: "مرکز تخصصی پروتکل‌های کربوکسی‌تراپی و اکسیژن‌رسانی غیرتهاجمی Dr. Dermer UK Clinical Laboratories.",
+    logoColor: "#084f4a",
+    productCount: 8,
   },
   {
-    id: "vendor_demo_brew",
-    slug: "brew-studio",
-    titleFa: "استودیو دم‌آوری",
-    description: "ابزار و لوازم دم‌آوری حرفه‌ای؛ از دریپر سرامیکی تا ترازو و کتری گووزوم.",
-    logoColor: "#f59e0b",
-    productCount: 8,
+    id: "vendor_demo_partner",
+    slug: "derm-lab-partner",
+    titleFa: "کلینیک و داروخانه تخصصی درماتولوژی",
+    description: "توزیع‌کننده رسمی فرآورده‌های درموسوتیکال، سرم‌های بیومیمتیک و ملزومات کلینیکال پوست.",
+    logoColor: "#0284c7",
+    productCount: 6,
   },
 ];
 
 const DEMO_PRODUCTS: Record<string, VendorProduct[]> = {
-  "roast-coffee": [
-    { id: "dp_roast_1", slug: "ethiopian-specialty-coffee", title: "قهوه اسپشیالتی اتیوپی ۲۵۰ گرمی", priceRials: "9500000", kind: "PHYSICAL", inStock: true },
-    { id: "dp_roast_2", slug: "ceramic-dripper-v60", title: "دریپر سرامیکی وی‌۶۰", priceRials: "4200000", kind: "PHYSICAL", inStock: true },
-    { id: "dp_roast_3", slug: "brewing-guide-ebook", title: "کتاب الکترونیکی راهنمای جامع دم‌آوری", priceRials: "1800000", kind: "DIGITAL", inStock: true },
+  "drdermer-clinic": [
+    { id: "dp_dermer_1", slug: "carboxygel", title: "ژل تخصصی کربوکسی‌تراپی بالینی CarboxyGel", priceRials: "48500000", kind: "PHYSICAL", inStock: true },
+    { id: "dp_dermer_2", slug: "carboxypod", title: "پدهای فعال‌ساز واکنش بوهر CarboxyPod", priceRials: "12500000", kind: "PHYSICAL", inStock: true },
+    { id: "dp_dermer_3", slug: "crystalene", title: "سرم کریستالین بازیابی سد دفاعی پوست", priceRials: "18500000", kind: "PHYSICAL", inStock: true },
   ],
-  "brew-studio": [
-    { id: "dp_brew_1", slug: "artisan-mug", title: "ماگ سرامیکی دست‌ساز", priceRials: "3200000", kind: "PHYSICAL", inStock: true },
-    { id: "dp_brew_2", slug: "latte-art-video-course", title: "دوره ویدیویی لاته‌آرت", priceRials: "6500000", kind: "DIGITAL", inStock: true },
+  "derm-lab-partner": [
+    { id: "dp_partner_1", slug: "healene", title: "ژل-کرم تسکین‌دهنده و ترمیمی هیلین Healene", priceRials: "16500000", kind: "PHYSICAL", inStock: true },
+    { id: "dp_partner_2", slug: "silicalene", title: "میکروکپسول‌های ماتریکس سیلیکالین Silicalene", priceRials: "22500000", kind: "PHYSICAL", inStock: true },
   ],
 };
 

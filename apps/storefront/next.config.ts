@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/blog/rahnamaye-entekhab-ghahve',
+        destination: '/blog/clinical-skincare-selection-guide',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

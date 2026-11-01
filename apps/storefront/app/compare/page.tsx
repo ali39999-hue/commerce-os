@@ -6,6 +6,7 @@ import { useCart } from '../../components/cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import {
   COMPARE_CHANGED_EVENT,
+  COMPARE_STORAGE_KEY,
   getCompare,
   removeFromCompare,
   addToCompare,
@@ -16,16 +17,69 @@ import {
   RECOMMENDED_CLINICAL_PRODUCTS,
 } from '../../lib/clinical-specs';
 
+export const DEFAULT_CLINICAL_COMPARE_ITEMS: CompareItem[] = [
+  {
+    variantId: 'prod_skin_001',
+    productId: 'prod_skin_001',
+    slug: 'carboxygel-professional-therapy',
+    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
+    sku: 'CBG-PRO-500ML',
+    priceAmount: '48500000',
+    inStock: true,
+    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
+  },
+  {
+    variantId: 'prod_clinical_carboxypod',
+    productId: 'prod_clinical_carboxypod',
+    slug: 'carboxypod-activation-pads',
+    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
+    sku: 'RMD-CPD-005',
+    priceAmount: '12500000',
+    inStock: true,
+    categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
+  },
+  {
+    variantId: 'prod_skin_healene',
+    productId: 'prod_skin_healene',
+    slug: 'healene',
+    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
+    sku: 'DD-HEA-250ML',
+    priceAmount: '16000000',
+    inStock: true,
+    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
+  },
+  {
+    variantId: 'prod_skin_crystalene',
+    productId: 'prod_skin_crystalene',
+    slug: 'crystalene',
+    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
+    sku: 'DD-CRY-200ML',
+    priceAmount: '17500000',
+    inStock: true,
+    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
+  },
+];
+
 export default function ComparePage() {
   const { addItem } = useCart();
   const { formatToman } = useLocalizedFormatter();
   const [items, setItems] = useState<CompareItem[] | null>(null);
+  const [isDefaultMatrix, setIsDefaultMatrix] = useState(false);
   const [addedAll, setAddedAll] = useState(false);
   const [addedItemMap, setAddedItemMap] = useState<Record<string, boolean>>({});
   const [highlightDifferences, setHighlightDifferences] = useState(false);
 
   useEffect(() => {
-    const sync = () => setItems(getCompare());
+    const sync = () => {
+      const stored = getCompare();
+      if (stored.length === 0) {
+        setItems(DEFAULT_CLINICAL_COMPARE_ITEMS);
+        setIsDefaultMatrix(true);
+      } else {
+        setItems(stored);
+        setIsDefaultMatrix(false);
+      }
+    };
     sync();
     window.addEventListener(COMPARE_CHANGED_EVENT, sync);
     window.addEventListener('storage', sync);
@@ -34,6 +88,29 @@ export default function ComparePage() {
       window.removeEventListener('storage', sync);
     };
   }, []);
+
+  const handleRemove = (variantId: string) => {
+    if (isDefaultMatrix) {
+      const next = (items ?? []).filter((i) => i.variantId !== variantId);
+      setItems(next);
+      setIsDefaultMatrix(false);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(next));
+        window.dispatchEvent(new CustomEvent(COMPARE_CHANGED_EVENT));
+      }
+    } else {
+      removeFromCompare(variantId);
+    }
+  };
+
+  const handleResetToDefault = () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(COMPARE_STORAGE_KEY);
+      window.dispatchEvent(new CustomEvent(COMPARE_CHANGED_EVENT));
+    }
+    setItems(DEFAULT_CLINICAL_COMPARE_ITEMS);
+    setIsDefaultMatrix(true);
+  };
 
   const itemsSpecs = useMemo(() => {
     if (!items) return [];
@@ -61,47 +138,46 @@ export default function ComparePage() {
           <h2>کالایی برای مقایسه انتخاب نشده است</h2>
           <p>
             با زدن دکمه ⇄ در کارت هر محصول، حداکثر ۴ کالا را در ماتریس تطبیقی بالینی کنار هم بگذارید
-            و از نظر حجم، ترکیبات فعال، کارکرد بالینی، گواهینامه‌ها و قیمت ارزیابی فرمایید.
+            یا ماتریس پیش‌فرض مقایسه فرمولاسیون‌های دکتر درمر را مجدداً بارگذاری نمایید.
           </p>
-          <Link href="/search" className="btn-add-all" style={{ display: 'inline-block', margin: '0 auto 32px' }}>
-            جست‌وجو و انتخاب محصولات
-          </Link>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', margin: '0 auto 32px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn-add-all"
+              onClick={handleResetToDefault}
+            >
+              بارگذاری ماتریس پیش‌فرض (CarboxyGel, CarboxyPod, Healene, Crystalene)
+            </button>
+            <Link href="/search" className="btn-clear-filters" style={{ textDecoration: 'none' }}>
+              جست‌وجو و انتخاب محصولات
+            </Link>
+          </div>
 
           <div className="empty-recommendations-section">
             <h3 className="empty-recommendations-title">
               <span aria-hidden="true">🔬</span>
-              <span>پیشنهاد مقایسه سریع محصولات پرطرفدار</span>
+              <span>پیشنهاد مقایسه سریع ۴ محصول شاخص دکتر درمر</span>
             </h3>
             <div className="empty-recommendations-grid">
-              {RECOMMENDED_CLINICAL_PRODUCTS.slice(0, 3).map((rec) => (
-                <article className="product-card" key={rec.id}>
+              {DEFAULT_CLINICAL_COMPARE_ITEMS.map((rec) => (
+                <article className="product-card" key={rec.variantId}>
                   <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
                     <span className="art-index">{rec.title.slice(0, 1)}</span>
                     <span className="art-caption">✓ موجود در انبار</span>
                   </Link>
                   <div className="product-copy">
-                    <span className="product-card-brand">{rec.brand}</span>
+                    <span className="product-card-brand">
+                      {rec.slug.includes('carboxypod') ? 'ReeMed Medical Pro' : 'ReeSkin Clinical'}
+                    </span>
                     <h4 style={{ margin: '4px 0 8px', fontSize: '0.92rem' }}>
                       <Link href={`/products/${encodeURIComponent(rec.slug)}`}>{rec.title}</Link>
                     </h4>
-                    <p style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{rec.description}</p>
                     <div className="product-bottom">
                       <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
                       <button
                         type="button"
                         className="btn-transfer"
-                        onClick={() =>
-                          addToCompare({
-                            variantId: rec.id,
-                            productId: rec.id,
-                            slug: rec.slug,
-                            title: rec.title,
-                            sku: rec.sku,
-                            priceAmount: rec.priceAmount,
-                            inStock: rec.inStock,
-                            categoryTitleFa: rec.categoryTitleFa,
-                          })
-                        }
+                        onClick={() => addToCompare(rec)}
                       >
                         + افزودن به مقایسه
                       </button>
@@ -156,11 +232,31 @@ export default function ComparePage() {
       {/* Page Header and Controls */}
       <div className="section-head compare-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <div className="eyebrow">ماتریس تحلیل و ارزیابی درموسوتیکال</div>
+          <div className="eyebrow">
+            {isDefaultMatrix
+              ? 'ماتریس تطبیقی پیش‌فرض فرمولاسیون‌های دکتر درمر'
+              : 'ماتریس تحلیل و ارزیابی درموسوتیکال'}
+          </div>
           <h2>مقایسه تخصصی کالاها ({new Intl.NumberFormat('fa-IR').format(items.length)} از ۴)</h2>
+          {isDefaultMatrix && (
+            <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: 'var(--muted)' }}>
+              مقایسه ۴ فرمولاسیون شاخص: CarboxyGel، CarboxyPod، Healene و Crystalene
+            </p>
+          )}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          {!isDefaultMatrix && (
+            <button
+              type="button"
+              className="btn-clear-filters"
+              onClick={handleResetToDefault}
+              title="بازنشانی به ۴ محصول پیش‌فرض"
+            >
+              ↺ ماتریس پیش‌فرض (۴ کالا)
+            </button>
+          )}
+
           <label className="filter-option" style={{ fontSize: '0.84rem', cursor: 'pointer', userSelect: 'none' }}>
             <input
               type="checkbox"
@@ -202,7 +298,7 @@ export default function ComparePage() {
                       className="btn-remove compare-remove"
                       aria-label={`حذف ${item.title} از مقایسه`}
                       title="حذف از جدول مقایسه"
-                      onClick={() => removeFromCompare(item.variantId)}
+                      onClick={() => handleRemove(item.variantId)}
                       style={{ marginTop: '4px' }}
                     >
                       ✕ حذف
