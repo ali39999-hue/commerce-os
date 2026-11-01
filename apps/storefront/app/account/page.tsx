@@ -85,32 +85,32 @@ const DEFAULT_PROFILE: UserProfile = {
 
 const DEMO_REGIMEN: SkincareRegimen[] = [
   {
-    stepName: "مرحله ۱: پاکسازی ترابافتی",
-    productTitle: "فوم پاک‌کننده آمینواسیدی ReeSkin Gentle Cleanser",
-    frequency: "روزانه (صبح و شب)",
-    instructions: "پوست را با آب ولرم مرطوب کرده، ۱ پمپ فوم را ماساژ داده و آبکشی نمایید.",
+    stepName: "مرحله ۱: لایروبی منافذ و سم‌زدایی",
+    productTitle: "اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub (ReeSkin)",
+    frequency: "هفته‌ای ۲ تا ۳ بار",
+    instructions: "روی پوست تمیز ماساژ ملایم دهید تا میکروسفرهای سیلیکا و کربن فعال آلودگی‌ها را جذب کنند.",
     timeOfDay: "BOTH",
   },
   {
-    stepName: "مرحله ۲: کربوکسی‌تراپی و اکسیژن‌رسانی عمیق",
-    productTitle: "ژل فعال‌ساز Carboxy CO2 و ساشه بیوتکنولوژی",
+    stepName: "مرحله ۲: کربوکسی‌تراپی و آزادسازی اکسیژن بافتی",
+    productTitle: "ژل حرفه‌ای CarboxyGel و پادهای فعال‌ساز CarboxyPod",
     frequency: "هفته‌ای ۱ الی ۲ بار",
-    instructions: "ژل را یکنواخت پخش کرده، پد کربوکسی را قرار دهید تا اثر بوهر فعال شود (۲۰ دقیقه).",
+    instructions: "ژل را یکنواخت پخش کرده، پاد یا پد را قرار دهید تا اثر بوهر فعال شده و اکسیژن آزاد شود (۲۰ دقیقه).",
     timeOfDay: "NIGHT",
   },
   {
-    stepName: "مرحله ۳: ترمیم سد دفاعی و پپتید",
-    productTitle: "کرم بازسازی‌کننده حاوی سرامید و فاکتور رشد EGF",
-    frequency: "هر شب پس از کربوکسی",
-    instructions: "به آرامی با ضربات ملایم روی پوست صورت و گردن ماساژ دهید.",
+    stepName: "مرحله ۳: ترمیم سد دفاعی و تسکین اپیدرم",
+    productTitle: "ژل تسکین‌بخش و ترمیم سد دفاعی هیلین Healene Soothing Gel",
+    frequency: "روزانه و شب‌ها پس از کربوکسی",
+    instructions: "حاوی ۵٪ دکسپانتنول و سنتلا آسیاتیکا؛ به آرامی روی صورت و گردن ماساژ دهید تا جذب کامل شود.",
     timeOfDay: "NIGHT",
   },
   {
-    stepName: "مرحله ۴: محافظت فوتوپروتکشن بالینی",
-    productTitle: "ضدآفتاب مینرال SPF 50 بدون رنگ ReeMed Clinical",
-    frequency: "هر روز صبح و تجدید هر ۲ ساعت",
-    instructions: "حداقل دو بند انگشت روی پوست تمیز استفاده شود.",
-    timeOfDay: "MORNING",
+    stepName: "مرحله ۴: میکرودرم و لایه‌برداری ابریشمی دوره‌ای",
+    productTitle: "خمیر پولیش کریستالین Crystalene Polish Paste (Alumina Microcrystals)",
+    frequency: "هفته‌ای ۱ بار به عنوان پیش‌درمان",
+    instructions: "با نوک انگشتان مرطوب به مدت ۲ دقیقه با حرکات دورانی سایش دهید و با آب ولرم آبکشی نمایید.",
+    timeOfDay: "NIGHT",
   },
 ];
 
