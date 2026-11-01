@@ -3,6 +3,7 @@
 import "./b2b.css";
 import Link from "next/link";
 import { useState } from "react";
+import { toAsciiDigits } from "@commerce-os/localization";
 
 const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
@@ -107,10 +108,10 @@ export default function B2BPage() {
     const f = new FormData(form);
     const companyName = String(f.get("companyName") ?? "").trim();
     const contactName = String(f.get("contactName") ?? "").trim();
-    const medicalLicenseNo = String(f.get("medicalLicenseNo") ?? "").trim();
-    const phone = String(f.get("phone") ?? "").trim();
+    const medicalLicenseNo = toAsciiDigits(String(f.get("medicalLicenseNo") ?? "").trim());
+    const phone = toAsciiDigits(String(f.get("phone") ?? "").trim());
     const email = String(f.get("email") ?? "").trim();
-    const desiredQty = Math.floor(Number(f.get("desiredQty") ?? 0));
+    const desiredQty = Math.floor(Number(toAsciiDigits(String(f.get("desiredQty") ?? 0))));
     const customNotes = String(f.get("customNotes") ?? "").trim();
 
     // Client validations
@@ -121,6 +122,13 @@ export default function B2BPage() {
     if (contactName.length < RULES.contactName.min || contactName.length > RULES.contactName.max) {
       setError(`نام پزشک یا مدیر مرکز باید بین ${RULES.contactName.min} تا ${RULES.contactName.max} کاراکتر باشد.`);
       return;
+    }
+    if (medicalLicenseNo) {
+      const cleanLicense = medicalLicenseNo.replace(/[\s\-_/]/g, "");
+      if (cleanLicense.length < 4 || cleanLicense.length > 20) {
+        setError("شماره نظام پزشکی یا پروانه مطب باید حداقل ۴ رقم/نویسه و حداکثر ۲۰ نویسه باشد.");
+        return;
+      }
     }
     if (!/^09\d{9}$/.test(phone)) {
       setError("شماره موبایل پزشک/رابط باید با ۰۹ شروع شده و ۱۱ رقم باشد.");
@@ -286,7 +294,7 @@ export default function B2BPage() {
                     </div>
                   </td>
                   <td>{kit.tier1to9}</td>
-                  <td style={{ color: "var(--brand)", fontWeight: 700 }}>{kit.tier1to9 === kit.tier10to19 ? kit.tier10to19 : kit.tier10to19}</td>
+                  <td style={{ color: "var(--brand)", fontWeight: 700 }}>{kit.tier10to19}</td>
                   <td style={{ color: "#047857", fontWeight: 800 }}>{kit.tier20plus}</td>
                   <td style={{ fontSize: "0.8rem", color: "var(--muted)" }}>ارسال رایگان + پوستر آناتومی پروتکل</td>
                 </tr>

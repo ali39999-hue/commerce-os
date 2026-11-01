@@ -48,18 +48,13 @@ export default function CheckoutPage() {
   const { formatToman, formatMoney } = useLocalizedFormatter();
   const router = useRouter();
 
-  // Active step: 1 (Contact & Tax), 2 (Shipping & Slot), 3 (Payment Method), 4 (Review & Place)
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+  // Active step: 1 (Contact & Address & Tax), 2 (Shipping & Cold-Chain), 3 (Payment & Place Order)
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
 
-  // Step 1: Contact & National Code
+  // Step 1: Contact, Address & National Code
   const [customerName, setCustomerName] = useState("علی علوی");
   const [customerPhone, setCustomerPhone] = useState("09121234567");
   const [customerEmail, setCustomerEmail] = useState("ali.alavi@example.com");
-  const [needTaxInvoice, setNeedTaxInvoice] = useState(false);
-  const [nationalCode, setNationalCode] = useState("0010312013");
-  const [companyEconomicCode, setCompanyEconomicCode] = useState("");
-
-  // Step 2: Shipping & Delivery Slot
   const [province, setProvince] = useState("تهران");
   const [city, setCity] = useState("تهران");
   const [citySearch, setCitySearch] = useState("");
@@ -67,6 +62,11 @@ export default function CheckoutPage() {
   const [postalAddress, setPostalAddress] = useState(
     "خیابان آزادی، خیابان حبیب‌الهی، پلاک ۱۲، واحد ۴"
   );
+  const [needTaxInvoice, setNeedTaxInvoice] = useState(false);
+  const [nationalCode, setNationalCode] = useState("0010312013");
+  const [companyEconomicCode, setCompanyEconomicCode] = useState("");
+
+  // Step 2: Shipping, Cold-Chain & Delivery Slot
   const [deliveryDay, setDeliveryDay] = useState("فردا (روز کاری)");
   const [deliverySlot, setDeliverySlot] = useState("۱۳ الی ۱۷ (بازه عصر)");
 
@@ -217,6 +217,12 @@ export default function CheckoutPage() {
     if (!phoneValidation.isValid) {
       errors.customerPhone = phoneValidation.message;
     }
+    if (!postalCodeValidation.isValid) {
+      errors.postalCode = postalCodeValidation.message;
+    }
+    if (!postalAddress.trim() || postalAddress.trim().length < 10) {
+      errors.postalAddress = "نشانی دقیق پستی شامل خیابان، کوچه و پلاک الزامی است (حداقل ۱۰ کاراکتر)";
+    }
     if (needTaxInvoice) {
       if (!nationalIdValidation.isValid) {
         errors.nationalCode = nationalIdValidation.message;
@@ -228,11 +234,11 @@ export default function CheckoutPage() {
 
   const validateStep2 = (): boolean => {
     const errors: Record<string, string> = {};
-    if (!postalCodeValidation.isValid) {
-      errors.postalCode = postalCodeValidation.message;
+    if (!shippingMethod) {
+      errors.shippingMethod = "لطفاً روش ارسال مرسوله را مشخص فرمایید";
     }
-    if (!postalAddress.trim() || postalAddress.trim().length < 10) {
-      errors.postalAddress = "نشانی دقیق پستی شامل خیابان، کوچه و پلاک الزامی است (حداقل ۱۰ کاراکتر)";
+    if (!deliverySlot) {
+      errors.deliverySlot = "بازه زمانی تحویل را انتخاب کنید";
     }
     setStepErrors(errors);
     return Object.keys(errors).length === 0;
@@ -278,15 +284,17 @@ export default function CheckoutPage() {
       if (validateStep1()) setCurrentStep(2);
     } else if (currentStep === 2) {
       if (validateStep2()) setCurrentStep(3);
-    } else if (currentStep === 3) {
-      setCurrentStep(4);
     }
   };
 
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep1() || !validateStep2()) {
+    if (!validateStep1()) {
       setCurrentStep(1);
+      return;
+    }
+    if (!validateStep2()) {
+      setCurrentStep(2);
       return;
     }
 
@@ -515,6 +523,25 @@ export default function CheckoutPage() {
           </div>
 
           <div className="confirmation-action-buttons">
+            <Link
+              href={`/order/${confirmedOrder.orderNumber}`}
+              className="btn-view-order-tracking"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "var(--brand-deep)",
+                color: "#ffffff",
+                padding: "12px 24px",
+                borderRadius: "999px",
+                fontWeight: 700,
+                fontSize: "0.92rem",
+                textDecoration: "none",
+                boxShadow: "0 2px 8px rgba(15, 23, 42, 0.15)",
+              }}
+            >
+              مشاهده و پیگیری زنده سفارش در سامانه ←
+            </Link>
             <button
               type="button"
               onClick={downloadOfficialInvoice}
@@ -670,7 +697,7 @@ export default function CheckoutPage() {
             className={`step-bubble ${currentStep === 1 ? "active" : currentStep > 1 ? "completed" : ""}`}
           >
             <span className="step-num">{currentStep > 1 ? "✓" : "۱"}</span>
-            <span className="step-text">اطلاعات خریدار</span>
+            <span className="step-text">مشخصات و آدرس تحویل</span>
           </button>
           <div className={`step-connector ${currentStep >= 2 ? "active" : ""}`} />
           <button
@@ -681,7 +708,7 @@ export default function CheckoutPage() {
             className={`step-bubble ${currentStep === 2 ? "active" : currentStep > 2 ? "completed" : ""}`}
           >
             <span className="step-num">{currentStep > 2 ? "✓" : "۲"}</span>
-            <span className="step-text">آدرس و ارسال</span>
+            <span className="step-text">ارسال و زنجیره سرد</span>
           </button>
           <div className={`step-connector ${currentStep >= 3 ? "active" : ""}`} />
           <button
@@ -689,30 +716,19 @@ export default function CheckoutPage() {
             onClick={() => {
               if (validateStep1() && validateStep2()) setCurrentStep(3);
             }}
-            className={`step-bubble ${currentStep === 3 ? "active" : currentStep > 3 ? "completed" : ""}`}
+            className={`step-bubble ${currentStep === 3 ? "active" : ""}`}
           >
-            <span className="step-num">{currentStep > 3 ? "✓" : "۳"}</span>
-            <span className="step-text">روش پرداخت</span>
-          </button>
-          <div className={`step-connector ${currentStep >= 4 ? "active" : ""}`} />
-          <button
-            type="button"
-            onClick={() => {
-              if (validateStep1() && validateStep2()) setCurrentStep(4);
-            }}
-            className={`step-bubble ${currentStep === 4 ? "active" : ""}`}
-          >
-            <span className="step-num">۴</span>
-            <span className="step-text">ثبت نهایی</span>
+            <span className="step-num">۳</span>
+            <span className="step-text">پرداخت و ثبت نهایی</span>
           </button>
         </div>
 
-        {/* STEP 1: Contact Information & Legal Tax Invoicing */}
+        {/* STEP 1: Customer Details & Address Form & Tax Invoicing */}
         {currentStep === 1 && (
           <div className="checkout-section">
-            <h2>۱. اطلاعات تماس و هویت حقوقی خریدار</h2>
+            <h2>۱. اطلاعات تحویل‌گیرنده، آدرس پستی و هویت حقوقی</h2>
             <p className="section-desc">
-              اطلاعات جهت هماهنگی ارسال مرسوله و تطبیق احراز هویت شاهکار استفاده می‌شود.
+              اطلاعات جهت ثبت فاکتور رسمی، انطباق با شاهکار و صدور بارنامه پست پیشتاز و تیپاکس استفاده می‌شود.
             </p>
 
             <div className="form-grid">
@@ -760,8 +776,8 @@ export default function CheckoutPage() {
                 )}
               </label>
 
-              <label className="form-field full-width">
-                <span>پست الکترونیک (اختیاری - ارسال نسخه PDF فاکتور رسمی)</span>
+              <label className="form-field">
+                <span>پست الکترونیک (ارسال نسخه PDF فاکتور رسمی)</span>
                 <input
                   type="email"
                   value={customerEmail}
@@ -770,6 +786,95 @@ export default function CheckoutPage() {
                   dir="ltr"
                   className="input-text"
                 />
+              </label>
+
+              <label className="form-field">
+                <span>استان *</span>
+                <select
+                  value={province}
+                  onChange={(e) => {
+                    setProvince(e.target.value);
+                    setCitySearch("");
+                  }}
+                  className="input-text select-box"
+                >
+                  {Object.keys(IRAN_PROVINCES).map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="form-field">
+                <div className="city-label-filter-row">
+                  <span>شهر *</span>
+                  <input
+                    type="text"
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.target.value)}
+                    placeholder="جستجوی سریع شهر…"
+                    className="city-filter-inline"
+                  />
+                </div>
+                <select
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="input-text select-box"
+                >
+                  {availableCities.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <label className="form-field">
+                <div className="field-label-row">
+                  <span>کد پستی ۱۰ رقمی * (شرکت ملی پست)</span>
+                  {postalCode && (
+                    <span className={`live-valid-badge ${postalCodeValidation.isValid ? "valid" : "invalid"}`}>
+                      {postalCodeValidation.isValid ? "✓ کد پستی معتبر" : "نامعتبر"}
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  value={postalCode}
+                  onChange={(e) => {
+                    const raw = toAsciiDigits(e.target.value).replace(/\D/g, "").slice(0, 10);
+                    setPostalCode(raw);
+                  }}
+                  placeholder="۱۰ رقم بدون خط تیره (مثال: ۱۴۵۸۹۶۳۲۱۴)"
+                  dir="ltr"
+                  maxLength={10}
+                  className={`input-text ${
+                    stepErrors.postalCode
+                      ? "input-error"
+                      : postalCode && postalCodeValidation.isValid
+                      ? "input-valid"
+                      : ""
+                  }`}
+                />
+                {stepErrors.postalCode ? (
+                  <span className="field-error-msg">{stepErrors.postalCode}</span>
+                ) : (
+                  <small className="field-hint">۱۰ رقم معتبر بدون رقم صفر در موقعیت ۵ و غیرتکراری</small>
+                )}
+              </label>
+
+              <label className="form-field full-width">
+                <span>نشانی پستی دقیق (خیابان، کوچه، پلاک، واحد) *</span>
+                <textarea
+                  value={postalAddress}
+                  onChange={(e) => setPostalAddress(e.target.value)}
+                  rows={3}
+                  className={`input-textarea ${stepErrors.postalAddress ? "input-error" : ""}`}
+                />
+                {stepErrors.postalAddress && (
+                  <span className="field-error-msg">{stepErrors.postalAddress}</span>
+                )}
               </label>
             </div>
 
@@ -834,110 +939,19 @@ export default function CheckoutPage() {
 
             <div className="step-actions-row">
               <button type="button" onClick={goToNextStep} className="btn-next-step">
-                تأیید و ادامه به مرحله آدرس و ارسال ←
+                تأیید و ادامه به شیوه ارسال و زنجیره سرد ←
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 2: Shipping Address & Time Slot & Cold-Chain */}
+        {/* STEP 2: Delivery Method & Cold-Chain 2-8°C & Delivery Slot */}
         {currentStep === 2 && (
           <div className="checkout-section">
-            <h2>۲. آدرس تحویل و زمان‌بندی ارسال مرسوله</h2>
+            <h2>۲. شیوه ارسال مرسوله و زمان‌بندی تحویل (Cold-Chain ۲–۸°C)</h2>
             <p className="section-desc">
-              انتخاب استان، شهر، کد پستی ۱۰ رقمی معتبر و زمان تحویل سفارش با تضمین زنجیره سرد
+              انتخاب ناوگان حمل با تضمین مانیتورینگ حرارتی پیوسته و بازه زمانی تحویل سفارش
             </p>
-
-            <div className="form-grid">
-              <label className="form-field">
-                <span>استان *</span>
-                <select
-                  value={province}
-                  onChange={(e) => {
-                    setProvince(e.target.value);
-                    setCitySearch("");
-                  }}
-                  className="input-text select-box"
-                >
-                  {Object.keys(IRAN_PROVINCES).map((p) => (
-                    <option key={p} value={p}>
-                      {p}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <div className="form-field">
-                <div className="city-label-filter-row">
-                  <span>شهر *</span>
-                  <input
-                    type="text"
-                    value={citySearch}
-                    onChange={(e) => setCitySearch(e.target.value)}
-                    placeholder="جستجوی سریع شهر…"
-                    className="city-filter-inline"
-                  />
-                </div>
-                <select
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="input-text select-box"
-                >
-                  {availableCities.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <label className="form-field full-width">
-                <div className="field-label-row">
-                  <span>کد پستی ۱۰ رقمی * (شرکت ملی پست)</span>
-                  {postalCode && (
-                    <span className={`live-valid-badge ${postalCodeValidation.isValid ? "valid" : "invalid"}`}>
-                      {postalCodeValidation.isValid ? "✓ کد پستی معتبر" : "نامعتبر"}
-                    </span>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  value={postalCode}
-                  onChange={(e) => {
-                    const raw = toAsciiDigits(e.target.value).replace(/\D/g, "").slice(0, 10);
-                    setPostalCode(raw);
-                  }}
-                  placeholder="۱۰ رقم بدون خط تیره (مثال: ۱۴۵۸۹۶۳۲۱۴)"
-                  dir="ltr"
-                  maxLength={10}
-                  className={`input-text ${
-                    stepErrors.postalCode
-                      ? "input-error"
-                      : postalCode && postalCodeValidation.isValid
-                      ? "input-valid"
-                      : ""
-                  }`}
-                />
-                {stepErrors.postalCode ? (
-                  <span className="field-error-msg">{stepErrors.postalCode}</span>
-                ) : (
-                  <small className="field-hint">۱۰ رقم معتبر بدون رقم صفر در موقعیت ۵ و غیرتکراری</small>
-                )}
-              </label>
-
-              <label className="form-field full-width">
-                <span>نشانی پستی دقیق (خیابان، کوچه، پلاک، واحد) *</span>
-                <textarea
-                  value={postalAddress}
-                  onChange={(e) => setPostalAddress(e.target.value)}
-                  rows={3}
-                  className={`input-textarea ${stepErrors.postalAddress ? "input-error" : ""}`}
-                />
-                {stepErrors.postalAddress && (
-                  <span className="field-error-msg">{stepErrors.postalAddress}</span>
-                )}
-              </label>
-            </div>
 
             {/* Cold-Chain Delivery Assurance Callout */}
             <div className="checkout-cold-chain-card">
@@ -956,6 +970,23 @@ export default function CheckoutPage() {
             {/* Carrier Methods */}
             <h3 className="sub-heading">روش ارسال مرسوله</h3>
             <div className="options-grid">
+              <label className={`option-card ${shippingMethod === "EXPRESS_COURIER" ? "active" : ""}`}>
+                <input
+                  type="radio"
+                  name="shippingChoice"
+                  value="EXPRESS_COURIER"
+                  checked={shippingMethod === "EXPRESS_COURIER"}
+                  onChange={() => setShippingMethod("EXPRESS_COURIER")}
+                />
+                <div className="option-content">
+                  <strong>پیک اختصاصی کلدچین فوری (Cold-Chain Courier)</strong>
+                  <span>تحویل فوق‌سریع در بازه زمانی انتخابی با خودروی مجهز به یونیت سرمازا ۲ الی ۸ درجه</span>
+                </div>
+                <div className="option-badge">
+                  {calculations.isFreeShipping ? "رایگان" : "۲۰۰,۰۰۰ تومان"}
+                </div>
+              </label>
+
               <label className={`option-card ${shippingMethod === "POST_PISHTAZ" ? "active" : ""}`}>
                 <input
                   type="radio"
@@ -987,23 +1018,6 @@ export default function CheckoutPage() {
                 </div>
                 <div className="option-badge">
                   {calculations.isFreeShipping ? "رایگان" : "۸۵,۰۰۰ تومان"}
-                </div>
-              </label>
-
-              <label className={`option-card ${shippingMethod === "EXPRESS_COURIER" ? "active" : ""}`}>
-                <input
-                  type="radio"
-                  name="shippingChoice"
-                  value="EXPRESS_COURIER"
-                  checked={shippingMethod === "EXPRESS_COURIER"}
-                  onChange={() => setShippingMethod("EXPRESS_COURIER")}
-                />
-                <div className="option-content">
-                  <strong>پیک اکسپرس فوری کلدچین (ویژه تهران و مراکز استان)</strong>
-                  <span>تحویل فوق‌سریع در بازه زمانی انتخابی با خودروی مجهز به یونیت سرمازا</span>
-                </div>
-                <div className="option-badge">
-                  {calculations.isFreeShipping ? "رایگان" : "۲۰۰,۰۰۰ تومان"}
                 </div>
               </label>
             </div>
@@ -1041,7 +1055,7 @@ export default function CheckoutPage() {
 
             <div className="step-actions-row">
               <button type="button" onClick={() => setCurrentStep(1)} className="btn-prev-step">
-                ← بازگشت به مرحله قبل
+                ← بازگشت به مشخصات و آدرس
               </button>
               <button type="button" onClick={goToNextStep} className="btn-next-step">
                 تأیید و ادامه به شیوه پرداخت ←
@@ -1050,12 +1064,12 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {/* STEP 3: Payment Method Selection */}
+        {/* STEP 3: Payment Method & Review & Order Submission */}
         {currentStep === 3 && (
           <div className="checkout-section">
-            <h2>۳. انتخاب شیوه پرداخت</h2>
+            <h2>۳. انتخاب شیوه پرداخت و بازبینی نهایی پیش‌فاکتور</h2>
             <p className="section-desc">
-              تمامی پرداخت‌ها در بستر پروتکل‌های امن مالیاتی و بانکی شاپرک انجام می‌پذیرد.
+              تمامی پرداخت‌ها در بستر پروتکل‌های امن شاپرک یا واریز مستقیم کارت‌به‌کارت تجاری انجام می‌پذیرد.
             </p>
 
             <div className="options-grid">
@@ -1240,36 +1254,13 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            <div className="step-actions-row">
-              <button type="button" onClick={() => setCurrentStep(2)} className="btn-prev-step">
-                ← بازگشت به مرحله آدرس
-              </button>
-              <button type="button" onClick={goToNextStep} className="btn-next-step">
-                تأیید و بازبینی نهایی پیش‌فاکتور ←
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 4: Real-time Order Summary & Submission */}
-        {currentStep === 4 && (
-          <div className="checkout-section">
-            <h2>۴. بازبینی نهایی و تأیید پیش‌فاکتور رسمی</h2>
-            <p className="section-desc">
-              لطفاً اقلام سفارش، آدرس و مبالغ را بررسی کنید. با کلیک بر روی دکمه زیر، موجودی
-              انبار به مدت ۱۵ دقیقه رزرو خواهد شد.
-            </p>
-
-            <div className="review-block">
-              <h3>مشخصات گیرنده و مقصد</h3>
+            {/* Pre-Submission Order Review Summary Block */}
+            <div className="review-block" style={{ marginTop: "24px" }}>
+              <h3>بازبینی مشخصات سفارش پیش از ثبت</h3>
               <div className="review-meta-list">
                 <div className="rm-item">
                   <span>تحویل‌گیرنده:</span>
-                  <strong>{customerName}</strong>
-                </div>
-                <div className="rm-item">
-                  <span>شماره موبایل:</span>
-                  <strong dir="ltr">{customerPhone}</strong>
+                  <strong>{customerName} ({customerPhone})</strong>
                 </div>
                 {needTaxInvoice && (
                   <div className="rm-item">
@@ -1309,7 +1300,7 @@ export default function CheckoutPage() {
 
             {submitError && <div className="error-banner">{submitError}</div>}
 
-            <form onSubmit={handleFinalSubmit} className="final-order-form">
+            <form onSubmit={handleFinalSubmit} className="final-order-form" style={{ marginTop: "20px" }}>
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -1326,8 +1317,8 @@ export default function CheckoutPage() {
             </form>
 
             <div className="step-actions-row">
-              <button type="button" onClick={() => setCurrentStep(3)} className="btn-prev-step">
-                ← بازگشت و تغییر روش پرداخت
+              <button type="button" onClick={() => setCurrentStep(2)} className="btn-prev-step">
+                ← بازگشت به مرحله انتخاب ارسال
               </button>
             </div>
           </div>

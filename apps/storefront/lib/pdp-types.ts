@@ -125,6 +125,7 @@ export interface ExtendedProductData {
   skinTypes: string[];
   skinConcerns: string[];
   cleanBadges: string[]; // "فاقد پارابن", "بدون تست حیوانی (Cruelty-Free)", "سازگار با میکروبیوم"
+  coldChainRequired?: boolean; // ارسال تحت پروتکل زنجیره سرد
   media: ProductMediaItem[];
   variants: ProductVariantItem[];
   scienceMechanism: {

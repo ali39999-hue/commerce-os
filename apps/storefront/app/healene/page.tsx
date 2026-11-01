@@ -102,7 +102,8 @@ export default function HealenePage() {
           <div className="cp-hero-info">
             <div className="station-badge-wrapper">
               <span className="cp-badge-pill cyan">POST-TREATMENT DERMAL RELIEF</span>
-              <span className="cp-badge-pill">Panthenol &amp; Cica Matrix</span>
+              <span className="cp-badge-pill">5% Dexpanthenol + Centella Matrix</span>
+              <span className="cp-badge-pill cyan">TEWL -74% Clinically Proven</span>
             </div>
 
             <h1 className="cp-hero-title">
@@ -111,14 +112,14 @@ export default function HealenePage() {
             </h1>
 
             <div className="cp-hero-subtitle">
-              آبرسان سبک، خنک‌کننده و ترمیم‌کننده فوری سد دفاعی پوست با نیاسینامید، پانتنول، اسید هیالورونیک و کمپلکس ۷ عصاره التیام‌بخش
+              آبرسان سبک، خنک‌کننده و ترمیم‌کننده فوری سد دفاعی پوست با ۵٪ دکسپانتنول، عصاره سنتلا، اسید هیالورونیک و کمپلکس ۷ عصاره التیام‌بخش
             </div>
 
             <p className="cp-hero-desc">
-              ژل التیام‌بخش هیلین برای مهار فوری التهاب، سوزش، قرمزی اریتما و گرگرفتگی ناشی از درمان‌های کلینیکی (لیزر، پیلینگ،
-              میکرونیدلینگ، کربوکسی‌تراپی و سایش میکرودرم) فرموله شده است. ساختار ژلی سبک و پایه آب (Oil-Free) آن بدون انسداد منافذ
-              به سرعت به لایه‌های اپیدرم نفوذ کرده و با ترکیب نیاسینامید، پانتنول B5، هیالورونیک اسید، آلانتوئین، سدیم PCA و عصاره‌های
-              خالص میموزا، کالاندولا، سنتلا آسیاتیکا، آلوئه‌ورا، آسای، بابونه و شیرین‌بیان دمای موضعی پوست را تا ۳ درجه سانتی‌گراد کاهش می‌دهد.
+              ژل التیام‌بخش هیلین برای مهار فوری التهاب، سوزش، قرمزی اریتما و افت سد دفاعی ناشی از درمان‌های کلینیکی (لیزر، پیلینگ،
+              میکرونیدلینگ، کربوکسی‌تراپی و سایش میکرودرم) فرموله شده است. ساختار ژلی سبک و فاقد چربی (Oil-Free) با ترکیب طلایی
+              <strong> ۵٪ دکسپانتنول دارویی (D-Panthenol) و عصاره غلیظ سنتلا آسیاتیکا (Cica)</strong>، اتلاف آب ترنس‌اپیدرمال (TEWL) را تا ۷۴٪
+              کاهش داده، سنتز سرامیدها را احیا کرده و دمای موضعی پوست ملتهب را ظرف چند ثانیه تا ۳.۲ درجه سانتی‌گراد خنک می‌سازد.
             </p>
 
             {/* Scientific Performance Telemetry */}
@@ -128,12 +129,16 @@ export default function HealenePage() {
                 <div className="cp-metric-label">خنک‌کنندگی فوری دمای سطح پوست</div>
               </div>
               <div className="cp-metric-box">
+                <div className="cp-metric-val cyan">-74%</div>
+                <div className="cp-metric-label">کاهش تبخیر سطحی آب (TEWL)</div>
+              </div>
+              <div className="cp-metric-box">
                 <div className="cp-metric-val cyan">61%</div>
                 <div className="cp-metric-label">کاهش قرمزی اریتما ظرف ۳۰ دقیقه</div>
               </div>
               <div className="cp-metric-box">
-                <div className="cp-metric-val cyan">100%</div>
-                <div className="cp-metric-label">فرمول فاقد چربی و بدون مسدودسازی منافذ</div>
+                <div className="cp-metric-val cyan">5.0%</div>
+                <div className="cp-metric-label">غلظت خالص دکسپانتنول فارماکوپه</div>
               </div>
             </div>
 
@@ -150,6 +155,7 @@ export default function HealenePage() {
               inStock={true}
               theme="cyan"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
+              image="/assets/drdermer/2025/08/16healene-1200x1109.webp"
             />
           </div>
 

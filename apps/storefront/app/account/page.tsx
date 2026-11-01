@@ -381,6 +381,13 @@ export default function AccountPage() {
           >
             🏆 باشگاه مشتریان و امتیازات
           </button>
+          <Link
+            href="/subscriptions"
+            className="account-nav-btn"
+            style={{ textDecoration: "none" }}
+          >
+            🔄 اشتراک‌های دوره‌ای و شارژ ملزومات
+          </Link>
         </nav>
       </aside>
 

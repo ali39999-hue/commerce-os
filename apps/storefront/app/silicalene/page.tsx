@@ -149,6 +149,7 @@ export default function SilicalenePage() {
               inStock={true}
               theme="teal"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
+              image="/assets/drdermer/2025/08/14silicalene-1200x1109.webp"
             />
           </div>
 

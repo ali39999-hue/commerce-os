@@ -226,6 +226,7 @@ export default function ComparePage() {
   const brandsDiffer = new Set(itemsSpecs.map((i) => i.specs.brand)).size > 1;
   const volumesDiffer = new Set(itemsSpecs.map((i) => i.specs.volume)).size > 1;
   const pricesDiffer = new Set(itemsSpecs.map((i) => i.priceAmount)).size > 1;
+  const functionsDiffer = new Set(itemsSpecs.map((i) => i.specs.clinicalFunction)).size > 1;
 
   return (
     <section className="compare-page page-shell">
@@ -389,7 +390,7 @@ export default function ComparePage() {
             </tr>
 
             {/* Clinical Function */}
-            <tr>
+            <tr className={highlightDifferences && functionsDiffer ? 'compare-highlight-cell' : ''}>
               <th scope="row" className="compare-feature-label">کارکرد بالینی</th>
               {itemsSpecs.map((item) => (
                 <td key={item.variantId} className="compare-val-cell" style={{ fontSize: '0.86rem' }}>

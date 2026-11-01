@@ -1,20 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useCart } from "../../components/cart";
 import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
 import { trackViewCart, trackBeginCheckout } from "../../lib/analytics";
+import { CLINICAL_CROSS_SELLS, CrossSellProtocol } from "../../lib/cart";
 
 export default function CartPage() {
   const {
     items,
+    addItem,
     setQty,
     removeItem,
     clearCart,
     isReady,
     couponCode,
-    setCouponCode,
     appliedCoupon,
     applyCoupon,
     removeCoupon,
@@ -30,6 +31,8 @@ export default function CartPage() {
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  const [addedCrossSells, setAddedCrossSells] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (isReady && items.length > 0) {
@@ -48,6 +51,34 @@ export default function CartPage() {
       );
     }
   }, [isReady, items, calculations.totalRials]);
+
+  // Find recommended clinical cross-sell protocol
+  const recommendedCrossSell = useMemo(() => {
+    if (items.length === 0) return null;
+    for (const cross of CLINICAL_CROSS_SELLS) {
+      if (cross.targetTriggerMatch(items)) {
+        return cross;
+      }
+    }
+    return null;
+  }, [items]);
+
+  const handleAddCrossSell = (cross: CrossSellProtocol) => {
+    addItem(
+      {
+        variantId: cross.variantId,
+        productId: cross.productId,
+        title: cross.title,
+        sku: cross.sku,
+        priceAmount: cross.bundlePriceRials,
+      },
+      1
+    );
+    setAddedCrossSells((prev) => ({ ...prev, [cross.id]: true }));
+    setTimeout(() => {
+      setAddedCrossSells((prev) => ({ ...prev, [cross.id]: false }));
+    }, 2500);
+  };
 
   if (!isReady) {
     return (
@@ -87,6 +118,7 @@ export default function CartPage() {
     const res = applyCoupon(couponInput);
     if (res.success) {
       setCouponFeedback({ type: "success", message: res.message });
+      setCouponInput("");
     } else {
       setCouponFeedback({ type: "error", message: res.message });
     }
@@ -98,8 +130,30 @@ export default function CartPage() {
     setCouponFeedback(null);
   };
 
+  // 2-tier milestone calculations
+  // Tier 1: 1,500,000 Tomans (Free Cold-Chain Delivery) -> 50%
+  // Tier 2: 3,000,000 Tomans (VIP Dermatologist Consultation) -> 100%
+  const subtotalTomans = calculations.subtotalTomans;
+  const tier1Threshold = 1_500_000n;
+  const tier2Threshold = 3_000_000n;
+  const tier1Achieved = subtotalTomans >= tier1Threshold;
+  const tier2Achieved = subtotalTomans >= tier2Threshold;
+
+  let meterPercentage = 0;
+  if (subtotalTomans >= tier2Threshold) {
+    meterPercentage = 100;
+  } else if (subtotalTomans >= tier1Threshold) {
+    const span = Number(tier2Threshold - tier1Threshold);
+    const progressInSpan = Number(subtotalTomans - tier1Threshold);
+    meterPercentage = 50 + Math.min(50, Math.round((progressInSpan / span) * 50));
+  } else {
+    const span = Number(tier1Threshold);
+    const progressInSpan = Number(subtotalTomans);
+    meterPercentage = Math.min(50, Math.round((progressInSpan / span) * 50));
+  }
+
   return (
-    <section className="cart-page-layout">
+    <section className="cart-page-layout" dir="rtl">
       <div className="cart-items-column">
         {/* Header & Clear */}
         <div className="cart-header-row">
@@ -112,39 +166,71 @@ export default function CartPage() {
           </button>
         </div>
 
-        {/* Free Shipping Progress */}
-        <div className="free-shipping-card">
-          <div className="free-shipping-info">
-            <span className="free-shipping-title">
-              {calculations.isFreeShipping ? (
-                <strong className="shipping-unlocked-text">
-                  🎉 تبریک! ارسال سفارش شما کاملاً رایگان شد
-                </strong>
+        {/* Dynamic 2-Tier Milestone Progress Bar (1.5M Free Cold-Chain Delivery + 3M VIP Consultation) */}
+        <div className="tiered-threshold-container" style={{ borderRadius: "var(--radius-sm)", marginBottom: "20px" }}>
+          <div className="tiered-header-status">
+            <div className="tiered-status-headline">
+              {tier2Achieved ? (
+                <span className="tier-msg-vip">
+                  🎉 <strong>تبریک ویژه!</strong> ارسال رایگان کلدچین و <strong>مشاوره تخصصی رایگان با پزشک متخصص پوست</strong> فعال شد
+                </span>
+              ) : tier1Achieved ? (
+                <span className="tier-msg-shipping">
+                  ✓ <strong>ارسال رایگان کلدچین فعال شد!</strong> فقط{" "}
+                  {new Intl.NumberFormat("fa-IR").format(tier2Threshold - subtotalTomans)} تومان تا{" "}
+                  <strong>مشاوره رایگان متخصص پوست</strong>
+                </span>
               ) : (
-                calculations.freeShippingMessage
+                <span className="tier-msg-initial">
+                  فقط{" "}
+                  <strong>
+                    {new Intl.NumberFormat("fa-IR").format(tier1Threshold - subtotalTomans)} تومان
+                  </strong>{" "}
+                  تا <strong>ارسال رایگان کلدچین سراسری</strong>
+                </span>
               )}
-            </span>
-            {calculations.isFreeShipping ? (
-              <span className="free-shipping-qualified celebratory">ارسال رایگان پیشتاز فعال شد</span>
-            ) : (
-              <span className="free-shipping-qualified">پست پیشتاز سراسری</span>
-            )}
+            </div>
           </div>
+
           <div
-            className="free-shipping-progress"
+            className="tiered-progress-track"
             role="progressbar"
-            aria-valuenow={calculations.freeShippingProgressPct}
+            aria-valuenow={meterPercentage}
             aria-valuemin={0}
             aria-valuemax={100}
           >
             <div
-              className={`progress-fill ${calculations.isFreeShipping ? "free" : ""}`}
-              style={{ width: `${calculations.freeShippingProgressPct}%` }}
+              className={`tiered-progress-fill ${
+                tier2Achieved ? "vip-complete" : tier1Achieved ? "free-complete" : ""
+              }`}
+              style={{ width: `${meterPercentage}%` }}
             />
+            {/* Milestone Pins */}
+            <div className={`milestone-pin pin-half ${tier1Achieved ? "reached" : ""}`}>
+              <div className="pin-dot">{tier1Achieved ? "✓" : "۱"}</div>
+              <span className="pin-label">ارسال رایگان کلدچین (۱.۵ م)</span>
+            </div>
+            <div className={`milestone-pin pin-full ${tier2Achieved ? "reached" : ""}`}>
+              <div className="pin-dot">{tier2Achieved ? "★" : "۲"}</div>
+              <span className="pin-label">مشاوره VIP پوست (۳ م)</span>
+            </div>
           </div>
-          <small className="free-shipping-hint">
-            سقف خرید برای ارسال رایگان پیشتاز سراسری: ۳,۰۰۰,۰۰۰ تومان
-          </small>
+        </div>
+
+        {/* Cold-Chain Assurance Banner */}
+        <div className="cart-cold-chain-banner" style={{ borderRadius: "var(--radius-sm)", marginBottom: "20px" }}>
+          <div className="ccc-visual-icon">
+            <span className="ccc-temp-badge">۲–۸°C</span>
+          </div>
+          <div className="ccc-content">
+            <div className="ccc-title-row">
+              <strong>تضمین پایش هوشمند زنجیره سرد (Cold-Chain)</strong>
+              <span className="ccc-status-tag">کنترل کیفی فعال</span>
+            </div>
+            <p className="ccc-desc">
+              ارسال در بسته‌بندی عایق ایزوترمال با ژل یخ دارویی و سنسور پایش حرارتی؛ تضمین ۱۰۰٪ پایداری پپتیدها و ماتریکس فعال بیولوژیک.
+            </p>
+          </div>
         </div>
 
         {/* Server Sync / Stock Warnings */}
@@ -219,6 +305,39 @@ export default function CartPage() {
             );
           })}
         </div>
+
+        {/* Intelligent Clinical Cross-Sell Section */}
+        {recommendedCrossSell && (
+          <div className="cart-cross-sell-section" style={{ marginTop: "24px" }}>
+            <div className="cross-sell-header">
+              <span className="cross-sell-badge">{recommendedCrossSell.discountBadge}</span>
+              <strong className="cross-sell-title">هم‌افزایی بالینی پروتکل درمانی</strong>
+            </div>
+            <div className="cross-sell-card">
+              <div className="cross-sell-details">
+                <h5>{recommendedCrossSell.title}</h5>
+                <p className="cross-sell-subtitle">{recommendedCrossSell.subtitle}</p>
+                <p className="cross-sell-rationale">
+                  <span className="rationale-tag">تحلیل بالینی:</span> {recommendedCrossSell.clinicalRationale}
+                </p>
+                <div className="cross-sell-pricing">
+                  <div className="price-stack">
+                    <span className="original-strike">{formatToman(recommendedCrossSell.originalPriceRials)}</span>
+                    <strong className="bundle-price">{formatToman(recommendedCrossSell.bundlePriceRials)}</strong>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAddCrossSell(recommendedCrossSell)}
+                    className={`btn-add-cross-sell ${addedCrossSells[recommendedCrossSell.id] ? "added" : ""}`}
+                    disabled={addedCrossSells[recommendedCrossSell.id]}
+                  >
+                    {addedCrossSells[recommendedCrossSell.id] ? "✓ اضافه شد" : "+ افزودن با تخفیف باندل"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <aside className="cart-summary-column">
@@ -229,7 +348,7 @@ export default function CartPage() {
           <form onSubmit={handleApplyCoupon} className="coupon-box">
             <input
               type="text"
-              placeholder="کد تخفیف (مثال: OFF10 یا WELCOME10)"
+              placeholder="کد تخفیف (مثال: DERMER20 یا WELCOME10)"
               value={couponInput}
               onChange={(e) => setCouponInput(e.target.value)}
               className="input-text"
@@ -285,13 +404,20 @@ export default function CartPage() {
             </div>
 
             <div className="summary-row">
-              <span>هزینه ارسال پیش‌فرض:</span>
+              <span>هزینه ارسال کلدچین:</span>
               <span>
                 {calculations.isFreeShipping
-                  ? "رایگان (خرید بیش از سقف)"
+                  ? "رایگان (خرید بالای ۱.۵ م)"
                   : formatMoney(calculations.shippingRials, "IRR")}
               </span>
             </div>
+
+            {tier2Achieved && (
+              <div className="summary-row vip-benefit" style={{ color: "#047857", fontWeight: 700 }}>
+                <span>مشاوره VIP متخصص پوست:</span>
+                <span className="badge-vip-benefit">رایگان (هدیه خرید بالای ۳ م)</span>
+              </div>
+            )}
 
             <hr className="summary-divider" />
 

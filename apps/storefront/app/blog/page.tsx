@@ -129,31 +129,33 @@ export default function BlogIndexPage() {
       </div>
 
       {/* General Storefront & Shopping Guides */}
-      <div>
-        <h2 style={{ fontSize: "1.3rem", color: "var(--ink)", marginBottom: "20px" }}>
-          📦 راهنماهای خرید و اطلاعیه‌های عمومی
-        </h2>
-        <div className="blog-grid">
-          {generalPosts.map((post) => (
-            <article key={post.slug} className="blog-card">
-              <div className="blog-card-top">
-                <span className="blog-category">{post.category}</span>
-                <small>{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { year: "numeric", month: "long", day: "numeric" }).format(new Date(post.publishedAt))}</small>
-              </div>
-              <h2>
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-              </h2>
-              <p>{post.excerpt}</p>
-              <div className="blog-card-footer">
-                <span>⏱️ {new Intl.NumberFormat("fa-IR").format(post.readingMinutes)} دقیقه مطالعه</span>
-                <Link href={`/blog/${post.slug}`} className="text-link">
-                  ادامه مطلب ←
-                </Link>
-              </div>
-            </article>
-          ))}
+      {generalPosts.length > 0 && (
+        <div>
+          <h2 style={{ fontSize: "1.3rem", color: "var(--ink)", marginBottom: "20px" }}>
+            📦 راهنماهای خرید و اطلاعیه‌های عمومی
+          </h2>
+          <div className="blog-grid">
+            {generalPosts.map((post) => (
+              <article key={post.slug} className="blog-card">
+                <div className="blog-card-top">
+                  <span className="blog-category">{post.category}</span>
+                  <small>{new Intl.DateTimeFormat("fa-IR-u-ca-persian", { year: "numeric", month: "long", day: "numeric" }).format(new Date(post.publishedAt))}</small>
+                </div>
+                <h2>
+                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                </h2>
+                <p>{post.excerpt}</p>
+                <div className="blog-card-footer">
+                  <span>⏱️ {new Intl.NumberFormat("fa-IR").format(post.readingMinutes)} دقیقه مطالعه</span>
+                  <Link href={`/blog/${post.slug}`} className="text-link">
+                    ادامه مطلب ←
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

@@ -625,7 +625,6 @@ export default function CarboxypadPage() {
                               {formatToman(variant.originalPriceAmount)}
                             </span>
                           )}
-                          <span className="cpad-price-unit">تومان</span>
                         </div>
                       </div>
                     );

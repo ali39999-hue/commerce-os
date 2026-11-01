@@ -147,7 +147,8 @@ export function CanvasSequencePlayer({
         fileExtension.startsWith('.') || fileExtension.includes('.')
           ? fileExtension
           : `.${fileExtension}`;
-      return `${normalizedFolder}${framePrefix}${formattedNum}${normalizedExt}`;
+      const rawUrl = `${normalizedFolder}${framePrefix}${formattedNum}${normalizedExt}`;
+      return encodeURI(rawUrl);
     },
     [frameFolder, framePrefix, padDigits, fileExtension, totalFrames]
   );

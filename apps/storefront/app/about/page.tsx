@@ -57,6 +57,19 @@ export default function AboutPage() {
         <p>
           در تکمیل این چرخه درمانی، خطوط تخصصی <strong>ReeSkin</strong> و <strong>ReeMed</strong> با تلفیق کمپلکس‌های پپتیدی بیومیمتیک، مس‌پپتید خالص (GHK-Cu) و ماتریس لاملار لیپیدی ۳:۱:۱ مهندسی شده‌اند تا پس از پروسیجرهای فرکشنال، لیزر و درماتیت‌های ناشی از نقض سد اپیدرمال، سرعت و کیفیت اپیتلیزاسیون را به حداکثر برسانند.
         </p>
+        <div style={{ marginTop: "24px", padding: "18px 20px", background: "var(--paper)", borderRadius: "14px", border: "1px solid var(--line)" }}>
+          <h3 style={{ margin: "0 0 10px", fontSize: "1.05rem", color: "var(--brand-deep)" }}>
+            مراکز اصلی و دفاتر بین‌المللی Dr. Dermer UK Clinical Laboratories
+          </h3>
+          <ul style={{ margin: 0, paddingRight: "20px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem", color: "var(--muted)", lineHeight: "1.8" }}>
+            <li>
+              <strong>مرکز پژوهش و فرمولاسیون انگلستان:</strong> Cambridge Science Park, Milton Rd, Cambridge CB4 0GF, United Kingdom (طراحی متدولوژی‌های بوهر، پپتیدها و کنترل کیفیت فارماکوپه)
+            </li>
+            <li>
+              <strong>دفتر مرکزی و مدیریت لجستیک خاورمیانه:</strong> Dumankaya Ikon Towers, Floor 34, No: 370, Atasehir, Istanbul, Turkey (پایش زنجیره تأمین منطقه‌ای، گمرک دارویی و هماهنگی توزیع اکسپرس)
+            </li>
+          </ul>
+        </div>
       </article>
 
       <div className="values-grid">

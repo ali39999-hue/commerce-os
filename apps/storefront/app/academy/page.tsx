@@ -303,6 +303,326 @@ export default function AcademyPage() {
         </div>
       </section>
 
+      {/* ── Section: Clinical Procedure Videos & Protocol Guides ── */}
+      <section style={{ marginBottom: "50px" }}>
+        <div style={{ marginBottom: "24px" }}>
+          <div className="eyebrow">Video Demonstrations & Clinical Protocols</div>
+          <h2 style={{ fontSize: "1.7rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
+            ویدیوهای آموزشی پروسیجر و مستندات بالینی
+          </h2>
+          <p style={{ color: "var(--muted)", margin: 0 }}>
+            مشاهده اجرای گام‌به‌گام متدهای بالینی توسط متخصصین پوست همراه با راهنماهای مکتوب قابل دانلود
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+          <div
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--line)",
+              borderRadius: "18px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <div
+              style={{
+                background: "#063935",
+                borderRadius: "12px",
+                height: "170px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                marginBottom: "16px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.5rem",
+                  marginBottom: "8px",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                ▶
+              </div>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی عملیاتی هندزآن</span>
+              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۱۲ دقیقه • کیفیت HD</span>
+            </div>
+            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
+              نحوه اپلیکیشن ژل کربوکسی ۱۵۰۰ml و پدهای اکتیواتور صورت
+            </h3>
+            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
+              آموزش صحیح پخش لایه ۲ میلی‌متری ژل، تکنیک اتصال شیت بدون حبس هوا و اندازه‌گیری واکنش گرمازای ترنس‌درمال.
+            </p>
+            <Link
+              href="/blog/bohr-effect-carboxy-therapy-needle-free"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                background: "var(--paper)",
+                border: "1px solid var(--line)",
+                color: "var(--brand-deep)",
+                padding: "8px 14px",
+                borderRadius: "10px",
+                fontWeight: 700,
+                fontSize: "0.84rem",
+                textDecoration: "none",
+              }}
+            >
+              مشاهده راهنما و دستورالعمل پروتکل ←
+            </Link>
+          </div>
+
+          <div
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--line)",
+              borderRadius: "18px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <div
+              style={{
+                background: "#0f766e",
+                borderRadius: "12px",
+                height: "170px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                marginBottom: "16px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.5rem",
+                  marginBottom: "8px",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                ▶
+              </div>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی کلینیکال لایه‌بندی</span>
+              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۹ دقیقه • کیفیت HD</span>
+            </div>
+            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
+              مدیریت رتینوئیدهای انکپسوله در درمان لک‌های مقاوم ملاسما
+            </h3>
+            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
+              بررسی هم‌افزایی نیاسینامید بافرشده و ترانگزامیک اسید در مهار فلاشینگ و پیشگیری از هایپرپیگمانتاسیون پس‌التهابی.
+            </p>
+            <Link
+              href="/blog/protocol-hyperpigmentation-retinol-niacinamide"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                background: "var(--paper)",
+                border: "1px solid var(--line)",
+                color: "var(--brand-deep)",
+                padding: "8px 14px",
+                borderRadius: "10px",
+                fontWeight: 700,
+                fontSize: "0.84rem",
+                textDecoration: "none",
+              }}
+            >
+              مشاهده راهنما و دستورالعمل پروتکل ←
+            </Link>
+          </div>
+
+          <div
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--line)",
+              borderRadius: "18px",
+              padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            <div
+              style={{
+                background: "#1e293b",
+                borderRadius: "12px",
+                height: "170px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                marginBottom: "16px",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: "52px",
+                  height: "52px",
+                  borderRadius: "50%",
+                  background: "rgba(255, 255, 255, 0.2)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: "1.5rem",
+                  marginBottom: "8px",
+                  backdropFilter: "blur(4px)",
+                }}
+              >
+                ▶
+              </div>
+              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی ریکاوری پست-پروسیجر</span>
+              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۱۵ دقیقه • کیفیت 4K</span>
+            </div>
+            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
+              پروتکل بازسازی اورژانسی سد دفاعی پس از لیزر CO₂ فرکشنال
+            </h3>
+            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
+              مدیریت ۴۸ ساعت اولیه، استفاده از نسبت طلایی ۳:۱:۱ سرامیدها و تسکین التهاب اریتما با غلظت بالای مادکاسوساید.
+            </p>
+            <Link
+              href="/blog/skin-barrier-restoration-post-procedure"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                background: "var(--paper)",
+                border: "1px solid var(--line)",
+                color: "var(--brand-deep)",
+                padding: "8px 14px",
+                borderRadius: "10px",
+                fontWeight: 700,
+                fontSize: "0.84rem",
+                textDecoration: "none",
+              }}
+            >
+              مشاهده راهنما و دستورالعمل پروتکل ←
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Section: Certified Practitioner Roadmap ── */}
+      <section
+        style={{
+          background: "var(--surface)",
+          border: "1px solid var(--line)",
+          borderRadius: "20px",
+          padding: "36px 30px",
+          marginBottom: "50px",
+          boxShadow: "var(--shadow-card)",
+        }}
+      >
+        <div style={{ marginBottom: "28px" }}>
+          <div className="eyebrow">Professional Accreditation Roadmap</div>
+          <h2 style={{ fontSize: "1.6rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
+            نقشه راه اخذ گواهینامه پزشک و درمانگر معتمد آکادمی (Certified Practitioner)
+          </h2>
+          <p style={{ color: "var(--muted)", margin: 0 }}>
+            مسیر ۴ مرحله‌ای دستیابی به سرتیفیکیت معتبر درماتولوژی، ثبت در دایرکتوری مراکز مورد تأیید و تخفیف‌های ویژه سازمانی
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px", marginBottom: "28px" }}>
+          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
+            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
+              ۱
+            </div>
+            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
+              آموزش تئوری و فیزیولوژی
+            </h4>
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
+              تسلط بر مبانی فیزیکی انتشار گاز CO₂، اثر بوهر در آزادسازی اکسیژن موضعی و تحلیل تداخلات فارماکولوژی مواد مؤثره.
+            </p>
+          </div>
+
+          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
+            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
+              ۲
+            </div>
+            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
+              کارگاه عملی و هندزآن
+            </h4>
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
+              شرکت در کارگاه حضوری، تمرین پروسیجر روی کیس زنده و یادگیری تکنیک‌های ترکیبی با اولتراسوند و مزوتراپی.
+            </p>
+          </div>
+
+          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
+            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
+              ۳
+            </div>
+            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
+              ارزیابی کیس‌های بالینی
+            </h4>
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
+              ثبت مستندات قبل و بعد و ارزیابی اثربخشی حداقل ۵ کیس درمانی در مطب تحت نظارت منتورشیپ هیئت علمی آکادمی.
+            </p>
+          </div>
+
+          <div style={{ background: "var(--paper)", border: "1px solid #a7f3d0", borderRadius: "14px", padding: "20px" }}>
+            <div style={{ background: "#059669", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
+              ۴
+            </div>
+            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "#065f46" }}>
+              اعطای سرتیفیکیت و پلاک
+            </h4>
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "#047857", lineHeight: "1.7" }}>
+              اعطای گواهی رسمی، اعطای پلاک کلینیک معتمد، درج در نقشه مراکز مجاز کشور و فعال‌سازی تخفیف‌های ویژه سطح ۳ B2B.
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", borderTop: "1px dashed var(--line)", paddingTop: "20px" }}>
+          <div style={{ fontSize: "0.88rem", color: "var(--muted)" }}>
+            📜 دوره‌ها منطبق بر آخرین استانداردهای بازآموزی CME اروپا و مورد تأیید متخصصین درماتولوژی بریتانیا است.
+          </div>
+          <Link
+            href="/b2b#workshops"
+            style={{
+              background: "var(--accent)",
+              color: "#18221d",
+              padding: "10px 24px",
+              borderRadius: "10px",
+              fontWeight: 800,
+              fontSize: "0.9rem",
+              textDecoration: "none",
+            }}
+          >
+            شروع فرآیند ثبت‌نام در دوره معتمد ←
+          </Link>
+        </div>
+      </section>
+
       {/* ── Section: Peer-Reviewed Scientific Articles ── */}
       <section style={{ marginBottom: "50px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>

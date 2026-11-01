@@ -94,6 +94,48 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     volume: '۲۰۰ میلی‌لیتر تیوب',
     description: 'اسکراب دتوکس روزانه با میکروسفرهای گرد سیلیکا، کربن فعال و سالیسیلیک اسید برای لایروبی عمیق منافذ.',
   },
+  {
+    id: 'prod_drdermer_003',
+    slug: 'carboxypad',
+    title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad',
+    brand: 'ReeSkin Clinical',
+    sku: 'DD-PAD-20X',
+    priceAmount: '14000000',
+    inStock: true,
+    categoryTitleFa: 'ملزومات و پدهای مصرفی',
+    formulation: 'alkaline-pad',
+    concern: 'anti-aging-lifting',
+    volume: 'بسته ۲۰ عددی صورت و گردن',
+    description: 'شیت‌های فیبری یکپارچه صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل کربوکسی.',
+  },
+  {
+    id: 'prod_drdermer_007',
+    slug: 'carbox',
+    title: 'دستگاه تخصصی تزریق گاز CO2 و کربوکسی‌پاد کلینیکال CarboX',
+    brand: 'ReeMed Medical Pro',
+    sku: 'RM-DEV-CARBOX-PRO',
+    priceAmount: '450000000',
+    inStock: true,
+    categoryTitleFa: 'تجهیزات و دستگاه‌های کلینیکال',
+    formulation: 'clinical-equipment',
+    concern: 'scar-recovery',
+    volume: 'کنسول پرتابل مدیکال با ترولی',
+    description: 'سیستم دوگانه کربوکسی‌تراپی تهاجمی و غیرتهاجمی با کنترل دیجیتال فشار و دوز دی‌اکسید کربن پزشکی.',
+  },
+  {
+    id: 'prod_drdermer_008',
+    slug: 'plasmax',
+    title: 'دستگاه پیشرفته انرژی پلاسما و جت پلاسمای سرد PlasmaX',
+    brand: 'ReeMed Medical Pro',
+    sku: 'RM-DEV-PLASMAX-PRO',
+    priceAmount: '580000000',
+    inStock: true,
+    categoryTitleFa: 'تجهیزات و دستگاه‌های کلینیکال',
+    formulation: 'clinical-equipment',
+    concern: 'anti-aging-lifting',
+    volume: 'کنسول ایستاده کلینیکال با پروب‌ها',
+    description: 'سیستم مولد انرژی پلاسمای مدیکال مجهز به جت پلاسمای سرد آرگون و هلیوم برای بلفاروپلاستی غیرجراحی و اسکار.',
+  },
 ];
 
 export function getClinicalSpecs(item: { slug?: string; title?: string }): ClinicalSpecs {
@@ -103,13 +145,21 @@ export function getClinicalSpecs(item: { slug?: string; title?: string }): Clini
   // 1. Check exact match in CLINICAL_SKINCARE_PRODUCTS
   const exact = CLINICAL_SKINCARE_PRODUCTS[slug];
   if (exact) {
+    const keyActives = exact.ingredients
+      .filter((i) => i.isKeyActive)
+      .map((i) => i.nameFa)
+      .slice(0, 3);
+    const fallbackActives = exact.ingredients.map((i) => i.nameFa).slice(0, 3);
+
     return {
       brand: exact.brand.name,
       volume: exact.variants[0]?.sizeOrVolume ?? '۵۰۰ میلی‌لیتر',
-      activeIngredients: exact.ingredients
-        .filter((i) => i.isKeyActive)
-        .map((i) => i.nameFa)
-        .slice(0, 3),
+      activeIngredients:
+        keyActives.length > 0
+          ? keyActives
+          : fallbackActives.length > 0
+          ? fallbackActives
+          : exact.cleanBadges.slice(0, 3),
       clinicalFunction: exact.scienceMechanism?.heading || exact.subtitleFa,
       certifications: exact.clinicalOrigin?.ceIsoStandards?.length
         ? exact.clinicalOrigin.ceIsoStandards

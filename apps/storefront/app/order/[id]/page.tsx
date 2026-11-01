@@ -194,6 +194,42 @@ export default function OrderPage() {
           </div>
         </div>
 
+        {/* Cold-Chain 2-8°C Monitoring & Tracking Banner */}
+        <div style={{
+          background: "#f0fdfa",
+          border: "1px solid #ccfbf1",
+          borderRadius: "var(--radius-sm)",
+          padding: "14px 18px",
+          marginBottom: "16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px"
+        }}>
+          <span style={{
+            background: "#0f766e",
+            color: "#ffffff",
+            fontWeight: 800,
+            fontSize: "0.78rem",
+            padding: "4px 10px",
+            borderRadius: "6px"
+          }}>
+            ۲–۸°C
+          </span>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <strong style={{ fontSize: "0.86rem", color: "#115e59" }}>
+                گواهی پایش زنجیره سرد دارویی (GDP Cold-Chain Certified)
+              </strong>
+              <span style={{ fontSize: "0.72rem", background: "#d1fae5", color: "#065f46", padding: "2px 8px", borderRadius: "4px", fontWeight: 700 }}>
+                پایش سنسور فعال
+              </span>
+            </div>
+            <p style={{ margin: "4px 0 0", fontSize: "0.76rem", color: "#0f766e", lineHeight: 1.45 }}>
+              مرسوله در بسته‌بندی ایزوترمال با ژل یخ دارویی و شناسه پایش دمایی تحویل ناوگان توزیع گردیده است.
+            </p>
+          </div>
+        </div>
+
         {/* Tracking Code Banner */}
         <div className="tracking-code-banner">
           <div className="tc-info">

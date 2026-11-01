@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { BLOG_POSTS, getPost } from "../../../lib/blog";
+import { BLOG_POSTS, getAllBlogSlugs, getPost } from "../../../lib/blog";
 
 type Props = { params: Promise<{ slug: string }> };
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
 export function generateStaticParams() {
-  return BLOG_POSTS.map((p) => ({ slug: p.slug }));
+  return getAllBlogSlugs();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -345,6 +345,98 @@ export default async function BlogPostPage({ params }: Props) {
               </li>
             ))}
           </ol>
+        </section>
+      )}
+
+      {/* Related Clinical & Professional Products */}
+      {post.relatedProducts && post.relatedProducts.length > 0 && (
+        <section
+          style={{
+            marginTop: "36px",
+            padding: "24px",
+            background: "var(--surface)",
+            border: "1px solid var(--line)",
+            borderRadius: "16px",
+            boxShadow: "var(--shadow-card)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", marginBottom: "18px" }}>
+            <div>
+              <h3 style={{ margin: "0 0 4px", fontSize: "1.1rem", color: "var(--brand-deep)" }}>
+                🛍️ فرآورده‌ها و تجهیزات کلینیکال مرتبط با این پروتکل
+              </h3>
+              <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)" }}>
+                فرمولاسیون‌ها و دستگاه‌های استانداردسازی‌شده توسط لابراتوارهای تخصصی دکتر درمر
+              </p>
+            </div>
+            <Link href="/products" className="text-link" style={{ fontSize: "0.84rem", fontWeight: 700 }}>
+              مشاهده کاتالوگ جامع ←
+            </Link>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px" }}>
+            {post.relatedProducts.map((prod) => (
+              <div
+                key={prod.slug}
+                style={{
+                  background: "var(--paper)",
+                  border: "1px solid var(--line)",
+                  borderRadius: "12px",
+                  padding: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <img
+                    src={prod.image}
+                    alt={prod.title}
+                    style={{ width: "56px", height: "56px", objectFit: "contain", borderRadius: "8px", background: "#ffffff", padding: "4px", border: "1px solid var(--line)" }}
+                  />
+                  <div>
+                    {prod.badge && (
+                      <span
+                        style={{
+                          background: "var(--brand-tint)",
+                          color: "var(--brand-deep)",
+                          fontSize: "0.72rem",
+                          fontWeight: 800,
+                          padding: "2px 8px",
+                          borderRadius: "999px",
+                          display: "inline-block",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {prod.badge}
+                      </span>
+                    )}
+                    <span style={{ display: "block", fontSize: "0.76rem", color: "var(--muted)" }}>{prod.categoryFa}</span>
+                  </div>
+                </div>
+                <h4 style={{ margin: 0, fontSize: "0.92rem", color: "var(--ink)", lineHeight: "1.5" }}>{prod.title}</h4>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: "8px", borderTop: "1px dashed var(--line)" }}>
+                  {prod.priceFormatted ? (
+                    <span style={{ fontSize: "0.84rem", color: "#047857", fontWeight: 800 }}>{prod.priceFormatted}</span>
+                  ) : <span />}
+                  <Link
+                    href={`/products/${prod.slug}`}
+                    style={{
+                      background: "var(--brand-deep)",
+                      color: "#ffffff",
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      fontSize: "0.78rem",
+                      fontWeight: 700,
+                      textDecoration: "none",
+                    }}
+                  >
+                    مشاهده مشخصات ←
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

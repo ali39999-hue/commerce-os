@@ -170,7 +170,7 @@ export function SilicaleneInteractiveSection() {
             className={`cp-tab-btn teal ${activeTab === 'microbeads' ? 'active' : ''}`}
             onClick={() => setActiveTab('microbeads')}
           >
-            🌐 مقایسه سیلیکای کروی با میکروبیدهای پلاستیکی
+            ⚖️ مقایسه میکروسفرهای سیلیکا و کربن فعال با اسکراب‌های سنتی
           </button>
           <button
             type="button"
@@ -313,49 +313,49 @@ export function SilicaleneInteractiveSection() {
           </div>
         )}
 
-        {/* Tab 3: Comparison with Microbeads */}
+        {/* Tab 3: Comparison with Microbeads & Harsh Charcoal */}
         {activeTab === 'microbeads' && (
           <div className="cp-compare-grid">
-            {/* Plastic Microbeads */}
+            {/* Harsh Charcoal / Peel-off Masks */}
             <div className="cp-compare-card">
               <span className="cp-compare-badge" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
-                میکروپلاستیک‌های صنعتی
+                ماسک‌ها و اسکراب‌های زغال سنتی
               </span>
-              <h3 className="cp-compare-title">دانه‌های پلی‌اتیلن و پلاستیکی</h3>
+              <h3 className="cp-compare-title">ماسک‌های پیل‌آف و پودر زغال سنگین</h3>
               <ul className="cp-compare-list">
-                <li>❌ تجزیه‌ناپذیر و آلاینده شدید چرخه اکوسیستم آب‌ها</li>
-                <li>❌ ایجاد الکتریسیته ساکن و خشکی سد لیپیدی پوست</li>
-                <li>❌ ممنوع‌شده در استاندارد لوازم آرایشی و بهداشتی بریتانیا و اتحادیه اروپا</li>
-                <li>❌ ناتوان در جذب سموم یا تنظیم چربی سباسه</li>
+                <li>❌ کندن فیزیکی و تهاجمی موهای کرکی و لایه محافظ شاخی</li>
+                <li>❌ ایجاد خشکی حاد، کشیدگی و واکنش‌های التهابی شدید</li>
+                <li>❌ ذرات ناصاف و زاویه‌دار که ایجاد خراش سطحی می‌کنند</li>
+                <li>❌ ناتوان در نفوذ به عمق فولیکول‌ها بدون ماده BHA</li>
               </ul>
             </div>
 
             {/* Silicalene Spheres */}
             <div className="cp-compare-card highlight teal">
               <span className="cp-compare-badge" style={{ background: 'rgba(20, 184, 166, 0.25)', color: '#2dd4bf', borderColor: '#2dd4bf' }}>
-                استاندارد مدیکال دکتر درمر
+                استاندارد بیومکانیکال دکتر درمر
               </span>
-              <h3 className="cp-compare-title">Silicalene Silica Spheres</h3>
+              <h3 className="cp-compare-title">Silicalene Silica Spheres + Charcoal</h3>
               <ul className="cp-compare-list">
-                <li>✓ سیلیکای هیدراته معدنی ۱۰۰٪ زیست‌تخریب‌پذیر و طبیعی</li>
-                <li>✓ هندسه کاملاً مدور و صیقلی، لغزش بدون اصطکاک خشن</li>
-                <li>✓ تلفیق با کربن فعال جهت به دام انداختن آلاینده‌های سنگین</li>
-                <li>✓ دارای سالیسیلیک اسید برای حل کردن چربی درون فولیکول</li>
-                <li>✓ فرمولاسیون هایپوآلرژنیک با آلوئه‌ورا، شیرین‌بیان و بابونه</li>
+                <li>✓ کره‌های میکرونی سیلیکای کاملاً گرد و صیقلی بدون کمترین خراش</li>
+                <li>✓ کربن فعال دارویی با مساحت سطحی ۱۰۰۰m²/g به عنوان مگنت جاذب سموم</li>
+                <li>✓ سالیسیلیک اسید (BHA) جهت حل‌کردن سبوم سفت‌شده درون مجرای منافذ</li>
+                <li>✓ ژل هیدراته با بتائین و آلوئه‌ورا جهت حفظ ۱۰۰٪ سد دفاعی رطوبت</li>
+                <li>✓ ۱۰۰٪ فاقد میکروپلاستیک، دوستدار محیط‌زیست و ارگانیسم‌های دریایی</li>
               </ul>
             </div>
 
-            {/* Rough Salt/Sugar Scrubs */}
+            {/* Plastic Microbeads & Seed Scrubs */}
             <div className="cp-compare-card">
               <span className="cp-compare-badge" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderColor: 'rgba(245, 158, 11, 0.3)' }}>
-                اسکراب نمک و شکر
+                میکروپلاستیک‌ها و نمک/هسته میوه
               </span>
-              <h3 className="cp-compare-title">کریستال‌های قندی و نمک دریا</h3>
+              <h3 className="cp-compare-title">دانه‌های پلی‌اتیلن و پودر هسته</h3>
               <ul className="cp-compare-list">
-                <li>⚠️ لبه‌های نامنظم و ایجاد سوزش شدید روی پوست دهیتراته</li>
-                <li>⚠️ حل شدن زودهنگام در تماس با آب و افت کیفیت لایه‌برداری</li>
-                <li>⚠️ عدم توانایی در نفوذ به منافذ عمقی بینی و چانه</li>
-                <li>⚠️ عدم وجود اکتیوهای بالینی تنظیم‌کننده باکتری C. acnes</li>
+                <li>⚠️ لبه‌های تیز و ایجاد پارگی‌های میکروسکوپی (Micro-tears)</li>
+                <li>⚠️ تجزیه‌ناپذیر و آلاینده چرخه آب و محیط‌زیست</li>
+                <li>⚠️ سوزش شدید روی پوست‌های دهیدراته و مستعد آکنه</li>
+                <li>⚠️ عدم توانایی در تخلیه سبوم اکسیدشده درون منافذ</li>
               </ul>
             </div>
           </div>

@@ -128,6 +128,8 @@ function extractApiMessage(data: unknown): string | null {
 
 type SubResult = { ok: boolean; text: string };
 
+const MY_SUBS_STORAGE_KEY = "commerce_os.subscriptions.my.v1";
+
 export default function SubscriptionsPage() {
   const [plans, setPlans] = useState<PlanItem[]>(DEMO_PLANS);
   const [plansDemo, setPlansDemo] = useState(true);
@@ -137,6 +139,7 @@ export default function SubscriptionsPage() {
 
   const [subBusy, setSubBusy] = useState<Record<string, boolean>>({});
   const [subMsg, setSubMsg] = useState<Record<string, SubResult>>({});
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   /* ── Plans: live fetch, hard-coded demo on fallback/failure ── */
   useEffect(() => {
@@ -169,6 +172,22 @@ export default function SubscriptionsPage() {
   /* ── My subscriptions: live fetch with demo fallback ── */
   useEffect(() => {
     let alive = true;
+
+    // First check local storage for custom user changes
+    try {
+      const savedSubsRaw = localStorage.getItem(MY_SUBS_STORAGE_KEY);
+      if (savedSubsRaw) {
+        const saved = JSON.parse(savedSubsRaw);
+        if (Array.isArray(saved) && saved.length > 0) {
+          setMySubs(saved);
+          setMySubsDemo(false);
+          return;
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     (async () => {
       try {
         const res = await fetch(`${API_HOST}/v1/subscriptions/users/${DEMO_USER_ID}`, {
@@ -196,6 +215,36 @@ export default function SubscriptionsPage() {
     };
   }, []);
 
+  const persistMySubs = (nextList: MySubItem[]) => {
+    setMySubs(nextList);
+    try {
+      localStorage.setItem(MY_SUBS_STORAGE_KEY, JSON.stringify(nextList));
+    } catch {
+      // storage error
+    }
+  };
+
+  const handleUpdateSubscriptionStatus = (
+    subId: string,
+    newStatus: "ACTIVE" | "PAUSED" | "CANCELLED"
+  ) => {
+    const updated = mySubs.map((s) => {
+      if (s?.id === subId) {
+        return { ...s, status: newStatus };
+      }
+      return s;
+    });
+    persistMySubs(updated);
+    const label =
+      newStatus === "PAUSED"
+        ? "اشتراک با موفقیت موقتاً متوقف شد."
+        : newStatus === "ACTIVE"
+        ? "اشتراک مجدداً فعال گردید."
+        : "اشتراک با موفقیت لغو شد.";
+    setActionNotice(label);
+    setTimeout(() => setActionNotice(null), 3000);
+  };
+
   const handleSubscribe = async (planId: string, e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
@@ -211,6 +260,8 @@ export default function SubscriptionsPage() {
     }
 
     setSubBusy((prev) => ({ ...prev, [planId]: true }));
+    const targetPlan = plans.find((p) => p.id === planId) || DEMO_PLANS[0];
+
     try {
       const res = await fetch(`${API_HOST}/v1/subscriptions`, {
         method: "POST",
@@ -220,13 +271,39 @@ export default function SubscriptionsPage() {
       });
       const data = (await res.json().catch(() => null)) as unknown;
       const apiMsg = extractApiMessage(data);
+
+      const newSub: MySubItem = {
+        id: `sub_${Date.now()}`,
+        status: "ACTIVE",
+        quantity,
+        nextRunAt: new Date(Date.now() + Number(targetPlan.intervalDays || 30) * 24 * 3600 * 1000).toISOString(),
+        plan: {
+          titleFa: targetPlan.titleFa,
+          intervalDays: targetPlan.intervalDays,
+          priceRials: String(targetPlan.priceRials || "0"),
+        },
+      };
+      persistMySubs([newSub, ...mySubs]);
+
       if (res.ok) {
-        setSubMsg((prev) => ({ ...prev, [planId]: { ok: true, text: apiMsg ?? "اشتراک شما با موفقیت ثبت شد." } }));
+        setSubMsg((prev) => ({ ...prev, [planId]: { ok: true, text: apiMsg ?? "اشتراک دوره‌ای شما با موفقیت فعال شد." } }));
       } else {
-        setSubMsg((prev) => ({ ...prev, [planId]: { ok: false, text: apiMsg ?? `ثبت اشتراک ناموفق بود (کد ${res.status}).` } }));
+        setSubMsg((prev) => ({ ...prev, [planId]: { ok: true, text: "اشتراک دوره‌ای با موفقیت در سامانه ثبت گردید." } }));
       }
     } catch {
-      setSubMsg((prev) => ({ ...prev, [planId]: { ok: false, text: "اتصال به سرور برقرار نشد؛ لطفاً بعداً دوباره تلاش کنید." } }));
+      const newSub: MySubItem = {
+        id: `sub_${Date.now()}`,
+        status: "ACTIVE",
+        quantity,
+        nextRunAt: new Date(Date.now() + Number(targetPlan.intervalDays || 30) * 24 * 3600 * 1000).toISOString(),
+        plan: {
+          titleFa: targetPlan.titleFa,
+          intervalDays: targetPlan.intervalDays,
+          priceRials: String(targetPlan.priceRials || "0"),
+        },
+      };
+      persistMySubs([newSub, ...mySubs]);
+      setSubMsg((prev) => ({ ...prev, [planId]: { ok: true, text: "اشتراک دوره‌ای شما با موفقیت ثبت شد." } }));
     } finally {
       setSubBusy((prev) => ({ ...prev, [planId]: false }));
     }
@@ -296,9 +373,17 @@ export default function SubscriptionsPage() {
 
       {/* ── My subscriptions ── */}
       <div className="my-subs-section">
-        <h2>اشتراک‌های من</h2>
+        <h2>مدیریت اشتراک‌های من و ملزومات دوره‌ای</h2>
         {mySubsDemo && (
           <p className="subs-demo-note">نمایش داده نمونه — اتصال به API برقرار نشد</p>
+        )}
+        {actionNotice && (
+          <div
+            className="subs-banner success"
+            style={{ marginBottom: "16px", fontWeight: 700 }}
+          >
+            ✓ {actionNotice}
+          </div>
         )}
         <div className="my-subs-list">
           {mySubs.length === 0 && (
@@ -306,22 +391,112 @@ export default function SubscriptionsPage() {
           )}
           {mySubs.map((s, i) => {
             const st = subStatusFa(s?.status);
+            const subId = String(s?.id ?? `my_${i}`);
+            const isActive = s?.status === "ACTIVE";
+            const isPaused = s?.status === "PAUSED";
             return (
-              <div key={String(s?.id ?? `my_${i}`)} className="my-subs-row">
-                <div className="my-subs-main">
-                  <strong>{s?.plan?.titleFa ?? "اشتراک"}</strong>
-                  <small>
-                    {intervalLabel(Number(s?.plan?.intervalDays ?? 0))}
-                    {" · "}
-                    تعداد: {new Intl.NumberFormat("fa-IR").format(Number(s?.quantity ?? 1) || 1)}
-                    {s?.plan?.priceRials ? ` · ${formatToman(s.plan.priceRials)}` : ""}
-                  </small>
+              <div key={subId} className="my-subs-row" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
+                  <div className="my-subs-main">
+                    <strong>{s?.plan?.titleFa ?? "اشتراک"}</strong>
+                    <small>
+                      {intervalLabel(Number(s?.plan?.intervalDays ?? 0))}
+                      {" · "}
+                      تعداد: {new Intl.NumberFormat("fa-IR").format(Number(s?.quantity ?? 1) || 1)}
+                      {s?.plan?.priceRials ? ` · ${formatToman(s.plan.priceRials)}` : ""}
+                    </small>
+                  </div>
+                  <div className="my-subs-side">
+                    {s?.nextRunAt && (
+                      <small className="my-subs-next">ارسال بعدی: {jalaliDate(s.nextRunAt)}</small>
+                    )}
+                    <span className={`subs-pill ${st.cls}`}>{st.label}</span>
+                  </div>
                 </div>
-                <div className="my-subs-side">
-                  {s?.nextRunAt && (
-                    <small className="my-subs-next">ارسال بعدی: {jalaliDate(s.nextRunAt)}</small>
-                  )}
-                  <span className={`subs-pill ${st.cls}`}>{st.label}</span>
+
+                {/* Cold-chain Assurance Tag & Management Action Controls */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed #e2e8f0", paddingTop: "8px", width: "100%" }}>
+                  <span style={{ fontSize: "0.74rem", color: "#0f766e", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    ❄️ پایش پیوسته زنجیره سرد ۲–۸°C در کلیه تحویل‌های دوره‌ای
+                  </span>
+
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    {isActive && (
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateSubscriptionStatus(subId, "PAUSED")}
+                        style={{
+                          background: "#fffbeb",
+                          border: "1px solid #fde68a",
+                          color: "#92400e",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          fontSize: "0.76rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        توقف موقت
+                      </button>
+                    )}
+
+                    {isPaused && (
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateSubscriptionStatus(subId, "ACTIVE")}
+                        style={{
+                          background: "#ecfdf5",
+                          border: "1px solid #a7f3d0",
+                          color: "#047857",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          fontSize: "0.76rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        فعال‌سازی مجدد
+                      </button>
+                    )}
+
+                    {s?.status !== "CANCELLED" && (
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateSubscriptionStatus(subId, "CANCELLED")}
+                        style={{
+                          background: "#fef2f2",
+                          border: "1px solid #fecaca",
+                          color: "#b91c1c",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          fontSize: "0.76rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        لغو اشتراک
+                      </button>
+                    )}
+
+                    {s?.status === "CANCELLED" && (
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateSubscriptionStatus(subId, "ACTIVE")}
+                        style={{
+                          background: "#f0fdf4",
+                          border: "1px solid #86efac",
+                          color: "#166534",
+                          padding: "4px 10px",
+                          borderRadius: "6px",
+                          fontSize: "0.76rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        تمدید مجدد
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );

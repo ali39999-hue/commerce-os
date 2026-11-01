@@ -126,6 +126,12 @@ export function PdpInteractiveSection({
             <div className="pdp-brand-tag-wrap">
               <span className="pdp-brand-name">{productData.brand.name}</span>
               <span className="pdp-brand-origin">{productData.brand.originCountry}</span>
+              {productData.coldChainRequired && (
+                <span className="cold-chain-badge" title="ارسال تحت زنجیره سرمایی کنترل‌شده جهت حفظ فعالیت بیولوژیک اکتیوها">
+                  <span aria-hidden="true">❄️</span>
+                  پایش زنجیره سرد (Cold-Chain)
+                </span>
+              )}
             </div>
 
             <div className="pdp-discovery-actions-wrap">

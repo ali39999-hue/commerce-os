@@ -117,6 +117,52 @@ const PLASMA_MODES = [
   },
 ];
 
+// ── 3 Specialized Probes & Handpieces Breakdown ──
+const PROBES_DATA = [
+  {
+    id: 'surgical-probe',
+    title: 'پروب جراحی میکروتنگستن سابلیمیشن',
+    titleEn: 'Tungsten Surgical Micro-Tip Probe',
+    badge: 'SURGICAL RF MICRO-ARC',
+    spec: '0.1mm Medical Tungsten, 2.5–12.0 kV Peak-to-Peak',
+    desc: 'نوک سوزنی فوق‌العاده ظریف از جنس تنگستن مدیکال با قطر ۰.۱ میلی‌متر برای ایجاد قوس تخلیه موضعی و سابلیمیشن آنی کراتینوسیت‌ها بدون آسیب حرارتی به درم.',
+    image: '/assets/drdermer/2025/07/1-plasma22-600x600.png',
+    features: [
+      'تخلیه انرژی در مقیاس میکرون بدون ایجاد اسکار یا فرورفتگی',
+      'ایده‌آل برای بلفاروپلاستی غیرجراحی پلک فوقانی و تحتانی',
+      'برداشتن زوائد پوستی ظریف (زانتلاسما، فیبروما و میلیا)',
+    ],
+  },
+  {
+    id: 'cold-jet-nozzle',
+    title: 'نازل جت پلاسمای سرد آرگون و هلیوم',
+    titleEn: 'Noble Gas Cold Jet Stream Nozzle (Argon/Helium)',
+    badge: 'NON-THERMAL <38°C JET',
+    spec: 'Flow 0.5–5.0 L/min, Dual Gas Port, RONS Density >10^15 cm⁻³',
+    desc: 'نازل جریان گازهای نجیب یونیزه‌شده در دمای فیزیولوژیک زیر ۳۸ درجه سانتی‌گراد جهت ریشه‌کنی ۹۹.۹٪ باکتری‌های مقاوم، ضدعفونی عمقی و تحریک فیبروبلاست‌ها.',
+    image: '/assets/drdermer/2025/08/18plasmax-600x600.webp',
+    features: [
+      'تولید غنی از مولکول‌های فعال اکسیژن و نیتروژن (RONS)',
+      'عدم ایجاد هرگونه سوختگی و احساس درد برای بیمار',
+      'ترمیم سریع زخم‌های مزمن و استریلیزاسیون آکنه فعال',
+    ],
+  },
+  {
+    id: 'dbd-ceramic-probe',
+    title: 'پروب سرامیکی سد دی‌الکتریک DBD',
+    titleEn: 'Dielectric Barrier Discharge (DBD) Ceramic Head',
+    badge: 'TRANSDERMAL ELECTROPORATION',
+    spec: 'Medical Al₂O₃ Ceramic, 20–100 kHz Frequency, Zero Spark',
+    desc: 'الکترود سرامیکی با میدان فرکانس بالای ۲۰ تا ۱۰۰ کیلوهرتز برای ایجاد نفوذپذیری گذرا در غشای سلولی (الکتروپوریشن)، مزوپلاسمای ترنس‌درمال و تنظیم سبوم.',
+    image: '/assets/drdermer/2025/08/plasmax-cnt-600x299.webp',
+    features: [
+      'روکش دی‌الکتریک عایق برای تخلیه فوق‌العاده نرم و یکنواخت بار الکتریکی',
+      'افزایش تا ۱۰ برابری جذب سرم‌های پپتیدی و درموسوتیکال به لایه درم',
+      'تنظیم چربی پوست، انقباض منافذ باز و روشن‌سازی لک‌های ملاسما',
+    ],
+  },
+];
+
 // ── Interactive Technical Specifications ──
 const TECHNICAL_SPECS_PLASMAX = {
   gasAndFlow: [
@@ -399,6 +445,7 @@ export default function PlasmaxLandingPage() {
               >
                 <div style={{ marginBottom: '16px' }}>
                   <CanvasSequencePlayer
+                    key={currentMode.id}
                     frameFolder={currentMode.animationFolder}
                     totalFrames={currentMode.animFrames}
                     framePrefix=""
@@ -435,6 +482,83 @@ export default function PlasmaxLandingPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ── PROBE & HANDPIECE BREAKDOWN ── */}
+        <section className="station-section">
+          <div className="station-section-header">
+            <span className="station-section-eyebrow cyan">Precision Handpiece & Probe Engineering</span>
+            <h2 className="station-section-title">کالبدشکافی پروب‌ها و هندپیس‌های اختصاصی PlasmaX</h2>
+            <p className="station-section-subtitle">
+              ۳ پروب تخصصی کالیبره‌شده برای سابلیمیشن میکرونی، پرتو جت گاز نجیب و مزوپلاسمای دی‌الکتریک
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '28px' }}>
+            {PROBES_DATA.map((probe) => (
+              <div key={probe.id} className="station-card cyan" style={{ padding: '28px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '16px' }}>
+                  <span className="station-badge cyan" style={{ fontSize: '0.7rem' }}>{probe.badge}</span>
+                  <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: '#94a3b8' }}>ReeMed Precision</span>
+                </div>
+
+                <div
+                  style={{
+                    height: '200px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(2, 6, 23, 0.6)',
+                    borderRadius: '14px',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    padding: '16px',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <img
+                    src={probe.image}
+                    alt={probe.title}
+                    style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: 'drop-shadow(0 15px 25px rgba(0, 0, 0, 0.7))' }}
+                  />
+                </div>
+
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', margin: '0 0 6px' }}>
+                  {probe.title}
+                </h3>
+                <span style={{ fontSize: '0.74rem', color: '#64748b', fontFamily: 'monospace', display: 'block', marginBottom: '12px' }}>
+                  {probe.titleEn}
+                </span>
+
+                <div
+                  style={{
+                    fontSize: '0.72rem',
+                    color: '#38bdf8',
+                    fontFamily: 'monospace',
+                    background: 'rgba(56, 189, 248, 0.08)',
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(56, 189, 248, 0.2)',
+                    marginBottom: '14px',
+                  }}
+                >
+                  {probe.spec}
+                </div>
+
+                <p style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.7, margin: '0 0 16px', flex: 1 }}>
+                  {probe.desc}
+                </p>
+
+                <ul className="station-card-list cyan" style={{ marginTop: 'auto', paddingTop: '14px' }}>
+                  {probe.features.map((feat, fIdx) => (
+                    <li key={fIdx}>
+                      <span className="check-icon">✓</span>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
 

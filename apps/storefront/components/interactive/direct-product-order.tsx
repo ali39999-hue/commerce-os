@@ -17,6 +17,7 @@ export interface DirectProductOrderProps {
   inStock?: boolean;
   theme?: 'emerald' | 'cyan' | 'teal';
   badgeText?: string;
+  image?: string;
 }
 
 export function DirectProductOrder({
@@ -31,6 +32,7 @@ export function DirectProductOrder({
   inStock = true,
   theme = 'emerald',
   badgeText = 'تضمین اصالت داروسازی کمبریج',
+  image,
 }: DirectProductOrderProps) {
   const { addItem, openDrawer } = useCart();
   const { formatToman } = useLocalizedFormatter();
@@ -48,6 +50,7 @@ export function DirectProductOrder({
         title,
         sku,
         priceAmount,
+        image,
       },
       qty
     );

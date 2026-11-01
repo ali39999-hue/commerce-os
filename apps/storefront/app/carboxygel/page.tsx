@@ -143,7 +143,7 @@ const CLINICAL_PROTOCOL_STEPS: ProtocolStep[] = [
 ];
 
 export default function CarboxygelLandingPage() {
-  const { addItem } = useCart();
+  const { addItem, openDrawer } = useCart();
   const { formatToman } = useLocalizedFormatter();
 
   // Active showcase image tab
@@ -183,6 +183,108 @@ export default function CarboxygelLandingPage() {
   // Interactive Bohr Effect Simulator state (0 to 100% CO2 saturation)
   const [co2Level, setCo2Level] = useState<number>(75);
   const [activeBohrStage, setActiveBohrStage] = useState<number>(2);
+
+  // 5-Phase Reaction Timeline state
+  const [activeReactionPhase, setActiveReactionPhase] = useState<number>(1);
+
+  // INCI breakdown state
+  const [selectedInciItem, setSelectedInciItem] = useState<number>(0);
+
+  // 5 Biochemical Reaction Phases
+  const reactionPhases = [
+    {
+      phase: 1,
+      title: '۱. تثبیت ماتریکس آلکالاین ژل و پد فعال‌ساز',
+      titleEn: 'Gel Spreading & Acid-Base Coupling',
+      timing: 'ثانیه‌های ۰ تا ۱۵',
+      desc: 'ژل غنی از سدیم بی‌کربنات با ضخامت ۱.۵ میلی‌متر روی پوست قرار گرفته و پد میکروکریستالی اسید سیتریک به آن متصل می‌شود. رطوبت ژل کریستال‌های اسید را هیدراته و حل می‌نماید.',
+      molecularKey: '3 NaHCO₃ (Gel) + C₆H₈O₇ (Pad) ⟶ Na₃C₆H₅O₇ + 3 H₂O + 3 CO₂ ⇈',
+    },
+    {
+      phase: 2,
+      title: '۲. جوشش پرفشار و تولید محفظه نانوحباب‌های CO₂',
+      titleEn: 'High-Density CO₂ Trapping Chamber',
+      timing: 'ثانیه‌های ۱۵ تا ۹۰',
+      desc: 'واکنش خنثی‌سازی اسید-باز میکروحباب‌های اشباع گاز دی‌اکسید کربن را با فشار مثبت در سطح پوست آزاد می‌کند. الیاف پد مانع هدررفت گاز به هوا شده و غلظت موضعی را به بیش از ۱۰۰۰ppm می‌رسانند.',
+      molecularKey: 'تراکم بیش از ۱۰۰۰ppm گاز کربن دی‌اکسید بر سطح لایه شاخی',
+    },
+    {
+      phase: 3,
+      title: '۳. نفوذ ترنس‌درمال گاز دی‌اکسید کربن به درم',
+      titleEn: 'Transdermal CO₂ Diffusion',
+      timing: 'دقیقه‌های ۲ تا ۷',
+      desc: 'مولکول‌های بی‌بار CO₂ با ضریب نفوذ بسیار بالا از اتصالات بین سلول‌های لایه شاخی (Stratum Corneum) عبور کرده و وارد مایع بین‌سلولی اپیدرم و درم رتیکولار می‌شوند.',
+      molecularKey: 'نفوذ گاز حل‌شده در فاز آبی اپیدرم با گرادیان غلظت مثبت بدون سوزن',
+    },
+    {
+      phase: 4,
+      title: '۴. القای اثر بوهر و تخلیه انفجاری اکسیژن مویرگی',
+      titleEn: 'The Bohr Effect & Capillary O₂ Ejection',
+      timing: 'دقیقه‌های ۷ تا ۱۸',
+      desc: 'ورود CO₂ و هیدراتاسیون آن اسیدیته موضعی را اندکی کاهش می‌دهد. این تغییر pH میل ترکیبی هموگلوبین را شکسته و گلبول‌های قرمز خون اکسیژن خالص خود را به سمت سلول‌های گرسنه پوست آزاد می‌کنند.',
+      molecularKey: 'افزایش اشباع اکسیژن بافتی (O₂) تا ۳ برابر و اتساع عروقی (Vasodilation)',
+    },
+    {
+      phase: 5,
+      title: '۵. فعال‌سازی نئوکلاژنز، ATP میتوکندری و ریکاوری',
+      titleEn: 'ATP Surge & Neocollagenesis Phase',
+      timing: 'دقیقه‌های ۱۸ تا ۲۵+',
+      desc: 'اکسیژن سرشار میتوکندری‌های فیبروبلاست‌ها را فعال نموده و ساخت انرژی ATP را تا ۳.۴ برابر تقویت می‌کند. پیش‌سازهای پروکلاژن و الاستین سنتز شده و بافت سفت و درخشان می‌گردد.',
+      molecularKey: 'افزایش ۳.۴ برابری سنتز کلاژن تیپ ۱ و ۳ و بازسازی ماتریکس خارج‌سلولی',
+    },
+  ];
+
+  // Full INCI Ingredients Breakdown Data
+  const inciBreakdown = [
+    {
+      nameFa: 'کمپلکس فعال‌ساز CO₂ (سدیم بی‌کربنات + اسید سیتریک)',
+      nameEn: 'Sodium Bicarbonate, Citric Acid Micro-Complex',
+      percentage: '8.50%',
+      purity: '۹۹.۹٪ گرید دارویی فارماکوپه اروپا (Ph. Eur.)',
+      role: 'آزادسازی گاز دی‌اکسید کربن خالص و القای اثر بوهر',
+      mechanism: 'پروتون‌دار شدن یون بی‌کربنات توسط اسید سیتریک در ماتریکس ژل، میکروحباب‌های اشباع گاز CO₂ تولید می‌کند که شیفت فوری منحنی تفکیک اکسی‌هموگلوبین به راست را کلید می‌زند.',
+    },
+    {
+      nameFa: 'عصاره برگ سنتلا آسیاتیکا (مادکاسوساید ۴۰٪)',
+      nameEn: 'Centella Asiatica Leaf Extract (Madecassoside)',
+      percentage: '5.00%',
+      purity: '۹۵.۵٪ تیتر تری‌ترپنوئید فعال استاندارد',
+      role: 'ترمیم‌کننده عمقی، ضدالتهاب و مهار قرمزی اریتما',
+      mechanism: 'تحریک سیگنالینگ TGF-beta و فاکتور رشد فیبروبلاستی FGF-2، مهار آنزیم کلاژناز نوع ۱ و ارتقای چشمگیر اپیتلیزاسیون سد پوست همراه با مهار سایتوکین‌های TNF-α و IL-6.',
+    },
+    {
+      nameFa: 'نیاسینامید دارویی (ویتامین B3 خلوص ۹۹.۸٪)',
+      nameEn: 'Niacinamide (Cosmetic Grade 99.8%)',
+      percentage: '4.00%',
+      purity: '۹۹.۸٪ گرید درماتولوژیک با نیکوتینیک اسید آزاد زیر ۱۰ppm',
+      role: 'تقویت سد دفاعی پوست، مهار لک و کنترل سبوم',
+      mechanism: 'ارتقای کوآنزیم‌های درون‌سلولی NAD+ و NADPH، تحریک بیوسنتز سرامیدها و اسیدهای چرب آزاد، مهار انتقال ملانوزوم‌ها از ملانوسیت به کراتینوسیت تا ۶۸٪.',
+    },
+    {
+      nameFa: 'هیالورونیک اسید با سه وزن مولکولی (Multi-Weight HA)',
+      nameEn: 'Sodium Hyaluronate Multi-Molecular Complex',
+      percentage: '2.00%',
+      purity: 'گرید زیست‌تخمیر مدیکال بیوتکنولوژی',
+      role: 'آبرسانی عمیق چندلایه از سطح تا اعماق درم',
+      mechanism: 'پیوند هیدروژنی با ۱۰۰۰ برابر وزن خود آب؛ زنجیره‌های ۵۰ کیلودالتون گیرنده‌های CD44 درم را برای تحریک ساخت اسید هیالورونیک درون‌زاد فعال می‌کنند.',
+    },
+    {
+      nameFa: 'گلیسیرین گیاهی گرید دارویی (Glycerin USP)',
+      nameEn: 'Glycerin (Plant Origin 99.7%)',
+      percentage: '3.00%',
+      purity: '۹۹.۷٪ گرید دارویی گیاهی USP/BP',
+      role: 'هومکتانت طبیعی و بهبود ویسکوزیته و روانی ژل',
+      mechanism: 'بهبود سیالیت ترنس‌اپیدرمال و فعال‌سازی کانال‌های آکواپورین-۳ (AQP3) سلولی جهت انتقال آب و گلیسرول.',
+    },
+    {
+      nameFa: 'آلانتوئین خالص تسکین‌دهنده (Allantoin)',
+      nameEn: 'Allantoin',
+      percentage: '0.50%',
+      purity: '۹۹.۰٪ خلوص کریستالی فارماکوپه آمریکا (USP)',
+      role: 'کاهش سوزش اولیه گاز و نرم‌کننده پوست',
+      mechanism: 'تسکین گیرنده‌های حسی موضعی پوست و کراتولیتیک ملایم تکثیر سلولی اپیتلیال جهت مهار هرگونه احساس ناخوشایند حین واکنش.',
+    },
+  ];
 
   // Biological computations
   const localPh = (7.40 - (co2Level / 100) * 0.28).toFixed(2);
@@ -238,8 +340,10 @@ export default function CarboxygelLandingPage() {
       title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
       sku: 'CBG-PRO-500ML',
       priceAmount: '48500000',
+      image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
     });
     setAddedPro(true);
+    openDrawer();
     setTimeout(() => setAddedPro(false), 2000);
   };
 
@@ -250,8 +354,10 @@ export default function CarboxygelLandingPage() {
       title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
       sku: 'CBG-HOME-5X',
       priceAmount: '19500000',
+      image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
     });
     setAddedHome(true);
+    openDrawer();
     setTimeout(() => setAddedHome(false), 2000);
   };
 
@@ -438,17 +544,82 @@ export default function CarboxygelLandingPage() {
           </div>
         </section>
 
-        {/* ── INTERACTIVE BOHR EFFECT SIMULATOR SECTION ── */}
+        {/* ── INTERACTIVE BOHR EFFECT SIMULATOR & CHEMICAL MECHANISM SECTION ── */}
         <section id="bohr-simulator" className="cbg-section">
           <div className="cbg-section-header">
             <span className="cbg-section-eyebrow">مکانیسم بیوشیمیایی و فیزیولوژی</span>
-            <h2 className="cbg-section-title">شبیه‌ساز تعاملی اثر بوهر (The Bohr Effect)</h2>
+            <h2 className="cbg-section-title">شبیه‌ساز تعاملی اثر بوهر و واکنش‌های شیمیایی (The Bohr Effect)</h2>
             <p className="cbg-section-desc">
-              مراحل ۴ گانه واکنش را مرور کرده یا اسلایدر غلظت گاز دی‌اکسید کربن را تغییر دهید تا پاسخ فیزیولوژیک
-              عروق درم و رهاسازی اکسیژن متصل به هموگلوبین را به صورت زنده مشاهده نمایید.
+              بررسی پیوسته معادله شیمیایی، تایم‌لاین ۵ مرحله‌ای واکنش، پاسخ فیزیولوژیک عروق درم و پرونده ترکیبات فعال دارویی (INCI).
             </p>
           </div>
 
+          {/* Chemical Reaction Equation */}
+          <div className="cbg-reaction-eq-box">
+            <div className="cbg-eq-title">BIOCHEMICAL ACID-BASE EFFERVESCENT REACTION EQUATION</div>
+            <div className="cbg-eq-formula">
+              <span className="react">3 NaHCO₃ (Gel Matrix)</span> + <span className="react">C₆H₈O₇ (Solid Pad Activator)</span>
+              <span className="arrow">⟶</span>
+              <span className="react">Na₃C₆H₅O₇</span> + <span className="react">3 H₂O</span> + <span className="gas">3 CO₂ ⇈ (Trapped Flux &gt; 1000ppm)</span>
+            </div>
+            <div style={{ fontSize: '0.82rem', color: '#94a3b8', marginTop: '10px' }}>
+              معادله خنثی‌سازی اسید-باز بی‌کربنات سدیم ژل با اسید سیتریک پد فعال‌ساز؛ تولید متراکم گاز دی‌اکسید کربن در محفظه بسته و القای مستقیم اثر بوهر
+            </div>
+          </div>
+
+          {/* 5-Phase Reaction Timeline */}
+          <div style={{ marginBottom: '36px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+              <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff' }}>
+                تایم‌لاین ۵ فاز واکنش بیوشیمیایی (Reaction Timeline)
+              </span>
+              <span style={{ fontSize: '0.8rem', color: '#34d399', fontFamily: 'monospace' }}>
+                مدت زمان کل پروتکل: ۲۵ دقیقه مکث فعال
+              </span>
+            </div>
+
+            <div className="cbg-5phase-grid">
+              {reactionPhases.map((phase) => {
+                const isActive = activeReactionPhase === phase.phase;
+                return (
+                  <div
+                    key={phase.phase}
+                    className={`cbg-5phase-card ${isActive ? 'active' : ''}`}
+                    onClick={() => setActiveReactionPhase(phase.phase)}
+                  >
+                    <div className="cbg-5phase-num">فاز ۰{phase.phase}</div>
+                    <div className="cbg-5phase-title">{phase.title}</div>
+                    <div className="cbg-5phase-timing">{phase.timing}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Active Phase Details Box */}
+            {(() => {
+              const cur = reactionPhases[activeReactionPhase - 1] || reactionPhases[0];
+              return (
+                <div className="cbg-phase-detail-box">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.15rem', color: '#34d399', fontWeight: 800 }}>
+                      {cur.title}
+                    </h3>
+                    <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', color: '#94a3b8' }}>
+                      {cur.titleEn} | {cur.timing}
+                    </span>
+                  </div>
+                  <p style={{ margin: '0 0 12px', fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.8' }}>
+                    {cur.desc}
+                  </p>
+                  <div style={{ background: 'rgba(6, 78, 59, 0.3)', border: '1px solid rgba(52, 211, 153, 0.25)', borderRadius: '10px', padding: '10px 14px', fontSize: '0.82rem', color: '#a7f3d0' }}>
+                    <strong>شاخص مولکولی فاز:</strong> {cur.molecularKey}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Bohr Simulator Box */}
           <div className="cbg-bohr-box">
             {/* 4 Physiological Stages Stepper */}
             <div className="cbg-bohr-steps">
@@ -621,6 +792,68 @@ export default function CarboxygelLandingPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* INCI Ingredients Breakdown Drawer */}
+          <div className="cbg-inci-section">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <span className="cbg-section-eyebrow" style={{ fontSize: '0.74rem' }}>فارماکوپه دارویی و آنالیز آزمایشگاهی</span>
+                <h3 style={{ margin: '4px 0 0', fontSize: '1.25rem', fontWeight: 900, color: '#ffffff' }}>
+                  پرونده ترکیبات فعال دارویی (INCI Breakdown)
+                </h3>
+              </div>
+              <span className="cbg-regulatory-pill">
+                <span className="pulse-dot" />
+                تأییدیه خلوص دارویی اروپا (Ph. Eur.)
+              </span>
+            </div>
+
+            <div className="cbg-inci-grid">
+              {inciBreakdown.map((item, idx) => {
+                const isSelected = selectedInciItem === idx;
+                return (
+                  <div
+                    key={idx}
+                    className={`cbg-inci-item-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => setSelectedInciItem(idx)}
+                  >
+                    <div className="cbg-inci-top">
+                      <h4 className="cbg-inci-name">{item.nameFa}</h4>
+                      <span className="cbg-inci-pct">{item.percentage}</span>
+                    </div>
+                    <div className="cbg-inci-latin">{item.nameEn}</div>
+                    <p className="cbg-inci-purpose">{item.role}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Selected INCI Drawer Display */}
+            {(() => {
+              const curInci = inciBreakdown[selectedInciItem] || inciBreakdown[0];
+              return (
+                <div className="cbg-inci-drawer-box">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '10px' }}>
+                    <h4 style={{ margin: 0, fontSize: '1.15rem', color: '#34d399', fontWeight: 900 }}>
+                      {curInci.nameFa} ({curInci.percentage})
+                    </h4>
+                    <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', color: '#cbd5e1' }}>
+                      {curInci.purity}
+                    </span>
+                  </div>
+                  <div style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '10px' }}>
+                    {curInci.nameEn}
+                  </div>
+                  <p style={{ margin: '0 0 10px', fontSize: '0.88rem', color: '#f1f5f9', lineHeight: '1.8' }}>
+                    <strong>مکانیسم اثر بیوشیمیایی:</strong> {curInci.mechanism}
+                  </p>
+                  <div style={{ fontSize: '0.82rem', color: '#6ee7b7' }}>
+                    <strong>نقش در فرمولاسیون:</strong> {curInci.role}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </section>
 

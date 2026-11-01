@@ -148,6 +148,7 @@ export default function CrystalenePage() {
               inStock={true}
               theme="emerald"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
+              image="/assets/drdermer/2025/08/15crystalene-1200x1109.webp"
             />
           </div>
 
