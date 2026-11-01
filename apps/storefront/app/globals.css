@@ -12,7 +12,7 @@
   /* Clinical Luxury Palette */
   --ink: #0f172a;               /* Deep slate / ink */
   --ink-secondary: #334155;     /* Mid slate */
-  --muted: #64748b;             /* Soft clinical slate */
+  --muted: #475569;             /* Soft clinical slate (WCAG AA 4.5:1 compliant) */
   --paper: #f8fafc;             /* Pristine canvas */
   --paper-warm: #f7f6f2;        /* Warm sand / cream accent background */
   --surface: #ffffff;           /* Pure white surface */
@@ -28,7 +28,7 @@
   --brand-tint: #f0fdfa;        /* Ultra light teal wash */
 
   /* Medical Blue / Cold Chain Accent */
-  --medical-blue: #0284c7;
+  --medical-blue: #0369a1;      /* Elevated contrast for light surfaces */
   --medical-tint: #f0f9ff;
 
   /* Warm Sand / Amber Luxury Accents */
@@ -3096,8 +3096,8 @@ button { font-family: inherit; }
 }
 .device-chip {
   font-size: 0.65rem;
-  font-weight: 700;
-  color: #0284c7;
+  font-weight: 800;
+  color: #0369a1;
 }
 .device-title {
   font-size: 0.92rem;
@@ -3649,7 +3649,7 @@ button { font-family: inherit; }
 .visia-improvement {
   font-size: 0.88rem;
   font-weight: 900;
-  color: #059669;
+  color: #047857;
 }
 .visia-card-title {
   font-size: 0.98rem;

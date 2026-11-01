@@ -30,7 +30,7 @@ export function ProductCardAction(props: {
     <button
       onClick={handleClick}
       className={`btn-add-cart ${added ? "added" : ""}`}
-      aria-label={`افزودن ${props.title} به سبد خرید`}
+      aria-label={added ? `افزوده شد: ${props.title}` : `افزودن به سبد: ${props.title}`}
     >
       {added ? "✓ افزوده شد" : "+ افزودن به سبد"}
     </button>
