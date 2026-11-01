@@ -7,6 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "test": "vitest run",
     "clean": "rimraf dist"
   },
   "peerDependencies": {
@@ -19,6 +20,7 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "rimraf": "^6.0.1",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^5.0.5"
   }
 }
