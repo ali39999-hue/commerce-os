@@ -736,6 +736,9 @@ export const BLOG_ALIASES: Record<string, string> = {
   "protocol-7-days-cellular-renewal": "bohr-effect-carboxy-therapy-needle-free",
   "retinol-and-hyaluronic-acid-layering": "protocol-hyperpigmentation-retinol-niacinamide",
   "post-laser-recovery-reemed-clinical": "skin-barrier-restoration-post-procedure",
+  "microdermabrasion-alumina-vs-standard-scrub": "bohr-effect-carboxy-therapy-needle-free",
+  "cold-atmospheric-plasma-in-acne-wound-healing": "protocol-hyperpigmentation-retinol-niacinamide",
+  "transdermal-cosmeceutical-delivery-systems": "signal-peptides-vs-copper-peptides",
 };
 
 export function getAllBlogSlugs(): { slug: string }[] {
