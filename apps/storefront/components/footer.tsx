@@ -87,8 +87,9 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/search?q=کربوکسی">
-                  پروتکل CarboxyGel CO2 اکسیژن‌رسانی
+                <Link href="/carboxygel">
+                  <strong>ReeSkin CarboxyGel™</strong>
+                  <span className="link-sub">کربوکسی‌تراپی غیرتهاجمی و اثر بوهر</span>
                 </Link>
               </li>
               <li>

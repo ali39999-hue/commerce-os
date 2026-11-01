@@ -143,9 +143,10 @@ export function CanvasSequencePlayer({
       const normalizedFolder = frameFolder.endsWith('/')
         ? frameFolder
         : `${frameFolder}/`;
-      const normalizedExt = fileExtension.startsWith('.')
-        ? fileExtension
-        : `.${fileExtension}`;
+      const normalizedExt =
+        fileExtension.startsWith('.') || fileExtension.includes('.')
+          ? fileExtension
+          : `.${fileExtension}`;
       return `${normalizedFolder}${framePrefix}${formattedNum}${normalizedExt}`;
     },
     [frameFolder, framePrefix, padDigits, fileExtension, totalFrames]

@@ -1,171 +1,883 @@
-import { Metadata } from 'next';
+'use client';
+
+import React, { useState, useId } from 'react';
 import Link from 'next/link';
-import { ProductCardAction } from '../../components/product-card-action';
+import './carboxygel.css';
+import { useCart } from '../../components/cart';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 
-export const metadata: Metadata = {
-  title: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel | Dr Dermer UK Clinical Laboratories',
-  description:
-    'کربوکسی‌تراپی غیرتهاجمی بدون سوزن بر پایه پدیده فیزیولوژیک اثر بوهر (Bohr Effect). دارای ۳ فرمولاسیون اختصاصی: Glycolic Acid, Multi-Active, Azelaic Acid.',
-};
+/* ── 3 Formulations Breakdown Data ── */
+interface FormulationItem {
+  id: string;
+  nameEn: string;
+  nameFa: string;
+  subtitleFa: string;
+  badge: string;
+  badgeClass: 'glycolic' | 'multi' | 'azelaic';
+  ph: string;
+  indication: string;
+  targetConcerns: string[];
+  keyActives: string;
+  biochemicalMechanism: string;
+  image: string;
+  accentColor: string;
+  clinicalResult: string;
+}
 
-export default function CarboxygelPage() {
-  const formulations = [
+const FORMULATIONS: FormulationItem[] = [
+  {
+    id: 'glycolic',
+    nameEn: 'Glycolic Acid CarboxyGel',
+    nameFa: 'کربوکسی‌ژل گلیکولیک اسید',
+    subtitleFa: 'روشن‌کنندگی و لایه‌برداری عمقی اپیدرم',
+    badge: 'DEEP EXFOLIATION & WHITENING',
+    badgeClass: 'glycolic',
+    ph: 'pH 3.5 – 3.8',
+    indication: 'ملاسما، پیگمانتاسیون ناشی از آفتاب، کدری چهره، خطوط ریز استراتوم کورنئوم و هایپرکراتوز',
+    targetConcerns: [
+      'روشن‌سازی پیگمانتاسیون تا ۴۲٪ طی ۴ جلسه',
+      'تخلیه کراتینوسیت‌های متراکم و مرده سطحی',
+      'یکدست‌سازی تناژ و درخشش چشمگیر بافت',
+    ],
+    keyActives: 'Glycolic Acid 6% (Ph. Eur.), Sodium Bicarbonate, Centella Asiatica 40%, Allantoin',
+    biochemicalMechanism:
+      'آلفاهیدروکسی اسید کوچک‌مولکول گلیکولیک ضمن نفوذ سریع به اتصالات دسموزومی، پیوندهای بین‌سلولی لایه شاخی را سست کرده و بستری ایده‌آل برای نفوذ عمقی گاز CO₂ و القای اکسیژناسیون بافتی فراهم می‌آورد.',
+    image: '/assets/drdermer/2025/07/glycolic-acid-carboxygel.png',
+    accentColor: '#eab308',
+    clinicalResult: 'کاهش لک‌های مقاوم و نوسازی یکنواخت بافت پوست بدون پوسته‌ریزی التهابی',
+  },
+  {
+    id: 'multi-active',
+    nameEn: 'Multi-Active CarboxyGel',
+    nameFa: 'کربوکسی‌ژل مولتی‌اکتیو',
+    subtitleFa: 'جوانسازی سلولی، نئوکلاژنز و لیفتینگ چندمنظوره',
+    badge: 'CELLULAR REJUVENATION & ANTI-AGING',
+    badgeClass: 'multi',
+    ph: 'pH 3.8 – 4.1',
+    indication: 'افتادگی درم، خطوط داینامیک و استاتیک صورت و گردن، خستگی ماتریکس سلولی و کاهش تراکم فیبروبلاست‌ها',
+    targetConcerns: [
+      'افزایش ۳.۴ برابری سنتز کلاژن نوع ۱ و ۳',
+      'تقویت ماتریکس خارج سلولی (ECM) و لیفت قوام پوست',
+      'آبرسانی ۳ سطحی با هیالورونیک اسید چندمولکولی',
+    ],
+    keyActives: 'Biomimetic Copper Tripeptides (GHK-Cu), Multi-Weight HA 2.0%, Niacinamide 4%, Adenosine',
+    biochemicalMechanism:
+      'ترکیب پپتیدهای مس و آدنوزین با افزایش اکسیژن موضعی ناشی از اثر بوهر هم‌افزایی ایجاد نموده و فعالیت میتوکندریایی فیبروبلاست‌ها را در ترشح پیش‌سازهای الاستین و پروکلاژن به حداکثر می‌رساند.',
+    image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
+    accentColor: '#10b981',
+    clinicalResult: 'افزایش الاستیسیته و استحکام بافت پوست با بهبود چشمگیر خطوط لبخند و پیشانی',
+  },
+  {
+    id: 'azelaic',
+    nameEn: 'Azelaic Acid CarboxyGel',
+    nameFa: 'کربوکسی‌ژل آزالائیک اسید',
+    subtitleFa: 'مهار آکنه فعال، کنترل قرمزی، رزبور و لک‌های التهابی (PIH)',
+    badge: 'ACNE, REDNESS & PIGMENTATION CONTROL',
+    badgeClass: 'azelaic',
+    ph: 'pH 3.6 – 3.8',
+    indication: 'پوست‌های مستعد آکنه التهابی و کومدون، رزاسه و اریتمای مزمن، لک‌های به جای مانده از جای جوش و چربی اضافی',
+    targetConcerns: [
+      'مهار باکتری Cutibacterium acnes تا ۹۹.۴٪',
+      'تنظیم ترشح سبوم و جمع‌کردن منافذ باز متسع',
+      'کاهش تیرگی پس از التهاب (Post-Inflammatory Hyperpigmentation)',
+    ],
+    keyActives: 'Azelaic Acid 8.0% Micro-Encapsulated, Zinc PCA 1.5%, Bisabolol, Madecassoside',
+    biochemicalMechanism:
+      'اسید آزالائیک مسیر آنزیم ۵-آلفا ردوکتاز و تیروزیناز را مهار کرده و همزمان اکسیژن بالای بافت حاصل از اثر بوهر، محیط بی‌هوازی مورد نیاز باکتری‌های مولد آکنه را تخریب و خنثی می‌سازد.',
+    image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
+    accentColor: '#38bdf8',
+    clinicalResult: 'مهار فوری کانون‌های التهابی جوش، کاهش تورم و مات‌شدن ماندگار ترشح چربی',
+  },
+];
+
+/* ── Step-by-Step Clinical Protocol Steps ── */
+interface ProtocolStep {
+  step: number;
+  title: string;
+  action: string;
+  duration: string;
+  clinicalTip: string;
+}
+
+const CLINICAL_PROTOCOL_STEPS: ProtocolStep[] = [
+  {
+    step: 1,
+    title: 'پاکسازی عمقی و چربی‌زدایی استریل (Pre-Treatment Degreasing)',
+    action:
+      'پوست صورت و گردن بیمار را با شوینده دارویی ملایم بدون سولفات شسته و با گاز استریل کاملاً خشک نمایید. هیچ‌گونه اثر چربی، لوسیون یا رطوبت نباید روی سد پوست باقی بماند.',
+    duration: '۲ الی ۳ دقیقه',
+    clinicalTip: 'خشک بودن کامل پوست شرط اصلی پایداری تماس لایه ژل کربوکسی با پد فعال‌ساز است.',
+  },
+  {
+    step: 2,
+    title: 'اپلیکاسیون یکنواخت ژل CarboxyGel (Gel Application)',
+    action:
+      'مقدار ۲۵ تا ۳۰ میلی‌لیتر از فرمولاسیون انتخابی (یا کارتریج دوزینگ) را با ضخامت حداقل ۱.۵ میلی‌متر با کاردک سیلیکونی استریل به صورت یکدست روی کل صورت به جز محدوده پلک و مخاط لب بمالید.',
+    duration: '۲ دقیقه',
+    clinicalTip: 'ضخامت ناکافی ژل منجر به هدررفت گاز به هوای محیط و کاهش راندمان ترنس‌درمال می‌شود.',
+  },
+  {
+    step: 3,
+    title: 'اعمال ماسک فعال‌ساز آلکالاین و القای واکنش بوهر (Mask Coupling)',
+    action:
+      'پد کاتالیزور پیش‌برش‌خورده CarboxyPad یا شیت ماسک آلکالاین را بر روی ژل فیکس کنید و با نوک انگشتان یا هندپیس اولتراسونیک CarboX ضربات ملایم وارد کنید. صدای جوشش میکروحباب‌های گاز CO₂ بلافاصله آغاز می‌شود.',
+    duration: '۲۰ الی ۲۵ دقیقه مکث فعال',
+    clinicalTip: 'احساس گرمای موضعی، گزگز ملایم و اریتمای خفیف نشانه قطعی وازودیلاتاسیون و رهایش اکسیژن است.',
+  },
+  {
+    step: 4,
+    title: 'حذف پد و پاکسازی پسماند ژل (Neutralization & Rinse)',
+    action:
+      'پد را از پایین چانه به سمت بالا برداشته، با کاردک پلاستیکی مازاد ژل مصرف‌شده را جمع‌آوری کنید و با اسفنج مرطوب آغشته به آب مقطر ولرم بافت پوست را تمیز نمایید.',
+    duration: '۳ دقیقه',
+    clinicalTip: 'پوست در این لحظه در اوج نفوذپذیری فیزیولوژیک (Hyper-Permeability) قرار دارد.',
+  },
+  {
+    step: 5,
+    title: 'استفاده از سرم ترمیم‌کننده و کرم محافظ (Post-Procedure Cica)',
+    action:
+      'بلافاصله از ژل التیام‌بخش Healene یا سرم هیالورونیک اسید سه وزن مولکولی استفاده کنید. در پایان در نوبت روز، استفاده از ضدآفتاب مینرال با فاکتور حفاظتی SPF 50+ الزامی است.',
+    duration: 'مراقبت پس از درمان',
+    clinicalTip: 'تا ۱۲ ساعت از شستشو با صابون‌های قلیایی و میکاپ سنگین خودداری گردد.',
+  },
+];
+
+export default function CarboxygelLandingPage() {
+  const { addItem } = useCart();
+  const { formatToman } = useLocalizedFormatter();
+
+  // Active showcase image tab
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // 4 Gallery images
+  const showcaseImages = [
     {
-      title: 'Glycolic Acid CarboxyGel',
-      titleFa: 'فرمولاسیون اسید گلیکولیک (روشن‌کنندگی و لایه‌برداری عمیق)',
-      desc: 'حاوی اسید گلیکولیک دارویی با pH کنترل‌شده برای پاکسازی پیگمانتاسیون سطحی، بهبود ملاسما و افزایش جذب ترکیبات فعال.',
-      ph: 'pH 3.5 - 3.8',
-      indication: 'لک، تیرگی چهره و خطوط ریز سطحی',
-      actives: 'Glycolic Acid 6%, Sodium Bicarbonate, Centella Asiatica',
+      src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
+      alt: 'ReeSkin Azelaic Acid CarboxyGel Pro 500ml',
+      label: 'آزالائیک اسید',
+      desc: 'بسته‌بندی رسمی Pro کابین کلینیکال',
     },
     {
-      title: 'Multi-Active CarboxyGel',
-      titleFa: 'فرمولاسیون مولتی‌اکتیو (جوانسازی جامع و بازسازی کلاژن)',
-      desc: 'غنی‌شده با نانوپپتیدهای بیومیمتیک و آنتی‌اکسیدان‌های قوی جهت تحریک فیبروبلاست‌ها و لیفتینگ الاستیک بافت پوست.',
-      ph: 'pH 3.8 - 4.0',
-      indication: 'افتادگی پوست، خطوط عمقی و خستگی ماتریکس سلولی',
-      actives: 'Biomimetic Peptides, Hyaluronic Acid, Niacinamide, Sodium Bicarbonate',
+      src: '/assets/drdermer/2025/07/dr-dermer-carboxy-gel-1-1024x835.png',
+      alt: 'CarboxyGel Active Matrix Texture Close-up',
+      label: 'بافت ژل CO2',
+      desc: 'میکروحباب‌های آزادشونده گاز کربن دی‌اکسید',
     },
     {
-      title: 'Azelaic Acid CarboxyGel',
-      titleFa: 'فرمولاسیون اسید آزالائیک (مهار آکنه، قرمزی و ضدالتهاب)',
-      desc: 'طراحی ویژه پوست‌های چرب، مستعد آکنه التهابی و قرمزی اریتما، با مهار مسیرهای تیروزیناز و باکتری C. acnes.',
-      ph: 'pH 3.6 - 3.8',
-      indication: 'آکنه، اسکار التهابی، هایپرپیگمنتیشن پس از التهاب (PIH)',
-      actives: 'Azelaic Acid 8%, Zinc PCA, Sodium Bicarbonate, Allantoin',
+      src: '/assets/drdermer/2025/07/glycolic-acid-carboxygel.png',
+      alt: 'ReeSkin Glycolic Acid CarboxyGel 500ml',
+      label: 'گلیکولیک اسید',
+      desc: 'فرمولاسیون روشن‌کننده و لایه‌بردار',
+    },
+    {
+      src: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
+      alt: 'ReeSkin Multi-Active CarboxyGel 500ml',
+      label: 'مولتی‌اکتیو',
+      desc: 'فرمولاسیون پپتیدی جوانسازی جامع',
     },
   ];
 
+  // Active formulation tab in breakdown
+  const [selectedFormulaId, setSelectedFormulaId] = useState('azelaic');
+
+  // Interactive Bohr Effect Simulator state (0 to 100% CO2 saturation)
+  const [co2Level, setCo2Level] = useState<number>(75);
+  const [activeBohrStage, setActiveBohrStage] = useState<number>(2);
+
+  // Biological computations
+  const localPh = (7.40 - (co2Level / 100) * 0.28).toFixed(2);
+  const o2DeliveryPercent = Math.round(18 + (co2Level / 100) * 78);
+  const vasodilationPercent = Math.round(100 + (co2Level / 100) * 145);
+  const atpCollagenSynthesisMultiplier = (1.0 + (co2Level / 100) * 2.8).toFixed(1);
+
+  // Interactive Bohr Stages
+  const bohrStages = [
+    {
+      stage: 1,
+      title: '۱. نفوذ ترنس‌درمال حباب‌های CO₂',
+      sub: 'CO₂ Transdermal Diffusion',
+      co2Target: 25,
+      desc: 'با فعال‌شدن ژل و پد، میکروحباب‌های اشباع گاز دی‌اکسید کربن از لایه شاخی عبور کرده و بدون نیاز به سوزن وارد مایع بین‌سلولی اپیدرم و درم می‌شوند.',
+    },
+    {
+      stage: 2,
+      title: '۲. افت اسیدیته موضعی و کاهش تمایل Hb',
+      sub: 'Decreased Hemoglobin O₂ Affinity',
+      co2Target: 55,
+      desc: 'یون هیدروژن حاصل از هیدراتاسیون دی‌اکسید کربن، pH را اندکی کاهش می‌دهد. این تغییر، میل پیوندی هموگلوبین به اکسیژن را شدیداً تضعیف کرده و پدیده بوهر را کلید می‌زند.',
+    },
+    {
+      stage: 3,
+      title: '۳. رهایش انفجاری O₂ در بافت هیپوکسیک',
+      sub: 'Burst O₂ Release in Hypoxic Cells',
+      co2Target: 80,
+      desc: 'اکسیژن اشباع موجود در گلبول‌های قرمز مویرگ‌ها با شتاب بالا به سمت سلول‌های هیپوکسی‌شده پوست سرازیر شده و اشباع موضعی اکسیژن را تا ۳ برابر افزایش می‌دهد.',
+    },
+    {
+      stage: 4,
+      title: '۴. فعال‌سازی نئوکلاژنز و متابولیسم سلولی',
+      sub: 'ATP Boost & Collagen Synthesis',
+      co2Target: 100,
+      desc: 'میتوکندری‌های فیبروبلاست با دریافت سیلاب اکسیژن، تولید ATP را تا ۳.۸ برابر افزایش داده و سنتز رشته‌های کلاژن نوع ۱ و ۳ و الاستین را تسریع می‌نمایند.',
+    },
+  ];
+
+  const handleStageSelect = (stageIdx: number) => {
+    setActiveBohrStage(stageIdx);
+    setCo2Level(bohrStages[stageIdx].co2Target);
+  };
+
+  // Cart button states
+  const [addedPro, setAddedPro] = useState(false);
+  const [addedHome, setAddedHome] = useState(false);
+
+  const handleAddProToCart = () => {
+    addItem({
+      variantId: 'var_skin_001_single',
+      productId: 'prod_skin_001',
+      title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
+      sku: 'CBG-PRO-500ML',
+      priceAmount: '48500000',
+    });
+    setAddedPro(true);
+    setTimeout(() => setAddedPro(false), 2000);
+  };
+
+  const handleAddHomeToCart = () => {
+    addItem({
+      variantId: 'var_skin_001_home',
+      productId: 'prod_skin_001',
+      title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
+      sku: 'CBG-HOME-5X',
+      priceAmount: '19500000',
+    });
+    setAddedHome(true);
+    setTimeout(() => setAddedHome(false), 2000);
+  };
+
+  const selectedFormula = FORMULATIONS.find((f) => f.id === selectedFormulaId) || FORMULATIONS[0];
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950 py-12">
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header Hero */}
-        <div className="flex flex-col lg:flex-row items-center gap-12 mb-20">
-          <div className="flex-1 text-right">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-6">
-              <span>Non-Invasive Carboxy Therapy</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="font-mono">The Bohr Effect</span>
-            </div>
+    <div className="cbg-page">
+      <div className="cbg-ambient-glow" />
 
-            <h1 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-4">
-              ژل کربوکسی‌تراپی غیرتهاجمی{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
-                CarboxyGel™
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-8">
-              کربوکسی‌تراپی بدون سوزن دکتر درمر درمانی نوآورانه است که در آن ژل مخصوص کربوکسی با ضخامت
-              یکنواخت روی پوست قرار گرفته و سپس پد فعال‌ساز آلکالاین روی آن فیکس می‌شود. با آغاز واکنش سطحی،
-              دی‌اکسید کربن فعال وارد پوست شده و پدیده شگفت‌انگیز <strong>اثر بوهر (Bohr Effect)</strong> را در
-              لایه‌های زنده درم القا می‌کند.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <Link
-                href="/products/carboxygel"
-                className="px-8 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/20 transition transform hover:-translate-y-0.5"
-              >
-                سفارش و مشاهده مشخصات خرید کالا ←
-              </Link>
-              <Link
-                href="/b2b"
-                className="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-sm transition"
-              >
-                خرید پک ۵۰۰ میل کابین کلینیک
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 border-t border-slate-800 pt-6">
-              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                <div className="text-emerald-400 font-mono font-bold text-lg">+۴۵٪</div>
-                <div className="text-[11px] text-slate-400">اشباع اکسیژن بافت</div>
-              </div>
-              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                <div className="text-emerald-400 font-mono font-bold text-lg">0 Day</div>
-                <div className="text-[11px] text-slate-400">دوره نقاهت (Zero Downtime)</div>
-              </div>
-              <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
-                <div className="text-emerald-400 font-mono font-bold text-lg">CE Medical</div>
-                <div className="text-[11px] text-slate-400">استاندارد کلاس I اروپا</div>
-              </div>
-            </div>
+      <div className="cbg-container">
+        {/* ── Breadcrumb & Regulatory Header ── */}
+        <div className="cbg-breadcrumb-bar">
+          <div className="cbg-breadcrumb-links">
+            <Link href="/">صفحه اصلی</Link>
+            <span>/</span>
+            <Link href="/reeskin">ReeSkin™ Clinical</Link>
+            <span>/</span>
+            <span style={{ color: '#34d399', fontWeight: 700 }}>ژل کربوکسی CarboxyGel™</span>
           </div>
 
-          <div className="flex-1 w-full max-w-lg bg-slate-900/50 p-6 rounded-3xl border border-slate-800 flex items-center justify-center">
-            <img
-              src="/assets/drdermer/2025/07/azelaic-acid-carboxygel.png"
-              alt="CarboxyGel Dr Dermer"
-              className="max-h-96 w-auto object-contain filter drop-shadow-2xl"
-            />
+          <div className="cbg-regulatory-pill">
+            <span className="pulse-dot" />
+            <span>CE Class I Medical • ISO 13485 • استاندارد فارماکوپه اروپا (Ph. Eur.)</span>
           </div>
         </div>
 
-        {/* 3 Formulations Breakdown */}
-        <div className="mb-20">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
-              ۳ فرمولاسیون اختصاصی متناسب با نوع پوست و هدف درمانی
-            </h2>
-            <p className="text-sm text-slate-400">
-              انتخاب هدفمند پزشک و مصرف‌کننده بر اساس اندیکاسیون بالینی مورد نظر
+        {/* ── HERO SECTION ── */}
+        <section className="cbg-hero-grid">
+          {/* Left: Headlines, Lead, Telemetry & CTAs */}
+          <div className="cbg-hero-info">
+            <div className="cbg-badge-wrap">
+              <span className="cbg-badge">NON-INVASIVE CARBOXY THERAPY</span>
+              <span className="cbg-badge gold">THE BOHR EFFECT PHYSIOLOGY</span>
+            </div>
+
+            <h1 className="cbg-hero-title">
+              کربوکسی‌تراپی غیرتهاجمی و مکانیسم فیزیولوژیک اثر بوهر{' '}
+              <span className="gradient-text">ReeSkin CarboxyGel™</span>
+            </h1>
+
+            <p className="cbg-hero-lead">
+              سامانه پیشرفته کربوکسی‌تراپی بدون سوزن فرموله‌شده در آزمایشگاه‌های درماتولوژی کمبریج؛ با انتقال کنترل‌شده
+              دی‌اکسید کربن ترنس‌درمال و تحریک طبیعی <strong>پدیده اثر بوهر (The Bohr Effect)</strong>، گسست اکسیژن از هموگلوبین
+              خون مویرگی را شتاب بخشیده و بافت‌های هیپوکسیک را در کمتر از ۲۰ دقیقه اکسیژن‌باران می‌کند.
+            </p>
+
+            {/* Quick Biological Telemetry */}
+            <div className="cbg-telemetry-grid">
+              <div className="cbg-telemetry-item">
+                <span className="cbg-telemetry-val">+۹۶٪</span>
+                <span className="cbg-telemetry-lbl">آزادسازی اکسیژن فعال (O₂)</span>
+              </div>
+              <div className="cbg-telemetry-item">
+                <span className="cbg-telemetry-val">۳.۴x</span>
+                <span className="cbg-telemetry-lbl">تحریک سنتز کلاژن و ATP</span>
+              </div>
+              <div className="cbg-telemetry-item">
+                <span className="cbg-telemetry-val">۰ روز</span>
+                <span className="cbg-telemetry-lbl">دوره نقاهت (Zero Downtime)</span>
+              </div>
+            </div>
+
+            {/* Hero Quick CTA buttons */}
+            <div className="cbg-hero-actions">
+              <a href="#order-options" className="cbg-btn-primary">
+                سفارش پک حرفه‌ای ۵۰۰ml یا کیت ۵x خانگی ←
+              </a>
+              <a href="#bohr-simulator" className="cbg-btn-secondary">
+                مشاهده شبیه‌ساز اثر بوهر
+              </a>
+              <Link href="/b2b?kit=carboxygel" className="cbg-btn-secondary">
+                پورتال تأمین کابین کلینیک‌ها
+              </Link>
+            </div>
+          </div>
+
+          {/* Right: Real Product Visual Showcase with Thumbnail Switcher */}
+          <div className="cbg-showcase-card">
+            <span className="cbg-showcase-badge">تصاویر رسمی محصول و بافت ژل</span>
+
+            <div className="cbg-showcase-img-wrap">
+              <img
+                src={showcaseImages[activeImageIndex].src}
+                alt={showcaseImages[activeImageIndex].alt}
+                className="cbg-showcase-img"
+              />
+            </div>
+
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+                {showcaseImages[activeImageIndex].label}
+              </div>
+              <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>
+                {showcaseImages[activeImageIndex].desc}
+              </div>
+            </div>
+
+            {/* Gallery Thumbnails */}
+            <div className="cbg-showcase-nav">
+              {showcaseImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`cbg-showcase-tab ${activeImageIndex === idx ? 'active' : ''}`}
+                >
+                  <img src={img.src} alt={img.label} />
+                  <span>{img.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 3 FORMULATIONS BREAKDOWN SECTION ── */}
+        <section className="cbg-section">
+          <div className="cbg-section-header">
+            <span className="cbg-section-eyebrow">۳ فرمولاسیون تخصصی درمانی</span>
+            <h2 className="cbg-section-title">تفکیک علمی فرمولاسیون‌های سه‌گانه CarboxyGel</h2>
+            <p className="cbg-section-desc">
+              هر یک از فرمولاسیون‌ها با pH تنظیم‌شده و ترکیب اکتیوهای مدیکال، برای هدف‌گیری مستقیم اندیکاسیون‌های
+              بالینی ویژه بیماران در مطب یا مراقبت تخصصی در منزل طراحی شده است.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {formulations.map((f, i) => (
-              <div
-                key={i}
-                className="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/40 transition flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800/60 px-2 py-0.5 rounded">
-                      {f.ph}
-                    </span>
-                    <span className="text-xs text-slate-400">تخصصی کلینیکال</span>
+          <div className="cbg-formulations-grid">
+            {FORMULATIONS.map((formula) => {
+              const isSelected = selectedFormulaId === formula.id;
+              return (
+                <div
+                  key={formula.id}
+                  className={`cbg-formula-card ${isSelected ? 'featured' : ''}`}
+                  onClick={() => setSelectedFormulaId(formula.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="cbg-formula-top">
+                    <span className={`cbg-formula-badge ${formula.badgeClass}`}>{formula.badge}</span>
+                    <span className="cbg-formula-ph">{formula.ph}</span>
                   </div>
-                  <h3 className="text-base font-bold text-white mb-2">{f.titleFa}</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-4">{f.desc}</p>
+
+                  <div className="cbg-formula-image-box">
+                    <img src={formula.image} alt={formula.nameEn} />
+                  </div>
+
+                  <div className="cbg-formula-body">
+                    <div>
+                      <h3 className="cbg-formula-title">{formula.nameFa}</h3>
+                      <div className="cbg-formula-en">{formula.nameEn}</div>
+                      <div style={{ fontSize: '0.82rem', color: '#34d399', fontWeight: 700, marginTop: '4px' }}>
+                        {formula.subtitleFa}
+                      </div>
+                    </div>
+
+                    <p className="cbg-formula-desc">{formula.biochemicalMechanism}</p>
+
+                    <div className="cbg-formula-meta">
+                      <div className="cbg-formula-meta-row">
+                        <strong>اندیکاسیون:</strong>
+                        <span>{formula.indication}</span>
+                      </div>
+                      <div className="cbg-formula-meta-row">
+                        <strong>اکتیوها:</strong>
+                        <span>{formula.keyActives}</span>
+                      </div>
+                      <div className="cbg-formula-meta-row">
+                        <strong>نتیجه بالینی:</strong>
+                        <span style={{ color: '#a7f3d0' }}>{formula.clinicalResult}</span>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: 'auto', paddingTop: '8px' }}>
+                      <a
+                        href="#order-options"
+                        className="cbg-btn-secondary"
+                        style={{ width: '100%', textAlign: 'center', fontSize: '0.84rem' }}
+                      >
+                        سفارش این فرمولاسیون ←
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── INTERACTIVE BOHR EFFECT SIMULATOR SECTION ── */}
+        <section id="bohr-simulator" className="cbg-section">
+          <div className="cbg-section-header">
+            <span className="cbg-section-eyebrow">مکانیسم بیوشیمیایی و فیزیولوژی</span>
+            <h2 className="cbg-section-title">شبیه‌ساز تعاملی اثر بوهر (The Bohr Effect)</h2>
+            <p className="cbg-section-desc">
+              مراحل ۴ گانه واکنش را مرور کرده یا اسلایدر غلظت گاز دی‌اکسید کربن را تغییر دهید تا پاسخ فیزیولوژیک
+              عروق درم و رهاسازی اکسیژن متصل به هموگلوبین را به صورت زنده مشاهده نمایید.
+            </p>
+          </div>
+
+          <div className="cbg-bohr-box">
+            {/* 4 Physiological Stages Stepper */}
+            <div className="cbg-bohr-steps">
+              {bohrStages.map((stage, idx) => (
+                <button
+                  key={stage.stage}
+                  type="button"
+                  onClick={() => handleStageSelect(idx)}
+                  className={`cbg-bohr-step-btn ${activeBohrStage === idx ? 'active' : ''}`}
+                >
+                  <div className="cbg-bohr-step-num">
+                    <span>مرحله ۰{stage.stage}</span>
+                    <span>{stage.co2Target}٪ CO₂</span>
+                  </div>
+                  <div className="cbg-bohr-step-title">{stage.title}</div>
+                  <div className="cbg-bohr-step-sub">{stage.sub}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Twin Interactive Visualizer & Live Readout */}
+            <div className="cbg-bohr-interactive">
+              {/* Dynamic SVG Capillary & Oxygen Diffusion Canvas */}
+              <div className="cbg-bohr-svg-wrap">
+                <svg viewBox="0 0 520 280" className="cbg-bohr-svg" aria-label="Bohr Effect Capillary Canvas">
+                  <defs>
+                    <linearGradient id="cbg-cap-wall" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#ef4444" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#991b1b" stopOpacity="0.95" />
+                    </linearGradient>
+                    <radialGradient id="cbg-plasma" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#fef2f2" />
+                      <stop offset="100%" stopColor="#fee2e2" />
+                    </radialGradient>
+                    <radialGradient id="cbg-o2burst" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Epidermal stratum corneum */}
+                  <rect x="0" y="0" width="520" height="26" fill="#1e293b" />
+                  <text x="500" y="17" fill="#34d399" fontSize="10" fontWeight="800" textAnchor="end">
+                    لایه شاخی پوست با ماتریکس فعال CarboxyGel
+                  </text>
+
+                  {/* CO2 Nano-Bubbles penetrating */}
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <circle
+                      key={`co2-${i}`}
+                      cx={35 + i * 48}
+                      cy={26 + ((i * 19) % 40)}
+                      r={3.5 + (co2Level / 100) * 3.5}
+                      fill="#10b981"
+                      opacity={0.35 + (co2Level / 100) * 0.6}
+                    />
+                  ))}
+
+                  {/* Interstitial Dermal Matrix */}
+                  <rect x="0" y="26" width="520" height="254" fill="#0b1329" opacity="0.85" />
+
+                  {/* Capillary Vessel with dynamic vasodilation */}
+                  {(() => {
+                    const capHeight = 40 + (co2Level / 100) * 45;
+                    const capY = 150 - capHeight / 2;
+                    return (
+                      <>
+                        {/* Upper Wall */}
+                        <rect x="0" y={capY - 8} width="520" height="8" fill="url(#cbg-cap-wall)" rx="2" />
+                        {/* Lumen */}
+                        <rect x="0" y={capY} width="520" height={capHeight} fill="url(#cbg-plasma)" />
+                        {/* Lower Wall */}
+                        <rect x="0" y={capY + capHeight} width="520" height="8" fill="url(#cbg-cap-wall)" rx="2" />
+
+                        {/* Red Blood Cells with Hemoglobin */}
+                        {[70, 190, 310, 430].map((rbcX, rIdx) => (
+                          <g key={`rbc-${rIdx}`}>
+                            <ellipse
+                              cx={rbcX}
+                              cy={capY + capHeight / 2}
+                              rx={22 + (co2Level / 100) * 4}
+                              ry={12 + (co2Level / 100) * 3}
+                              fill="#dc2626"
+                              stroke="#7f1d1d"
+                              strokeWidth="2"
+                            />
+                            {/* O2 Bubbles escaping to hypoxic tissue */}
+                            {co2Level > 20 && (
+                              <>
+                                <circle cx={rbcX - 12} cy={capY - 14} r="5" fill="#38bdf8" />
+                                <circle cx={rbcX + 8} cy={capY - 22} r="6" fill="#0284c7" />
+                                <circle cx={rbcX} cy={capY + capHeight + 16} r="5.5" fill="#38bdf8" />
+                              </>
+                            )}
+                          </g>
+                        ))}
+                      </>
+                    );
+                  })()}
+
+                  {/* Tissue Oxygenation Density Cloud */}
+                  {co2Level > 35 && (
+                    <circle cx="260" cy="80" r={45 + (co2Level / 100) * 40} fill="url(#cbg-o2burst)" />
+                  )}
+
+                  <text x="260" y="265" fill="#38bdf8" fontSize="11" fontWeight="800" textAnchor="middle">
+                    تخلیه اشباع اکسیژن آزاد (O₂) از هموگلوبین به میتوکندری‌های سلول‌های درمیس
+                  </text>
+                </svg>
+              </div>
+
+              {/* Real-time Physiological Readouts */}
+              <div className="cbg-bohr-readout">
+                <div>
+                  <div style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 800 }}>مرحله انتخابی فعلی</div>
+                  <h4 style={{ fontSize: '1.15rem', color: '#ffffff', fontWeight: 800, margin: '4px 0 8px' }}>
+                    {bohrStages[activeBohrStage].title}
+                  </h4>
+                  <p style={{ fontSize: '0.86rem', color: '#cbd5e1', lineHeight: '1.75', margin: 0 }}>
+                    {bohrStages[activeBohrStage].desc}
+                  </p>
                 </div>
 
-                <div className="border-t border-slate-800 pt-3 text-[11px] text-slate-400 space-y-1">
-                  <div>
-                    <strong className="text-emerald-400">اندیکاسیون:</strong> {f.indication}
+                <div className="cbg-bohr-metrics-grid">
+                  <div className="cbg-bohr-metric-card">
+                    <div className="cbg-bohr-metric-val">{localPh}</div>
+                    <div className="cbg-bohr-metric-lbl">pH اسیدیته بافتی لایه درم</div>
                   </div>
-                  <div>
-                    <strong className="text-slate-300">ترکیبات فعال:</strong> {f.actives}
+                  <div className="cbg-bohr-metric-card">
+                    <div className="cbg-bohr-metric-val teal">+{o2DeliveryPercent}٪</div>
+                    <div className="cbg-bohr-metric-lbl">آزادسازی موضعی اکسیژن (O₂)</div>
                   </div>
+                  <div className="cbg-bohr-metric-card">
+                    <div className="cbg-bohr-metric-val blue">+{vasodilationPercent - 100}٪</div>
+                    <div className="cbg-bohr-metric-lbl">اتساع مویرگی (Vasodilation)</div>
+                  </div>
+                  <div className="cbg-bohr-metric-card">
+                    <div className="cbg-bohr-metric-val">{atpCollagenSynthesisMultiplier}x</div>
+                    <div className="cbg-bohr-metric-lbl">سنتز کلاژن نوع ۱ و ۳ و ATP</div>
+                  </div>
+                </div>
+
+                {/* Slider Control */}
+                <div className="cbg-slider-wrap">
+                  <div className="cbg-slider-label-row">
+                    <span style={{ color: '#ffffff' }}>کنترل پیوسته غلظت ترابافتی CO₂:</span>
+                    <span style={{ color: '#34d399', fontFamily: 'monospace' }}>{co2Level}٪ اشباع گاز</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={co2Level}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setCo2Level(val);
+                      if (val < 35) setActiveBohrStage(0);
+                      else if (val < 65) setActiveBohrStage(1);
+                      else if (val < 90) setActiveBohrStage(2);
+                      else setActiveBohrStage(3);
+                    }}
+                    className="cbg-slider"
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#64748b' }}>
+                    <span>۱۰٪ (سطح پایه)</span>
+                    <span>۵۰٪ (افت pH)</span>
+                    <span>۸۰٪ (رهاسازی O₂)</span>
+                    <span>۱۰۰٪ (اوج نئوکلاژنز)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CLINICAL PROTOCOL & GUIDELINES SECTION ── */}
+        <section className="cbg-section">
+          <div className="cbg-section-header">
+            <span className="cbg-section-eyebrow">دستورالعمل بالینی استاندارد</span>
+            <h2 className="cbg-section-title">پروتکل گام‌به‌گام اجرای کربوکسی‌تراپی غیرتهاجمی</h2>
+            <p className="cbg-section-desc">
+              دستورالعمل استاندارد کلینیکال تدوین‌شده توسط تیم پزشکی Dr. Dermer انگلستان جهت دستیابی به حداکثر اثر بوهر
+              بدون بروز عوارض جانبی یا سوزش ناخواسته.
+            </p>
+          </div>
+
+          {/* 5 Steps Timeline */}
+          <div className="cbg-protocol-timeline">
+            {CLINICAL_PROTOCOL_STEPS.map((s) => (
+              <div key={s.step} className="cbg-protocol-step">
+                <div className="cbg-step-num-badge">0{s.step}</div>
+                <div className="cbg-step-content">
+                  <h3 className="cbg-step-title">{s.title}</h3>
+                  <p className="cbg-step-desc">{s.action}</p>
+                  <div style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 600 }}>
+                    نکته کلینیکی: {s.clinicalTip}
+                  </div>
+                </div>
+                <div className="cbg-step-timing">
+                  <span className="cbg-step-timing-lbl">مدت زمان مکث:</span>
+                  <span className="cbg-step-timing-val">{s.duration}</span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* The Bohr Effect Scientific Principle */}
-        <div className="bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-900/40 rounded-3xl p-8 sm:p-12 mb-16">
-          <div className="max-w-3xl mx-auto text-center">
-            <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider block mb-2">
-              Scientific Principle &amp; Physiology
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-white mb-6">
-              اصل علمی: اثر بوهر (The Bohr Effect)
-            </h2>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-8">
-              اثر بوهر یک فرآیند فیزیولوژیک اثبات‌شده در پزشکی است که طی آن، افزایش غلظت موضعی دی‌اکسید کربن
-              (CO₂) و کاهش جزئی pH خون مویرگی، تمایل هموگلوبین به اکسیژن را کاهش می‌دهد. در نتیجه این واکنش،
-              هموگلوبین اکسیژن متصل به خود را با شدت بالا در بافت تحت درمان آزاد می‌کند. اکسیژن اشباع‌شده، ریزجریان
-              خون مویرگی را تقویت نموده و ساخت سریع فیبروبلاست، کلاژن و الاستین را تحریک می‌کند.
-            </p>
+          {/* Frequency & Indications Grid */}
+          <div className="cbg-guidelines-grid">
+            {/* Frequency Card */}
+            <div className="cbg-guideline-card">
+              <h3 className="cbg-guideline-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                تواتر و دوره‌های درمانی (Treatment Frequency)
+              </h3>
+              <div className="cbg-frequency-list">
+                <div className="cbg-frequency-item">
+                  <strong>دوره درمانی فشرده کلینیکال:</strong>
+                  <span>۱ بار در هفته (طول دوره: ۴ الی ۶ جلسه)</span>
+                </div>
+                <div className="cbg-frequency-item">
+                  <strong>فاز تثبیت و نگهداری (Maintenance):</strong>
+                  <span>هر ۲ الی ۳ هفته یک بار</span>
+                </div>
+                <div className="cbg-frequency-item">
+                  <strong>رژیم خانگی با کیت Home 5x:</strong>
+                  <span>هر ۱۰ روز یک بار (عصرها پیش از خواب)</span>
+                </div>
+                <div className="cbg-frequency-item">
+                  <strong>آماده‌سازی پیش از پروسیجرها (لیزر، مزو):</strong>
+                  <span>۴۸ ساعت قبل از انجام پروسیجر</span>
+                </div>
+              </div>
+            </div>
 
-            <Link
-              href="/academy"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition"
-            >
-              مطالعه مقاله کامل مکانیسم اثر بوهر در آکادمی دکتر درمر ←
-            </Link>
+            {/* Indications & Contraindications Card */}
+            <div className="cbg-guideline-card">
+              <h3 className="cbg-guideline-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                اندیکاسیون‌ها و موارد احتیاط
+              </h3>
+              <div style={{ marginBottom: '14px' }}>
+                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '8px' }}>اندیکاسیون‌های قطعی:</div>
+                <div className="cbg-indication-tags">
+                  <span className="cbg-indication-tag">کدری و تیرگی چهره</span>
+                  <span className="cbg-indication-tag">هایپرپیگمنتیشن و ملاسما</span>
+                  <span className="cbg-indication-tag">آکنه التهابی و قرمزی</span>
+                  <span className="cbg-indication-tag">خطوط و افتادگی درم</span>
+                  <span className="cbg-indication-tag">منافذ باز و کاهش الاستیسیته</span>
+                  <span className="cbg-indication-tag">اسکارهای سطحی و استریا</span>
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '8px' }}>کنتراندیکاسیون‌ها:</div>
+                <div className="cbg-indication-tags">
+                  <span className="cbg-indication-tag contra">زخم‌های باز و بریدگی حاد</span>
+                  <span className="cbg-indication-tag contra">اگزمای شعله‌ور پوستی</span>
+                  <span className="cbg-indication-tag contra">آفتاب‌سوختگی فعال درجه ۲</span>
+                </div>
+              </div>
+            </div>
           </div>
+        </section>
+
+        {/* ── DIRECT CTA TO ORDER (500ml Pro Pack vs Home 5x Kit) ── */}
+        <section id="order-options" className="cbg-section">
+          <div className="cbg-order-section">
+            <div className="cbg-section-header" style={{ marginBottom: '24px' }}>
+              <span className="cbg-section-eyebrow">سفارش مستقیم و تضمین اصالت کالا</span>
+              <h2 className="cbg-section-title">انتخاب پکیج ReeSkin CarboxyGel™</h2>
+              <p className="cbg-section-desc">
+                پک حرفه‌ای کابین کلینیک برای پزشکان و مراکز درمانی، یا کیت خانگی ۵ عددی برای مراقبت متمرکز هوم‌کر با هولوگرام
+                امنیتی و ضمانت اصالت داروسازی کمبریج.
+              </p>
+            </div>
+
+            <div className="cbg-order-grid">
+              {/* Option 1: 500ml Professional Pack */}
+              <div className="cbg-order-card pro">
+                <span className="cbg-order-ribbon">انتخاب کلینیک‌های پوست</span>
+
+                <div className="cbg-order-header">
+                  <div style={{ fontSize: '0.74rem', color: '#34d399', fontWeight: 800 }}>CLINICAL PRO PACK</div>
+                  <h3 className="cbg-order-title">پک حرفه‌ای کلینیکال ۵۰۰ میلی‌لیتر</h3>
+                  <p className="cbg-order-subtitle">همراه با ۲۰ ست ماسک فعال‌ساز آلکالاین صورت و گردن</p>
+                </div>
+
+                <div className="cbg-order-price-box">
+                  <span className="cbg-order-price-main">{formatToman('48500000')}</span>
+                  <span className="cbg-order-price-orig">{formatToman('56000000')}</span>
+                  <span style={{ fontSize: '0.76rem', color: '#10b981', fontWeight: 700 }}>۱۳٪ تخفیف کلینیک</span>
+                </div>
+
+                <div className="cbg-order-features">
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>حجم ۵۰۰ml کابین کافی برای حداقل ۲۰ پروسیجر کامل</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>۲۰ عدد شیت ماسک فعال‌ساز پیش‌برش‌خورده ارگونومیک</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>سرنگ کالیبره‌شده دوزینگ دقیق جهت حذف هرگونه هدررفت مواد</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>انتخاب در ۳ فرمولاسیون Glycolic, Multi-Active, Azelaic</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>ارسال فوری زنجیره سرد با فاکتور رسمی دارویی</span>
+                  </div>
+                </div>
+
+                <div className="cbg-order-btn-wrap">
+                  <button
+                    type="button"
+                    onClick={handleAddProToCart}
+                    className={`cbg-btn-cart ${addedPro ? 'added' : ''}`}
+                  >
+                    {addedPro ? '✓ به سبد خرید افزوده شد' : 'افزودن پک حرفه‌ای ۵۰۰ml به سبد خرید'}
+                  </button>
+                  <Link
+                    href="/b2b?kit=carboxygel"
+                    className="cbg-btn-secondary"
+                    style={{ textAlign: 'center', fontSize: '0.84rem' }}
+                  >
+                    استعلام خرید عمده بالای ۵ پک برای کلینیک ←
+                  </Link>
+                </div>
+              </div>
+
+              {/* Option 2: Home 5x Kit */}
+              <div className="cbg-order-card">
+                <div className="cbg-order-header">
+                  <div style={{ fontSize: '0.74rem', color: '#94a3b8', fontWeight: 800 }}>HOMECARE 5X KIT</div>
+                  <h3 className="cbg-order-title">کیت خانگی ۵ عددی CarboxyGel</h3>
+                  <p className="cbg-order-subtitle">شامل ۵ تیوب ۲۵ میلی‌لیتر تک‌دوز + ۵ ماسک فعال‌ساز</p>
+                </div>
+
+                <div className="cbg-order-price-box">
+                  <span className="cbg-order-price-main">{formatToman('19500000')}</span>
+                  <span className="cbg-order-price-orig">{formatToman('23000000')}</span>
+                  <span style={{ fontSize: '0.76rem', color: '#10b981', fontWeight: 700 }}>۱۵٪ تخفیف</span>
+                </div>
+
+                <div className="cbg-order-features">
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>۵ تیوب استریل ۲۵ml تک‌کاربره بدون نیاز به اندازه‌گیری</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>۵ عدد پد ماسک صورت و غبغب برای تکمیل یک دوره کامل ۵ هفته‌ای</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>ایده‌آل جهت تداوم درمان‌های مطبی در منزل یا آماده‌سازی مناسبت‌ها</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>دفترچه راهنمای فارسی گام‌به‌گام مصور</span>
+                  </div>
+                  <div className="cbg-order-feature-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>هولوگرام امنیتی و بچ‌کد اصالت سنجش آنلاین</span>
+                  </div>
+                </div>
+
+                <div className="cbg-order-btn-wrap">
+                  <button
+                    type="button"
+                    onClick={handleAddHomeToCart}
+                    className={`cbg-btn-cart ${addedHome ? 'added' : ''}`}
+                  >
+                    {addedHome ? '✓ به سبد خرید افزوده شد' : 'افزودن کیت خانگی ۵x به سبد خرید'}
+                  </button>
+                  <Link
+                    href="/products/carboxygel"
+                    className="cbg-btn-secondary"
+                    style={{ textAlign: 'center', fontSize: '0.84rem' }}
+                  >
+                    مشاهده مشخصات کامل در صفحه محصول ←
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FOOTER CALLOUT LINKS ── */}
+        <div style={{ marginTop: '48px', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <Link href="/carbox" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
+            بررسی ایستگاه پزشکی CarboX Pro ←
+          </Link>
+          <Link href="/carboxypod" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
+            پادهای فعال‌ساز CarboxyPod ←
+          </Link>
+          <Link href="/academy" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
+            مقالات علمی اثر بوهر در آکادمی دکتر درمر ←
+          </Link>
         </div>
       </div>
     </div>
