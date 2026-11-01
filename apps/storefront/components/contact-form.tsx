@@ -55,9 +55,9 @@ export function ContactForm() {
 
   return (
     <form className="review-form contact-demo-form" onSubmit={handleSubmit} noValidate>
-      <h3>فرم تماس (نسخه نمایشی)</h3>
+      <h3>فرم پیام و مشاوره بالینی</h3>
       <p style={{ margin: 0, color: 'var(--muted)', fontSize: '.85rem' }}>
-        پیام شما در همین مرورگر ذخیره می‌شود و در نسخه نمایشی جایی ارسال نمی‌گردد.
+        درخواست مشاوره تخصصی، همکاری کلینیک‌ها یا استعلام فرآورده‌ها و اصالت کالا.
       </p>
 
       {error ? (
@@ -67,17 +67,17 @@ export function ContactForm() {
       ) : null}
       {success ? (
         <p className="success-banner" role="status">
-          ✓ پیام شما ثبت شد. کارشناسان ما در ساعات پاسخ‌گویی (۹ تا ۱۸) با شما تماس می‌گیرند.
+          ✓ پیام شما ثبت شد. کارشناسان بالینی ما در اسرع وقت با شما تماس می‌گیرند.
         </p>
       ) : null}
 
       <label className="form-field">
-        نام و نام خانوادگی
+        نام و نام خانوادگی / نام کلینیک
         <input
           className="input-text"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="مثلاً سارا محمدی"
+          placeholder="مثلاً دکتر محمدی / کلینیک تخصصی"
           autoComplete="name"
         />
       </label>
@@ -88,25 +88,25 @@ export function ContactForm() {
           className="input-text"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="example@mail.com"
+          placeholder="info@clinic.com یا ۰۹۱۲..."
           autoComplete="email"
           dir="ltr"
         />
       </label>
 
       <label className="form-field">
-        متن پیام
+        متن پیام یا استعلام بالینی
         <textarea
           className="input-textarea"
           rows={5}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          placeholder="سؤال یا درخواست خود را بنویسید..."
+          placeholder="شرح سؤال تخصصی، درخواست تأمین کلینیکال، یا پروتکل مورد نظر خود را بنویسید..."
         />
       </label>
 
       <button type="submit" className="btn-submit-order">
-        ارسال پیام
+        ارسال پیام به دپارتمان بالینی
       </button>
     </form>
   );

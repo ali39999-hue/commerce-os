@@ -14,11 +14,13 @@ export function SiteHeader() {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [compareCount, setCompareCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  const [reeskinDropdownOpen, setReeskinDropdownOpen] = useState(false);
+  const [reemedDropdownOpen, setReemedDropdownOpen] = useState(false);
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
-  const brandMenuRef = useRef<HTMLDivElement>(null);
+  const reeskinMenuRef = useRef<HTMLDivElement>(null);
+  const reemedMenuRef = useRef<HTMLDivElement>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -66,7 +68,8 @@ export function SiteHeader() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMobileMenuOpen(false);
-        setBrandDropdownOpen(false);
+        setReeskinDropdownOpen(false);
+        setReemedDropdownOpen(false);
         setCategoryDropdownOpen(false);
       }
     };
@@ -77,8 +80,11 @@ export function SiteHeader() {
   // Close dropdowns on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (brandMenuRef.current && !brandMenuRef.current.contains(e.target as Node)) {
-        setBrandDropdownOpen(false);
+      if (reeskinMenuRef.current && !reeskinMenuRef.current.contains(e.target as Node)) {
+        setReeskinDropdownOpen(false);
+      }
+      if (reemedMenuRef.current && !reemedMenuRef.current.contains(e.target as Node)) {
+        setReemedDropdownOpen(false);
       }
       if (categoryMenuRef.current && !categoryMenuRef.current.contains(e.target as Node)) {
         setCategoryDropdownOpen(false);
@@ -159,11 +165,20 @@ export function SiteHeader() {
             </button>
 
             <Link className="brand" href="/" aria-label="دکتر درمر - صفحه اصلی">
-              <div className="brand-title-wrap">
-                <span className="brand-primary">DR. DERMER</span>
-                <span className="brand-lab-badge">UK CLINICAL LABS</span>
+              <img
+                src="/dr-dermer-logo.png"
+                alt="Dr. Dermer UK"
+                className="brand-logo-img"
+                width={48}
+                height={48}
+              />
+              <div className="brand-text-col">
+                <div className="brand-title-wrap">
+                  <span className="brand-primary">DR. DERMER</span>
+                  <span className="brand-lab-badge">UK CLINICAL LABS</span>
+                </div>
+                <span className="brand-sub">TRANSDERMAL CO₂ & BIOMIMETIC PEPTIDES</span>
               </div>
-              <span className="brand-sub">TRANSDERMAL CO₂ & BIOMIMETIC PEPTIDES</span>
             </Link>
           </div>
 

@@ -7,99 +7,131 @@ interface FeaturedShowcaseProps {
   totalCount?: number;
 }
 
-// Fallback curated products with clinical imagery/specifications if database is empty
+// 8 Authentic Dr Dermer products with exact mirrored specs, pricing, and photography
 const CURATED_CLINICAL_PRODUCTS: Product[] = [
   {
-    id: 'prod_carboxy_gel_home',
-    slug: 'carboxygel-co2-therapy-home-kit',
-    title: 'کیت کربوکسی‌تراپی خانگی CarboxyGel با اثر بوهر (ReeSkin)',
-    description: 'شامل ۵ سرنگ ژل غلیظ فعال‌ساز دی‌اکسید کربن و ۵ پد صورت و گردن؛ شفاف‌کننده و اکسیژن‌رسان عمقی پوست.',
+    id: 'prod_drdermer_001',
+    slug: 'carboxygel',
+    title: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel Professional (ReeSkin)',
+    description: 'ژل ۲ فاز ماتریکسی با تحریک فیزیولوژیک اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی عمیق سلولی، بهبود اسکار و سنتز کلاژن بدون سوزن.',
     variants: [
       {
-        id: 'var_carboxy_home_1',
-        sku: 'RS-CBX-5X',
-        title: 'پک ۵ عددی استاندارد',
-        priceAmount: '۲۴۵۰۰۰۰۰', // 2,450,000 Tomans in Rials
+        id: 'var_cbg_pro_500',
+        sku: 'DD-CBG-500ML',
+        title: 'مخزن ۵۰۰ میلی‌لیتر کلینیکال (کابین)',
+        priceAmount: '48500000', // 4,850,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
     ],
   },
   {
-    id: 'prod_carboxypod_pro_pack',
-    slug: 'carboxypod-transdermal-infusion-pod',
-    title: 'پاد ترابافتی CarboxyPod Pro بسته ۱۰ عددی (ReeMed)',
-    description: 'کپسول‌های فعال کلسیم کربنات و سیتریک اسید فشرده ویژه استفاده با هندپیس اولتراسونیک کلینیکال.',
+    id: 'prod_drdermer_002',
+    slug: 'carboxypod',
+    title: 'پادهای فعال‌ساز کربوکسی‌پاد CarboxyPod (ReeSkin)',
+    description: 'کپسول‌های فعال‌ساز گاز CO₂ و لایه‌برداری همزمان ترابافتی در سه مدل درمانی کربن فعال (Carbon)، روشن‌کننده (Vita) و آبرسان (Hydra).',
     variants: [
       {
-        id: 'var_carboxypod_pro_1',
-        sku: 'RM-POD-10X',
-        title: 'بسته ۱۰ کپسولی کلینیک',
-        priceAmount: '۴۸۰۰۰۰۰۰', // 4,800,000 Tomans in Rials
+        id: 'var_pod_carbon_10',
+        sku: 'DD-POD-CRB-10X',
+        title: 'پک ۱۰ عددی کربن فعال',
+        priceAmount: '18000000', // 1,800,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
     ],
   },
   {
-    id: 'prod_peptide_barrier_serum',
-    slug: 'reeskin-ceramide-peptide-recovery-serum',
-    title: 'سرم بازسازی سد دفاعی پوست با پپتید مس و سرامید NP',
-    description: 'فرمول التیام‌بخش لایه چربی محافظ، کاهش التهاب اریتما و آبرسانی عمقی پس از درمان‌های کلینیکی.',
+    id: 'prod_drdermer_003',
+    slug: 'carboxypad',
+    title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad (ReeSkin)',
+    description: 'شیت‌های فیبری میکروپرمنبران پیش‌برش‌خورده با برش آناتومیک صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل.',
     variants: [
       {
-        id: 'var_peptide_serum_1',
-        sku: 'RS-SRM-50ML',
-        title: 'حجم ۵۰ میلی‌لیتر',
-        priceAmount: '۱۸۵۰۰۰۰۰', // 1,850,000 Tomans in Rials
+        id: 'var_pad_20x',
+        sku: 'DD-PAD-20X',
+        title: 'بسته ۲۰ عددی صورت و گردن',
+        priceAmount: '14000000', // 1,400,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
     ],
   },
   {
-    id: 'prod_retinol_encapsulated_05',
-    slug: 'reeskin-cellular-retinol-encapsulated-05',
-    title: 'امولسیون رتینول ۰.۵٪ میکروانکپسوله با هیالورونیک اسید',
-    description: 'لایه‌برداری یکنواخت و تحریک فیبروبلاست‌ها بدون قرمزی و سوزش؛ مناسب خطوط پنجه‌کلاغی و یکدستی بافت.',
+    id: 'prod_drdermer_004',
+    slug: 'crystalene',
+    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste (ReeSkin)',
+    description: 'میکرودرم ابریشمی ملایم با میکروکریستال‌های خالص آلومینای گرید پزشکی، نیاسینامید، اسید لاکتیک و روغن آرگان.',
     variants: [
       {
-        id: 'var_retinol_05_1',
-        sku: 'RS-RTN-30ML',
-        title: 'بطری شیشه‌ای ۳۰ میلی‌لیتر',
-        priceAmount: '۱۹۰۰۰۰۰۰', // 1,900,000 Tomans in Rials
+        id: 'var_cry_200ml',
+        sku: 'DD-CRY-200ML',
+        title: 'تیوب ۲۰۰ میلی‌لیتر',
+        priceAmount: '17500000', // 1,750,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
     ],
   },
   {
-    id: 'prod_reemed_clinic_gel_500ml',
-    slug: 'reemed-co2-prime-gel-large-500ml',
-    title: 'ژل پایه اکتیواتور کربوکسی ۵۰۰ میلی‌لیتری کلینیک (ReeMed)',
-    description: 'بسته‌بندی حجیم ویژه مراکز درمانی و زیبایی با خلوص بالای ترکیبات دارویی و پمپ بدون هوا (Airless).',
+    id: 'prod_drdermer_005',
+    slug: 'healene',
+    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel (ReeSkin)',
+    description: 'ژل سبک آبرسان و ترمیم‌کننده با نیاسینامید، پانتنول B5، هیالورونیک اسید، آلانتوئین و عصاره‌های گیاهی میموزا و سنتلا آسیاتیکا.',
     variants: [
       {
-        id: 'var_prime_gel_500_1',
-        sku: 'RM-GEL-500',
-        title: 'مخزن ۵۰۰ میل سالنی',
-        priceAmount: '۶۹۰۰۰۰۰۰', // 6,900,000 Tomans in Rials
+        id: 'var_hea_250ml',
+        sku: 'DD-HEA-250ML',
+        title: 'بطری پمپی ۲۵۰ میلی‌لیتر',
+        priceAmount: '16000000', // 1,600,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
     ],
   },
   {
-    id: 'prod_egf_cellular_mask_pack',
-    slug: 'reeskin-biomimetic-egf-sheet-mask',
-    title: 'ماسک بایوسلولز فاکتور رشد EGF و پپتید الاستین (پک ۶ عددی)',
-    description: 'ماسک ورقه‌ای تخمیرشده از آب نارگیل خالص جهت لیفتینگ سریع و آرامش‌بخشی پس از میکرودرم و پیلینگ.',
+    id: 'prod_drdermer_006',
+    slug: 'silicalene',
+    title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub (ReeSkin)',
+    description: 'پاکسازی عمقی منافذ، کنترل چربی اضافه و رفع جوش‌های سرسیاه با میکروسفرهای کاملاً کروی سیلیکا، زغال فعال و BHA.',
     variants: [
       {
-        id: 'var_egf_mask_1',
-        sku: 'RS-MSK-6X',
-        title: 'بسته ۶ شیت ماسک استریل',
-        priceAmount: '۱۶۰۰۰۰۰۰', // 1,600,000 Tomans in Rials
+        id: 'var_sil_200ml',
+        sku: 'DD-SIL-200ML',
+        title: 'تیوب ۲۰۰ میلی‌لیتر',
+        priceAmount: '15500000', // 1,550,000 Tomans
+        currency: 'IRR',
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 'prod_drdermer_007',
+    slug: 'carbox',
+    title: 'دستگاه پزشکی کربوکسی‌تراپی و تزریق گاز CarboX (ReeMed)',
+    description: 'ایستگاه کاری دوگانه تزریق زیرجلدی فوق‌دقیق گاز CO₂ پزشکی به همراه هندپیس ارگونومیک فعال‌سازی CarboxyPod ویژه مطب‌ها و کلینیک‌ها.',
+    variants: [
+      {
+        id: 'var_cbx_station',
+        sku: 'RM-DEV-CARBOX-PRO',
+        title: 'کنسول پرتابل مدیکال با گارانتی رسمی',
+        priceAmount: '450000000', // 45,000,000 Tomans
+        currency: 'IRR',
+        inStock: true,
+      },
+    ],
+  },
+  {
+    id: 'prod_drdermer_008',
+    slug: 'plasmax',
+    title: 'دستگاه پیشرفته انرژی پلاسما و جت سرد PlasmaX (ReeMed)',
+    description: 'سیستم ۴ کاره انرژی پلاسما با تکنولوژی تخلیه پیوسته، پلاسمای سرد آرگون و هلیوم و DBD پلاسما جهت بلفاروپلاستی غیرتهاجمی و درمان اسکار.',
+    variants: [
+      {
+        id: 'var_plx_station',
+        sku: 'RM-DEV-PLASMAX-PRO',
+        title: 'کنسول ایستاده کلینیکال با پروب‌های کامل',
+        priceAmount: '580000000', // 58,000,000 Tomans
         currency: 'IRR',
         inStock: true,
       },
@@ -107,27 +139,101 @@ const CURATED_CLINICAL_PRODUCTS: Product[] = [
   },
 ];
 
+function getProductPhoto(slug: string): { src: string; alt: string; standardTag: string } {
+  const s = slug.toLowerCase();
+  if (s.includes('plasmax')) {
+    return {
+      src: '/assets/drdermer/2025/08/18plasmax.webp',
+      alt: 'دستگاه پیشرفته انرژی پلاسما PlasmaX دکتر درمر انگلستان',
+      standardTag: 'استاندارد مدیکال CE 0123',
+    };
+  }
+  if (s.includes('carbox') && !s.includes('carboxypod') && !s.includes('carboxypad') && !s.includes('carboxygel')) {
+    return {
+      src: '/assets/drdermer/2025/08/19carbox.webp',
+      alt: 'دستگاه کربوکسی‌تراپی و تزریق گاز CarboX دکتر درمر انگلستان',
+      standardTag: 'استاندارد مدیکال CE 0123',
+    };
+  }
+  if (s.includes('carboxypad')) {
+    return {
+      src: '/assets/drdermer/2025/08/carboxypad.webp',
+      alt: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad دکتر درمر',
+      standardTag: 'فرمول استاندارد UK',
+    };
+  }
+  if (s.includes('carboxypod')) {
+    return {
+      src: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
+      alt: 'پادهای فعال‌ساز کربوکسی‌پاد CarboxyPod دکتر درمر',
+      standardTag: 'فرمول استاندارد UK',
+    };
+  }
+  if (s.includes('crystalene')) {
+    return {
+      src: '/assets/drdermer/2025/08/15crystalene.webp',
+      alt: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene دکتر درمر',
+      standardTag: 'فرمول استاندارد UK',
+    };
+  }
+  if (s.includes('healene')) {
+    return {
+      src: '/assets/drdermer/2025/08/16healene.webp',
+      alt: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene دکتر درمر',
+      standardTag: 'فرمول استاندارد UK',
+    };
+  }
+  if (s.includes('silicalene')) {
+    return {
+      src: '/assets/drdermer/2025/08/14silicalene.webp',
+      alt: 'اسکراب دتوکس سیلیکالین Silicalene دکتر درمر',
+      standardTag: 'فرمول استاندارد UK',
+    };
+  }
+  // Default to authentic CarboxyGel
+  return {
+    src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
+    alt: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel دکتر درمر انگلستان',
+    standardTag: 'فرمول استاندارد UK',
+  };
+}
+
 export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowcaseProps) {
-  const displayItems = products && products.length > 0 ? products : CURATED_CLINICAL_PRODUCTS;
+  // Always render the 8 authentic Dr Dermer products, enriched with live variants if available
+  const displayItems = CURATED_CLINICAL_PRODUCTS.map((curated) => {
+    const liveMatch = products?.find(
+      (p) =>
+        p.slug === curated.slug ||
+        (curated.slug === 'carboxygel' && p.slug === 'carboxygel-professional-therapy') ||
+        (curated.slug === 'carboxypod' && p.slug === 'carboxypod-activation-pads'),
+    );
+    if (!liveMatch) return curated;
+    return {
+      ...curated,
+      id: liveMatch.id || curated.id,
+      variants: liveMatch.variants && liveMatch.variants.length > 0 ? liveMatch.variants : curated.variants,
+    };
+  });
 
   return (
     <section id="featured-products" className="clinical-featured-section" aria-labelledby="featured-title">
       <div className="section-header-row">
         <div>
-          <div className="section-eyebrow">فرمولاسیون‌های دارای گرید درمانی</div>
+          <div className="section-eyebrow">فرمولاسیون‌ها و تجهیزات دارای گرید پزشکی</div>
           <h2 id="featured-title" className="section-title">
-            محصولات شاخص و کیت‌های فعال بالینی
+            ۸ محصول شاخص و اصیل دکتر درمر انگلستان
           </h2>
         </div>
         <div className="section-count-badge">
-          {totalCount ? `${totalCount} فرمولاسیون فعال` : 'انتخاب برتر درماتولوژیست‌ها'}
+          {totalCount ? `${totalCount} فرمولاسیون و دستگاه فعال` : '۸ محصول و دستگاه شاخص بالینی'}
         </div>
       </div>
 
       <div className="clinical-product-grid">
         {displayItems.map((product) => {
           const variant = product.variants[0];
-          const isReeMed = product.title.includes('ReeMed') || product.slug.includes('reemed') || product.slug.includes('pod');
+          const isReeMed = product.title.includes('ReeMed') || product.slug === 'carbox' || product.slug === 'plasmax';
+          const photo = getProductPhoto(product.slug);
 
           return (
             <article className="clinical-card" key={product.id}>
@@ -146,26 +252,13 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
                 aria-label={`مشاهده مشخصات ${product.title}`}
               >
                 <div className="media-artistic-visual">
-                  {/* Clean, high-performance SVG iconogram reflecting high-end clinical formula */}
-                  <div className="bottle-art" aria-hidden="true">
-                    <svg viewBox="0 0 100 120" className="bottle-svg">
-                      <rect x="35" y="10" width="30" height="15" rx="3" fill="#0F766E" />
-                      <rect x="42" y="5" width="16" height="5" rx="2" fill="#14B8A6" />
-                      <path
-                        d="M25 30 Q25 25 35 25 L65 25 Q75 25 75 30 L80 100 Q80 110 70 110 L30 110 Q20 110 20 100 Z"
-                        fill="rgba(15, 118, 110, 0.08)"
-                        stroke="#0F766E"
-                        strokeWidth="2"
-                      />
-                      <rect x="30" y="45" width="40" height="50" rx="4" fill="#FFFFFF" opacity="0.9" />
-                      <line x1="36" y1="55" x2="64" y2="55" stroke="#0F766E" strokeWidth="2" />
-                      <line x1="36" y1="62" x2="58" y2="62" stroke="#94A3B8" strokeWidth="1.5" />
-                      <line x1="36" y1="69" x2="52" y2="69" stroke="#94A3B8" strokeWidth="1.5" />
-                      <circle cx="50" cy="84" r="5" fill="#F59E0B" />
-                    </svg>
-                  </div>
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="product-card-real-img"
+                  />
                 </div>
-                <span className="visual-formula-tag">فرمول استاندارد UK</span>
+                <span className="visual-formula-tag">{photo.standardTag}</span>
               </Link>
 
               <div className="card-content">

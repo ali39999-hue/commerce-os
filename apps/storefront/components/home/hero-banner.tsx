@@ -8,25 +8,29 @@ export function HeroBanner() {
         <div className="hero-content-col">
           <div className="hero-eyebrow-chip">
             <span className="chip-pulsing-dot" aria-hidden="true"></span>
-            <span className="eyebrow-text">انقلاب بازسازی ترابافتی پوست · آزمایشگاه‌های انگلستان</span>
-            <span className="eyebrow-badge">UK FORMULATION</span>
+            <span className="eyebrow-text">Dr Dermer UK · Innovative Medical Devices & Skincare</span>
+            <span className="eyebrow-badge">UK CLINICAL LABS</span>
           </div>
 
           <h1 id="hero-main-title" className="hero-heading">
-            اکسیژن‌رسانی سلولی با اثر بوهر؛
+            محصولات و تجهیزات پزشکی نوآورانه
             <br />
-            <span className="gradient-text">CarboxyGel CO₂ Therapy</span>
+            <span className="gradient-text">طراحی‌شده برای ایمنی و اثربخشی برتر</span>
           </h1>
 
+          <div className="hero-english-motto" dir="ltr">
+            “Innovative medical devices & skincare invented to be more safe and effective”
+          </div>
+
           <p className="hero-description">
-            تلفیق نوآورانه دی‌اکسید کربن ترابافتی و پپتیدهای بیومیمتیک برای تحریک چرخه هموگلوبین و آزادسازی فوری اکسیژن در
-            بافت‌های عمقی پوست. نتایج اثبات‌شده بالینی در کاهش چین‌وچروک، رفع اسکار آکنه و بازیابی قوام اپیدرمال بدون نیاز به سوزن و
-            جراحی.
+            پیشگام در تکنولوژی‌های بالینی نوین با تلفیق کربوکسی‌تراپی غیرتهاجمی CarboxyGel CO₂ بر پایه مکانیسم فیزیولوژیک
+            اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی و بازسازی سلولی، در کنار پلتفرم پیشرفته دستگاه‌های پزشکی ReeMed™
+            شامل استیشن کربوکسی‌تراپی دقیق CarboX و سیستم انرژی چندگانه پلاسما PlasmaX ویژه درماتولوژیست‌ها و مراکز تخصصی.
           </p>
 
           <div className="hero-cta-group">
             <Link href="#featured-products" className="btn-clinical-primary btn-glow">
-              <span>خرید نسخه خانگی ReeSkin™</span>
+              <span>خرید محصولات مراقبت بالینی ReeSkin™</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
@@ -40,7 +44,7 @@ export function HeroBanner() {
                 <line x1="20" y1="8" x2="20" y2="14"></line>
                 <line x1="23" y1="11" x2="17" y2="11"></line>
               </svg>
-              <span>پورتال پزشکان و کلینیک‌ها (ReeMed™)</span>
+              <span>دستگاه‌های پزشکی ReeMed™ (CarboX & PlasmaX)</span>
             </Link>
           </div>
 
@@ -49,24 +53,24 @@ export function HeroBanner() {
             <div className="stat-card">
               <div className="stat-card-glow" aria-hidden="true"></div>
               <strong className="stat-number">+۴۵٪</strong>
-              <span className="stat-label">افزایش اشباع اکسیژن مویرگی (O₂ Saturation)</span>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-card-glow" aria-hidden="true"></div>
-              <strong className="stat-number">۷ روز</strong>
-              <span className="stat-label">آغاز چرخه بازسازی فیبروبلاست و سنتز کلاژن</span>
+              <span className="stat-label">اکسیژن‌رسانی عمقی سلولی با تحریک اثر بوهر (Bohr Effect)</span>
             </div>
 
             <div className="stat-card">
               <div className="stat-card-glow" aria-hidden="true"></div>
               <strong className="stat-number">۱۰۰٪</strong>
-              <span className="stat-label">غیرتهاجمی، بدون قرمزی و بدون نقاهت (Zero Downtime)</span>
+              <span className="stat-label">غیرتهاجمی، بدون قرمزی و نقاهت با CarboxyGel CO₂ Therapy</span>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-card-glow" aria-hidden="true"></div>
+              <strong className="stat-number">ReeMed™</strong>
+              <span className="stat-label">تجهیزات پزشکی کلینیکال و های‌تک (CarboX & PlasmaX)</span>
             </div>
           </div>
         </div>
 
-        {/* Right Column: High-Impact Visual Card / Device & Molecular Pod */}
+        {/* Right Column: High-Impact Visual Card / Authentic Dr Dermer Assets */}
         <div className="hero-visual-col">
           <div className="hero-visual-card">
             <div className="visual-card-glow" aria-hidden="true"></div>
@@ -75,74 +79,59 @@ export function HeroBanner() {
             <div className="visual-badge-top">
               <div className="tech-badge-group">
                 <span className="pulse-beacon" aria-hidden="true"></span>
-                <span className="badge-tech">BOHR EFFECT TECHNOLOGY</span>
+                <span className="badge-tech">BOHR EFFECT CO₂ TECHNOLOGY</span>
               </div>
               <span className="badge-standard">CE MEDICAL 0123</span>
             </div>
 
-            {/* Animated Molecular Canvas Graphic */}
-            <div className="visual-graphic-container">
-              <div className="molecular-graphic" aria-hidden="true">
-                <svg viewBox="0 0 420 340" className="molecule-svg" preserveAspectRatio="xMidYMid meet">
-                  <defs>
-                    <radialGradient id="gelGlow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#14B8A6" stopOpacity="0.45" />
-                      <stop offset="60%" stopColor="#0F766E" stopOpacity="0.15" />
-                      <stop offset="100%" stopColor="#042F2E" stopOpacity="0" />
-                    </radialGradient>
-                    <linearGradient id="podGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F8FAFC" />
-                      <stop offset="40%" stopColor="#E2E8F0" />
-                      <stop offset="100%" stopColor="#94A3B8" />
-                    </linearGradient>
-                    <linearGradient id="co2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2DD4BF" />
-                      <stop offset="100%" stopColor="#0F766E" />
-                    </linearGradient>
-                    <linearGradient id="o2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#38BDF8" />
-                      <stop offset="100%" stopColor="#0284C7" />
-                    </linearGradient>
-                  </defs>
+            {/* Authentic Hero Showcase Visuals */}
+            <div className="hero-real-showcase">
+              <div className="hero-main-photo-wrap">
+                <img
+                  src="/assets/drdermer/2025/07/site-combo-carboxy-1.png"
+                  alt="کیت جامع CarboxyGel CO2 Therapy و CarboxyPod دکتر درمر"
+                  className="hero-main-photo"
+                />
+                <div className="hero-bohr-floating-badge" title="Bohr Effect: Hemoglobin O2 Release">
+                  <img
+                    src="/assets/drdermer/2025/07/bohr-effect.png"
+                    alt="مکانیسم علمی اثر بوهر در اکسیژن‌رسانی سلولی"
+                    className="hero-bohr-thumb"
+                  />
+                  <div className="hero-bohr-tag">
+                    <strong>Bohr Effect</strong>
+                    <span>آزادسازی O₂ سلولی</span>
+                  </div>
+                </div>
+              </div>
 
-                  {/* Concentric Bio-energy fields */}
-                  <circle cx="210" cy="165" r="145" fill="url(#gelGlow)" />
-                  <circle cx="210" cy="165" r="115" fill="none" stroke="#2DD4BF" strokeWidth="1" strokeDasharray="6 6" opacity="0.65" />
-                  <circle cx="210" cy="165" r="90" fill="none" stroke="#14B8A6" strokeWidth="1.5" opacity="0.85" />
+              {/* Mini Devices Rail (ReeMed CarboX & PlasmaX) */}
+              <div className="hero-devices-preview-grid">
+                <Link href="/products/carbox" className="hero-mini-device-card" title="دستگاه پزشکی کربوکسی تراپی CarboX">
+                  <img
+                    src="/assets/drdermer/2025/08/19carbox.webp"
+                    alt="دستگاه پزشکی CarboX"
+                    className="hero-mini-device-thumb"
+                  />
+                  <div className="hero-mini-device-info">
+                    <span className="hero-mini-badge">ReeMed Medical</span>
+                    <strong className="hero-mini-name">CarboX™</strong>
+                    <span className="hero-mini-sub">تزریق گاز CO₂ & پاد</span>
+                  </div>
+                </Link>
 
-                  {/* Device / Pod Representation */}
-                  <rect x="145" y="80" width="130" height="170" rx="40" fill="url(#podGrad)" stroke="#CBD5E1" strokeWidth="2.5" filter="drop-shadow(0 20px 35px rgba(15, 23, 42, 0.4))" />
-                  <rect x="165" y="105" width="90" height="90" rx="45" fill="#0F766E" />
-                  <circle cx="210" cy="150" r="32" fill="#14B8A6" opacity="0.85" />
-                  <circle cx="210" cy="150" r="18" fill="#F8FAFC" />
-
-                  {/* Floating Transdermal Microbubbles with Glow */}
-                  {/* CO2 Infusion microbubbles */}
-                  <g className="bubble-float-1">
-                    <circle cx="95" cy="100" r="16" fill="url(#co2Grad)" filter="drop-shadow(0 4px 10px rgba(45,212,191,0.5))" />
-                    <text x="95" y="104" fill="#FFFFFF" fontSize="10" fontWeight="900" textAnchor="middle">CO₂</text>
-                  </g>
-
-                  <g className="bubble-float-2">
-                    <circle cx="85" cy="220" r="14" fill="url(#co2Grad)" filter="drop-shadow(0 4px 8px rgba(45,212,191,0.4))" />
-                    <text x="85" y="224" fill="#FFFFFF" fontSize="9" fontWeight="800" textAnchor="middle">CO₂</text>
-                  </g>
-
-                  {/* O2 Released microbubbles */}
-                  <g className="bubble-float-3">
-                    <circle cx="325" cy="115" r="18" fill="url(#o2Grad)" filter="drop-shadow(0 4px 12px rgba(56,189,248,0.5))" />
-                    <text x="325" y="120" fill="#FFFFFF" fontSize="11" fontWeight="900" textAnchor="middle">O₂</text>
-                  </g>
-
-                  <g className="bubble-float-4">
-                    <circle cx="330" cy="225" r="15" fill="url(#o2Grad)" filter="drop-shadow(0 4px 10px rgba(56,189,248,0.4))" />
-                    <text x="330" y="229" fill="#FFFFFF" fontSize="10" fontWeight="800" textAnchor="middle">O₂</text>
-                  </g>
-
-                  {/* Device Text Details */}
-                  <text x="210" y="222" fill="#0F172A" fontSize="11" fontWeight="800" textAnchor="middle" letterSpacing="0.08em">CARBOXY-POD PRO</text>
-                  <text x="210" y="238" fill="#475569" fontSize="8.5" fontWeight="600" textAnchor="middle">TRANSDERMAL INFUSION</text>
-                </svg>
+                <Link href="/products/plasmax" className="hero-mini-device-card" title="دستگاه پیشرفته انرژی پلاسما PlasmaX">
+                  <img
+                    src="/assets/drdermer/2025/08/18plasmax.webp"
+                    alt="دستگاه پزشکی PlasmaX"
+                    className="hero-mini-device-thumb"
+                  />
+                  <div className="hero-mini-device-info">
+                    <span className="hero-mini-badge">ReeMed Medical</span>
+                    <strong className="hero-mini-name">PlasmaX™</strong>
+                    <span className="hero-mini-sub">پلاسمای سرد و DBD</span>
+                  </div>
+                </Link>
               </div>
             </div>
 
@@ -150,14 +139,14 @@ export function HeroBanner() {
             <div className="visual-card-footer">
               <div className="visual-footer-info">
                 <span className="pack-name">کیت جامع CarboxyGel + CarboxyPod</span>
-                <span className="pack-family">خانواده محصولی ReeSkin™ & ReeMed™</span>
+                <span className="pack-family">خانواده فرمولاسیون ReeSkin™ و تجهیزات ReeMed™</span>
               </div>
               <div className="visual-footer-status">
                 <span className="status-badge cold-chain-badge">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                   </svg>
-                  توزیع با زنجیره سرمایی (Cold-Chain)
+                  استاندارد ایمنی MHRA انگلستان
                 </span>
               </div>
             </div>

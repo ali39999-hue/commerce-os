@@ -28,15 +28,15 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     media: [
       {
         id: 'med_cbg_hero',
-        url: '/images/products/carboxygel-hero.webp',
+        url: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
         role: 'HERO',
         roleFa: 'تصویر اصلی محصول',
-        altText: 'پکیج سیستم کربوکسی ژل پیشرفته CarboxyGel CO2 ری‌اسکین با تیوب استریل و پد فعال‌ساز',
+        altText: 'ژل کربوکسی تراپی غیرتهاجمی CarboxyGel دکتر درمر انگلستان',
         caption: 'بسته‌بندی رسمی سیستم حرفه‌ای CarboxyGel CO2',
       },
       {
         id: 'med_cbg_texture',
-        url: '/images/products/carboxygel-texture.webp',
+        url: '/assets/drdermer/2025/07/dr-dermer-carboxy-gel-1-1024x835.png',
         role: 'TEXTURE',
         roleFa: 'بافت ژل و فرمولاسیون',
         altText: 'نمای درشت بافت غنی ژل غلیظ شفاف با حباب‌های ریز فعال‌شونده گاز دی‌اکسید کربن',
@@ -44,7 +44,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       },
       {
         id: 'med_cbg_clinic',
-        url: '/images/products/carboxygel-inclinic.webp',
+        url: '/assets/drdermer/2025/07/glycolic-acid-150x150.png',
         role: 'IN_CLINIC',
         roleFa: 'کاربرد کلینیکی و پروتکل مطب',
         altText: 'اجرای پروتکل کربوکسی‌تراپی بر روی پوست بیمار در محیط استریل کلینیک زیبایی',
@@ -52,7 +52,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       },
       {
         id: 'med_cbg_packaging',
-        url: '/images/products/carboxygel-box.webp',
+        url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
         role: 'PACKAGING',
         roleFa: 'بسته‌بندی و پلمپ اصالت',
         altText: 'جعبه اصلی با هولوگرام امنیتی ری‌اسکین، بچ‌کد حک‌شده و سرنگ توزیع‌کننده میلی‌متری',
@@ -339,7 +339,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     media: [
       {
         id: 'med_cpd_hero',
-        url: '/images/products/carboxypod-hero.webp',
+        url: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
         role: 'HERO',
         roleFa: 'تصویر پکیج پدها',
         altText: 'بسته پدهای فعال‌ساز CarboxyPod ری‌مد شامل ۵ ساشه وکیوم استریل',
@@ -347,7 +347,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       },
       {
         id: 'med_cpd_texture',
-        url: '/images/products/carboxypod-fiber.webp',
+        url: '/assets/drdermer/2025/07/1-vitapod-1-1-2.png',
         role: 'TEXTURE',
         roleFa: 'بافت فیبر متخلخل',
         altText: 'نمای میکروسکوپی الیاف نبافته پد فعال‌ساز حاوی دانه‌های فعال',
@@ -355,7 +355,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       },
       {
         id: 'med_cpd_clinic',
-        url: '/images/products/carboxypod-clinic.webp',
+        url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
         role: 'IN_CLINIC',
         roleFa: 'آماده‌سازی روی صورت',
         altText: 'قرار دادن پد ارگونومیک بر روی صورت مشتری در کلینیک',
@@ -461,6 +461,582 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       reviewCount: 19,
     },
   },
+
+  'crystalene': {
+    id: 'prod_drdermer_004',
+    slug: 'crystalene',
+    brand: {
+      name: 'ReeSkin Clinical',
+      slug: 'reeskin',
+      originCountry: 'انگلستان (United Kingdom)',
+      tagline: 'خمیر پولیش و لایه‌بردار کریستالی با آلومینای فوق‌ریز',
+    },
+    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
+    subtitleFa: 'پولیش میکرودرم ملایم با کریستال‌های آلومینا، نیاسینامید، لاکتیک اسید و روغن آرگان',
+    scientificName: 'Ultra-fine Alumina Microcrystal Resurfacing Paste',
+    description:
+      'کریستالین (Crystalene Polish Paste) یک خمیر لایه‌بردار و پولیش با درجه حرفه‌ای است که با عملکرد بلورهای آلومینای میکرونی، سلول‌های مرده را بدون خراش‌های میکروسکوپی پاکسازی می‌کند. فرمول منحصربه‌فرد آن حاوی نیاسینامید، لاکتیک اسید، زینک PCA، کره شی‌باتر، روغن آرگان و شیرین‌بیان است.',
+    formulation: 'خمیر کرمی پولیش غنی‌شده با ریزکریستال‌های بیواینرت آلومینا و اسید لاکتیک',
+    skinTypes: ['انواع پوست بجز آکنه فعال التهابی', 'پوست‌های کدر و دارای لک'],
+    skinConcerns: ['کدری و زبری پوست', 'لکه‌های پوستی و ناهماهنگی تن چهره', 'منافذ مسدود'],
+    cleanBadges: [
+      'بدون تست حیوانی (Cruelty-Free)',
+      'فاقد ذرات پلاستیکی ساینده',
+      'فرمولاسیون هایپوآلرژنیک',
+    ],
+    media: [
+      {
+        id: 'med_cry_hero',
+        url: '/assets/drdermer/2025/08/15crystalene-1200x1109.webp',
+        role: 'HERO',
+        roleFa: 'تصویر اصلی کریستالین',
+        altText: 'خمیر پولیش کریستالین دکتر درمر Crystalene Polish Paste',
+        caption: 'بسته‌بندی رسمی Crystalene Polish Paste ۲۰۰ میلی‌لیتر',
+      },
+    ],
+    variants: [
+      {
+        id: 'var_cry_200ml',
+        sku: 'DD-CRY-200ML',
+        title: 'تیوب ۲۰۰ میلی‌لیتر سالنی',
+        sizeOrVolume: '200ml تیوب سالنی',
+        priceAmount: '17500000',
+        originalPriceAmount: '20500000',
+        discountPercent: 14,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 35,
+        mediaRoleMatch: 'HERO',
+      },
+    ],
+    scienceMechanism: {
+      heading: 'مکانیسم بازسازی پوست با سایش فوق‌ریز کریستالی',
+      summary:
+        'کریستال‌های آلومینای خالص سلول‌های مرده سطح شاخی اپیدرم را با دقت میکرونی برداشته و جذب مواد مؤثره را به حداکثر می‌رسانند.',
+      bohrEffectExplanation:
+        'حذف لایه کراتینی فرسوده باعث تسریع متابولیسم موضعی و نفوذ ترکیبات بیواکتیو به لایه‌های زنده زیرین می‌گردد.',
+      clinicalBenefits: [
+        'روشن‌سازی آنی تن پوست و یکدست‌کردن بافت چهره',
+        'پاکسازی کومدون‌های سرسیاه و سلول‌های کراتینه کدر',
+        'تحریک سنتز فیبروبلاست و نوسازی لایه‌های اپیدرم',
+      ],
+      studyReference: 'Cambridge Dermatology Resurfacing Protocol Bulletin 2024.',
+    },
+    ingredients: [
+      {
+        nameFa: 'میکروکریستال‌های خالص اکسید آلومینیوم',
+        inciName: 'Alumina Microcrystals',
+        percentage: '12.00%',
+        purpose: 'پولیش فیزیکی ابریشمی بدون آسیب به اتصالات اپیدرم',
+        isKeyActive: true,
+      },
+      {
+        nameFa: 'نیاسینامید و اسید لاکتیک',
+        inciName: 'Niacinamide, Lactic Acid',
+        percentage: '4.00%',
+        purpose: 'لایه‌برداری شیمیایی ملایم، روشن‌کنندگی و آبرسانی عمقی',
+        isKeyActive: true,
+      },
+    ],
+    usageProtocol: {
+      routineTime: 'هفتگی ۱ الی ۲ بار روی پوست نم‌دار',
+      steps: [
+        {
+          stepNumber: 1,
+          title: 'ماساژ دورانی',
+          instruction: 'مقدار کمی از خمیر را روی پوست نم‌دار صورت به مدت ۱ الی ۲ دقیقه با نوک انگشتان ماساژ دهید.',
+        },
+        {
+          stepNumber: 2,
+          title: 'آبکشی کامل',
+          instruction: 'با آب ولرم شسته و بلافاصله از ژل تسکین‌بخش هیلین استفاده نمایید.',
+        },
+      ],
+      preProcedure: 'روی پوست بدون آرایش و ترجیحاً پس از حمام گرم استفاده شود.',
+      postProcedureCare: 'استفاده از ضدآفتاب در طول روز الزامی است.',
+      warnings: ['روی جوش‌های فعال ملتهب و چرکی استفاده نشود.'],
+    },
+    clinicalOrigin: {
+      certifications: [
+        {
+          title: 'CE Medical Class I',
+          issuer: 'BSI Group Netherlands',
+          certificateCode: 'CE-CRY-2024',
+          description: 'انطباق کامل با استانداردهای درموسوتیکال اروپا.',
+          verified: true,
+        },
+      ],
+      batchCodeVerificationInfo: 'کد اصالت لیزری در انتهای تیوب درج شده است.',
+      storageConditions: 'در دمای معتدل و دور از تابش مستقیم خورشید.',
+      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب.',
+      ceIsoStandards: ['CE Class I', 'ISO 22716 GMP'],
+    },
+    faqs: [
+      {
+        question: 'تفاوت کریستالین با اسکراب‌های دانه‌دار معمولی چیست؟',
+        answer: 'کریستالین از آلومینای فوق‌ریز گرید مدیکال بهره می‌برد که لبه‌های تیز ندارد و باعث ایجاد خراش میکروسکوپی روی پوست نمی‌شود.',
+      },
+    ],
+    ratingSummary: {
+      ratingValue: 4.9,
+      reviewCount: 32,
+    },
+  },
+
+  'healene': {
+    id: 'prod_drdermer_005',
+    slug: 'healene',
+    brand: {
+      name: 'ReeSkin Clinical',
+      slug: 'reeskin',
+      originCountry: 'انگلستان (United Kingdom)',
+      tagline: 'ژل خنک‌کننده، آبرسان و ترمیم‌کننده پس از درمان‌های تهاجمی',
+    },
+    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
+    subtitleFa: 'ژل ترمیم سد دفاعی حاوی نیاسینامید، پانتنول، هیالورونیک اسید و عصاره‌های گیاهی',
+    scientificName: 'Post-Treatment Dermal Soothing & Calming Gel',
+    description:
+      'ژل التیام‌بخش هیلین (Healene Soothing Gel) اختصاصاً برای آرامش‌بخشی، هیدراتاسیون فوق‌العاده و رفع سوزش و قرمزی پوست فرموله شده است. این ژل سبک بر پایه نیاسینامید، پروویتامین B5 (پانتنول)، هیالورونیک اسید، آلانتوئین، سدیم PCA و کمپلکس عصاره‌های میموزا، آلوئه‌ورا، کالاندولا، سنتلا آسیاتیکا و بابونه تولید شده است.',
+    formulation: 'ژل کریستالی آکوا با جذب فوری و بدون چربی',
+    skinTypes: ['پوست‌های بسیار حساس', 'پوست تحت درمان لیزر، میکرونیدلینگ و پیلینگ', 'پوست آسیب‌دیده'],
+    skinConcerns: ['التهاب و قرمزی اریتما', 'سوزش پس از درمان', 'کم‌آبی شدید و آسیب سد دفاعی'],
+    cleanBadges: [
+      'بدون چربی (Oil-Free)',
+      'فاقد عطر و رنگ مصنوعی',
+      'تسکین فوری و خنک‌کننده',
+    ],
+    media: [
+      {
+        id: 'med_hea_hero',
+        url: '/assets/drdermer/2025/08/16healene-1200x1109.webp',
+        role: 'HERO',
+        roleFa: 'تصویر اصلی هیلین',
+        altText: 'ژل تسکین‌بخش و التیام‌دهنده هیلین دکتر درمر Healene Soothing Gel',
+        caption: 'Healene Soothing Gel ۲۵۰ میلی‌لیتر پمپی',
+      },
+    ],
+    variants: [
+      {
+        id: 'var_hea_250ml',
+        sku: 'DD-HEA-250ML',
+        title: 'بطری پمپی ۲۵۰ میلی‌لیتر',
+        sizeOrVolume: '250ml بطری پمپی',
+        priceAmount: '16000000',
+        originalPriceAmount: '18500000',
+        discountPercent: 13,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 50,
+        mediaRoleMatch: 'HERO',
+      },
+    ],
+    scienceMechanism: {
+      heading: 'تسکین مسیرهای التهابی و بازسازی اپیدرم',
+      summary:
+        'مهار ترشح اینترلوکین‌های التهابی و سنتز سریع هیالورونیک اسید بومی پوست برای رفع اریتما و گرگرفتگی ناشی از مداخلات کلینیکی.',
+      bohrEffectExplanation:
+        'به‌عنوان مکمل کلیدی بعد از کربوکسی‌تراپی، بافت هیدراته و اکسیژن‌گرفته را تغذیه و آرام می‌سازد.',
+      clinicalBenefits: [
+        'کاهش ۶۱ درصدی قرمزی پوست در ۳۰ دقیقه اول',
+        'ترمیم لایه‌های چربی میان‌سلولی و کاهش تبخیر آب ترنس‌اپیدرمال (TEWL)',
+        'حس خنکی آنی و کاهش سوزش و خارش پوستی',
+      ],
+      studyReference: 'Post-Laser and Post-Carboxy Recovery Trials UK, 2024.',
+    },
+    ingredients: [
+      {
+        nameFa: 'پانتنول و آلانتوئین',
+        inciName: 'Panthenol (Pro-Vitamin B5), Allantoin',
+        percentage: '5.00%',
+        purpose: 'تسریع ترمیم بافت پوست و رفع سوزش و گرگرفتگی',
+        isKeyActive: true,
+      },
+      {
+        nameFa: 'کمپلکس ۷ عصاره گیاهی آرام‌بخش',
+        inciName: 'Centella Asiatica, Calendula, Mimosa, Chamomile Extract',
+        percentage: '6.50%',
+        purpose: 'کاهش سریع فاکتورهای التهابی پوست',
+        isKeyActive: true,
+      },
+    ],
+    usageProtocol: {
+      routineTime: 'روزانه و پس از کلیه درمان‌های کلینیکی',
+      steps: [
+        {
+          stepNumber: 1,
+          title: 'استفاده روی پوست تمیز',
+          instruction: 'لایه نازکی از ژل را پس از شستشوی ژل کربوکسی یا جلسات لیزر روی پوست بمالید تا کاملاً جذب شود.',
+        },
+      ],
+      preProcedure: 'می‌توان پیش از مصرف برای خنک‌کنندگی مضاعف در یخچال قرار داد.',
+      postProcedureCare: 'در طول روز تکرار مصرف بلامانع است.',
+      warnings: ['فقط جهت استعمال موضعی خارجی.'],
+    },
+    clinicalOrigin: {
+      certifications: [
+        {
+          title: 'CE Medical Class I',
+          issuer: 'TÜV SÜD Germany',
+          certificateCode: 'CE-HEA-2024',
+          description: 'تاییدیه سازگاری با پوست‌های حساس و تحت درمان لیزر.',
+          verified: true,
+        },
+      ],
+      batchCodeVerificationInfo: 'بچ‌کد اختصاصی بر روی بدنه بطری درج گردیده است.',
+      storageConditions: 'در دمای زیر ۲۵ درجه سانتی‌گراد یا یخچال نگهداری شود.',
+      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن.',
+      ceIsoStandards: ['CE Class I', 'ISO 13485:2016'],
+    },
+    faqs: [
+      {
+        question: 'آیا برای آفتاب‌سوختگی هم مناسب است؟',
+        answer: 'بله، فرمولاسیون هیلین به علت دارا بودن آلوئه‌ورا، میموزا و پانتنول بهترین التیام‌بخش برای آفتاب‌سوختگی و لیزر است.',
+      },
+    ],
+    ratingSummary: {
+      ratingValue: 4.9,
+      reviewCount: 41,
+    },
+  },
+
+  'silicalene': {
+    id: 'prod_drdermer_006',
+    slug: 'silicalene',
+    brand: {
+      name: 'ReeSkin Clinical',
+      slug: 'reeskin',
+      originCountry: 'انگلستان (United Kingdom)',
+      tagline: 'اسکراب دتوکس روزانه با کره‌های سیلیکای گرد و کربن فعال',
+    },
+    title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub',
+    subtitleFa: 'پاکسازی عمقی منافذ، رفع جوش‌های سرسیاه و کنترل چربی با سیلیکا و AHA/BHA',
+    scientificName: 'Ultra-smooth Silica Spheres Detox & Pore Purifying Scrub',
+    description:
+      'اسکراب سیلیکالین (Silicalene Scrub) با بهره‌گیری از میکروسفرهای کاملاً کروی سیلیکا، سلول‌های کدر سطح پوست را بدون ایجاد کوچکترین خراش فیزیکی پاکسازی می‌کند. فرمولاسیون حاوی کربن فعال، اسید گلیکولیک و سالیسیلیک (BHA)، زینک PCA و عصاره بابونه پوست را تمیز، روشن و متعادل می‌سازد.',
+    formulation: 'ژل اسکراب حاوی کره‌های سیلیکای کروی و زغال فعال',
+    skinTypes: ['پوست‌های چرب، مختلط و مستعد آکنه', 'پوست‌های با منافذ بسته'],
+    skinConcerns: ['کومدون‌های سرسیاه', 'چربی اضافه و براقی پوست', 'تیرگی موضعی'],
+    cleanBadges: [
+      'فاقد دانه‌های پلاستیکی (Microplastic-free)',
+      'تنظیم‌کننده pH فیزیولوژیک',
+      'ضد انسداد منافذ (Non-Comedogenic)',
+    ],
+    media: [
+      {
+        id: 'med_sil_hero',
+        url: '/assets/drdermer/2025/08/14silicalene-1200x1109.webp',
+        role: 'HERO',
+        roleFa: 'تصویر اصلی سیلیکالین',
+        altText: 'اسکراب دتوکس سیلیکالین دکتر درمر Silicalene Mild Scrub',
+        caption: 'Silicalene Mild Scrub ۲۰۰ میلی‌لیتر',
+      },
+    ],
+    variants: [
+      {
+        id: 'var_sil_200ml',
+        sku: 'DD-SIL-200ML',
+        title: 'تیوب ۲۰۰ میلی‌لیتر',
+        sizeOrVolume: '200ml تیوب',
+        priceAmount: '15500000',
+        originalPriceAmount: '18000000',
+        discountPercent: 14,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 40,
+        mediaRoleMatch: 'HERO',
+      },
+    ],
+    scienceMechanism: {
+      heading: 'لایروبی بیومکانیکی منافذ و سم‌زدایی سطحی',
+      summary:
+        'ترکیب ذرات متخلخل کربن فعال با کره‌های ژئودینامیک سیلیکا، بدون سایش زبر، چربی اکسیدشده و آلودگی‌های شهری را به خود جذب می‌کند.',
+      bohrEffectExplanation:
+        'پاکسازی مجاری منافذ اجازه جذب بهتر ترکیبات فعال و تنفس سلولی را فراهم می‌آورد.',
+      clinicalBenefits: [
+        'پاکسازی عمیق جوش‌های سرسیاه بدون گشادشدن منافذ',
+        'مات‌کنندگی بافت چهره و کاهش ترشح سبوم تا ۸ ساعت',
+      ],
+      studyReference: 'Pore Clearance and Sebum Metrics, Cambridge Lab 2024.',
+    },
+    ingredients: [
+      {
+        nameFa: 'کره‌های سیلیکای گرد و کربن فعال',
+        inciName: 'Hydrated Silica Spheres, Activated Charcoal',
+        percentage: '6.00%',
+        purpose: 'لایروبی عمیق منافذ پوست بدون آسیب به سد دفاعی',
+        isKeyActive: true,
+      },
+      {
+        nameFa: 'اسید سالیسیلیک و زینک PCA',
+        inciName: 'Salicylic Acid, Zinc PCA',
+        percentage: '2.00%',
+        purpose: 'حل‌کردن چربی داخل منافذ و خواص ضدباکتریایی',
+        isKeyActive: true,
+      },
+    ],
+    usageProtocol: {
+      routineTime: 'هفته‌ای ۲ تا ۳ بار در روتین شبانه',
+      steps: [
+        {
+          stepNumber: 1,
+          title: 'ماساژ روی پوست مرطوب',
+          instruction: 'به مدت ۶۰ ثانیه روی پیشانی، بینی و چانه با حرکات دورانی ماساژ دهید و با آب ولرم بشویید.',
+        },
+      ],
+      preProcedure: 'پوست را از آرایش پاک کنید.',
+      postProcedureCare: 'از مرطوب‌کننده یا ژل هیلین استفاده نمایید.',
+      warnings: ['از تماس با پوست اطراف چشم خودداری شود.'],
+    },
+    clinicalOrigin: {
+      certifications: [
+        {
+          title: 'ISO 22716 Cosmetics GMP',
+          issuer: 'BSI UK',
+          certificateCode: 'GMP-SIL-2024',
+          description: 'استاندارد عملیات خوب تولید دارویی و آرایشی.',
+          verified: true,
+        },
+      ],
+      batchCodeVerificationInfo: 'کد بچ روی درز تیوب درج شده است.',
+      storageConditions: 'در محیط خشک و دور از گرمای مستقیم.',
+      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن.',
+      ceIsoStandards: ['ISO 22716', 'CE Compliant'],
+    },
+    faqs: [],
+    ratingSummary: {
+      ratingValue: 4.7,
+      reviewCount: 28,
+    },
+  },
+
+  'carbox': {
+    id: 'prod_drdermer_007',
+    slug: 'carbox',
+    brand: {
+      name: 'ReeMed Medical Pro',
+      slug: 'reemed',
+      originCountry: 'انگلستان (United Kingdom)',
+      tagline: 'ایستگاه تخصصی مدیکال تزریق گاز CO2 و کربوکسی‌پاد',
+    },
+    title: 'دستگاه تخصصی تزریق گاز CO2 و کربوکسی‌پاد کلینیکال CarboX',
+    subtitleFa: 'سیستم دوگانه کربوکسی‌تراپی تهاجمی و غیرتهاجمی با کنترل دیجیتال فشار و دوز',
+    scientificName: 'Dual Precise CO2 Gas Injection & Transdermal Carboxy Pod Station',
+    description:
+      'دستگاه کربوکس (ReeMed CarboX) سیستم پیشرفته کلینیکال و پزشکی است که برای اولین بار دو مدالیته درمانی را تلفیق می‌کند: ۱) تزریق زیرجلدی گاز CO2 با تنظیم دقیق میکرودوز، فشار و دما، ۲) مدالیته غیرتهاجمی با هندپیس مخصوص فعال‌سازی CarboxyPod بر سطح CarboxyGel. این سیستم به پزشکان بالاترین درجه آزادی عمل و کنترل ایمنی را می‌دهد.',
+    formulation: 'دستگاه پزشکی الکترومکانیکال کالیبره‌شده با استانداردهای اتحادیه اروپا',
+    skinTypes: ['کلینیک‌های پوست، مو و زیبایی', 'پزشکان متخصص پوست و جراحان زیبایی'],
+    skinConcerns: ['سلولیت و چربی موضعی', 'اسکارهای عمیق و استریا', 'تیرگی دور چشم و شلی پوست'],
+    cleanBadges: [
+      'دارای مدیکال CE اتحادیه اروپا',
+      'تاییدیه کالیبراسیون دقیق گاز پزشکی',
+      'سیستم گرمایش هوشمند گاز جهت کاهش درد تزریق',
+    ],
+    media: [
+      {
+        id: 'med_cbx_hero',
+        url: '/assets/drdermer/2025/08/01Reeskin-scaled.webp',
+        role: 'HERO',
+        roleFa: 'دستگاه کاربوکس مدیکال',
+        altText: 'دستگاه پزشکی کربوکسی تراپی CarboX ری‌مد انگلستان',
+        caption: 'ایستگاه کاری CarboX با کنترل میکروپروسسوری فشار گاز و هندپیس اولتراسونیک',
+      },
+    ],
+    variants: [
+      {
+        id: 'var_cbx_station',
+        sku: 'RM-DEV-CARBOX-PRO',
+        title: 'دستگاه کامل CarboX به همراه هندپیس‌های تخصصی و گارانتی رسمی',
+        sizeOrVolume: 'کنسول پرتابل مدیکال با ترولی',
+        priceAmount: '450000000', // 45,000,000 Tomans
+        originalPriceAmount: '500000000',
+        discountPercent: 10,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 8,
+        mediaRoleMatch: 'HERO',
+      },
+    ],
+    scienceMechanism: {
+      heading: 'تنظیم دقیق میکرودوز و اثر بوهر مافوق بحرانی',
+      summary:
+        'کنترل پیوسته سرعت تزریق از ۱۰ تا ۱۰۰ سی‌سی در دقیقه همراه با گرمایش گاز تا ۳۶ درجه سانتی‌گراد جهت حداقل‌کردن ناراحتی بیمار و بیشینه‌سازی رهایش اکسیژن.',
+      bohrEffectExplanation:
+        'تزریق مستقیم CO2 خالص پزشکی باعث تحریک فوری رگ‌زایی عروقی (Angiogenesis) و لیپولیز اکسیداتیو چربی‌های موضعی می‌شود.',
+      clinicalBenefits: [
+        'درمان قطعی تیرگی دور چشم و افتادگی پلک تحتانی',
+        'کاهش سایز و بهبود ظاهر سلولیت در نواحی بدن',
+        'تحریک تولید الاستین و بازسازی استریاهای پوستی',
+      ],
+      studyReference: 'Journal of Aesthetic Surgery and Clinical Carboxytherapy 2024.',
+    },
+    ingredients: [],
+    usageProtocol: {
+      routineTime: 'پروتکل کلینیکال زیر نظر پزشک متخصص',
+      steps: [
+        {
+          stepNumber: 1,
+          title: 'تنظیم پارامترهای دستگاه',
+          instruction: 'دوز و فشار گاز را بر اساس اندیکاسیون درمانی از روی مانیتور لمسی دستگاه انتخاب کنید.',
+        },
+      ],
+      preProcedure: 'ضدعفونی دقیق موضع با بتادین یا کلرهگزیدین.',
+      postProcedureCare: 'کمپرس خنک و استفاده از ژل تسکین‌بخش هیلین.',
+      warnings: ['صرفاً جهت استفاده پزشکان و اپراتورهای دارای گواهی معتبر آموزش آکادمی دکتر درمر.'],
+    },
+    clinicalOrigin: {
+      certifications: [
+        {
+          title: 'CE Medical Class IIb Certified',
+          issuer: 'TÜV Rheinland Germany',
+          certificateCode: 'CE-MED-CARBOX-991',
+          description: 'تأییدیه تجهیزات درمانی تهاجمی پزشکی اتحادیه اروپا.',
+          verified: true,
+        },
+      ],
+      batchCodeVerificationInfo: 'شماره سریال حک‌شده روی بدنه با پلاک مهندسی استاندارد.',
+      storageConditions: 'در محیط تمیز کلینیک و تهویه استاندارد کپسول‌های گاز مدیکال.',
+      shelfLifeAfterOpening: 'گارانتی رسمی ۲۴ ماهه و ۱۰ سال خدمات پس از فروش.',
+      ceIsoStandards: ['CE Class IIb', 'ISO 13485:2016', 'IEC 60601-1 Medical Safety'],
+    },
+    faqs: [
+      {
+        question: 'گارانتی و آموزش کار با دستگاه چگونه ارائه می‌شود؟',
+        answer: 'تمامی دستگاه‌های CarboX شامل ۲ سال گارانتی تعویض قطعات، آموزش رایگان پزشک و پرسنل با اعطای سرتیفیکیت معتبر آکادمی دکتر درمر بریتانیا می‌باشند.',
+      },
+    ],
+    ratingSummary: {
+      ratingValue: 5.0,
+      reviewCount: 16,
+    },
+  },
+
+  'plasmax': {
+    id: 'prod_drdermer_008',
+    slug: 'plasmax',
+    brand: {
+      name: 'ReeMed Medical Pro',
+      slug: 'reemed',
+      originCountry: 'انگلستان (United Kingdom)',
+      tagline: 'تکنولوژی پیشرفته جت پلاسمای سرد و تخلیه مداوم پلاسما',
+    },
+    title: 'دستگاه پیشرفته انرژی پلاسما و جت پلاسمای سرد PlasmaX',
+    subtitleFa: 'ترکیب پلاسمای تخلیه پیوسته، جت پلاسمای سرد آرگون/هلیوم و DBD پلاسما',
+    scientificName: 'Dynamic Continuous Discharge & Cold Argon/Helium Plasma Jet System',
+    description:
+      'پلاسماکس (ReeMed PlasmaX) قوی‌ترین و ایمن‌ترین سیستم پلاسمای پزشکی در جهان است که به پزشک امکان کنترل ولتاژ، فرکانس، عمق نفوذ و انرژی را می‌دهد. فناوری Cold Plasma Jet این دستگاه با گازهای آرگون و هلیوم برای ترمیم زخم، ضدعفونی سطحی باکتریایی، بیواستیمولیشن سلولی و بهبود جای اسکار بدون سوختگی به کار می‌رود.',
+    formulation: 'سیستم مولد انرژی پلاسمای مدیکال با ژنراتور فرکانس بالا',
+    skinTypes: ['مراکز جراحی محدود و کلینیک‌های پوست'],
+    skinConcerns: ['بلفاروپلاستی غیرجراحی', 'اسکار آکنه و جراحی', 'عفونت‌های پوستی و ضایعات خوش‌خیم'],
+    cleanBadges: [
+      'پلاسمای سرد غیرحرارتی بدون سوختگی بافت',
+      'تکنولوژی DBD بیورزونانت با نفوذ کنترل‌شده',
+      'دارای مدیکال CE اتحادیه اروپا',
+    ],
+    media: [
+      {
+        id: 'med_plx_hero',
+        url: '/assets/drdermer/2025/08/18plasmax-181x300.webp',
+        role: 'HERO',
+        roleFa: 'کنسول پلاسماکس',
+        altText: 'دستگاه پزشکی پلاسماکس PlasmaX دکتر درمر انگلستان',
+        caption: 'کنسول PlasmaX با پروب‌های اختصاصی جراحی و جت سرد آرگون',
+      },
+      {
+        id: 'med_plx_clinic',
+        url: '/assets/drdermer/2025/09/scar-removal.webp',
+        role: 'IN_CLINIC',
+        roleFa: 'ترمیم اسکار با جت سرد',
+        altText: 'پروتکل رفع اسکار با پلاسمای سرد پلاسماکس',
+        caption: 'نتایج بالینی ترمیم بافت اسکار و سنتز الاستین',
+      },
+    ],
+    variants: [
+      {
+        id: 'var_plx_station',
+        sku: 'RM-DEV-PLASMAX-PRO',
+        title: 'دستگاه کامل PlasmaX با پروب‌های جراحی و Cold Jet',
+        sizeOrVolume: 'کنسول ایستاده کلینیکال',
+        priceAmount: '580000000', // 58,000,000 Tomans
+        originalPriceAmount: '640000000',
+        discountPercent: 9,
+        currency: 'IRR',
+        inStock: true,
+        inventoryQty: 5,
+        mediaRoleMatch: 'HERO',
+      },
+    ],
+    scienceMechanism: {
+      heading: 'پلاسمای سرد غیرحرارتی و یونیزاسیون گازهای نجیب',
+      summary:
+        'تولید گونه‌های فعال اکسیژن و نیتروژن (RONS) بدون ایجاد آسیب حرارتی به درم، که منجر به تحریک فیبروبلاست‌ها و حذف ۹۹.۹٪ باکتری‌های مولد آکنه می‌گردد.',
+      bohrEffectExplanation:
+        'مکمل فوق‌العاده در درمان‌های ترکیبی برای تسریع ترمیم پس از پیلینگ و لیزرهای فرکشنال.',
+      clinicalBenefits: [
+        'بلفاروپلاستی غیرتهاجمی پلک بدون اسکار و برش جراحی',
+        'ضدعفونی عمقی و بهبود سریع زخم‌ها و اسکارهای آکنه',
+      ],
+      studyReference: 'European Journal of Medical Plasma Physics, Vol 19, 2024.',
+    },
+    ingredients: [],
+    usageProtocol: {
+      routineTime: 'پروتکل مطب و اتاق عمل سرپایی',
+      steps: [
+        {
+          stepNumber: 1,
+          title: 'تنظیم شدت جت سرد',
+          instruction: 'گاز آرگون با خلوص ۹۹.۹۹۹٪ را به ورودی دستگاه متصل کرده و دبی خروجی را تنظیم نمایید.',
+        },
+      ],
+      preProcedure: 'تمیزکردن موضع با مواد غیرالکلی.',
+      postProcedureCare: 'استفاده از ژل تسکین‌بخش هیلین و محافظت کامل در برابر نور.',
+      warnings: ['استفاده از عینک محافظ چشمی مخصوص پلاسما الزامی است.'],
+    },
+    clinicalOrigin: {
+      certifications: [
+        {
+          title: 'CE Medical Device Class IIb',
+          issuer: 'BSI Netherlands',
+          certificateCode: 'CE-PLX-9941',
+          description: 'انطباق ایمنی با استانداردهای تجهیزات پلاسمای جراحی اروپا.',
+          verified: true,
+        },
+      ],
+      batchCodeVerificationInfo: 'شماره سریال حکاکی‌شده لیزری با تاییدیه تست عایق ولتاژ بالا.',
+      storageConditions: 'در محیط سرپوشیده با دمای ۱۰ تا ۳۰ درجه سانتی‌گراد.',
+      shelfLifeAfterOpening: '۲۴ ماه گارانتی بی‌قیدوشرط کنسول و هندپیس‌ها.',
+      ceIsoStandards: ['CE Medical IIb', 'ISO 13485', 'IEC 60601-2-2'],
+    },
+    faqs: [
+      {
+        question: 'آیا پلاسماکس باعث ایجاد لک یا PIH می‌شود؟',
+        answer: 'به دلیل بهره‌گیری از فناوری پلاسمای سرد غیرحرارتی، خطر ایجاد لک‌های التهابی پس از درمان (PIH) حتی در پوست‌های با فتوتیپ تیره به حداقل رسیده است.',
+      },
+    ],
+    ratingSummary: {
+      ratingValue: 5.0,
+      reviewCount: 12,
+    },
+  },
+};
+
+// Aliases for short slugs
+CLINICAL_SKINCARE_PRODUCTS['carboxygel'] = CLINICAL_SKINCARE_PRODUCTS['carboxygel-professional-therapy'];
+CLINICAL_SKINCARE_PRODUCTS['carboxypod'] = CLINICAL_SKINCARE_PRODUCTS['carboxypod-activation-pads'];
+CLINICAL_SKINCARE_PRODUCTS['carboxypad'] = {
+  ...CLINICAL_SKINCARE_PRODUCTS['carboxypod-activation-pads'],
+  id: 'prod_drdermer_003',
+  slug: 'carboxypad',
+  title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad',
+  media: [
+    {
+      id: 'med_cpad_hero',
+      url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
+      role: 'HERO',
+      roleFa: 'تصویر پد صورت و گردن',
+      altText: 'پد فعال‌ساز آلکالاین صورت و گردن دکتر درمر',
+      caption: 'CarboxyPad مخصوص صورت و گردن با برش آناتومیک',
+    },
+  ],
 };
 
 /**
@@ -654,32 +1230,32 @@ export function buildExtendedProductData(baseProduct: {
       },
     ],
     bundleRecommendation: {
-      bundleTitle: 'پک پیشنهادی مکمل و صرفه‌جویی اقتصادی',
-      bundleDescription: 'ترکیب این محصول با اقلام مکمل پیشنهادی جهت بهره‌وری حداکثری همراه با تخفیف ویژه پکیج',
-      savingsText: '۱۰٪ تخفیف مازاد روی پکیج',
+      bundleTitle: 'پک پیشنهادی پروتکل درمانی دکتر درمر',
+      bundleDescription: 'ترکیب این محصول با ژل آرامش‌بخش هیلین و خمیر پولیش کریستالین جهت اثرگذاری حداکثری',
+      savingsText: '۱۵٪ تخفیف مازاد روی پکیج',
       items: [
         {
           id: 'bnd_1',
-          slug: 'ethiopian-specialty-coffee',
-          title: 'قهوه تخصصی اتیوپی یرگاچف',
-          brand: 'Dr Dermer Lifestyle',
-          subtitle: '۱۰۰٪ عربیکا تخصصی',
-          priceAmount: '4500000',
-          originalPriceAmount: '5000000',
-          discountBadge: '۱۰٪ تخفیف',
-          roleInRoutine: 'پیشنهاد مکمل اول',
+          slug: 'healene',
+          title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene',
+          brand: 'ReeSkin Clinical',
+          subtitle: 'ترمیم سریع سد دفاعی و کاهش قرمزی پس از درمان',
+          priceAmount: '16000000',
+          originalPriceAmount: '18500000',
+          discountBadge: '۱۳٪ تخفیف',
+          roleInRoutine: 'تسکین و ریکاوری بافت',
           inStock: true,
         },
         {
           id: 'bnd_2',
-          slug: 'artisan-mug',
-          title: 'ماگ سرامیکی دست‌ساز لعاب‌دار',
-          brand: 'Artisan Collection',
-          subtitle: 'طراحی ارگونومیک و لوکس',
-          priceAmount: '1900000',
-          originalPriceAmount: '2200000',
+          slug: 'crystalene',
+          title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene',
+          brand: 'ReeSkin Clinical',
+          subtitle: 'میکرودرم ابریشمی با کریستال‌های آلومینا',
+          priceAmount: '17500000',
+          originalPriceAmount: '20500000',
           discountBadge: '۱۴٪ تخفیف',
-          roleInRoutine: 'پیشنهاد مکمل دوم',
+          roleInRoutine: 'پولیش و یکدستی پوست',
           inStock: true,
         },
       ],

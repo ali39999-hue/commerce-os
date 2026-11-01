@@ -2,37 +2,44 @@ import type { Metadata } from 'next';
 import { ContactForm } from '../../components/contact-form';
 
 export const metadata: Metadata = {
-  title: 'تماس با ما | پشتیبانی بازارک',
+  title: 'تماس با ما | دکتر درمر | Dr. Dermer UK Clinical Laboratories',
   description:
-    'راه‌های ارتباط با تیم پشتیبانی بازارک: تلفن ۰۲۱-۸۸۸۸۸۸۸۸، ایمیل support@commerce-os.local و آدرس دفتر تهران؛ پاسخ‌گویی همه‌روزه از ساعت ۹ تا ۱۸.',
+    'راه‌های ارتباط با لابراتوارهای تخصصی دکتر درمر (Dr. Dermer UK): مشاوره بالینی ۰۲۱-۸۸۸۸۰۰۰۰، تماس بین‌الملل +905313180690، ایمیل info@drdermer.co.uk، مراکز کمبریج (Cambridge Science Park, UK) و استانبول (Dumankaya Ikon Towers).',
 };
 
 const CONTACT_CARDS = [
   {
     icon: '📞',
-    title: 'تلفن پشتیبانی',
+    title: 'تلفن و مشاوره بالینی',
     lines: [
-      { text: '۰۲۱-۸۸۸۸۸۸۸۸' },
-      { text: 'داخلی ۲: سفارش‌ها و ارسال · داخلی ۳: مالی و بازگشت وجه' },
+      { text: 'مشاوره بالینی: ۰۲۱-۸۸۸۸۰۰۰۰', href: 'tel:02188880000', ltr: true },
+      { text: 'تماس بین‌الملل: +905313180690', href: 'tel:+905313180690', ltr: true },
     ],
   },
   {
     icon: '✉️',
-    title: 'ایمیل',
+    title: 'ایمیل رسمی و مکاتبات علمی',
     lines: [
-      { text: 'support@commerce-os.local', href: 'mailto:support@commerce-os.local', ltr: true },
-      { text: 'پاسخ حداکثر تا یک روز کاری' },
+      { text: 'info@drdermer.co.uk', href: 'mailto:info@drdermer.co.uk', ltr: true },
+      { text: 'دپارتمان علمی، پروتکل‌های بالینی و امور کلینیک‌ها' },
     ],
   },
   {
     icon: '🏢',
-    title: 'دفتر مرکزی',
-    lines: [{ text: 'تهران، خیابان ولی‌عصر، بالاتر از پارک ساعی، پلاک ۱۲، طبقه سوم' }],
+    title: 'دفتر مرکزی و هماهنگی توزیع',
+    lines: [
+      { text: 'Dumankaya Ikon Towers, floor 34, No:370, Atasehir/Istanbul', ltr: true },
+      { text: 'امور بازرگانی بین‌الملل، پشتیبانی اداری و هماهنگی توزیع' },
+    ],
   },
   {
-    icon: '🕘',
-    title: 'ساعت پاسخ‌گویی',
-    lines: [{ text: 'شنبه تا پنجشنبه، ۹ صبح تا ۶ عصر · جمعه‌ها فقط پیام‌های آنلاین' }],
+    icon: '🔬',
+    title: 'مرکز تحقیقات انگلستان',
+    lines: [
+      { text: 'Cambridge Science Park, UK', ltr: true },
+      { text: 'Cambridge CB4 0GF, Milton Rd, United Kingdom', ltr: true },
+      { text: 'لابراتوارهای پژوهشی، فرمولاسیون ترنس‌درمال و کنترل کیفی بالینی' },
+    ],
   },
 ] as const;
 
@@ -40,11 +47,10 @@ export default function ContactPage() {
   return (
     <section className="static-layout">
       <header className="static-header">
-        <div className="eyebrow">ارتباط با ما</div>
-        <h1>تماس با ما</h1>
+        <div className="eyebrow">دکتر درمر | Dr. Dermer UK Clinical Laboratories</div>
+        <h1>ارتباط با لابراتوارهای تخصصی دکتر درمر</h1>
         <p>
-          هر سوالی درباره سفارش، ارسال یا پرداخت دارید، از هر یک از راه‌های زیر با ما در تماس باشید؛
-          پاسخگویی ما واقعی و انسانی است.
+          جهت دریافت مشاوره در خصوص پروتکل‌های درمانی، خرید تجهیزات و محصولات کلینیکال، استعلام اصالت کالا و کد TTAC، یا هماهنگی ارسال زنجیره سرد با کارشناسان ما در تماس باشید.
         </p>
       </header>
 
@@ -61,7 +67,7 @@ export default function ContactPage() {
                       {line.text}
                     </a>
                   ) : (
-                    line.text
+                    <span dir={'ltr' in line && line.ltr ? 'ltr' : undefined}>{line.text}</span>
                   )}
                 </p>
               ))}

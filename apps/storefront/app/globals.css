@@ -228,6 +228,27 @@ button { font-family: inherit; }
 }
 .brand {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.brand-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-logo-img {
+  height: 48px;
+  width: auto;
+  max-width: 135px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+.brand:hover .brand-logo-img {
+  transform: scale(1.03);
+}
+.brand-text-col {
+  display: flex;
   flex-direction: column;
 }
 .brand-title-wrap {
@@ -236,11 +257,11 @@ button { font-family: inherit; }
   gap: 10px;
 }
 .brand-primary {
-  font-size: 1.55rem;
+  font-size: 1.45rem;
   font-weight: 950;
   letter-spacing: -0.04em;
   color: var(--brand-deep);
-  line-height: 1;
+  line-height: 1.1;
 }
 .brand-lab-badge {
   background: rgba(15, 118, 110, 0.1);
@@ -254,13 +275,13 @@ button { font-family: inherit; }
   direction: ltr;
 }
 .brand-sub {
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   font-weight: 700;
   color: var(--muted);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   direction: ltr;
   text-align: right;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 .header-search-form {
   flex: 1;
@@ -2364,6 +2385,16 @@ button { font-family: inherit; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+.hero-english-motto {
+  font-family: var(--font-english, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5eead4;
+  letter-spacing: 0.02em;
+  margin: -10px 0 20px;
+  opacity: 0.95;
+  font-style: italic;
+}
 .hero-description {
   color: #cbd5e1;
   font-size: 1.05rem;
@@ -2543,6 +2574,115 @@ button { font-family: inherit; }
   width: 100%;
   height: auto;
   max-height: 270px;
+}
+.hero-real-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+.hero-main-photo-wrap {
+  position: relative;
+  border-radius: var(--radius-md);
+  background: radial-gradient(circle at center, rgba(45, 212, 191, 0.12) 0%, rgba(15, 23, 42, 0.6) 80%);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.hero-main-photo {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+.hero-main-photo:hover {
+  transform: scale(1.03);
+}
+.hero-bohr-floating-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(45, 212, 191, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+.hero-bohr-thumb {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 2px;
+}
+.hero-bohr-tag {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+.hero-bohr-tag strong {
+  font-size: 0.72rem;
+  color: #2dd4bf;
+  letter-spacing: 0.05em;
+}
+.hero-bohr-tag span {
+  font-size: 0.65rem;
+  color: #cbd5e1;
+}
+.hero-devices-preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.hero-mini-device-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.hero-mini-device-card:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-2px);
+}
+.hero-mini-device-thumb {
+  width: 44px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+.hero-mini-device-info {
+  display: flex;
+  flex-direction: column;
+}
+.hero-mini-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.04em;
+}
+.hero-mini-name {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+.hero-mini-sub {
+  font-size: 0.65rem;
+  color: #94a3b8;
 }
 .visual-card-footer {
   margin-top: 20px;
@@ -2781,11 +2921,27 @@ button { font-family: inherit; }
 .brand-card-header {
   margin-bottom: 26px;
 }
+.brand-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.brand-logo-wrap {
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+.brand-official-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.85;
+}
 .brand-flag-group {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
 }
 .family-flag {
   font-size: 0.72rem;
@@ -2859,6 +3015,91 @@ button { font-family: inherit; }
   color: var(--ink);
   margin-left: 4px;
 }
+.brand-products-rail,
+.brand-devices-showcase {
+  margin-top: 10px;
+  margin-bottom: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+.products-rail-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.products-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.product-fast-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--brand-deep);
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+.product-fast-chip:hover {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+.devices-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.device-spotlight-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #bae6fd;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.06);
+}
+.device-spotlight-card:hover {
+  border-color: #0284c7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
+}
+.device-spotlight-img {
+  width: 48px;
+  height: 58px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.device-spotlight-content {
+  display: flex;
+  flex-direction: column;
+}
+.device-chip {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0284c7;
+}
+.device-title {
+  font-size: 0.92rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+.device-link-txt {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
 .btn-family-link {
   display: inline-flex;
   align-items: center;
@@ -2950,6 +3191,19 @@ button { font-family: inherit; }
   position: relative;
   padding: 24px;
 }
+.product-card-real-img {
+  width: auto;
+  max-width: 100%;
+  height: 180px;
+  object-fit: contain;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+}
+.clinical-card:hover .product-card-real-img {
+  transform: scale(1.06) translateY(-4px);
+  filter: drop-shadow(0 16px 28px rgba(15, 118, 110, 0.16));
+}
+
 .bottle-art {
   width: 90px;
   height: 110px;
