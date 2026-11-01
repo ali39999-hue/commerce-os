@@ -19,6 +19,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/legal`, lastModified, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE_URL}/search`, lastModified, changeFrequency: 'daily', priority: 0.8 },
     { url: `${BASE_URL}/vendors`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE_URL}/reeskin`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/reemed`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/carbox`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/plasmax`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
   ];
 
   // 2. B2B & Clinical Professional Protocols

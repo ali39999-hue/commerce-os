@@ -179,7 +179,10 @@ export class CatalogService {
         where: {
           tenantId: store.tenantId,
           storeId: store.id,
-          slug: productSlug,
+          OR: [
+            { slug: productSlug },
+            ...(productSlug === 'carboxygel-professional-therapy' ? [{ slug: 'carboxygel' }] : []),
+          ],
           status: 'PUBLISHED',
           publishedAt: { not: null },
         },
@@ -267,7 +270,9 @@ export class CatalogService {
       });
 
       if (!product) {
-        const fallback = DEMO_FALLBACK_PRODUCTS.find((p) => p.slug === productSlug);
+        const fallback = DEMO_FALLBACK_PRODUCTS.find(
+          (p) => p.slug === productSlug || (productSlug === 'carboxygel-professional-therapy' && p.slug === 'carboxygel'),
+        );
         if (fallback) return this.toPublicProduct(fallback);
         throw new NotFoundException('کالای مورد نظر یافت نشد.');
       }
@@ -275,7 +280,9 @@ export class CatalogService {
       return this.toPublicProduct(product);
     } catch (err: any) {
       if (err instanceof NotFoundException) throw err;
-      const fallback = DEMO_FALLBACK_PRODUCTS.find((p) => p.slug === productSlug);
+      const fallback = DEMO_FALLBACK_PRODUCTS.find(
+        (p) => p.slug === productSlug || (productSlug === 'carboxygel-professional-therapy' && p.slug === 'carboxygel'),
+      );
       if (fallback) return this.toPublicProduct(fallback);
       throw new NotFoundException('کالای مورد نظر یافت نشد.');
     }
