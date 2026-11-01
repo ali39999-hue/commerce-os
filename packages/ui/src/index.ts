@@ -9,3 +9,10 @@ export * from "./Tabs.js";
 export * from "./PriceTag.js";
 export * from "./Drawer.js";
 export * from "./Accordion.js";
+
+// Clinical E-Commerce Primitives
+export * from "./BeforeAfterSlider.js";
+export * from "./ProtocolStepper.js";
+export * from "./QuickViewModal.js";
+export * from "./InteractiveHotspot.js";
+export * from "./DiagnosticQuizModal.js";

@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { ExtendedProductData } from '../../lib/pdp-types';
+import { InciExplorer } from './inci-explorer';
+import { ProtocolTimerSimulation } from './protocol-timer-simulation';
+import { ClinicalCaseStudies } from './clinical-case-studies';
 
 interface ClinicalTabsProps {
   productData: ExtendedProductData;
@@ -9,29 +12,19 @@ interface ClinicalTabsProps {
   reviewsElement?: React.ReactNode;
 }
 
-type TabKey = 'science' | 'ingredients' | 'protocol' | 'authenticity' | 'faq';
+type TabKey = 'science' | 'ingredients' | 'protocol' | 'cases' | 'authenticity' | 'faq';
 
 const TAB_DEFS: Array<{ key: TabKey; labelFa: string; icon: string }> = [
   { key: 'science', labelFa: 'توضیحات و عملکرد علمی', icon: '🧬' },
-  { key: 'ingredients', labelFa: 'ترکیبات فعال و INCI', icon: '🧪' },
-  { key: 'protocol', labelFa: 'دستور مصرف و پروتکل کلینیکی', icon: '📋' },
+  { key: 'ingredients', labelFa: 'ترکیبات فعال و INCI Explorer', icon: '🧪' },
+  { key: 'protocol', labelFa: 'پروتکل و تایمر هوشمند درمان', icon: '⏱️' },
+  { key: 'cases', labelFa: 'نتایج VISIA و کیس‌های بالینی', icon: '🔬' },
   { key: 'authenticity', labelFa: 'اطلاعات بالینی و اصالت کالا', icon: '🛡️' },
   { key: 'faq', labelFa: 'پرسش‌های متداول (FAQ) و نظرات', icon: '💬' },
 ];
 
 export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('science');
-  const [openAccordion, setOpenAccordion] = useState<Record<TabKey, boolean>>({
-    science: true,
-    ingredients: false,
-    protocol: false,
-    authenticity: false,
-    faq: false,
-  });
-
-  const toggleAccordion = (key: TabKey) => {
-    setOpenAccordion((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   return (
     <section className="pdp-tabs-section" aria-label="مشخصات بالینی و فنی محصول">
@@ -120,7 +113,7 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
           </div>
         </div>
 
-        {/* 2. Key Actives & INCI */}
+        {/* 2. Key Actives & INCI with Interactive INCI Explorer */}
         <div
           id="panel-ingredients"
           role="tabpanel"
@@ -137,15 +130,20 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
             ))}
           </div>
 
+          {/* Interactive INCI Explorer with Drawer & Biochemical Mechanisms */}
+          <InciExplorer ingredients={productData.ingredients} />
+
+          {/* Fallback & Full Standard Table */}
           <div className="pdp-ingredients-wrap">
-            <h4>ترکیبات فعال کلیدی (Key Active Ingredients)</h4>
+            <h4 className="mt-8">جدول رسمی مشخصات فارماکوپه ترکیبات</h4>
             <div className="pdp-ingredients-table-responsive">
               <table className="pdp-ingredients-table">
                 <thead>
                   <tr>
                     <th scope="col">نام ترکیب و نقش</th>
                     <th scope="col">نام رسمی INCI</th>
-                    <th scope="col">درصد خلوص / دوز</th>
+                    <th scope="col">خلوص / دوز</th>
+                    <th scope="col">رتبه ایمنی CIR</th>
                     <th scope="col">عملکرد تخصصی در پوست</th>
                   </tr>
                 </thead>
@@ -159,7 +157,8 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
                         </div>
                       </td>
                       <td className="inci-col" dir="ltr">{ing.inciName}</td>
-                      <td>{ing.percentage ?? '—'}</td>
+                      <td>{ing.purity || ing.percentage || '—'}</td>
+                      <td>{ing.cirRating || 'Safe as Used'}</td>
                       <td>{ing.purpose}</td>
                     </tr>
                   ))}
@@ -176,7 +175,7 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
           </div>
         </div>
 
-        {/* 3. Usage Protocol & Steps */}
+        {/* 3. Usage Protocol with Interactive Simulation & Countdown */}
         <div
           id="panel-protocol"
           role="tabpanel"
@@ -184,7 +183,10 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
           hidden={activeTab !== 'protocol'}
           className="pdp-tab-panel"
         >
-          <div className="pdp-protocol-wrap">
+          {/* Interactive Protocol Timer & Usage Simulation */}
+          <ProtocolTimerSimulation />
+
+          <div className="pdp-protocol-wrap mt-8">
             <div className="pdp-routine-timing-pill">
               <span>زمان‌بندی توصیه شده: </span>
               <strong>{productData.usageProtocol.routineTime}</strong>
@@ -246,7 +248,30 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
           </div>
         </div>
 
-        {/* 4. Authenticity & Certificates */}
+        {/* 4. Clinical Case Studies & Visia Results Tab */}
+        <div
+          id="panel-cases"
+          role="tabpanel"
+          aria-labelledby="tab-cases"
+          hidden={activeTab !== 'cases'}
+          className="pdp-tab-panel"
+        >
+          {productData.clinicalCaseStudies && productData.clinicalCaseStudies.length > 0 ? (
+            <ClinicalCaseStudies studies={productData.clinicalCaseStudies} />
+          ) : (
+            <div className="pdp-no-cases-banner">
+              <span className="info-icon" aria-hidden="true">🔬</span>
+              <div>
+                <h5>مستندات کارآزمایی بالینی و کیس‌استادی‌های اختصاصی</h5>
+                <p>
+                  داده‌های بالینی استاندارد Canfield VISIA برای این دسته از اقلام بر اساس پروتکل‌های مرکز تحقیقات درماتولوژی در حال به‌روزرسانی نهایی می‌باشد.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 5. Authenticity & Certificates */}
         <div
           id="panel-authenticity"
           role="tabpanel"
@@ -310,7 +335,7 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
           </div>
         </div>
 
-        {/* 5. FAQs & Reviews */}
+        {/* 6. FAQs & Reviews */}
         <div
           id="panel-faq"
           role="tabpanel"

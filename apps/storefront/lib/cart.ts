@@ -39,10 +39,18 @@ export interface CartCalculation {
   freeShippingRemainingTomans: bigint;
   isFreeShipping: boolean;
   freeShippingMessage: string;
+  vipConsultationProgressPct: number;
+  vipConsultationRemainingTomans: bigint;
+  isVipConsultation: boolean;
+  vipConsultationMessage: string;
+  overallTierProgressPct: number;
+  currentTier: 0 | 1 | 2;
 }
 
-export const FREE_SHIPPING_THRESHOLD_TOMANS = 3_000_000n; // 3,000,000 Tomans
-export const FREE_SHIPPING_THRESHOLD_RIALS = 30_000_000n;
+export const FREE_SHIPPING_THRESHOLD_TOMANS = 1_500_000n; // 1,500,000 Tomans (1.5M)
+export const FREE_SHIPPING_THRESHOLD_RIALS = 15_000_000n;
+export const VIP_CONSULTATION_THRESHOLD_TOMANS = 3_000_000n; // 3,000,000 Tomans (3M)
+export const VIP_CONSULTATION_THRESHOLD_RIALS = 30_000_000n;
 export const BASE_SHIPPING_RATE_TOMANS = 150_000n;
 export const BASE_SHIPPING_RATE_RIALS = 1_500_000n;
 export const TIPAX_SHIPPING_RATE_TOMANS = 85_000n;
@@ -109,29 +117,53 @@ export function validateCoupon(
 }
 
 /**
- * Calculates free shipping progress bar details.
+ * Calculates tiered threshold progress (Free Shipping at 1.5M, VIP Consultation at 3M).
  */
-export function getFreeShippingProgress(subtotalTomans: bigint) {
-  const threshold = FREE_SHIPPING_THRESHOLD_TOMANS;
-  if (subtotalTomans >= threshold) {
-    return {
-      progressPct: 100,
-      remainingTomans: 0n,
-      isFree: true,
-      message: "تبریک! هزینه ارسال سفارش شما رایگان شد 🎉",
-    };
-  }
+export function getTieredThresholdProgress(subtotalTomans: bigint) {
+  const freeShippingThreshold = FREE_SHIPPING_THRESHOLD_TOMANS; // 1.5M
+  const vipThreshold = VIP_CONSULTATION_THRESHOLD_TOMANS; // 3.0M
 
-  const remainingTomans = threshold - subtotalTomans;
-  const progressPct = Math.max(0, Math.min(100, Number((subtotalTomans * 100n) / threshold)));
-  const formattedRemaining = new Intl.NumberFormat("fa-IR").format(remainingTomans);
+  const isFree = subtotalTomans >= freeShippingThreshold;
+  const freeRemaining = isFree ? 0n : freeShippingThreshold - subtotalTomans;
+  const freePct = Math.max(0, Math.min(100, Number((subtotalTomans * 100n) / freeShippingThreshold)));
+
+  const isVip = subtotalTomans >= vipThreshold;
+  const vipRemaining = isVip ? 0n : vipThreshold - subtotalTomans;
+  const vipPct = Math.max(0, Math.min(100, Number((subtotalTomans * 100n) / vipThreshold)));
+
+  // Overall meter progress scaled to 3.0M
+  const overallPct = Math.max(0, Math.min(100, Number((subtotalTomans * 100n) / vipThreshold)));
+
+  let currentTier: 0 | 1 | 2 = 0;
+  if (isVip) currentTier = 2;
+  else if (isFree) currentTier = 1;
+
+  const formattedFreeRemaining = new Intl.NumberFormat("fa-IR").format(freeRemaining);
+  const formattedVipRemaining = new Intl.NumberFormat("fa-IR").format(vipRemaining);
 
   return {
-    progressPct,
-    remainingTomans,
-    isFree: false,
-    message: `فقط ${formattedRemaining} تومان تا ارسال رایگان`,
+    freeShippingProgressPct: freePct,
+    freeShippingRemainingTomans: freeRemaining,
+    isFreeShipping: isFree,
+    freeShippingMessage: isFree
+      ? "ارسال رایگان پیشتاز فعال شد"
+      : `فقط ${formattedFreeRemaining} تومان تا ارسال رایگان`,
+    vipConsultationProgressPct: vipPct,
+    vipConsultationRemainingTomans: vipRemaining,
+    isVipConsultation: isVip,
+    vipConsultationMessage: isVip
+      ? "مشاوره اختصاصی رایگان با متخصص پوست فعال شد"
+      : `فقط ${formattedVipRemaining} تومان تا مشاوره رایگان با متخصص پوست`,
+    overallTierProgressPct: overallPct,
+    currentTier,
   };
+}
+
+/**
+ * Calculates free shipping progress bar details (legacy helper).
+ */
+export function getFreeShippingProgress(subtotalTomans: bigint) {
+  return getTieredThresholdProgress(subtotalTomans);
 }
 
 /**
@@ -210,7 +242,7 @@ export function calculateCartTotals(
   }
 
   const grandTotalRials = taxableBaseRials + vatRials + shippingRials;
-  const freeShipping = getFreeShippingProgress(subtotalTomans);
+  const tieredProgress = getTieredThresholdProgress(subtotalTomans);
 
   return {
     subtotalRials,
@@ -229,10 +261,16 @@ export function calculateCartTotals(
     totalRials: grandTotalRials,
     totalTomans: grandTotalRials / 10n,
     itemCount,
-    freeShippingProgressPct: freeShipping.progressPct,
-    freeShippingRemainingTomans: freeShipping.remainingTomans,
-    isFreeShipping: freeShipping.isFree,
-    freeShippingMessage: freeShipping.message,
+    freeShippingProgressPct: tieredProgress.freeShippingProgressPct,
+    freeShippingRemainingTomans: tieredProgress.freeShippingRemainingTomans,
+    isFreeShipping: tieredProgress.isFreeShipping,
+    freeShippingMessage: tieredProgress.freeShippingMessage,
+    vipConsultationProgressPct: tieredProgress.vipConsultationProgressPct,
+    vipConsultationRemainingTomans: tieredProgress.vipConsultationRemainingTomans,
+    isVipConsultation: tieredProgress.isVipConsultation,
+    vipConsultationMessage: tieredProgress.vipConsultationMessage,
+    overallTierProgressPct: tieredProgress.overallTierProgressPct,
+    currentTier: tieredProgress.currentTier,
   };
 }
 

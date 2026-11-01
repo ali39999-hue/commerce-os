@@ -29,9 +29,49 @@ export interface IngredientItem {
   nameFa: string;
   inciName: string;
   percentage?: string; // e.g. "5%", "2%"
+  purity?: string; // e.g. "99.8% Ph. Eur. / USP Grade"
+  cirRating?: string; // e.g. "Safe as Used (CIR Expert Panel)"
+  molecularMechanism?: string; // Detailed physiological/biochemical pathway
+  casNumber?: string; // e.g. "144-55-8"
+  ewgScore?: number; // 1-2 green safe
+  comedogenicRating?: number; // 0-5
   purpose: string;
   isKeyActive: boolean;
   description?: string;
+}
+
+export interface VisiaMetricItem {
+  id: string;
+  labelFa: string;
+  baseline: string;
+  week4Result: string;
+  percentageChange: string; // e.g. "+185%", "-42%"
+  isImprovement: boolean;
+  description: string;
+}
+
+export interface ClinicalCaseStudy {
+  id: string;
+  patientAge: number;
+  patientGender: string;
+  condition: string;
+  protocolDescription: string;
+  durationWeeks: number;
+  sessionsCount: number;
+  beforeImageUrl: string;
+  afterImageUrl: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+  visiaMetrics: VisiaMetricItem[];
+  dermatologistReview: {
+    doctorName: string;
+    doctorTitleFa: string;
+    medicalLicenseNo: string;
+    clinicName: string;
+    avatarUrl?: string;
+    quote: string;
+    verifiedBadge: string;
+  };
 }
 
 export interface UsageStepItem {
@@ -109,6 +149,7 @@ export interface ExtendedProductData {
     shelfLifeAfterOpening: string;
     ceIsoStandards: string[];
   };
+  clinicalCaseStudies?: ClinicalCaseStudy[];
   faqs: FaqItem[];
   bundleRecommendation?: {
     bundleTitle: string;

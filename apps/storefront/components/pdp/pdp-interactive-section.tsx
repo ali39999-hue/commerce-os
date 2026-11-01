@@ -8,6 +8,7 @@ import { VariantSelector, ServerAuthoritativePrice } from './variant-selector';
 import { StickyCartBar } from './sticky-cart-bar';
 import { ClinicalTabs } from './clinical-tabs';
 import { BundleRecommendations } from './bundle-recommendations';
+import { DynamicRegimenBuilder } from './dynamic-regimen-builder';
 import { useCart } from '../cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from '../discovery/wishlist-button';
@@ -287,6 +288,9 @@ export function PdpInteractiveSection({
         productSlug={productData.slug}
         reviewsElement={reviewsElement}
       />
+
+      {/* Dynamic Bundle & Regimen Builder for Carboxy/Clinical Products */}
+      <DynamicRegimenBuilder />
 
       {/* Bundle Recommendation & Save */}
       {productData.bundleRecommendation && (

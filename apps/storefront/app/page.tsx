@@ -5,6 +5,10 @@ import { CategoryConcernNav } from '../components/home/category-concern-nav';
 import { BrandFamilyRail } from '../components/home/brand-family-rail';
 import { FeaturedProductShowcase } from '../components/home/featured-showcase';
 import { ScienceMechanismSpotlight } from '../components/home/science-spotlight';
+import { BohrOxygenationSimulator } from '../components/home/bohr-simulator';
+import { VisiaTrialComparisonSlider } from '../components/home/visia-comparison-slider';
+import { SkinRegimenFinderWidget } from '../components/home/skin-regimen-finder';
+import { MedicalDevicesShowcase } from '../components/home/medical-devices-showcase';
 import { ClinicalResultsTestimonials } from '../components/home/clinical-results';
 import { AcademyGuides } from '../components/home/academy-guides';
 import { ClinicB2BStrip } from '../components/home/clinic-b2b-strip';
@@ -92,6 +96,9 @@ export default async function HomePage() {
       {/* 6. Featured Product Showcase / Product Family Rails */}
       <FeaturedProductShowcase products={products} totalCount={catalog?.meta?.count} />
 
+      {/* 6.1 Interactive Skin Consultation & Diagnostic Regimen Finder Widget */}
+      <SkinRegimenFinderWidget />
+
       {/* Discovery Dynamic Product Rail */}
       <section className="dynamic-rail-container">
         <ProductRail endpoint="/recommendations/popular?limit=6" titleFa="پروتکل‌های محبوب و پرطرفدار بالینی" />
@@ -100,8 +107,17 @@ export default async function HomePage() {
       {/* 7. Science & Mechanism of Action Spotlight (Bohr Effect & Transdermal CO2) */}
       <ScienceMechanismSpotlight />
 
-      {/* 8. Verified Clinical Results / Doctor Testimonials */}
+      {/* 7.1 Interactive Bohr Effect Oxygenation Simulator / Visualizer */}
+      <BohrOxygenationSimulator />
+
+      {/* 8. Interactive Before & After Visia Trial Comparison Slider */}
+      <VisiaTrialComparisonSlider />
+
+      {/* 8.1 Verified Clinical Results / Doctor Testimonials */}
       <ClinicalResultsTestimonials />
+
+      {/* 8.2 Interactive Medical Devices 360-Degree Hotspot Showcase (CarboX & PlasmaX) */}
+      <MedicalDevicesShowcase />
 
       {/* 9. Academy & Protocol Guides */}
       <AcademyGuides />
