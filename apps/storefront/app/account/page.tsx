@@ -226,6 +226,9 @@ export default function AccountPage() {
   const [showLogin, setShowLogin] = useState(false);
   const { session, ready: sessionReady, logout, authedFetch } = useCustomerSession();
   const [digitalGrants, setDigitalGrants] = useState<Array<Record<string, unknown>>>([]);
+  const [walletBalanceTomans, setWalletBalanceTomans] = useState<string | null>(null);
+  const [loyaltyPoints, setLoyaltyPoints] = useState<number | null>(null);
+  const [loyaltyTier, setLoyaltyTier] = useState<string | null>(null);
 
   // Identity-bound digital grants (AUTH-002 step 3): loaded only for a live
   // OTP session; the phone never travels as a client-controlled parameter.
@@ -246,6 +249,48 @@ export default function AccountPage() {
         if (alive && Array.isArray(data?.items)) setDigitalGrants(data.items);
       } catch {
         // grants stay empty on failure; the tab is read-only
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [session, authedFetch]);
+
+  // Session-bound financial reads (AUTH-002 step 5): wallet and loyalty
+  // balances resolve from the OTP session; guests keep the demo view.
+  useEffect(() => {
+    if (!session) {
+      setWalletBalanceTomans(null);
+      setLoyaltyPoints(null);
+      setLoyaltyTier(null);
+      return;
+    }
+    let alive = true;
+    (async () => {
+      try {
+        const res = await authedFetch("/v1/wallet/my-balance", {
+          cache: "no-store",
+          signal: AbortSignal.timeout(4000),
+        });
+        if (alive && res.ok) {
+          const data = (await res.json()) as { balanceTomans?: string };
+          setWalletBalanceTomans(data.balanceTomans ?? null);
+        }
+      } catch {
+        // demo fallback stays
+      }
+      try {
+        const res = await authedFetch("/v1/loyalty/my-balance", {
+          cache: "no-store",
+          signal: AbortSignal.timeout(4000),
+        });
+        if (alive && res.ok) {
+          const data = (await res.json()) as { points?: number; tier?: string };
+          setLoyaltyPoints(typeof data.points === "number" ? data.points : null);
+          setLoyaltyTier(data.tier ?? null);
+        }
+      } catch {
+        // demo fallback stays
       }
     })();
     return () => {
@@ -772,7 +817,10 @@ export default function AccountPage() {
             <div className="wallet-balance-card">
               <span className="wbc-label">موجودی فعلی قابل برداشت / خرید</span>
               <strong className="wbc-amount">
-                {new Intl.NumberFormat("fa-IR").format(3_400_000)} تومان
+                {new Intl.NumberFormat("fa-IR").format(
+                  walletBalanceTomans !== null ? Number(walletBalanceTomans) : 3_400_000
+                )}{" "}
+                تومان
               </strong>
               <button className="btn-charge-wallet">+ شارژ آنلاین کیف پول از درگاه شاپرک</button>
             </div>
@@ -943,11 +991,13 @@ export default function AccountPage() {
                 <div>
                   <span className="loyalty-points-label">امتیاز فعلی شما</span>
                   <strong className="loyalty-points">
-                    {new Intl.NumberFormat("fa-IR").format(680)}
+                    {new Intl.NumberFormat("fa-IR").format(loyaltyPoints ?? 680)}
                   </strong>
                   <small className="loyalty-points-unit">امتیاز سلامت</small>
                 </div>
-                <span className="tier-pill tier-silver">سطح نقره‌ای</span>
+                <span className={`tier-pill tier-${(loyaltyTier ?? "SILVER").toLowerCase()}`}>
+                  سطح {loyaltyTier === "GOLD" ? "طلایی" : loyaltyTier === "BRONZE" ? "برنزی" : "نقره‌ای"}
+                </span>
               </div>
               <div
                 className="tier-progress"
