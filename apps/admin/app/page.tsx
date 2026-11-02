@@ -141,7 +141,9 @@ const INITIAL_ORDERS: OrderItem[] = [
     status: "PAID",
     totalAmountTomans: 950000,
     paymentMethod: "زرین‌پال (شاپرک)",
-    createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
+    // Demo timestamps are fixed: module-level Date.now() evaluates at different
+    // times on the server and the client and breaks hydration.
+    createdAt: "2026-11-02T13:45:00.000Z",
   },
   {
     id: "ord_102",
@@ -151,7 +153,7 @@ const INITIAL_ORDERS: OrderItem[] = [
     status: "PROCESSING",
     totalAmountTomans: 1650000,
     paymentMethod: "کارت‌به‌کارت بانکی",
-    createdAt: new Date(Date.now() - 7200 * 1000).toISOString(),
+    createdAt: "2026-11-02T12:45:00.000Z",
   },
   {
     id: "ord_103",
@@ -161,7 +163,7 @@ const INITIAL_ORDERS: OrderItem[] = [
     status: "SHIPPED",
     totalAmountTomans: 450000,
     paymentMethod: "زرین‌پال (شاپرک)",
-    createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+    createdAt: "2026-11-01T14:00:00.000Z",
   },
 ];
 
@@ -173,7 +175,7 @@ const INITIAL_RECEIPTS: ReceiptItem[] = [
     payerCard: "۶۰۳۷-۹۹**-****-۴۴۵۵",
     amountTomans: 1650000,
     status: "PENDING_REVIEW",
-    createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
+    createdAt: "2026-11-02T13:45:00.000Z",
   },
   {
     id: "rcp_202",
@@ -182,7 +184,7 @@ const INITIAL_RECEIPTS: ReceiptItem[] = [
     payerCard: "۶۲۱۹-۸۶**-****-۱۲۳۴",
     amountTomans: 780000,
     status: "APPROVED",
-    createdAt: new Date(Date.now() - 20 * 3600 * 1000).toISOString(),
+    createdAt: "2026-11-01T18:00:00.000Z",
   },
 ];
 

@@ -72,6 +72,8 @@ const DEFAULT_WORKER_LEASES: WorkerLeaseInfo[] = [
   },
 ];
 
+// Demo timestamps are fixed: module-level Date.now() evaluates at different
+// times on the server and the client and breaks hydration.
 const DEFAULT_AUDIT_LOGS: AuditLogItem[] = [
   {
     id: "aud_101",
@@ -79,7 +81,7 @@ const DEFAULT_AUDIT_LOGS: AuditLogItem[] = [
     action: "APPROVE_PAYMENT_RECEIPT",
     target: "rcp_202",
     ip: "192.168.1.10",
-    timestamp: new Date(Date.now() - 1800 * 1000).toISOString(),
+    timestamp: "2026-11-02T13:30:00.000Z",
   },
   {
     id: "aud_102",
@@ -87,7 +89,7 @@ const DEFAULT_AUDIT_LOGS: AuditLogItem[] = [
     action: "OUTBOX_EVENT_DISPATCHED",
     target: "ORDER_PAID:ord_101",
     ip: "127.0.0.1",
-    timestamp: new Date(Date.now() - 3500 * 1000).toISOString(),
+    timestamp: "2026-11-02T12:45:00.000Z",
   },
   {
     id: "aud_103",
@@ -95,7 +97,7 @@ const DEFAULT_AUDIT_LOGS: AuditLogItem[] = [
     action: "ORDER_STATUS_CHANGED",
     target: "ord_103:SHIPPED",
     ip: "192.168.1.15",
-    timestamp: new Date(Date.now() - 7000 * 1000).toISOString(),
+    timestamp: "2026-11-02T11:45:00.000Z",
   },
   {
     id: "aud_104",
@@ -103,7 +105,7 @@ const DEFAULT_AUDIT_LOGS: AuditLogItem[] = [
     action: "INVENTORY_RESTOCK",
     target: "SKU:SKN-CRM-01",
     ip: "192.168.1.10",
-    timestamp: new Date(Date.now() - 14000 * 1000).toISOString(),
+    timestamp: "2026-11-02T08:30:00.000Z",
   },
 ];
 
@@ -424,7 +426,7 @@ export default function OpsSystemHealth({
                 <li>رزروهای انقضایافته انبار: <strong className="tabular-nums">{faNumber(metrics?.inventory?.staleReservations ?? 0)}</strong></li>
                 <li>تراکنش‌های نامشخص شاپرک: <strong className="tabular-nums">{faNumber(metrics?.payments?.unknownOrFailed ?? 0)}</strong></li>
                 <li>فیش‌های واریزی در انتظار بررسی: <strong className="tabular-nums">{faNumber(metrics?.payments?.pendingC2c ?? 0)}</strong></li>
-                <li>زمان ثبت آخرین گزارش: <span className="tabular-nums">{formatJalaliDateTime(metrics?.timestamp || new Date().toISOString())}</span></li>
+                <li>زمان ثبت آخرین گزارش: <span className="tabular-nums">{formatJalaliDateTime(metrics?.timestamp || "2026-11-02T13:30:00.000Z")}</span></li>
               </ul>
             </div>
           </div>

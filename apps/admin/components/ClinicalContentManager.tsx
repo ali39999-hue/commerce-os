@@ -45,7 +45,9 @@ const INITIAL_CLAIMS: ClinicalClaimItem[] = [
     studyReference: "Journal of Cosmetic and Laser Therapy (2020), Vol 12, pp. 215-224, DOI: 10.3109/14764172",
     status: "APPROVED",
     approvedBy: "دکتر مریم سهرابی (متخصص درماتولوژی، نظام: ۱۳۹۴۸۲)",
-    createdAt: new Date(Date.now() - 3600 * 24 * 5 * 1000).toISOString(),
+    // Demo timestamps are fixed: module-level Date.now() evaluates at different
+    // times on the server and the client and breaks hydration.
+    createdAt: "2026-10-28T09:30:00.000Z",
   },
   {
     id: "clm_102",
@@ -55,7 +57,7 @@ const INITIAL_CLAIMS: ClinicalClaimItem[] = [
     studyReference: "British Journal of Dermatology (2025), DOI: 10.1093/bjd/ljad412",
     status: "APPROVED",
     approvedBy: "دکتر کیانوش راد (متخصص درماتولوژی بالینی)",
-    createdAt: new Date(Date.now() - 3600 * 24 * 2 * 1000).toISOString(),
+    createdAt: "2026-10-31T10:15:00.000Z",
   },
   {
     id: "clm_103",
@@ -65,7 +67,7 @@ const INITIAL_CLAIMS: ClinicalClaimItem[] = [
     studyReference: "Dermatologic Surgery & Microdermabrasion Review (2024), Issue 8, pp. 45-52",
     status: "APPROVED",
     approvedBy: "دکتر علیرضا ناصری (شیمیست فرمولاتور)",
-    createdAt: new Date(Date.now() - 3600 * 24 * 1 * 1000).toISOString(),
+    createdAt: "2026-11-01T11:00:00.000Z",
   },
 ];
 
@@ -130,7 +132,7 @@ const INITIAL_ARTICLES: AcademyArticleItem[] = [
     authorDoctor: "دکتر مریم سهرابی (متخصص پوست و مو)",
     status: "PUBLISHED",
     viewsCount: 5420,
-    updatedAt: new Date(Date.now() - 3600 * 24 * 4 * 1000).toISOString(),
+    updatedAt: "2026-10-29T08:00:00.000Z",
   },
   {
     id: "art_2",
@@ -139,7 +141,7 @@ const INITIAL_ARTICLES: AcademyArticleItem[] = [
     authorDoctor: "دکتر علیرضا ناصری (شیمیست بالینی)",
     status: "PUBLISHED",
     viewsCount: 3180,
-    updatedAt: new Date(Date.now() - 3600 * 24 * 1 * 1000).toISOString(),
+    updatedAt: "2026-11-01T09:45:00.000Z",
   },
 ];
 
