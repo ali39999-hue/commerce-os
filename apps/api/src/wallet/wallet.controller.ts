@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Headers, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { WalletService } from "./wallet.service";
 
 @Controller("wallet")
@@ -18,13 +19,12 @@ export class WalletController {
   }
 
   // Wallet ledger mutations move real money (BigInt Rial, double-entry) —
-  // admin/internal only (AUTH-003). Checkout spends via the wallet service,
-  // never through these public routes.
+  // admin/internal only (AUTH-003), tenant resolved by the guard (AUTH-002).
   @Post(":userId/credit")
   @UseGuards(AdminGuard)
   async credit(
     @Param("userId") userId: string,
-    @Headers("x-tenant-id") tenantId: string,
+    @CurrentTenant() tenantId: string,
     @Body() body: { amountRials: number; refType: string; refId: string; description: string }
   ) {
     return this.walletService.credit({
@@ -41,7 +41,7 @@ export class WalletController {
   @UseGuards(AdminGuard)
   async debit(
     @Param("userId") userId: string,
-    @Headers("x-tenant-id") tenantId: string,
+    @CurrentTenant() tenantId: string,
     @Body() body: { amountRials: number; refType: string; refId: string; description: string }
   ) {
     return this.walletService.debit({

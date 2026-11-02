@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { LoyaltyService } from "./loyalty.service";
 
 // ADR-008: باشگاه مشتریان — موجودی/تاریخچه کاربر + تنظیم دستی ادمین
@@ -36,21 +37,18 @@ export class LoyaltyController {
     return { userId, tenantId: tenantId.trim(), ...result };
   }
 
-  // Manual point adjustment is an admin op (AUTH-003); balance reads stay
-  // tenant-header gated until AUTH-002 binds them to the session identity.
+  // Manual point adjustment is an admin op (AUTH-003); tenant resolves from
+  // the guard, not the client header (AUTH-002). Balance reads stay
+  // tenant-header gated until the storefront session binding lands.
   @Post("admin/users/:userId/adjust")
   @UseGuards(AdminGuard)
   adminAdjust(
     @Param("userId") userId: string,
-    @Headers("x-tenant-id") tenantId?: string,
+    @CurrentTenant() tenantId: string,
     @Body() body?: { pointsDelta?: number; reason?: string; actor?: string }
   ) {
-    if (!tenantId || tenantId.trim().length === 0) {
-      throw new UnauthorizedException("شناسه مستأجر (x-tenant-id) الزامی است");
-    }
-
     return this.loyaltyService.adminAdjust({
-      tenantId: tenantId.trim(),
+      tenantId,
       userId,
       pointsDelta: body?.pointsDelta ?? 0,
       reason: body?.reason,

@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { SubscriptionsService } from "./subscriptions.service";
 
 // ADR-009: اشتراک‌های دوره‌ای — فهرست پلن‌ها، ثبت عضویت، مدیریت کاربر، لیست ادمین
@@ -53,25 +54,24 @@ export class SubscriptionsController {
   }
 
   // Subscription lifecycle moves are admin console decisions (AUTH-003);
-  // plan listing and signup stay public storefront flows.
+  // plan listing and signup stay public storefront flows. Tenant comes from
+  // the guard, not the client header (AUTH-002).
   // POST /v1/subscriptions/:id/pause — ACTIVE → PAUSED
   @Post(":id/pause")
   @UseGuards(AdminGuard)
   pause(
     @Param("id") id: string,
-    @Headers("x-tenant-id") tenantId?: string,
+    @CurrentTenant() tenantId: string,
     @Body() body?: { reason?: string }
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.pause(id, tenant, body?.reason);
+    return this.subscriptionsService.pause(id, tenantId, body?.reason);
   }
 
   // POST /v1/subscriptions/:id/resume — PAUSED → ACTIVE
   @Post(":id/resume")
   @UseGuards(AdminGuard)
-  resume(@Param("id") id: string, @Headers("x-tenant-id") tenantId?: string) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.resume(id, tenant);
+  resume(@Param("id") id: string, @CurrentTenant() tenantId: string) {
+    return this.subscriptionsService.resume(id, tenantId);
   }
 
   // POST /v1/subscriptions/:id/cancel — ACTIVE|PAUSED → CANCELLED
@@ -79,19 +79,17 @@ export class SubscriptionsController {
   @UseGuards(AdminGuard)
   cancel(
     @Param("id") id: string,
-    @Headers("x-tenant-id") tenantId?: string,
+    @CurrentTenant() tenantId: string,
     @Body() body?: { reason?: string }
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.cancel(id, tenant, body?.reason);
+    return this.subscriptionsService.cancel(id, tenantId, body?.reason);
   }
 
   // GET /v1/subscriptions/admin?status=ACTIVE — لیست ادمین
   @Get("admin")
   @UseGuards(AdminGuard)
-  adminList(@Query("status") status?: string, @Headers("x-tenant-id") tenantId?: string) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.adminList(tenant, status);
+  adminList(@CurrentTenant() tenantId: string, @Query("status") status?: string) {
+    return this.subscriptionsService.adminList(tenantId, status);
   }
 
   // Same guard style as loyalty: x-tenant-id header is required

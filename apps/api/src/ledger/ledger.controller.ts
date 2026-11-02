@@ -1,5 +1,6 @@
-import { Controller, Get, Headers, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { Controller, Get, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { LedgerService } from "./ledger.service";
 import type { Response } from "express";
 
@@ -9,21 +10,12 @@ export class LedgerController {
   constructor(private readonly ledgerService: LedgerService) {}
 
   @Get("trial-balance")
-  async getTrialBalance(@Headers("x-tenant-id") tenantId?: string) {
-    if (!tenantId) {
-      throw new UnauthorizedException("شناسه مستأجر (x-tenant-id) الزامی است");
-    }
+  async getTrialBalance(@CurrentTenant() tenantId: string) {
     return this.ledgerService.getTrialBalance(tenantId);
   }
 
   @Get("export/sepidar")
-  async exportSepidar(
-    @Headers("x-tenant-id") tenantId: string,
-    @Res() res: Response
-  ) {
-    if (!tenantId) {
-      throw new UnauthorizedException("شناسه مستأجر (x-tenant-id) الزامی است");
-    }
+  async exportSepidar(@CurrentTenant() tenantId: string, @Res() res: Response) {
     const csv = await this.ledgerService.exportSepidarCsv(tenantId);
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader(

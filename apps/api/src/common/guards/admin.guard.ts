@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from "@nestjs/core";
 import { timingSafeEqualStrings } from "@commerce-os/security";
 import { IdentityService } from "../../identity/identity.service";
+import { DEFAULT_TENANT_ID } from "./current-tenant.decorator";
 
 /**
  * Roles that grant access to admin-internal endpoints (ops telemetry, ledger
@@ -33,19 +34,27 @@ export class AdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authHeader: string | undefined = request.headers["authorization"];
     const apiKeyHeader: string | undefined = request.headers[ADMIN_API_KEY_HEADER];
+    const headerTenant =
+      typeof request.headers["x-tenant-id"] === "string" && request.headers["x-tenant-id"].trim().length > 0
+        ? request.headers["x-tenant-id"].trim()
+        : DEFAULT_TENANT_ID;
 
-    // 1) Server-to-server key (CI, verify scripts, internal tooling)
+    // 1) Server-to-server key (CI, verify scripts, internal tooling) —
+    //    trusted clients may pin the tenant through the header.
     const configuredKey = process.env.ADMIN_API_KEY;
     if (configuredKey && apiKeyHeader && timingSafeEqualStrings(configuredKey, apiKeyHeader)) {
+      request.tenantId = headerTenant;
       return true;
     }
 
-    // 2) OTP session token bound to an admin role
+    // 2) OTP session token bound to an admin role — tenant is always the
+    //    server-side default; a browser session can never mint another one.
     const token = authHeader?.replace(/^Bearer\s+/i, "").trim();
     if (token) {
       const user = await this.identityService.validateSessionToken(token);
       if (user && (ADMIN_ROLES as readonly string[]).includes(user.role)) {
         request.adminUser = { id: user.id, phone: user.phone, fullName: user.fullName, role: user.role };
+        request.tenantId = DEFAULT_TENANT_ID;
         return true;
       }
     }

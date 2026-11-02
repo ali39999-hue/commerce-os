@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { B2bService } from "./b2b.service";
 
 // ADR-010: درخواست استعلام قیمت عمده — ثبت عمومی + لیست/تغییر وضعیت ادمین
@@ -55,16 +56,16 @@ export class B2bController {
   }
 
   // POST /v1/b2b/quote-requests/:id/status — NEW → IN_REVIEW → QUOTED → CLOSED
-  // Pipeline progression is an admin decision (AUTH-003); lead capture stays public.
+  // Pipeline progression is an admin decision (AUTH-003); lead capture stays
+  // public and tenant resolves from the guard, not the client header (AUTH-002).
   @Post("quote-requests/:id/status")
   @UseGuards(AdminGuard)
   updateStatus(
     @Param("id") id: string,
     @Body() body?: { status?: string; adminNote?: string },
-    @Headers("x-tenant-id") tenantId?: string
+    @CurrentTenant() tenantId?: string
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.b2bService.updateStatus(id, tenant, body?.status ?? "", body?.adminNote);
+    return this.b2bService.updateStatus(id, tenantId ?? "", body?.status ?? "", body?.adminNote);
   }
 
   // Same guard style as loyalty/subscriptions: x-tenant-id header is required

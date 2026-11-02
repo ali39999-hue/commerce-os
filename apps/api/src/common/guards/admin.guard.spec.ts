@@ -73,6 +73,35 @@ describe("AdminGuard", () => {
     });
   });
 
+  it("forces the server-side default tenant for session-authenticated calls (AUTH-002)", async () => {
+    identityService.validateSessionToken.mockResolvedValue({ id: "u4", role: "OPERATOR", phone: "09120000003" });
+    const ctx = createMockContext({
+      authorization: "Bearer operator-token",
+      "x-tenant-id": "attacker-tenant",
+    });
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    expect((ctx.switchToHttp().getRequest() as Record<string, unknown>).tenantId).toBe(
+      "00000000-0000-0000-0000-000000000000",
+    );
+  });
+
+  it("lets a service-key client pin the tenant through the header", async () => {
+    const ctx = createMockContext({
+      "x-admin-api-key": TEST_SERVICE_KEY,
+      "x-tenant-id": "partner-tenant",
+    });
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    expect((ctx.switchToHttp().getRequest() as Record<string, unknown>).tenantId).toBe("partner-tenant");
+  });
+
+  it("falls back to the default tenant when a service-key client omits the header", async () => {
+    const ctx = createMockContext({ "x-admin-api-key": TEST_SERVICE_KEY });
+    await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    expect((ctx.switchToHttp().getRequest() as Record<string, unknown>).tenantId).toBe(
+      "00000000-0000-0000-0000-000000000000",
+    );
+  });
+
   it("allows a matching server-to-service key without a session", async () => {
     await expect(
       guard.canActivate(createMockContext({ "x-admin-api-key": TEST_SERVICE_KEY })),

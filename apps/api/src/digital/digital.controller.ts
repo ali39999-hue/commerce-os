@@ -1,14 +1,13 @@
 import {
   Controller,
   Get,
-  Headers,
   Param,
   Post,
   Query,
-  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { DigitalService } from "./digital.service";
 
 // ── ADR-012: کالای دیجیتال — لایسنس‌های من، دانلود لایسنس‌دار، ابطال (W18) ──
@@ -27,14 +26,10 @@ export class DigitalController {
   }
 
   // License revocation is an admin decision (AUTH-003); downloads stay
-  // token-gated per ADR-012.
+  // token-gated per ADR-012 and tenant resolves from the guard (AUTH-002).
   @Post("grants/:id/revoke")
   @UseGuards(AdminGuard)
-  async revoke(@Param("id") grantId: string, @Headers("x-tenant-id") tenantId?: string) {
-    if (!tenantId || tenantId.trim().length === 0) {
-      throw new UnauthorizedException("شناسه مستأجر (x-tenant-id) الزامی است");
-    }
-
-    return this.digitalService.revokeGrant(grantId, tenantId.trim());
+  async revoke(@Param("id") grantId: string, @CurrentTenant() tenantId: string) {
+    return this.digitalService.revokeGrant(grantId, tenantId);
   }
 }
