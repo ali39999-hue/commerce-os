@@ -6,6 +6,21 @@
 
 const API = (process.env.API_URL ?? "http://localhost:4000").replace(/\/$/, "");
 
+// Admin-internal endpoints (loyalty adjust, …) are guarded since AUTH-003;
+// this suite acts as a server-to-service client with the key from env/.env.
+import { readFileSync } from "node:fs";
+const ADMIN_SERVICE_KEY =
+  process.env.ADMIN_API_KEY ??
+  (() => {
+    try {
+      const env = readFileSync(new URL("../.env", import.meta.url), "utf8");
+      const match = env.match(/^ADMIN_API_KEY=(.+)$/m);
+      return match ? match[1].trim() : null;
+    } catch {
+      return null;
+    }
+  })();
+
 const results = [];
 function step(name, status, detail = "") {
   results.push({ name, status, detail });
@@ -16,7 +31,11 @@ function step(name, status, detail = "") {
 async function api(path, init, timeoutMs = 6000) {
   const res = await fetch(`${API}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+    headers: {
+      "Content-Type": "application/json",
+      ...(ADMIN_SERVICE_KEY ? { "x-admin-api-key": ADMIN_SERVICE_KEY } : {}),
+      ...(init?.headers ?? {}),
+    },
     signal: AbortSignal.timeout(timeoutMs),
   });
   const text = await res.text();

@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Param, Query, Body, Res } from "@nestjs/common";
+import { Controller, Get, Post, Param, Query, Body, Res, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { OrdersService } from "./orders.service";
 import { OrderStatus } from "@commerce-os/domain";
 import type { Response } from "express";
@@ -34,7 +35,9 @@ export class OrdersController {
     });
   }
 
+  // Order lifecycle transitions are operator decisions (AUTH-003).
   @Post(":id/transition")
+  @UseGuards(AdminGuard)
   async transitionStatus(
     @Param("id") id: string,
     @Body() body: { toStatus: OrderStatus; actor?: string; reason?: string }

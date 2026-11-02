@@ -70,11 +70,15 @@ export const postTenantJson = async (
   method = "POST"
 ): Promise<PostResult> => {
   try {
+    const session = readAdminSession();
     const res = await fetch(`${API_BASE}${path}`, {
       method,
       headers: {
         "content-type": "application/json",
         ...TENANT_HEADERS,
+        // Admin-internal mutating endpoints are guarded since AUTH-003;
+        // the OTP session token authorizes the console's browser calls.
+        ...(session?.token ? { authorization: `Bearer ${session.token}` } : {}),
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(5000),

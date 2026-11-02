@@ -7,7 +7,9 @@ import {
   Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { B2bService } from "./b2b.service";
 
 // ADR-010: درخواست استعلام قیمت عمده — ثبت عمومی + لیست/تغییر وضعیت ادمین
@@ -53,7 +55,9 @@ export class B2bController {
   }
 
   // POST /v1/b2b/quote-requests/:id/status — NEW → IN_REVIEW → QUOTED → CLOSED
+  // Pipeline progression is an admin decision (AUTH-003); lead capture stays public.
   @Post("quote-requests/:id/status")
+  @UseGuards(AdminGuard)
   updateStatus(
     @Param("id") id: string,
     @Body() body?: { status?: string; adminNote?: string },

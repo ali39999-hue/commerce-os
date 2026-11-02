@@ -7,7 +7,9 @@ import {
   Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { LoyaltyService } from "./loyalty.service";
 
 // ADR-008: باشگاه مشتریان — موجودی/تاریخچه کاربر + تنظیم دستی ادمین
@@ -34,7 +36,10 @@ export class LoyaltyController {
     return { userId, tenantId: tenantId.trim(), ...result };
   }
 
+  // Manual point adjustment is an admin op (AUTH-003); balance reads stay
+  // tenant-header gated until AUTH-002 binds them to the session identity.
   @Post("admin/users/:userId/adjust")
+  @UseGuards(AdminGuard)
   adminAdjust(
     @Param("userId") userId: string,
     @Headers("x-tenant-id") tenantId?: string,

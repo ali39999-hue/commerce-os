@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  API_BASE,
   TENANT_HEADERS,
+  authedFetch,
   faNumber,
   formatRialAsTomans,
   postTenantJson,
@@ -48,7 +48,7 @@ export default function SubscriptionsManager({ userRole = "SUPER_ADMIN" }: { use
   const loadSubscriptions = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/v1/subscriptions/admin`, {
+      const res = await authedFetch("/v1/subscriptions/admin", {
         headers: TENANT_HEADERS,
         signal: AbortSignal.timeout(4000),
         cache: "no-store",

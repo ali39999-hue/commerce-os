@@ -14,6 +14,7 @@
  *  10. Admin coupon persistence: retrieval and activation via API
  */
 
+import { readFileSync } from "node:fs";
 import { calculateQuote, Money, VAT_BPS } from "../packages/domain/dist/index.js";
 import { createOrderSaleJournal, validateBalancedJournal, CHART_OF_ACCOUNTS } from "../packages/finance/dist/index.js";
 import { normalizePersianText, validateIranianMobile } from "../packages/localization/dist/index.js";
@@ -28,6 +29,21 @@ const CYAN = "\x1b[36m";
 const GRAY = "\x1b[90m";
 
 const API_BASE = (process.env.API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+
+// Admin-internal endpoints (receipt approval, coupon management) are guarded
+// since AUTH-003; this suite acts as a server-to-service client. The key comes
+// from the environment or the repo-root .env — never from source.
+const ADMIN_SERVICE_KEY =
+  process.env.ADMIN_API_KEY ??
+  (() => {
+    try {
+      const env = readFileSync(new URL("../.env", import.meta.url), "utf8");
+      const match = env.match(/^ADMIN_API_KEY=(.+)$/m);
+      return match ? match[1].trim() : null;
+    } catch {
+      return null;
+    }
+  })();
 
 const results = [];
 
@@ -55,6 +71,7 @@ async function fetchApi(path, options = {}, timeoutMs = 7000) {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        ...(ADMIN_SERVICE_KEY ? { "x-admin-api-key": ADMIN_SERVICE_KEY } : {}),
         ...(options.headers ?? {}),
       },
       signal: AbortSignal.timeout(timeoutMs),

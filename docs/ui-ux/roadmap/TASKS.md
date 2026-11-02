@@ -80,5 +80,5 @@
 ## Phase 9: Security & Access Control (AUTH-001 to AUTH-004)
 - [x] **AUTH-001**: AdminGuard on admin-internal endpoints (`/v1/ops/*`, `/v1/ledger/*`) — OTP session with staff role or timing-safe `x-admin-api-key`; OTP login gate wired into the admin console; runtime-verified 401/200 matrix in `docs/security/SECURITY_BASELINE.md`.
 - [ ] **AUTH-002**: Bind resource ownership/tenancy to the authenticated identity (drop trust of raw `x-user-id`/`x-tenant-id` headers for browser flows).
-- [ ] **AUTH-003**: Extend AdminGuard to every mutating admin module (catalog write, subscriptions, digital licenses, B2B quote state).
+- [x] **AUTH-003**: AdminGuard extended to every mutating admin route — orders transition, coupon create/toggle, C2C receipt approval, digital license revoke, loyalty adjust, review moderation, wallet credit/debit, subscription pause/resume/cancel + admin list, B2B status change (storefront flows stay public); verification scripts act as service-key clients; IdentityModule is @Global for guard DI.
 - [ ] **AUTH-004**: Per-endpoint DTOs replacing whole-body pass-through on resource writes.

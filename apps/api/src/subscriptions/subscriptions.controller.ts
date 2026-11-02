@@ -7,7 +7,9 @@ import {
   Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { SubscriptionsService } from "./subscriptions.service";
 
 // ADR-009: اشتراک‌های دوره‌ای — فهرست پلن‌ها، ثبت عضویت، مدیریت کاربر، لیست ادمین
@@ -50,8 +52,11 @@ export class SubscriptionsController {
     return this.subscriptionsService.listForUser(userId, tenant);
   }
 
+  // Subscription lifecycle moves are admin console decisions (AUTH-003);
+  // plan listing and signup stay public storefront flows.
   // POST /v1/subscriptions/:id/pause — ACTIVE → PAUSED
   @Post(":id/pause")
+  @UseGuards(AdminGuard)
   pause(
     @Param("id") id: string,
     @Headers("x-tenant-id") tenantId?: string,
@@ -63,6 +68,7 @@ export class SubscriptionsController {
 
   // POST /v1/subscriptions/:id/resume — PAUSED → ACTIVE
   @Post(":id/resume")
+  @UseGuards(AdminGuard)
   resume(@Param("id") id: string, @Headers("x-tenant-id") tenantId?: string) {
     const tenant = this.requireTenant(tenantId);
     return this.subscriptionsService.resume(id, tenant);
@@ -70,6 +76,7 @@ export class SubscriptionsController {
 
   // POST /v1/subscriptions/:id/cancel — ACTIVE|PAUSED → CANCELLED
   @Post(":id/cancel")
+  @UseGuards(AdminGuard)
   cancel(
     @Param("id") id: string,
     @Headers("x-tenant-id") tenantId?: string,
@@ -81,6 +88,7 @@ export class SubscriptionsController {
 
   // GET /v1/subscriptions/admin?status=ACTIVE — لیست ادمین
   @Get("admin")
+  @UseGuards(AdminGuard)
   adminList(@Query("status") status?: string, @Headers("x-tenant-id") tenantId?: string) {
     const tenant = this.requireTenant(tenantId);
     return this.subscriptionsService.adminList(tenant, status);

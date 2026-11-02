@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Param, Query, Body, Headers } from "@nestjs/common";
+import { Controller, Get, Post, Param, Query, Body, Headers, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { ReviewsService, CreateReviewInput, ReviewModerationDecision } from "./reviews.service";
 
 const DEFAULT_TENANT_ID = "demo-tenant-id";
@@ -37,7 +38,10 @@ export class ReviewsController {
     return this.reviewsService.listPending(limit ? parseInt(limit, 10) : 50);
   }
 
+  // Review moderation is an admin decision (AUTH-003); customer review
+  // submission stays open pending the identity binding in AUTH-002.
   @Post("admin/:id/moderate")
+  @UseGuards(AdminGuard)
   async moderate(
     @Param("id") id: string,
     @Body() body: { decision: ReviewModerationDecision; moderator?: string }

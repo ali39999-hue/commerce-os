@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Headers, UnauthorizedException } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Headers, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { WalletService } from "./wallet.service";
 
 @Controller("wallet")
@@ -16,7 +17,11 @@ export class WalletController {
     return this.walletService.getBalance(userId, tenantId);
   }
 
+  // Wallet ledger mutations move real money (BigInt Rial, double-entry) —
+  // admin/internal only (AUTH-003). Checkout spends via the wallet service,
+  // never through these public routes.
   @Post(":userId/credit")
+  @UseGuards(AdminGuard)
   async credit(
     @Param("userId") userId: string,
     @Headers("x-tenant-id") tenantId: string,
@@ -33,6 +38,7 @@ export class WalletController {
   }
 
   @Post(":userId/debit")
+  @UseGuards(AdminGuard)
   async debit(
     @Param("userId") userId: string,
     @Headers("x-tenant-id") tenantId: string,

@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Body, Param, Query } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { PaymentsService } from "./payments.service";
 
 @Controller("payments")
@@ -40,7 +41,10 @@ export class PaymentsController {
     });
   }
 
+  // Card-to-card receipt approval is the admin SoD decision point (AUTH-003).
+  // Customer submission (/:intentId/receipt) stays public by design.
   @Post("receipts/:receiptId/approve")
+  @UseGuards(AdminGuard)
   async approveReceipt(
     @Param("receiptId") receiptId: string,
     @Body() body: { reviewer?: string }

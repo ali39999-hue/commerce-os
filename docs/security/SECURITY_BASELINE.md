@@ -1,8 +1,8 @@
 # Security Baseline — Dr Dermer UK Clinical & Commerce OS
 
-> آخرین به‌روزرسانی: ۱۴۰۵/۰۸/۱۱ (۲۰۲۶-۱۱-۰۲) — پس از اجرای AUTH-001
+> آخرین به‌روزرسانی: ۱۴۰۵/۰۸/۱۱ (۲۰۲۶-۱۱-۰۲) — پس از اجرای AUTH-001 و AUTH-003
 >
-> این سند وضعیت **تأییدشده در زمان اجرا** (runtime-verified) کنترل‌های امنیتی را ثبت می‌کند و نقشه بستن یافته‌های ابزار تحلیل ایستا (Mimosa scan-2026-11-02T16-55-33, seal `sha256:55ae3cd0…`) را نگه می‌دارد.
+> این سند وضعیت **تأییدشده در زمان اجرا** (runtime-verified) کنترل‌های امنیتی را ثبت می‌کند و نقشه بستن یافته‌های ابزار تحلیل ایستا (Mimosa scan-2026-11-02T17-22-12, seal `sha256:4d7a8510…`) را نگه می‌دارد.
 > ⚠️ هیچ‌گاه این سند را به‌عنوان «تأییدیه امنیت» نقل نکنید — فهرست کنترل است، نه گواهی.
 
 ## ۱. کنترل‌های فعال (Runtime-Verified)
@@ -21,11 +21,27 @@
 
 ## ۲. Endpointهای محافظت‌شده با AdminGuard (تأیید ۴۰۱/۲۰۰ در زمان اجرا)
 
-- `GET /v1/ops/metrics` — بدون اعتبارنامه `401`، کلید اشتباه `401`، کلید معتبر `200`، Bearer ادمین `200`، Bearer مشتری `401`
-- `GET /v1/ops/exceptions` — همان گارد
-- `GET /v1/ledger/trial-balance` و `GET /v1/ledger/export/sepidar` — AdminGuard + گیت `x-tenant-id`
+**خواندنی‌های مدیریتی:**
+- `GET /v1/ops/metrics`، `GET /v1/ops/exceptions`
+- `GET /v1/ledger/trial-balance`، `GET /v1/ledger/export/sepidar`
+- `GET /v1/subscriptions/admin`
 
-**تست‌ها:** `apps/api/src/common/guards/admin.guard.spec.ts` — ۱۰/۱۰ سبز (رد بی‌اعتبارنامه، رد CUSTOMER، پذیرش سه نقش ادمین، اتصال identity به request، کلید سرویس معتبر/نامعتبر، رفتار بدون env).
+**تغییردهنده‌های مدیریتی (AUTH-003):**
+- `POST /v1/orders/:id/transition` — انتقال وضعیت چرخه سفارش
+- `POST /v1/pricing/coupons`، `PATCH /v1/pricing/coupons/:id/toggle`
+- `POST /v1/payments/receipts/:receiptId/approve` — نقطه تصمیم SoD فیش کارت‌به‌کارت
+- `POST /v1/digital/grants/:id/revoke`
+- `POST /v1/loyalty/admin/users/:userId/adjust`
+- `POST /v1/reviews/admin/:id/moderate`
+- `POST /v1/wallet/:userId/credit` و `POST /v1/wallet/:userId/debit`
+- `POST /v1/subscriptions/:id/pause|resume|cancel`
+- `POST /v1/b2b/quote-requests/:id/status`
+
+**عمداً عمومی مانده‌اند (جریان فروشگاه):** checkout session/place-order، پرداخت initiate/ثبت فیش مشتری، callback زرین‌پال، ثبت نظر مشتری، ثبت استعلام B2B، ثبت عضویت اشتراک، quote ارسال، analytics events، جست‌وجو/کاتالوگ/پلن‌ها.
+
+**ماتریس زمان‌اجرا (۱۲ مسیر گاردشده):** بدون اعتبارنامه → همه `401`؛ با کلید سرویس → عبور به هندلر (خطای ۴۰۰/۵۰۰ فقط به‌خاطر ID قلابی تست)؛ مسیرهای عمومی → `200`.
+
+**تست‌ها:** `apps/api/src/common/guards/admin.guard.spec.ts` — ۱۰/۱۰ سبز؛ `verify-clinical-store.mjs` ۱۰/۱۰ و `e2e-golden-path.mjs` ۱۹/۱۹ به‌عنوان کلاینت سرویس‌به‌سرویس با کلید از `.env`.
 
 ## ۳. فرضیه‌های باز Mimosa و نقشه بستن (AUTH-002+)
 
