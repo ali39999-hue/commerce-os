@@ -35,6 +35,29 @@ export class OrdersService {
     return order;
   }
 
+  // «سفارش‌های من» (AUTH-002 step 6): orders bound to the session identity —
+  // the phone always comes from the OTP session, never a client parameter.
+  async listMyOrders(params: { phone: string; limit?: number; offset?: number }) {
+    const { phone, limit = 20, offset = 0 } = params;
+
+    const where = { customerPhone: phone };
+    const [items, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          lines: true,
+          paymentIntents: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { items, total, limit, offset, dbAvailable: true };
+  }
+
   async listStoreOrders(params: {
     storeId: string;
     status?: OrderStatus;

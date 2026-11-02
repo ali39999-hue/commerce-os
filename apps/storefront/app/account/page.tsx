@@ -298,6 +298,43 @@ export default function AccountPage() {
     };
   }, [session, authedFetch]);
 
+  // Session-bound order history (AUTH-002 step 6): replaces the demo list
+  // with the customer's real orders keyed to their session phone.
+  useEffect(() => {
+    if (!session) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await authedFetch("/v1/orders/my", {
+          cache: "no-store",
+          signal: AbortSignal.timeout(4000),
+        });
+        if (!alive || !res.ok) return;
+        const data = (await res.json()) as { items?: Array<Record<string, unknown>> };
+        const mapped: StoredOrder[] = (data.items ?? []).map((o) => {
+          const intents = Array.isArray(o.paymentIntents) ? (o.paymentIntents as Array<Record<string, unknown>>) : [];
+          const firstIntent = intents[0] ?? {};
+          return {
+            orderNumber: String(o.orderNumber ?? "—"),
+            status: String(o.status ?? "PENDING_PAYMENT"),
+            totalTomans: (BigInt(String(o.totalAmount ?? "0")) / 10n).toString(),
+            method: firstIntent.method ? String(firstIntent.method) : "—",
+            ref: firstIntent.id ? String(firstIntent.id) : "—",
+            placedAt: String(o.createdAt ?? new Date().toISOString()),
+            customerName: o.customerName ? String(o.customerName) : undefined,
+            customerPhone: o.customerPhone ? String(o.customerPhone) : undefined,
+          };
+        });
+        if (alive) setOrders(mapped);
+      } catch {
+        // keep the local/demo view on failure
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [session, authedFetch]);
+
   useEffect(() => {
     try {
       const p = localStorage.getItem(ACCOUNT_PROFILE_KEY);
@@ -627,6 +664,12 @@ export default function AccountPage() {
         {tab === "orders" && (
           <div className="account-pane">
             <h2>سفارش‌های من و رهگیری لحظه‌ای ({orders.length})</h2>
+
+            {sessionReady && session && orders.length === 0 && (
+              <p className="account-note">
+                هنوز سفارشی با این نشست ثبت نشده است — پس از تکمیل خرید، سفارش‌های واقعی شما اینجا با رهگیری لحظه‌ای نمایش داده می‌شود.
+              </p>
+            )}
 
             {orders.map((o) => {
               const s = statusFa(o.status);
