@@ -9,36 +9,41 @@
 
 :root {
   color-scheme: light;
-  /* Clinical Luxury Palette */
-  --ink: #0f172a;               /* Deep slate / ink */
-  --ink-secondary: #334155;     /* Mid slate */
-  --muted: #475569;             /* Soft clinical slate (WCAG AA 4.5:1 compliant) */
-  --paper: #f8fafc;             /* Pristine canvas */
-  --paper-warm: #f7f6f2;        /* Warm sand / cream accent background */
-  --surface: #ffffff;           /* Pure white surface */
-  --surface-tint: #f1f5f9;      /* Subtle panel background */
-  --line: #e2e8f0;              /* Crisp minimal borders */
-  --line-strong: #cbd5e1;       /* Strong divider */
+  /* Warm Clinical Minimalism Palette (Dr Dermer Redesign Blueprint Section 3.2) */
+  --canvas: #f7f6f2;             /* Warm canvas background */
+  --paper-warm: #f7f6f2;        /* Warm canvas / cream background */
+  --paper: #f7f6f2;             /* Clean warm canvas base */
+  --surface: #ffffff;           /* Pure white card / surface */
+  --surface-soft: #eef2ed;      /* Soft clean slate / tint */
+  --surface-tint: #eef2ed;      /* Subtle panel background */
+  --ink: #242d29;               /* Deep clinical ink */
+  --ink-secondary: #3d4a44;     /* Mid clinical ink */
+  --muted: #69736d;             /* Subtle clinical text (WCAG AA compliant) */
+  --line: #e6e5de;              /* Crisp minimal divider / border */
+  --line-strong: #d1d0c7;       /* Strong divider */
   
-  /* Primary Clinical Teal & Deep Oceanic Blue */
-  --brand: #0f766e;             /* Primary Clinical Teal */
-  --brand-deep: #115e59;        /* Deep Medical Teal */
-  --brand-dark: #042f2e;        /* Darkest Forest Slate */
-  --brand-light: #14b8a6;       /* Radiant Bio Teal */
-  --brand-tint: #f0fdfa;        /* Ultra light teal wash */
+  /* Brand Clinical Palette */
+  --brand: #24594f;             /* Deep brand clinical teal/green */
+  --brand-deep: #17463e;        /* Brand strong (hover & deep headers) */
+  --brand-strong: #17463e;      /* Brand strong */
+  --brand-dark: #0c2420;        /* Deepest forest ink */
+  --brand-light: #5d8f82;       /* Mid clinical sage tone */
+  --brand-tint: #eef2ed;        /* Soft clean slate wash */
+
+  /* Supporting Warm Clinical Tones */
+  --sage: #dce8df;              /* Pale sage background */
+  --sand: #ede5da;              /* Warm sand editorial */
+  --accent: #c69c70;            /* Warm amber / gold accent */
+  --accent-hover: #b0855a;      /* Deep amber hover */
+  --accent-tint: #fbf7f2;       /* Warm cream wash */
+  --accent-sand: #ede5da;       /* Warm sand editorial */
 
   /* Medical Blue / Cold Chain Accent */
   --medical-blue: #0369a1;      /* Elevated contrast for light surfaces */
   --medical-tint: #f0f9ff;
 
-  /* Warm Sand / Amber Luxury Accents */
-  --accent: #d97706;            /* Warm Amber / Gold */
-  --accent-hover: #b45309;      /* Rich Gold Hover */
-  --accent-tint: #fffbeb;       /* Warm Cream */
-  --accent-sand: #fbf7ee;       /* Soft Sand */
-
   /* Status Colors */
-  --danger: #ef4444;
+  --danger: #b84d4d;            /* Clinical danger / warning */
   --success: #10b981;
   --warning: #f59e0b;
 
@@ -50,12 +55,12 @@
   --radius-pill: 9999px;
 
   /* Shadows & Glassmorphism */
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --shadow-elevated: 0 20px 40px -6px rgba(15, 23, 42, 0.08), 0 8px 16px -4px rgba(15, 23, 42, 0.04);
-  --shadow-glow: 0 0 35px -5px rgba(20, 184, 166, 0.25);
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.6);
+  --shadow-sm: 0 1px 3px rgba(36, 45, 41, 0.05);
+  --shadow-card: 0 4px 20px -2px rgba(36, 45, 41, 0.05), 0 2px 6px -1px rgba(36, 45, 41, 0.02);
+  --shadow-elevated: 0 20px 40px -6px rgba(36, 45, 41, 0.08), 0 8px 16px -4px rgba(36, 45, 41, 0.04);
+  --shadow-glow: 0 0 35px -5px rgba(36, 89, 79, 0.22);
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(230, 229, 222, 0.7);
 }
 
 * { box-sizing: border-box; }
@@ -75,6 +80,32 @@ body {
 
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
+
+/* ── WCAG 2.2 AA Focus Indicators ── */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.2);
+}
+
+.clinical-hero :focus-visible,
+.bohr-simulator-section :focus-visible,
+.devices-showcase-section :focus-visible {
+  outline: 2px solid #2dd4bf;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.3);
+}
 
 .page-shell, .page-shell-wrapper {
   width: 100%;
@@ -615,7 +646,7 @@ button { font-family: inherit; }
   background: radial-gradient(ellipse at 30% 40%, rgba(242, 163, 58, 0.25), transparent 60%);
 }
 .eyebrow {
-  color: var(--accent);
+  color: #92400e;
   font-weight: 800;
   font-size: .82rem;
   letter-spacing: .04em;
@@ -1313,6 +1344,7 @@ button { font-family: inherit; }
 /* ── Product Detail Page ── */
 .product-detail-container {
   padding: 30px 0 80px;
+  overflow-x: clip;
 }
 .breadcrumbs-nav {
   display: flex;
@@ -3912,7 +3944,7 @@ button { font-family: inherit; }
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: #0284c7;
+  background: #0369a1;
   color: #ffffff;
   padding: 12px 20px;
   border-radius: var(--radius-pill);
@@ -3922,7 +3954,7 @@ button { font-family: inherit; }
   margin-bottom: 14px;
 }
 .btn-b2b-primary:hover {
-  background: #0369a1;
+  background: #075985;
   transform: translateY(-2px);
 }
 .b2b-support-phone {
@@ -3932,7 +3964,7 @@ button { font-family: inherit; }
 }
 .b2b-support-phone a {
   font-weight: 800;
-  color: #0284c7;
+  color: #0369a1;
 }
 
 /* ── 11. Newsletter & VIP Membership ── */
@@ -4392,7 +4424,7 @@ button { font-family: inherit; }
 }
 .tech-credit {
   font-size: 0.74rem;
-  color: #64748b;
+  color: #94a3b8;
 }
 .bottom-links {
   display: flex;
@@ -4719,15 +4751,103 @@ button { font-family: inherit; }
   .promo-actions .promo-clinic-link { display: none; }
 }
 
+@media (max-width: 640px) {
+  .header-actions .header-action-btn:not([href="/account"]) {
+    display: none;
+  }
+  .header-inner {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .header-brand-group {
+    gap: 8px;
+  }
+  .brand-logo-img {
+    height: 36px;
+    max-width: 110px;
+  }
+  .brand-primary {
+    font-size: 1.18rem;
+  }
+  .brand-sub {
+    display: none;
+  }
+
+  /* Clinical Hero mobile polish */
+  .clinical-hero {
+    padding: 0 12px;
+    margin-top: 16px;
+  }
+  .hero-grid-layout {
+    padding: 22px 14px;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 18px;
+  }
+  .hero-visual-card {
+    padding: 14px 12px;
+    max-width: 100%;
+  }
+  .hero-devices-preview-grid {
+    grid-template-columns: 1fr;
+  }
+  .devices-dual-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .hero-cta-group .btn-clinical-primary,
+  .hero-cta-group .btn-clinical-secondary {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .hero-eyebrow-chip {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  /* Science Spotlight mobile polish */
+  .science-spotlight-section {
+    padding: 0 12px;
+    margin-top: 28px;
+  }
+  .science-layout-grid {
+    padding: 22px 14px;
+    border-radius: 18px;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Product Detail Page mobile polish */
+  .product-detail-container {
+    padding: 20px 14px 60px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .pdp-hero-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pdp-gallery-column,
+  .pdp-copy-column {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .promo-banner { padding: 6px 12px; }
   .promo-highlights { justify-content: center; text-align: center; }
   .promo-item { font-size: 0.74rem; }
   .promo-actions { width: 100%; justify-content: space-between; }
-  .header-inner { padding: 12px 16px; }
-  .brand-primary { font-size: 1.35rem; }
+  .header-inner { padding: 10px 12px; }
+  .brand-primary { font-size: 1.15rem; }
   .brand-lab-badge { display: none; }
-  .brand-sub { font-size: 0.6rem; }
+  .brand-sub { display: none; }
   .trust-bar-grid { grid-template-columns: 1fr; }
   .concerns-grid { grid-template-columns: 1fr; }
   .clinical-product-grid { grid-template-columns: 1fr; }
@@ -4738,11 +4858,11 @@ button { font-family: inherit; }
 }
 
 @media (max-width: 360px) {
-  .header-inner { padding: 10px 12px; gap: 8px; }
-  .brand-primary { font-size: 1.2rem; }
+  .header-inner { padding: 8px 10px; gap: 6px; }
+  .brand-primary { font-size: 1.1rem; }
   .header-actions { gap: 4px; }
   .header-action-btn { padding: 6px 8px; }
-  .clinical-cart-btn { padding: 8px 12px; }
+  .clinical-cart-btn { padding: 8px 10px; }
 }
 
 /* ─────────────────────────────────────────────────────────────

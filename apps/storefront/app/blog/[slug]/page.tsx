@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BLOG_POSTS, getAllBlogSlugs, getPost } from "../../../lib/blog";
+import { getCanonicalProductHref } from "../../../lib/clinical-specs";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -420,7 +421,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <span style={{ fontSize: "0.84rem", color: "#047857", fontWeight: 800 }}>{prod.priceFormatted}</span>
                   ) : <span />}
                   <Link
-                    href={`/products/${prod.slug}`}
+                    href={getCanonicalProductHref(prod.slug)}
                     style={{
                       background: "var(--brand-deep)",
                       color: "#ffffff",

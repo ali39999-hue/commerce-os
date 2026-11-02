@@ -186,112 +186,128 @@ export default function B2BQuotesManager({ userRole = "SUPER_ADMIN" }: { userRol
               : "استعلامی با این فیلتر یافت نشد."}
           </p>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>کلینیک / مرکز درمانی</th>
-                <th>پزشک مسئول / رابط</th>
-                <th>اطلاعات تماس</th>
-                <th>اقلام درخواستی</th>
-                <th>تعداد</th>
-                <th>تاریخ ثبت</th>
-                <th>وضعیت</th>
-                <th>عملیات ارزیابی</th>
-              </tr>
-            </thead>
-            <tbody>
-              {b2bQuotes.map((q, idx) => {
-                const quoteId = typeof q?.id === "string" && q.id ? q.id : "";
-                const statusKey = String(q?.status ?? "");
-                const pill = B2B_STATUS_PILL[statusKey];
-                const transition = quoteId ? B2B_TRANSITIONS[statusKey] : undefined;
-                const expanded = quoteId !== "" && expandedId === quoteId;
-                const busy = busyId === quoteId;
+          <div className="table-responsive-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>کلینیک / مرکز درمانی</th>
+                  <th>پزشک مسئول / رابط</th>
+                  <th>اطلاعات تماس</th>
+                  <th>اقلام درخواستی</th>
+                  <th>تعداد</th>
+                  <th>تاریخ ثبت</th>
+                  <th>وضعیت</th>
+                  <th>عملیات ارزیابی</th>
+                </tr>
+              </thead>
+              <tbody>
+                {b2bQuotes.map((q, idx) => {
+                  const quoteId = typeof q?.id === "string" && q.id ? q.id : "";
+                  const statusKey = String(q?.status ?? "");
+                  const pill = B2B_STATUS_PILL[statusKey];
+                  const transition = quoteId ? B2B_TRANSITIONS[statusKey] : undefined;
+                  const expanded = quoteId !== "" && expandedId === quoteId;
+                  const busy = busyId === quoteId;
 
-                return (
-                  <Fragment key={quoteId || `b2b-${idx}`}>
-                    <tr
-                      className={quoteId ? "b2b-row-clickable" : undefined}
-                      onClick={quoteId ? () => setExpandedId(expanded ? null : quoteId) : undefined}
-                    >
-                      <td className="bold">{str(q?.companyName)}</td>
-                      <td>{str(q?.contactName)}</td>
-                      <td dir="ltr">
-                        {str(q?.phone)}
-                        {q?.email ? (
-                          <>
-                            <br />
-                            <span className="muted-text">{String(q.email)}</span>
-                          </>
-                        ) : null}
-                      </td>
-                      <td>{truncateFa(q?.itemsSummary)}</td>
-                      <td>{faNumber(q?.desiredQty)} عدد</td>
-                      <td>{q?.createdAt ? formatJalaliDateTime(q.createdAt) : "—"}</td>
-                      <td>
-                        <span className={`status-pill ${pill?.cls ?? ""}`}>{pill?.fa ?? str(statusKey)}</span>
-                      </td>
-                      <td onClick={(e) => e.stopPropagation()}>
-                        {transition ? (
-                          <button
-                            className="btn-action"
-                            disabled={busy}
-                            onClick={() => void handleTransition(quoteId, transition.next)}
-                          >
-                            {busy ? "⏳" : transition.label}
-                          </button>
-                        ) : (
-                          <span className="muted-text">—</span>
-                        )}
-                      </td>
-                    </tr>
-                    {expanded && (
-                      <tr className="b2b-expand-row">
-                        <td colSpan={8}>
-                          <div className="b2b-expand">
-                            <strong>شرح کامل اقلام بالینی و احراز مجوزهای پزشکی</strong>
-                            <p>{str(q?.itemsSummary)}</p>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "12px" }}>
-                              <div>
-                                <label htmlFor={`b2b-price-${quoteId}`}>
-                                  قیمت پیشنهادی پیش‌فاکتور (تومان):
-                                </label>
-                                <input
-                                  id={`b2b-price-${quoteId}`}
-                                  className="admin-input"
-                                  dir="ltr"
-                                  type="number"
-                                  placeholder="مبلغ کل توافق‌شده"
-                                  value={quotePrices[quoteId] ?? ""}
-                                  onChange={(e) =>
-                                    setQuotePrices((prev) => ({ ...prev, [quoteId]: e.target.value }))
-                                  }
-                                />
-                              </div>
-                              <div>
-                                <label htmlFor={`b2b-note-${quoteId}`}>
-                                  یادداشت مدیر و استعلام قیمت مواد اولیه:
-                                </label>
-                                <textarea
-                                  id={`b2b-note-${quoteId}`}
-                                  rows={2}
-                                  placeholder="بررسی پروانه طبابت توسط واحد حقوقی انجام شد..."
-                                  value={notes[quoteId] ?? ""}
-                                  onChange={(e) =>
-                                    setNotes((prev) => ({ ...prev, [quoteId]: e.target.value }))
-                                  }
-                                />
-                              </div>
-                            </div>
-                          </div>
+                  return (
+                    <Fragment key={quoteId || `b2b-${idx}`}>
+                      <tr
+                        className={quoteId ? "b2b-row-clickable" : undefined}
+                        onClick={quoteId ? () => setExpandedId(expanded ? null : quoteId) : undefined}
+                      >
+                        <td className="bold">{str(q?.companyName)}</td>
+                        <td>{str(q?.contactName)}</td>
+                        <td dir="ltr" className="tabular-nums">
+                          {str(q?.phone)}
+                          {q?.email ? (
+                            <>
+                              <br />
+                              <span className="muted-text">{String(q.email)}</span>
+                            </>
+                          ) : null}
+                        </td>
+                        <td>{truncateFa(q?.itemsSummary)}</td>
+                        <td className="tabular-nums">{faNumber(q?.desiredQty)} عدد</td>
+                        <td className="tabular-nums">{q?.createdAt ? formatJalaliDateTime(q.createdAt) : "—"}</td>
+                        <td>
+                          <span className={`status-pill ${pill?.cls ?? ""}`}>{pill?.fa ?? str(statusKey)}</span>
+                        </td>
+                        <td onClick={(e) => e.stopPropagation()}>
+                          {transition ? (
+                            <button
+                              className="btn-action"
+                              disabled={busy}
+                              onClick={() => void handleTransition(quoteId, transition.next)}
+                            >
+                              {busy ? "⏳" : transition.label}
+                            </button>
+                          ) : (
+                            <span className="muted-text">—</span>
+                          )}
                         </td>
                       </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
+                      {expanded && (
+                        <tr className="b2b-expand-row">
+                          <td colSpan={8}>
+                            <div className="b2b-expand">
+                              <strong>شرح کامل اقلام بالینی و احراز مجوزهای پزشکی</strong>
+                              <p>{str(q?.itemsSummary)}</p>
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "12px" }}>
+                                <div>
+                                  <label htmlFor={`b2b-price-${quoteId}`}>
+                                    قیمت پیشنهادی پیش‌فاکتور (تومان):
+                                  </label>
+                                  <input
+                                    id={`b2b-price-${quoteId}`}
+                                    className="admin-input"
+                                    dir="ltr"
+                                    type="number"
+                                    placeholder="مبلغ کل توافق‌شده"
+                                    value={quotePrices[quoteId] ?? ""}
+                                    onChange={(e) =>
+                                      setQuotePrices((prev) => ({ ...prev, [quoteId]: e.target.value }))
+                                    }
+                                  />
+                                </div>
+                                <div>
+                                  <label htmlFor={`b2b-note-${quoteId}`}>
+                                    یادداشت داخلی ارزیابی پروانه پزشکی و تخفیف:
+                                  </label>
+                                  <textarea
+                                    id={`b2b-note-${quoteId}`}
+                                    placeholder="شماره نظام پزشکی، گواهی تاسیس مطب و توضیحات اپراتور B2B"
+                                    value={notes[quoteId] ?? ""}
+                                    onChange={(e) =>
+                                      setNotes((prev) => ({ ...prev, [quoteId]: e.target.value }))
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                                <button
+                                  className="btn-action"
+                                  disabled={busy}
+                                  onClick={() => void handleTransition(quoteId, "QUOTED")}
+                                >
+                                  {busy ? "در حال ثبت…" : "صدور پیش‌فاکتور با این قیمت"}
+                                </button>
+                                <button
+                                  className="btn-reject"
+                                  onClick={() => setExpandedId(null)}
+                                >
+                                  بستن پنل جزئیات
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

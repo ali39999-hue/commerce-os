@@ -1,5 +1,6 @@
 import { listProducts } from '../lib/catalog';
 import { HeroBanner } from '../components/home/hero-banner';
+import { PathSelector } from '../components/home/path-selector';
 import { TrustCredibilityBar } from '../components/home/trust-bar';
 import { CategoryConcernNav } from '../components/home/category-concern-nav';
 import { BrandFamilyRail } from '../components/home/brand-family-rail';
@@ -80,52 +81,52 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
 
-      {/* 3. Hero Banner (Editorial & Clinical, showcasing Hero Innovation CarboxyGel) */}
+      {/* 1. Hero Banner (Clear Primary & Secondary CTAs) */}
       <HeroBanner />
 
+      {/* 2. Path Selector (Home Care vs Clinical Pro vs Medical Equipment) */}
+      <PathSelector />
 
-      {/* 4. Trust & Clinical Credibility Bar */}
-      <TrustCredibilityBar />
+      {/* 3. Featured Product Showcase (Curated 4-6 Hero Products) */}
+      <FeaturedProductShowcase products={products} totalCount={catalog?.meta?.count} />
+
+      {/* 4. Two Brand Families Architecture (ReeSkin & ReeMed) */}
+      <BrandFamilyRail />
 
       {/* 5. Category & Concern Quick-Nav */}
       <CategoryConcernNav />
 
-      {/* 6. Brand Families Architecture (ReeSkin & ReeMed) */}
-      <BrandFamilyRail />
-
-      {/* 6. Featured Product Showcase / Product Family Rails */}
-      <FeaturedProductShowcase products={products} totalCount={catalog?.meta?.count} />
-
-      {/* 6.1 Interactive Skin Consultation & Diagnostic Regimen Finder Widget */}
+      {/* 5.1 Interactive Skin Consultation & Diagnostic Regimen Finder */}
       <SkinRegimenFinderWidget />
 
-      {/* Discovery Dynamic Product Rail */}
+      {/* 5.2 Dynamic Popular Clinical Recommendations */}
       <section className="dynamic-rail-container">
         <ProductRail endpoint="/recommendations/popular?limit=6" titleFa="پروتکل‌های محبوب و پرطرفدار بالینی" />
       </section>
 
-      {/* 7. Science & Mechanism of Action Spotlight (Bohr Effect & Transdermal CO2) */}
+      {/* 6. Science Behind Innovation (Bohr Effect & Transdermal CO2) */}
       <ScienceMechanismSpotlight />
 
-      {/* 7.1 Interactive Bohr Effect Oxygenation Simulator / Visualizer */}
+      {/* 6.1 Interactive Bohr Effect Oxygenation Simulator */}
       <BohrOxygenationSimulator />
 
-      {/* 8. Interactive Before & After Visia Trial Comparison Slider */}
+      {/* 6.2 Interactive Before & After Visia Trial Comparison Slider */}
       <VisiaTrialComparisonSlider />
 
-      {/* 8.1 Verified Clinical Results / Doctor Testimonials */}
-      <ClinicalResultsTestimonials />
-
-      {/* 8.2 Interactive Medical Devices 360-Degree Hotspot Showcase (CarboX & PlasmaX) */}
+      {/* 7. Professional Solutions (Medical Devices CarboX & PlasmaX) */}
       <MedicalDevicesShowcase />
 
-      {/* 9. Academy & Protocol Guides */}
-      <AcademyGuides />
-
-      {/* 10. Professional B2B Clinic / Wholesale CTA strip */}
+      {/* 7.1 Clinic B2B Wholesale & Partner Strip */}
       <ClinicB2BStrip />
 
-      {/* 11. Newsletter & VIP Membership */}
+      {/* 8. Academy & Protocol Guides (Editorial & Education) */}
+      <AcademyGuides />
+
+      {/* 9. Trust, Credibility & Doctor Testimonials */}
+      <ClinicalResultsTestimonials />
+      <TrustCredibilityBar />
+
+      {/* 10. Newsletter & VIP Membership */}
       <NewsletterVip />
     </div>
   );

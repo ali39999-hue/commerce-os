@@ -3,8 +3,9 @@
    ========================================================================== */
 
 .cp-landing-root {
-  background-color: #030712;
-  color: #f1f5f9;
+  /* Refined luxury clinical dark stage (elevated dark lab contrast, replacing pitch black #030712) */
+  background: radial-gradient(120% 80% at 50% -10%, #172421 0%, #101917 45%, #0d1413 100%), #0d1413;
+  color: #f8fafc;
   min-height: 100vh;
   direction: rtl;
   font-family: inherit;
@@ -522,7 +523,7 @@
 
 .cp-btn-add-cart.emerald {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #030712;
+  color: #101917;
 }
 
 .cp-btn-add-cart.emerald:hover {
@@ -533,7 +534,7 @@
 
 .cp-btn-add-cart.cyan {
   background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  color: #030712;
+  color: #101917;
 }
 
 .cp-btn-add-cart.cyan:hover {
@@ -544,7 +545,7 @@
 
 .cp-btn-add-cart.teal {
   background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
-  color: #030712;
+  color: #101917;
 }
 
 .cp-btn-add-cart.teal:hover {

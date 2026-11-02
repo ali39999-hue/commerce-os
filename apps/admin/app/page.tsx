@@ -31,6 +31,75 @@ export type AdminTab =
 
 export type AdminUserRole = "SUPER_ADMIN" | "OPERATOR" | "ACCOUNTANT";
 
+interface TabMeta {
+  breadcrumb: [string, string, string];
+  title: string;
+  description: string;
+}
+
+const TAB_METADATA: Record<AdminTab, TabMeta> = {
+  overview: {
+    breadcrumb: ["خانه ERP", "عملیات فروش", "داشبورد و شاخص‌های کلیدی"],
+    title: "میز کار مدیریت یکپارچه و شاخص‌های عملیاتی ERP",
+    description: "پایش برخط فروش، موجودی، تراز دوبل‌اندر مالی و سلامت پردازشگرها",
+  },
+  orders: {
+    breadcrumb: ["خانه ERP", "عملیات فروش", "سفارشات و فیش‌های بانکی"],
+    title: "مدیریت سفارشات و تایید فیش‌های کارت‌به‌کارت",
+    description: "پایش جریان تسویه شتاب، آماده‌سازی انبار، ارسال به باربری و صدور فاکتور",
+  },
+  coupons: {
+    breadcrumb: ["خانه ERP", "عملیات فروش", "تخفیف و پروموشن‌ها"],
+    title: "موتور قیمت‌گذاری، تخفیف‌ها و کدهای پروموشن",
+    description: "تنظیم سقف و حداقل خرید، کنترل ظرفیت مصرف و فعال‌سازی لحظه‌ای از طریق API",
+  },
+  catalog: {
+    breadcrumb: ["خانه ERP", "کاتالوگ و موجودی", "کاتالوگ و مدیریت PIM"],
+    title: "کاتالوگ تخصصی محصولات، واریانت‌ها و PIM",
+    description: "مدیریت فرمولاسیون، بیواینرت‌ها، ادعاهای بالینی و دارایی‌های رسانه‌ای DAM",
+  },
+  inventory: {
+    breadcrumb: ["خانه ERP", "کاتالوگ و موجودی", "انبار، رزروها و زنجیره سرد"],
+    title: "کنترل انبار، رزروهای سبد خرید و زنجیره سرد",
+    description: "ردیابی موقعیت قفسه‌ها، پایش دمای سردخانه ۲-۸ درجه و کنترل آستانه هشدار کسری",
+  },
+  clinical: {
+    breadcrumb: ["خانه ERP", "کلینیکال و محتوا", "ادعاهای بالینی، INCI و مقالات"],
+    title: "شورای نظارت علمی، ادعاهای بالینی و استاندارد INCI",
+    description: "اعتبارسنجی آزمایشگاهی کارآزمایی‌های بالینی، کدینگ ترکیبات فرمولاسیون و آکادمی",
+  },
+  b2b: {
+    breadcrumb: ["خانه ERP", "همکاری تجاری", "استعلام‌های عمده کلینیک‌ها (B2B)"],
+    title: "پرتال تجاری استعلام خرید عمده و کلینیک‌های همکار",
+    description: "بررسی پروانه‌های پزشکی، استعلام حجم فرمولاسیون و صدور پیش‌فاکتور رسمی B2B",
+  },
+  subscriptions: {
+    breadcrumb: ["خانه ERP", "همکاری تجاری", "اشتراک‌های دوره‌ای و تکرارشونده"],
+    title: "مدیریت اشتراک‌های درمانی و شارژ دوره‌ای",
+    description: "پایش سیکل‌های اجرای خودکار، توقف موقت و تکرار سفارشات بیماران",
+  },
+  vendors: {
+    breadcrumb: ["خانه ERP", "همکاری تجاری", "فروشندگان مارکت‌پلیس"],
+    title: "مدیریت فروشندگان همکار و کلینیک‌های مارکت‌پلیس",
+    description: "پایش نرخ کمیسیون پلتفرم، تعداد کالاها و اعتبارسنجی مجوزهای فروش",
+  },
+  digital: {
+    breadcrumb: ["خانه ERP", "همکاری تجاری", "لایسنس‌ها و گرنت‌های دیجیتال"],
+    title: "لایسنس‌های دیجیتال و حق دسترسی فایل‌ها",
+    description: "مدیریت سقف دانلود، توکن‌های یکبارمصرف و ابطال دسترسی دوره‌های آموزشی",
+  },
+  finance: {
+    breadcrumb: ["خانه ERP", "امور مالی", "دفتر روزنامه و خروجی سپیدار"],
+    title: "دفترکل مالی، اسناد دوبل‌اندر و خروجی استاندارد سپیدار",
+    description: "ثبت غیرقابل تغییر اسناد حسابداری، بررسی تراز آزمایشی و مغایرت‌گیری بانکی",
+  },
+  ops: {
+    breadcrumb: ["خانه ERP", "سلامت سیستم و عملیات", "صف خروج Outbox و Worker Leases"],
+    title: "مرکز پایش سلامت زیرساخت، صف Outbox و اجاره‌نامه‌ها",
+    description: "نظارت بر Dead-Letter Queue، لتینسی دیتابیس و قفل‌های توزیع‌شده ردیس",
+  },
+};
+
 const INITIAL_ORDERS: OrderItem[] = [
   {
     id: "ord_101",
@@ -175,10 +244,12 @@ export default function AdminDashboardPage() {
 
         {/* Role Switcher */}
         <div style={{ marginBottom: "16px", padding: "0 4px" }}>
-          <label style={{ fontSize: "0.75rem", color: "#a5b4ac", display: "block", marginBottom: "4px" }}>
+          <label htmlFor="admin-role-select" style={{ fontSize: "0.75rem", color: "#c4d4cc", display: "block", marginBottom: "4px" }}>
             نقش عملیاتی فعال:
           </label>
           <select
+            id="admin-role-select"
+            aria-label="نقش عملیاتی فعال"
             className="admin-input"
             style={{ width: "100%", background: "#053733", color: "#fff", border: "1px solid #145e57", fontSize: "0.82rem", padding: "6px" }}
             value={userRole}
@@ -191,7 +262,8 @@ export default function AdminDashboardPage() {
         </div>
 
         <nav className="admin-nav" style={{ overflowY: "auto", maxHeight: "calc(100vh - 220px)" }}>
-          <div className="nav-category-header">عملیات و شاخص‌ها</div>
+          {/* 1. Sales Operations (عملیات فروش) */}
+          <div className="nav-category-header">عملیات فروش (Sales Operations)</div>
           <button
             onClick={() => setActiveTab("overview")}
             className={`nav-btn ${activeTab === "overview" ? "active" : ""}`}
@@ -208,34 +280,39 @@ export default function AdminDashboardPage() {
             )}
           </button>
           <button
-            onClick={() => setActiveTab("inventory")}
-            className={`nav-btn ${activeTab === "inventory" ? "active" : ""}`}
-          >
-            🏬 کنترل انبار و رزرو
-            {lowStockCount > 0 && <span className="badge-alert">!</span>}
-          </button>
-
-          <div className="nav-category-header">کاتالوگ و محتوای بالینی</div>
-          <button
-            onClick={() => setActiveTab("catalog")}
-            className={`nav-btn ${activeTab === "catalog" ? "active" : ""}`}
-          >
-            🧴 کاتالوگ و PIM
-          </button>
-          <button
-            onClick={() => setActiveTab("clinical")}
-            className={`nav-btn ${activeTab === "clinical" ? "active" : ""}`}
-          >
-            🔬 ادعاهای بالینی و آکادمی
-          </button>
-
-          <div className="nav-category-header">فروش و بازاریابی</div>
-          <button
             onClick={() => setActiveTab("coupons")}
             className={`nav-btn ${activeTab === "coupons" ? "active" : ""}`}
           >
             🎟️ تخفیف و کوپن‌ها (API)
           </button>
+
+          {/* 2. Catalog & Inventory (کاتالوگ و موجودی) */}
+          <div className="nav-category-header">کاتالوگ و موجودی (Catalog & Inventory)</div>
+          <button
+            onClick={() => setActiveTab("catalog")}
+            className={`nav-btn ${activeTab === "catalog" ? "active" : ""}`}
+          >
+            🧴 کاتالوگ و مدیریت PIM
+          </button>
+          <button
+            onClick={() => setActiveTab("inventory")}
+            className={`nav-btn ${activeTab === "inventory" ? "active" : ""}`}
+          >
+            🏬 کنترل انبار و رزروها
+            {lowStockCount > 0 && <span className="badge-alert">!</span>}
+          </button>
+
+          {/* 3. Clinical & Content (کلینیکال و محتوا) */}
+          <div className="nav-category-header">کلینیکال و محتوا (Clinical & Content)</div>
+          <button
+            onClick={() => setActiveTab("clinical")}
+            className={`nav-btn ${activeTab === "clinical" ? "active" : ""}`}
+          >
+            🔬 ادعاهای بالینی، INCI و مقالات
+          </button>
+
+          {/* 4. B2B Commercial (همکاری تجاری و B2B) */}
+          <div className="nav-category-header">همکاری تجاری (B2B Commercial)</div>
           <button
             onClick={() => setActiveTab("b2b")}
             className={`nav-btn ${activeTab === "b2b" ? "active" : ""}`}
@@ -261,18 +338,22 @@ export default function AdminDashboardPage() {
             ⬇️ لایسنس‌های دیجیتال
           </button>
 
-          <div className="nav-category-header">مالی و زیرساخت</div>
+          {/* 5. Finance (امور مالی) */}
+          <div className="nav-category-header">امور مالی (Finance)</div>
           <button
             onClick={() => setActiveTab("finance")}
             className={`nav-btn ${activeTab === "finance" ? "active" : ""}`}
           >
-            ⚖️ دفترکل و خروجی سپیدار
+            ⚖️ دفتر روزنامه و خروجی سپیدار
           </button>
+
+          {/* 6. System Health & Ops (سلامت سیستم و عملیات) */}
+          <div className="nav-category-header">سلامت سیستم و عملیات (Health & Ops)</div>
           <button
             onClick={() => setActiveTab("ops")}
             className={`nav-btn ${activeTab === "ops" ? "active" : ""}`}
           >
-            🚨 سلامت سیستم و Outbox
+            🚨 صف Outbox و اجاره‌نامه‌ها
           </button>
         </nav>
 
@@ -295,8 +376,15 @@ export default function AdminDashboardPage() {
       <main className="admin-content">
         <header className="admin-topbar">
           <div>
-            <h1>مرکز عملیات و ERP فروشگاهی Commerce OS</h1>
-            <p>معماری ماژولار، اتصال به سرویس‌های برخط و حذف اطلاعات دمو از چرخه عملیاتی</p>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.8rem", color: "var(--muted)", marginBottom: "6px" }}>
+              <span>{TAB_METADATA[activeTab].breadcrumb[0]}</span>
+              <span>/</span>
+              <span>{TAB_METADATA[activeTab].breadcrumb[1]}</span>
+              <span>/</span>
+              <span style={{ color: "var(--brand-deep)", fontWeight: 700 }}>{TAB_METADATA[activeTab].breadcrumb[2]}</span>
+            </div>
+            <h1>{TAB_METADATA[activeTab].title}</h1>
+            <p>{TAB_METADATA[activeTab].description}</p>
           </div>
           <div className="topbar-actions">
             <button onClick={handleDownloadSepidarCsv} className="btn-sepidar-export">
@@ -316,6 +404,7 @@ export default function AdminDashboardPage() {
             pendingReceiptCount={pendingReceiptCount}
             lowStockCount={lowStockCount}
             userRole={userRole}
+            onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
           />
         )}
 

@@ -58,3 +58,21 @@
 ## Phase 7: Continuous Governance & Release Gates
 - [x] **T-070**: Enforce pre-release quality checklist in `RELEASE_CHECKLIST.md`.
 - [x] **T-071**: Maintain live execution progress table in `PROGRESS.md`.
+
+## Phase 8: Library Architecture & Dependency Governance (LIB-001 to LIB-015)
+- [x] **LIB-001**: Comprehensive `package.json` and lockfile audit; compile `DEPENDENCY_ARCHITECTURE.md`.
+- [x] **LIB-002**: Select unified UI primitive foundation in `@commerce-os/ui` (avoid multi-primitive clutter).
+- [x] **LIB-003**: Establish `lucide-react` as the single canonical icon system across all workspaces.
+- [x] **LIB-004**: Adopt `react-hook-form` and `zod` for client-server clinical validation and Modulo-11 national ID.
+- [x] **LIB-005**: Formalize Server/Client/URL state boundaries (TanStack Query / Zustand / native URL).
+- [x] **LIB-006**: Define ERP table standards with high data density, tabular numerals, and status badges.
+- [x] **LIB-007**: Integrate `embla-carousel-react` in `ClinicalProductGallery` for responsive touch galleries.
+- [x] **LIB-008**: Enforce `motion` transition curves with universal `prefers-reduced-motion` compliance.
+- [x] **LIB-009**: Document rich-text, INCI dossier, and clinical protocol publishing models.
+- [x] **LIB-010**: Validate multi-currency (Rial/Toman) and bilingual RTL/LTR typography isolation.
+- [x] **LIB-011**: Standardize testing stack: Vitest (unit), Playwright (E2E), and axe-core (accessibility).
+- [x] **LIB-012**: Enforce visual baseline consistency across 360px, 390px, 768px, 1280px, and 1440px viewports.
+- [x] **LIB-013**: Enforce privacy-first telemetry with strict masking of PII and zero banking leaks.
+- [x] **LIB-014**: Formalize dependency governance policy prohibiting unauthorized third-party libraries.
+- [x] **LIB-015**: Synchronize agent context pack (`DESIGN_TOKENS.md`, `COLORS.md`, `TASKS.md`, `PROGRESS.md`).
+

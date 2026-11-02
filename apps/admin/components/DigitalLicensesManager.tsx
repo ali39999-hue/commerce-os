@@ -146,66 +146,70 @@ export default function DigitalLicensesManager({ userRole = "SUPER_ADMIN" }: { u
             {loading ? "در حال دریافت لایسنس‌ها…" : "هیچ لایسنس فعالی برای این فیلتر ثبت نشده است."}
           </p>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>عنوان محصول دیجیتال</th>
-                <th>خریدار</th>
-                <th>پیش‌نمایش توکن</th>
-                <th>سقف دانلود</th>
-                <th>انقضا</th>
-                <th>وضعیت</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {grants.map((g) => {
-                const isRevoked = Boolean(g.revokedAt);
-                const isExpired = g.expiresAt && new Date(g.expiresAt).getTime() < Date.now();
-                const busy = busyId === g.id;
+          <div className="table-responsive-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>عنوان محصول دیجیتال</th>
+                  <th>خریدار</th>
+                  <th>پیش‌نمایش توکن</th>
+                  <th>سقف دانلود</th>
+                  <th>انقضا</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {grants.map((g) => {
+                  const isRevoked = Boolean(g.revokedAt);
+                  const isExpired = g.expiresAt && new Date(g.expiresAt).getTime() < Date.now();
+                  const busy = busyId === g.id;
 
-                return (
-                  <tr key={g.id}>
-                    <td className="bold">{str(g.productTitle)}</td>
-                    <td dir="ltr">{str(g.phone)}</td>
-                    <td dir="ltr" className="bold">
-                      {g.token ? `${g.token.slice(0, 8)}...` : "—"}
-                    </td>
-                    <td>
-                      {faNumber(g.downloadCount)} از {faNumber(g.maxDownloads)} بار
-                    </td>
-                    <td>{g.expiresAt ? formatJalaliDateTime(g.expiresAt) : "نامحدود"}</td>
-                    <td>
-                      <span
-                        className={`status-pill ${
-                          isRevoked
-                            ? "rejected"
-                            : isExpired
-                            ? "expired"
-                            : "active"
-                        }`}
-                      >
-                        {isRevoked ? "باطل شده" : isExpired ? "منقضی" : "فعال"}
-                      </span>
-                    </td>
-                    <td>
-                      {!isRevoked && !isExpired ? (
-                        <button
-                          onClick={() => void handleRevoke(g.id)}
-                          disabled={busy}
-                          className="btn-reject"
+                  return (
+                    <tr key={g.id}>
+                      <td className="bold">{str(g.productTitle)}</td>
+                      <td dir="ltr" className="tabular-nums">{str(g.phone)}</td>
+                      <td dir="ltr" className="bold font-mono">
+                        <code style={{ background: "#f3f4f6", padding: "2px 6px", borderRadius: "4px" }}>
+                          {g.token ? `${g.token.slice(0, 8)}...` : "—"}
+                        </code>
+                      </td>
+                      <td className="tabular-nums">
+                        {faNumber(g.downloadCount)} از {faNumber(g.maxDownloads)} بار
+                      </td>
+                      <td className="tabular-nums">{g.expiresAt ? formatJalaliDateTime(g.expiresAt) : "نامحدود"}</td>
+                      <td>
+                        <span
+                          className={`status-pill ${
+                            isRevoked
+                              ? "rejected"
+                              : isExpired
+                              ? "expired"
+                              : "approved"
+                          }`}
                         >
-                          {busy ? "⏳" : "ابطال لایسنس"}
-                        </button>
-                      ) : (
-                        <span className="muted-text">—</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          {isRevoked ? "باطل شده" : isExpired ? "منقضی" : "فعال"}
+                        </span>
+                      </td>
+                      <td>
+                        {!isRevoked && !isExpired ? (
+                          <button
+                            onClick={() => void handleRevoke(g.id)}
+                            disabled={busy}
+                            className="btn-reject"
+                          >
+                            {busy ? "⏳" : "ابطال لایسنس"}
+                          </button>
+                        ) : (
+                          <span className="muted-text">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

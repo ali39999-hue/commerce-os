@@ -676,12 +676,20 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <section className="state-panel empty-cart-box">
-        <h2>سبد خرید شما خالی است</h2>
-        <p>برای تکمیل خرید ابتدا کالاهای موردنظر را به سبد خرید اضافه کنید.</p>
-        <button onClick={() => router.push("/#catalog")} className="primary-link">
-          مشاهده کاتالوگ محصولات
-        </button>
+      <section className="state-panel empty-cart-box" style={{ maxWidth: '640px', margin: '60px auto', textAlign: 'center', padding: '48px 24px' }}>
+        <div className="empty-cart-graphic" aria-hidden="true" style={{ fontSize: '3rem', marginBottom: '16px' }}>🛒</div>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px', color: 'var(--ink)' }}>سبد خرید شما برای تسویه خالی است</h2>
+        <p style={{ color: 'var(--muted)', lineHeight: '1.8', marginBottom: '28px' }}>
+          کالایی در سبد خرید شما یافت نشد. لطفاً پیش از اقدام به ثبت سفارش، محصولات درمانی مورد نظر خود را به سبد بیفزایید.
+        </p>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button onClick={() => router.push("/#featured-products")} className="primary-link" style={{ background: 'var(--brand)', color: '#ffffff', padding: '12px 24px', borderRadius: 'var(--radius-pill)', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+            مشاهده کاتالوگ محصولات
+          </button>
+          <button onClick={() => router.push("/reeskin")} className="primary-link" style={{ background: 'var(--surface-tint)', color: 'var(--brand-deep)', border: '1px solid var(--line)', padding: '12px 24px', borderRadius: 'var(--radius-pill)', fontWeight: 700, cursor: 'pointer' }}>
+            محصولات خانگی ReeSkin™
+          </button>
+        </div>
       </section>
     );
   }

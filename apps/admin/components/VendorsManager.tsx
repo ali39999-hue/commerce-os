@@ -224,28 +224,30 @@ export default function VendorsManager({ userRole = "SUPER_ADMIN" }: { userRole?
             {loading ? "در حال دریافت اطلاعات از سرور…" : "هیچ فروشنده‌ای ثبت نشده است."}
           </p>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>فروشنده</th>
-                <th>شناسه (slug)</th>
-                <th>تعداد محصولات</th>
-                <th>کمیسیون پلتفرم</th>
-                <th>وضعیت</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vendors.map((v) => (
-                <tr key={v.id}>
-                  <td className="bold">{v.titleFa}</td>
-                  <td dir="ltr">{v.slug}</td>
-                  <td>{faNumber(v.productCount)} کالا</td>
-                  <td className="bold">{faNumber((v.commissionBps ?? 1000) / 100)}٪</td>
-                  <td><span className="status-pill active">فعال</span></td>
+          <div className="table-responsive-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>فروشنده</th>
+                  <th>شناسه (slug)</th>
+                  <th>تعداد محصولات</th>
+                  <th>کمیسیون پلتفرم</th>
+                  <th>وضعیت</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {vendors.map((v) => (
+                  <tr key={v.id}>
+                    <td className="bold">{v.titleFa}</td>
+                    <td dir="ltr" className="font-mono">{v.slug}</td>
+                    <td className="tabular-nums">{faNumber(v.productCount)} کالا</td>
+                    <td className="bold tabular-nums">{faNumber((v.commissionBps ?? 1000) / 100)}٪</td>
+                    <td><span className="status-pill approved">فعال</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

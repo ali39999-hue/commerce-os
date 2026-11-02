@@ -7,13 +7,18 @@
 
 ---
 
-## 1. Canonical Viewport Specifications
+## 1. Canonical Viewport Specifications (§16.14 Standards)
 
 | Device Archetype | CSS Viewport (`width x height`) | Device Pixel Ratio (DPR) | User Agent Emulation | Primary Testing Targets |
 | :--- | :--- | :--- | :--- | :--- |
-| **Mobile Standard** | `375px x 812px` | `2.0` | iPhone 13 / 14 Pro Mobile Safari | Sticky cart bar, drawer touch gestures, single-column reflow, thumb reachability |
+| **Mobile Compact** | `360px x 800px` | `2.0` | Android Standard (Samsung Galaxy) | Strict horizontal overflow check (`scrollWidth === clientWidth`), tap targets |
+| **Mobile Standard** | `390px x 844px` | `2.0` | iPhone 14/15 Mobile Safari | Sticky cart bar, drawer touch gestures, single-column reflow, thumb reachability |
+| **Mobile Large** | `430px x 932px` | `3.0` | iPhone 15/16 Pro Max | High-density font rendering, responsive header action wrapping |
 | **Tablet Portrait** | `768px x 1024px` | `2.0` | iPad Gen 9 / 10 | 2-column product grid, collapsible sidebars, Bohr slider touch accuracy |
+| **Tablet Landscape**| `1024px x 768px` | `2.0` | iPad Landscape / Small Laptop | Mega-menu navigation transition, split stages, B2B quote flow |
+| **Desktop Laptop** | `1280px x 800px` | `1.0` | Standard Widescreen Display | 12-column grid container (1280px max-width), multi-tier cart drawer |
 | **Desktop High-Res**| `1440px x 900px` | `1.0` | Modern Chrome / Edge Desktop | 360 Canvas sequence, side-by-side sticky hardware specs, mega-menu dropdowns |
+| **Desktop Ultra-Wide**| `1920px x 1080px` | `1.0` | Full HD / 4K Scaled Monitor | Bounded containers, line-length readability control, admin ERP data density |
 
 ---
 

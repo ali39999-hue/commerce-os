@@ -91,8 +91,32 @@
 
 @media (max-width: 1024px) {
   .cpod-hero-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cpod-container {
+    padding: 0 14px;
+  }
+  .cpod-hero-content {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .cpod-quick-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .cpod-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cpod-btn-cta, .cpod-btn-sub {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
   }
 }
 

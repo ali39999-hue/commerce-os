@@ -14,13 +14,15 @@
 |                                    UI/UX PRE-RELEASE AUDIT GATES                                   |
 +----------------------------------------------------------------------------------------------------+
   Gate U1: Anti-Slop & Asset Authenticity       --> Zero placeholders, zero fake claims, real INCI
-  Gate U2: Design Token & Theme Compliance      --> Obsidian, Cyan, Plasma, Emerald palette adherence
-  Gate U3: RTL & Persian Typography (Vazirmatn)  --> Tabular numerals, logical CSS properties, no leak
-  Gate U4: Viewport Fluidity & Breakpoints      --> Pixel-perfect on 375px, 768px, 1440px
-  Gate U5: Interaction Physics & Hardware 360   --> 60fps canvas, Bohr slider, inertial scrubber
+  Gate U2: Design Token & Theme Compliance      --> Warm Clinical Minimalism (#f7f6f2 canvas, #ffffff surface, #24594f brand)
+  Gate U3: RTL & Persian Typography (Vazirmatn)  --> Tabular numerals, logical CSS properties, no BiDi leak
+  Gate U4: Viewport Fluidity & Breakpoints      --> Pixel-perfect on 360px, 390px, 768px, 1280px, 1440px
+  Gate U5: Interaction Physics & Hardware 360   --> 60fps canvas, Bohr slider, Embla touch gallery
   Gate U6: Form Validation & Iranian Standards  --> 09xx mobile, National ID Modulo-11, Sheba Mod-97
   Gate U7: Accessibility (WCAG 2.2 Level AA)    --> 4.5:1 contrast, visible focus rings, keyboard traps
-  Gate U8: Core Web Vitals & Bundle Budget      --> LCP < 2.0s, CLS < 0.05, INP < 150ms, JS < 120KB
+  Gate U8: Core Web Vitals & Bundle Budget      --> LCP < 2.0s, CLS < 0.05, INP < 150ms, Turbopack build
+  Gate U9: Library Architecture Governance      --> Zero conflicting primitives, Lucide icons, Zod + HookForm
+
 ```
 
 ---
@@ -89,6 +91,14 @@
 - [ ] **Interaction to Next Paint (INP)**: Under `150ms`.
 - [ ] **Production Build**: `pnpm --filter @commerce-os/storefront run build` exits with code `0`.
 - [ ] **TypeScript Check**: `pnpm tsc --noEmit` returns zero errors and zero warnings.
+
+### Gate U9: Library Architecture Governance (§16 & §17)
+- [ ] **Single Component Primitive**: Source-owned primitives in `@commerce-os/ui`; zero multi-primitive conflicts.
+- [ ] **Unified Icons**: 100% Lucide icon coverage; zero unstyled raw emojis in operational controls.
+- [ ] **Touch Galleries**: `embla-carousel-react` used for clinical product showcases and mobile carousels.
+- [ ] **Transactional Validation**: `zod` and `react-hook-form` enforce schema-backed validation on checkout and B2B forms.
+- [ ] **Zero Banking / PII Leak**: Telephone, addresses, and cards masked in logs and telemetry payloads.
+
 
 ---
 

@@ -456,3 +456,160 @@
     grid-column: span 1;
   }
 }
+
+/* ── Multi-Step Wizard Enhancements ── */
+.b2b-wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 12px;
+  overflow-x: auto;
+}
+
+.b2b-wizard-step-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.b2b-wizard-step-btn.active {
+  background: var(--surface);
+  color: var(--brand-deep);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.b2b-wizard-step-btn.completed {
+  color: #047857;
+}
+
+.b2b-wizard-step-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.b2b-wizard-step-btn.active .b2b-wizard-step-dot {
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.b2b-wizard-step-btn.completed .b2b-wizard-step-dot {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.b2b-wizard-step-pane {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.b2b-wizard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.b2b-tier-calc-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.b2b-tier-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.b2b-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.b2b-summary-table td,
+.b2b-summary-table th {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.86rem;
+  text-align: right;
+}
+
+.b2b-summary-table tr:last-child td {
+  border-bottom: none;
+}
+
+.b2b-tracking-banner {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 2px solid #34d399;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 24px;
+  text-align: right;
+}
+
+.b2b-tracking-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #065f46;
+  background: #ffffff;
+  border: 1px dashed #34d399;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px 0;
+  letter-spacing: 2px;
+}

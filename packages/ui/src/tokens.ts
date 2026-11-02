@@ -1,18 +1,79 @@
 /**
- * Design Tokens for Commerce OS (Firuzo Luxe, Clinical & Iranian Commerce Standard).
- * Synthesized for high-trust health, luxury, and regional e-commerce workflows.
+ * Design Tokens for Commerce OS (Dr Dermer Warm Clinical Minimalism & Iranian Commerce Standard).
+ * Synthesized for high-trust health, scientific clinical rigor, luxury tactile feel,
+ * and regional e-commerce workflows. Aligned with Dr Dermer Redesign Blueprint Section 3.2.
  */
 
+/**
+ * Warm Clinical Minimalism Palette
+ * Reference: Dr Dermer Redesign Blueprint Section 3.2 & DD-201
+ */
+export const warmClinicalPalette = {
+  canvas: "#F7F6F2",
+  surface: "#FFFFFF",
+  "surface-soft": "#EEF2ED",
+  surfaceSoft: "#EEF2ED",
+  ink: "#242D29",
+  muted: "#69736D",
+  brand: "#24594F",
+  "brand-strong": "#17463E",
+  brandStrong: "#17463E",
+  sage: "#DCE8DF",
+  sand: "#EDE5DA",
+  accent: "#C69C70",
+  border: "#E6E5DE",
+  danger: "#B84D4D",
+} as const;
+
+export type WarmClinicalPalette = typeof warmClinicalPalette;
+export const color = warmClinicalPalette;
+
 export const designTokens = {
+  // Direct Warm Clinical Minimalism palette mapping
+  color: warmClinicalPalette,
+
   colors: {
-    // Clinical Teal: Primary brand palette for healthcare, trust, and luxury wellness
+    // Warm Clinical Minimalism Primary Palette Tokens
+    canvas: "#F7F6F2",
+    surfaceSoft: "#EEF2ED",
+    "surface-soft": "#EEF2ED",
+    ink: "#242D29",
+    muted: "#69736D",
+    brandStrong: "#17463E",
+    "brand-strong": "#17463E",
+    sage: "#DCE8DF",
+    sand: "#EDE5DA",
+    accent: "#C69C70",
+    border: "#E6E5DE",
+    danger: "#B84D4D",
+    warmClinical: warmClinicalPalette,
+
+    // Clinical Brand (Warm Clinical Minimalist primary)
+    clinicalBrand: {
+      50: "#F4F7F5",
+      100: "#E6ECE8",
+      200: "#DCE8DF", // pale sage
+      300: "#A9C4B5",
+      400: "#5D8F82",
+      500: "#24594F", // Primary brand
+      600: "#1E4C43",
+      700: "#17463E", // brand-strong
+      800: "#123731",
+      900: "#0C2420",
+      DEFAULT: "#24594F",
+      hover: "#17463E",
+      tint: "#EEF2ED",
+      soft: "#DCE8DF",
+    },
+
+    // Clinical Teal: Primary brand palette for healthcare, trust, and luxury wellness (backward-compatible)
     clinicalTeal: {
       50: "#F0FDFB",
       100: "#CCFBF4",
       200: "#99F6E7",
       300: "#5EEAD6",
       400: "#2DD4BE",
-      500: "#0B6E66", // Firuzo primary
+      500: "#0B6E66", // Firuzo primary (compatible)
       600: "#085751",
       700: "#06433F",
       800: "#04302D",
@@ -56,17 +117,17 @@ export const designTokens = {
       DEFAULT: "#0F172A",
     },
 
-    // Warm Marble: Gentle background warmth, luxury tactile feel
+    // Warm Marble: Gentle background warmth, luxury tactile feel (aligned with warm canvas & surface-soft)
     warmMarble: {
       50: "#FDFBF7",
-      100: "#FBF4EE", // Soft warm background
-      200: "#F5EDE4", // Subtle surface
-      300: "#EADCCF", // Border
-      400: "#DAC3B0",
-      500: "#BFA38E",
-      DEFAULT: "#FBF4EE",
-      subtle: "#F5EDE4",
-      border: "#EADCCF",
+      100: "#F7F6F2", // Soft warm canvas background
+      200: "#EEF2ED", // Subtle surface / surface-soft
+      300: "#E6E5DE", // Crisp divider / border
+      400: "#EDE5DA", // Warm sand editorial
+      500: "#C69C70", // Warm amber/accent
+      DEFAULT: "#F7F6F2",
+      subtle: "#EEF2ED",
+      border: "#E6E5DE",
     },
 
     // Amber Accent: Warm high-conversion CTAs, badges, discounts, and highlights
@@ -76,54 +137,57 @@ export const designTokens = {
       200: "#FDE68A",
       300: "#FCD34D",
       400: "#FBBF24",
-      500: "#F2A33A", // Signature Amber CTA
-      600: "#D97706",
-      700: "#B45309",
-      800: "#92400E",
-      900: "#78350F",
-      DEFAULT: "#F2A33A",
-      hover: "#D97706",
-      tint: "#FEF6EB",
-      contrast: "#1A1A1A",
+      500: "#C69C70", // Signature warm amber/accent (#C69C70)
+      600: "#B0855A",
+      700: "#996F46",
+      800: "#7A5533",
+      900: "#5C3E24",
+      DEFAULT: "#C69C70",
+      hover: "#B0855A",
+      tint: "#FBF7F2",
+      contrast: "#242D29",
     },
 
-    // Backward-compatible Brand & Action mappings
+    // Backward-compatible Brand & Action mappings (aligned to Warm Clinical Teal #24594F)
     brand: {
-      DEFAULT: "#0B6E66",
-      hover: "#085751",
-      tint: "#E6F3F1",
-      soft: "#C2E2DE",
+      DEFAULT: "#24594F", // deep brand clinical teal/green
+      hover: "#17463E",   // brand-strong
+      strong: "#17463E",  // brand-strong
+      tint: "#EEF2ED",    // soft clean slate/tint
+      soft: "#DCE8DF",    // pale sage background
     },
     action: {
-      DEFAULT: "#F2A33A",
-      hover: "#D97706",
-      tint: "#FEF6EB",
-      contrast: "#1A1A1A",
+      DEFAULT: "#C69C70",
+      hover: "#B0855A",
+      tint: "#FBF7F2",
+      contrast: "#242D29",
     },
 
     // Surfaces
     surface: {
-      page: "#FBF4EE",
-      card: "#FFFFFF",
+      DEFAULT: "#FFFFFF",
+      page: "#F7F6F2",        // color.canvas
+      card: "#FFFFFF",        // color.surface
       elevated: "#FFFFFF",
-      subtle: "#F5EDE4",
-      border: "#EADCCF",
-      borderFocus: "#0B6E66",
+      soft: "#EEF2ED",        // color.surface-soft
+      subtle: "#EEF2ED",      // color.surface-soft
+      border: "#E6E5DE",      // color.border
+      borderFocus: "#24594F", // color.brand
       glass: "rgba(255, 255, 255, 0.85)",
-      glassDark: "rgba(15, 23, 42, 0.85)",
-      backdrop: "rgba(15, 23, 42, 0.6)",
+      glassDark: "rgba(36, 45, 41, 0.85)",
+      backdrop: "rgba(36, 45, 41, 0.6)",
     },
 
     // Typography
     text: {
-      primary: "#0F172A",
-      secondary: "#475569",
-      muted: "#64748B",
-      hint: "#94A3B8",
+      primary: "#242D29",   // color.ink (deep clinical ink)
+      secondary: "#69736D", // color.muted (subtle text)
+      muted: "#69736D",     // color.muted
+      hint: "#8E9892",
       inverse: "#FFFFFF",
-      brand: "#0B6E66",
-      bio: "#15803D",
-      accent: "#B45309",
+      brand: "#24594F",     // color.brand
+      bio: "#166534",
+      accent: "#C69C70",    // color.accent
     },
 
     // Status Colors
@@ -134,7 +198,7 @@ export const designTokens = {
       warning: "#F59E0B",
       warningBg: "#FFFBEB",
       warningBorder: "#FDE68A",
-      danger: "#EF4444",
+      danger: "#B84D4D",    // color.danger
       dangerBg: "#FEF2F2",
       dangerBorder: "#FECACA",
       info: "#3B82F6",

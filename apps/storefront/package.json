@@ -5,14 +5,19 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p 3000",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@commerce-os/domain": "workspace:*",
     "@commerce-os/localization": "workspace:*",
+    "embla-carousel-react": "^8.6.0",
+    "lucide-react": "^1.66.0",
     "next": "^16.2.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.91.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

@@ -14,6 +14,7 @@ import {
 } from '../../lib/compare';
 import {
   getClinicalSpecs,
+  getCanonicalProductHref,
   RECOMMENDED_CLINICAL_PRODUCTS,
 } from '../../lib/clinical-specs';
 
@@ -21,7 +22,7 @@ export const DEFAULT_CLINICAL_COMPARE_ITEMS: CompareItem[] = [
   {
     variantId: 'prod_skin_001',
     productId: 'prod_skin_001',
-    slug: 'carboxygel-professional-therapy',
+    slug: 'carboxygel',
     title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
     sku: 'CBG-PRO-500ML',
     priceAmount: '48500000',
@@ -31,7 +32,7 @@ export const DEFAULT_CLINICAL_COMPARE_ITEMS: CompareItem[] = [
   {
     variantId: 'prod_clinical_carboxypod',
     productId: 'prod_clinical_carboxypod',
-    slug: 'carboxypod-activation-pads',
+    slug: 'carboxypod',
     title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
     sku: 'RMD-CPD-005',
     priceAmount: '12500000',
@@ -290,7 +291,7 @@ export default function ComparePage() {
                     <span className="compare-brand-tag">{item.specs.brand}</span>
                     <Link
                       className="compare-header-title"
-                      href={`/products/${encodeURIComponent(item.slug)}`}
+                      href={getCanonicalProductHref(item.slug)}
                     >
                       {item.title}
                     </Link>
@@ -316,7 +317,7 @@ export default function ComparePage() {
               {itemsSpecs.map((item) => (
                 <td key={item.variantId} className="compare-val-cell">
                   <Link
-                    href={`/products/${encodeURIComponent(item.slug)}`}
+                    href={getCanonicalProductHref(item.slug)}
                     className="compare-art"
                     aria-hidden="true"
                     tabIndex={-1}

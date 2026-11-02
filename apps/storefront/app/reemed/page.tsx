@@ -294,6 +294,52 @@ export default function ReeMedBrandPage() {
         </div>
       </section>
 
+      {/* ── Decision Guide: How Clinics Choose ReeMed ── */}
+      <section className="reemed-section" id="pro-guide" aria-labelledby="pro-guide-title">
+        <div className="reemed-section-header">
+          <span className="medical-tag">راهنمای تجهیز و همکاری کلینیک</span>
+          <h2 id="pro-guide-title">مدل‌های همکاری و تجهیز مراکز تخصصی پوست</h2>
+          <p>
+            تسهیل فرآیند تجهیز مطب‌ها، کلینیک‌ها و بیمارستان‌های تخصصی بر اساس سطح خدمات درمانی و تیراژ مراجعین:
+          </p>
+        </div>
+
+        <div className="reemed-guide-grid">
+          <div className="reemed-guide-card">
+            <span className="reemed-guide-tag">مدل ۱: تجهیز سخت‌افزاری</span>
+            <h3>خرید استیشن‌های CarboX و PlasmaX</h3>
+            <p>
+              مناسب برای کلینیک‌های جراحی و پوست که نیازمند تجهیزات پیشرفته تزریق میکروگاز CO₂ و بلفاروپلاستی بدون جراحی با گارانتی ۲۴ ماهه هستند.
+            </p>
+            <div className="reemed-guide-foot">
+              <span>شامل ترولی، هندپیس یدک و آموزش اپراتوری</span>
+            </div>
+          </div>
+
+          <div className="reemed-guide-card">
+            <span className="reemed-guide-tag">مدل ۲: تأمین دوره‌ای کابین</span>
+            <h3>پک‌های بزرگ ژل ۵۰۰/۱۵۰۰ml و پادها</h3>
+            <p>
+              مناسب برای بیوتی‌تراپیست‌ها و پزشکان که پروتکل‌های ماهانه دارند؛ با فاکتور رسمی، تخفیف پلکانی حجم و تحویل سرد دارویی.
+            </p>
+            <div className="reemed-guide-foot">
+              <span>تخفیف ۱۰ الی ۱۵ درصدی سفارش‌های تیراژ مطب</span>
+            </div>
+          </div>
+
+          <div className="reemed-guide-card">
+            <span className="reemed-guide-tag">مدل ۳: آموزش و بازآموزی</span>
+            <h3>کارگاه‌های عملی و مدارک CME</h3>
+            <p>
+              دوره‌های هندز-آن (Hands-On) کار با دستگاه‌ها تحت نظارت اساتید درماتولوژی کمبریج با اعطای سرتیفیکیت معتبر بین‌المللی.
+            </p>
+            <div className="reemed-guide-foot">
+              <span>امتیاز بازآموزی رسمی درماتولوژی</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Flagship Medical Devices Showcase ── */}
       <section className="reemed-section" id="devices" aria-labelledby="devices-title">
         <div className="reemed-section-header">

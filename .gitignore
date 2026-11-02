@@ -20,4 +20,8 @@ apps/api/prisma/diff-err.txt
 playwright-report/
 test-results/
 
+# High-resolution screenshots and capture archives
+screenshots/
+*.zip
+
 

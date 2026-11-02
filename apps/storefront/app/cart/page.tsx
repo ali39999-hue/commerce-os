@@ -91,16 +91,20 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <section className="state-panel empty-cart-box">
-        <div className="empty-cart-graphic" aria-hidden="true">🛒</div>
-        <h2>سبد خرید و نسخه شما خالی است</h2>
-        <p>
-          هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد خود
-          اضافه نکرده‌اید.
+      <section className="state-panel empty-cart-box" style={{ maxWidth: '640px', margin: '60px auto', textAlign: 'center', padding: '48px 24px' }}>
+        <div className="empty-cart-graphic" aria-hidden="true" style={{ fontSize: '3rem', marginBottom: '16px' }}>🛒</div>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px', color: 'var(--ink)' }}>سبد خرید و نسخه شما خالی است</h2>
+        <p style={{ color: 'var(--muted)', lineHeight: '1.8', marginBottom: '28px' }}>
+          هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد نسخه خود اضافه نکرده‌اید. برای شروع درمان، از کاتالوگ محصولات دیدن فرمایید.
         </p>
-        <Link href="/#catalog" className="primary-link">
-          مشاهده کاتالوگ درمانی و محصولات ReeSkin & ReeMed
-        </Link>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/#featured-products" className="primary-link" style={{ background: 'var(--brand)', color: '#ffffff', padding: '12px 24px', borderRadius: 'var(--radius-pill)', textDecoration: 'none', fontWeight: 700 }}>
+            مشاهده محصولات منتخب درمانی
+          </Link>
+          <Link href="/reeskin" className="primary-link" style={{ background: 'var(--surface-tint)', color: 'var(--brand-deep)', border: '1px solid var(--line)', padding: '12px 24px', borderRadius: 'var(--radius-pill)', textDecoration: 'none', fontWeight: 700 }}>
+            خانواده محصولات خانگی ReeSkin™
+          </Link>
+        </div>
       </section>
     );
   }
