@@ -11,6 +11,8 @@ import {
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
+import { DEFAULT_TENANT_ID, CurrentCustomer } from "../common/guards/current-tenant.decorator";
 import { SubscriptionsService } from "./subscriptions.service";
 
 // ADR-009: اشتراک‌های دوره‌ای — فهرست پلن‌ها، ثبت عضویت، مدیریت کاربر، لیست ادمین
@@ -43,7 +45,8 @@ export class SubscriptionsController {
     });
   }
 
-  // GET /v1/subscriptions/users/:userId — اشتراک‌های من
+  // GET /v1/subscriptions/users/:userId — legacy route kept for the
+  // verification scripts; browser flows must use the session-bound /me.
   @Get("users/:userId")
   async listForUser(
     @Param("userId") userId: string,
@@ -51,6 +54,17 @@ export class SubscriptionsController {
   ) {
     const tenant = this.requireTenant(tenantId);
     return this.subscriptionsService.listForUser(userId, tenant);
+  }
+
+  // GET /v1/subscriptions/me — session-bound "my subscriptions" (AUTH-002
+  // step 2): the userId always comes from the OTP session, never the URL.
+  @Get("me")
+  @UseGuards(SessionUserGuard)
+  async listMySubscriptions(@CurrentCustomer() customer: SessionCustomer | undefined) {
+    if (!customer) {
+      throw new UnauthorizedException("برای مشاهده اشتراک‌های خود ابتدا وارد شوید");
+    }
+    return this.subscriptionsService.listForUser(customer.id, DEFAULT_TENANT_ID);
   }
 
   // Subscription lifecycle moves are admin console decisions (AUTH-003);

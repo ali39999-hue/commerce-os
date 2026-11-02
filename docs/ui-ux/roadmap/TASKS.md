@@ -79,6 +79,6 @@
 
 ## Phase 9: Security & Access Control (AUTH-001 to AUTH-004)
 - [x] **AUTH-001**: AdminGuard on admin-internal endpoints (`/v1/ops/*`, `/v1/ledger/*`) — OTP session with staff role or timing-safe `x-admin-api-key`; OTP login gate wired into the admin console; runtime-verified 401/200 matrix in `docs/security/SECURITY_BASELINE.md`.
-- [ ] **AUTH-002**: Bind resource ownership/tenancy to the authenticated identity — **Step 1 done**: guarded routes resolve tenant server-side via `@CurrentTenant()` (session → `DEFAULT_TENANT_ID`, service key → trusted header); remaining: storefront customer flows bind to the OTP session identity instead of raw `x-user-id`/`x-tenant-id`.
+- [x] **AUTH-002**: Resource identity/tenancy bound to the authenticated session — Step 1: guarded routes resolve tenant server-side via `@CurrentTenant()` (session → `DEFAULT_TENANT_ID`, service key → trusted header). Step 2: storefront `CustomerSessionProvider` with OTP login; `GET /v1/subscriptions/me` derives the userId from the session, never the URL (legacy `users/:userId` kept for scripts only).
 - [x] **AUTH-003**: AdminGuard extended to every mutating admin route — orders transition, coupon create/toggle, C2C receipt approval, digital license revoke, loyalty adjust, review moderation, wallet credit/debit, subscription pause/resume/cancel + admin list, B2B status change (storefront flows stay public); verification scripts act as service-key clients; IdentityModule is @Global for guard DI.
 - [ ] **AUTH-004**: Per-endpoint DTOs replacing whole-body pass-through on resource writes.

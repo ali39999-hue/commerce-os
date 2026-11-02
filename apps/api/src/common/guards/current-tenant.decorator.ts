@@ -1,4 +1,5 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import type { SessionCustomer } from "./session-user.guard";
 
 /**
  * Default tenant for the single-tenant deployment profile. Client-supplied
@@ -18,5 +19,16 @@ export const CurrentTenant = createParamDecorator(
     return typeof request.tenantId === "string" && request.tenantId.length > 0
       ? request.tenantId
       : DEFAULT_TENANT_ID;
+  },
+);
+
+/**
+ * Parameter decorator that reads the session-resolved customer identity
+ * attached by SessionUserGuard (request.customerUser) — undefined for guests.
+ */
+export const CurrentCustomer = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): SessionCustomer | undefined => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.customerUser;
   },
 );

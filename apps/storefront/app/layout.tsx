@@ -3,6 +3,7 @@ import './globals.css';
 import { CartProvider } from '../components/cart';
 import { CartDrawer } from '../components/cart-drawer';
 import { LocalizationProvider } from '../lib/localization-context';
+import { CustomerSessionProvider } from '../lib/customer-session';
 import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
 import { PwaRegister } from '../components/pwa-register';
@@ -121,6 +122,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           پرش به محتوای اصلی صفحه (کلید Enter)
         </a>
         <LocalizationProvider>
+          <CustomerSessionProvider>
           <CartProvider>
             <div className="page-shell-wrapper">
               <SiteHeader />
@@ -131,6 +133,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </div>
             <CartDrawer />
           </CartProvider>
+          </CustomerSessionProvider>
         </LocalizationProvider>
         <Toaster position="bottom-left" dir="rtl" richColors closeButton />
         <PwaRegister />
