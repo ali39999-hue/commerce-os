@@ -98,7 +98,10 @@ export default function InventoryWarehouseManager({
     setSelectedSku(null);
   };
 
+  const canRestock = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
   const lowStockItems = items.filter((i) => i.available <= i.threshold);
+  const coldChainItems = items.filter((i) => i.isColdChain);
+  const totalColdChainAvailable = coldChainItems.reduce((sum, i) => sum + i.available, 0);
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
@@ -122,6 +125,15 @@ export default function InventoryWarehouseManager({
 
   return (
     <div className="tab-pane">
+      {userRole === "ACCOUNTANT" && (
+        <div className="role-notice-banner info">
+          <span>
+            <strong>نقش فعال: حسابدار (ACCOUNTANT) — دسترسی ناظر بر ارزش انبار:</strong> مشاهده مقادیر فیزیکی، رزروها و زنجیره سرد جهت ارزیابی بهای تمام‌شده کالای فروش‌رفته (COGS). شارژ فیزیکی و جابجایی کالا مختص اپراتور انبار است.
+          </span>
+          <span className="domain-access-badge access-view_only">ارزش‌گذاری مالی</span>
+        </div>
+      )}
+
       {lowStockItems.length > 0 && (
         <div className="banner-offline-warning" style={{ background: "#fffbeb", borderColor: "#fde68a", color: "#92400e" }}>
           <div>
@@ -132,29 +144,39 @@ export default function InventoryWarehouseManager({
 
       {message && <div className="form-feedback-success">{message}</div>}
 
-      <div className="kpi-grid">
+      <div className="kpi-grid kpi-grid-5">
         <div className="kpi-card">
           <span className="kpi-title">کل اقلام در گردش</span>
-          <strong className="kpi-value">{faNumber(items.length)} SKU</strong>
+          <strong className="kpi-value tabular-nums">{faNumber(items.length)} SKU</strong>
           <span className="kpi-sub">انبار مرکزی و سردخانه دارویی</span>
         </div>
         <div className="kpi-card highlight">
           <span className="kpi-title">موجودی فیزیکی کل</span>
-          <strong className="kpi-value">
+          <strong className="kpi-value tabular-nums">
             {faNumber(items.reduce((sum, i) => sum + i.onHand, 0))} عدد
           </strong>
           <span className="kpi-sub">شمارش لحظه‌ای قفسه‌ها</span>
         </div>
         <div className="kpi-card">
           <span className="kpi-title">رزروهای فعال در سبدها</span>
-          <strong className="kpi-value status-ok">
+          <strong className="kpi-value status-ok tabular-nums">
             {faNumber(items.reduce((sum, i) => sum + i.reserved, 0))} رزرو
           </strong>
-          <span className="kpi-sub">قفل ردیفی SELECT ... FOR UPDATE</span>
+          <span className="kpi-sub">قفل ردیفی با اجاره‌نامه ۱۵ دقیقه‌ای</span>
+        </div>
+        <div className="kpi-card highlight">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span className="kpi-title">زنجیره سرد (۲-۸°C)</span>
+            <span className="cold-chain-tag">۲-۸°C</span>
+          </div>
+          <strong className="kpi-value status-ok tabular-nums">
+            {faNumber(totalColdChainAvailable)} قابل فروش
+          </strong>
+          <span className="kpi-sub">{faNumber(coldChainItems.length)} فرمولاسیون حساس (سنسور پایدار)</span>
         </div>
         <div className="kpi-card">
           <span className="kpi-title">کالاهای زیر آستانه هشدار</span>
-          <strong className={`kpi-value ${lowStockItems.length > 0 ? "accent-text" : "status-ok"}`}>
+          <strong className={`kpi-value tabular-nums ${lowStockItems.length > 0 ? "accent-text" : "status-ok"}`}>
             {faNumber(lowStockItems.length)} قلم
           </strong>
           <span className="kpi-sub">نیاز به ثبت سفارش تامین مجدد</span>
@@ -237,9 +259,9 @@ export default function InventoryWarehouseManager({
                       <td className="muted-text">{item.warehouseLocation}</td>
                       <td>
                         {item.isColdChain ? (
-                          <span className="cold-chain-tag">۲-۸°C</span>
+                          <span className="cold-chain-tag">۲-۸°C زنجیره سرد</span>
                         ) : (
-                          <span className="muted-text">دمای اتاق</span>
+                          <span className="muted-text">دمای اتاق (۱۵-۲۵°C)</span>
                         )}
                       </td>
                       <td className="tabular-nums">{faNumber(item.onHand)} عدد</td>
@@ -277,12 +299,16 @@ export default function InventoryWarehouseManager({
                         ) : (
                           <button
                             onClick={() => {
+                              if (!canRestock) return;
                               setSelectedSku(item.sku);
                               setRestockAmount("10");
                             }}
                             className="btn-action"
+                            disabled={!canRestock}
+                            title={!canRestock ? "مختص اپراتور انبار (حسابدار: ارزش‌گذاری)" : "+ شارژ موجودی انبار"}
+                            style={!canRestock ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
                           >
-                            + شارژ موجودی
+                            {canRestock ? "+ شارژ موجودی" : "ارزش‌گذاری مالی"}
                           </button>
                         )}
                       </td>

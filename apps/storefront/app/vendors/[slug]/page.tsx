@@ -15,9 +15,17 @@ import {
   ArrowRight,
   CheckCircle2,
   CalendarCheck,
+  UserCheck,
 } from "lucide-react";
 
 /* ── Types ── */
+export interface VerifiedPractitioner {
+  name: string;
+  role: string;
+  medicalCouncilNo: string;
+  specialty: string;
+}
+
 interface VendorItem {
   id?: string;
   slug?: string;
@@ -31,6 +39,7 @@ interface VendorItem {
   logoColor?: string | null;
   productCount?: number | string;
   isVerified?: boolean;
+  leadPractitioner?: VerifiedPractitioner;
 }
 
 interface VendorProduct {
@@ -66,6 +75,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#084f4a",
     productCount: 8,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر مریم سهرابی",
+      role: "پزشک مسئول فنی و سرپرست بالینی",
+      medicalCouncilNo: "۱۳۹۴۸۲",
+      specialty: "بورد تخصصی درماتولوژی، درماتوپاتولوژی و لیزر",
+    },
   },
   {
     id: "clinic_derm_lab",
@@ -81,6 +96,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#0284c7",
     productCount: 6,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر مسعود فرهمند",
+      role: "پزشک معتمد پوست و زیبایی",
+      medicalCouncilNo: "۱۱۸۹۲۰",
+      specialty: "متخصص پوست و سد دفاعی لاملار",
+    },
   },
   {
     id: "clinic_esfahan_reemed",
@@ -96,6 +117,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#0d9488",
     productCount: 5,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر علیرضا ناصری",
+      role: "پزشک ناظر و مسئول بخش پلاسما",
+      medicalCouncilNo: "۷۴۲۱۰",
+      specialty: "بورد تخصصی جراحی و تکنولوژی‌های پلاسما",
+    },
   },
 ];
 
@@ -319,6 +346,23 @@ export default function VendorStorefrontPage() {
               </strong>
               <span style={{ fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
                 {vendor.specialty}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {vendor.leadPractitioner && (
+          <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+            <UserCheck size={20} color="#16a34a" style={{ flexShrink: 0, marginTop: "2px" }} />
+            <div>
+              <strong style={{ fontSize: "0.82rem", color: "#14532d", display: "block" }}>
+                پزشک ناظر و مسئول فنی:
+              </strong>
+              <span style={{ fontSize: "0.82rem", color: "var(--ink)", fontWeight: 700 }}>
+                {vendor.leadPractitioner.name}
+              </span>
+              <span style={{ display: "block", fontSize: "0.76rem", color: "var(--muted)" }}>
+                {vendor.leadPractitioner.role} · نظام پزشکی: {vendor.leadPractitioner.medicalCouncilNo}
               </span>
             </div>
           </div>

@@ -43,6 +43,7 @@ export interface BlogPost {
   tags: string[];
   isPeerReviewed?: boolean;
   reviewer?: ScientificReviewer;
+  studyLimitations?: string[];
   bibliography?: BibliographyEntry[];
   clinicalProtocol?: ClinicalProtocolSummary;
   relatedProducts?: RelatedProductLink[];
@@ -94,6 +95,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Carbon Dioxide Transdermal", "Centella Asiatica / Madecassoside", "Multi-Molecular Hyaluronic Acid"],
     },
+    studyLimitations: [
+      "تغییرات اکسیژن‌رسانی بافتی حاصل از اثر بوهر ماهیت فیزیولوژیک درون‌زا و گذرا (بین ۲۴ تا ۷۲ ساعت) داشته و برای نتایج پایدار نیازمند پروتکل جلسات مداوم (۴ تا ۶ سشن) است.",
+      "اثربخشی نفوذ ترنس‌درمال دی‌اکسید کربن به ضخامت لایه استراتوم کورنئوم و آماده‌سازی صحیح اولیه پوست وابسته است و نباید جایگزین روش‌های جراحی یا مداخلات تهاجمی گردد.",
+    ],
     bibliography: [
       {
         citation: "Bohr, C., Hasselbalch, K., & Krogh, A. (1904). Über einen in biologischer Beziehung wichtigen Einfluß, den die Kohlensäurespannung des Blutes auf dessen Sauerstoffbindung übt.",
@@ -194,6 +199,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Encapsulated Retinol", "Niacinamide", "Physiological Ceramide Complex", "Tranexamic Acid"],
     },
+    studyLimitations: [
+      "پاسخ بالینی در لک‌های هورمونی ملاسما با جزء عروقی عمیق نیازمند مهار پیوسته حداقل ۱۲ تا ۱۶ هفته‌ای است و نباید ادعای رفع فوری یا ۱۰۰ درصدی مطرح گردد.",
+      "عدم استفاده دقیق از ضدآفتاب وسیع‌الطیف در ساعات روشنایی روز، اثربخشی رتینوئید و نیاسینامید را خنثی کرده و ریسک پدیده ریباند پیگمانتاسیون را به همراه دارد.",
+    ],
     bibliography: [
       {
         citation: "Hakozaki, T. et al. (2002). The effect of niacinamide on reducing cutaneous pigmentation and suppression of melanosome transfer.",
@@ -293,6 +302,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Physiological Ceramide Complex", "Centella Asiatica / Madecassoside", "Copper Tripeptide-1", "Zinc PCA"],
     },
+    studyLimitations: [
+      "ترمیم سد دفاعی پوست با ساختار لیپیدی لاملار ۳:۱:۱ صرفاً بر روی زخم‌های بسته و اپیتلیزاسیون فاز حاد مؤثر است و نباید روی سوختگی‌های درجه ۳ یا زخم‌های عفونی باز اعمال شود.",
+      "تغییرات نفوذپذیری آب (TEWL) در پوست‌های مبتلا به اگزمای ژنتیکی آتوپیک ممکن است کندتر از ارزیابی‌های درون‌تنی آزمایشگاهی به سطح نرمال بازگردد.",
+    ],
     bibliography: [
       {
         citation: "Elias, P. M. (2005). Stratum corneum defensive functions: an integrated view.",
@@ -387,6 +400,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Palmitoyl Tripeptide-5", "Copper Tripeptide-1", "Hyaluronic Acid Multi-Molecular"],
     },
+    studyLimitations: [
+      "سنتز کلاژن ناشی از پپتیدهای سیگنال و ناقل نیازمند فعالیت بیولوژیک سالم فیبروبلاست‌ها بوده و در افراد با سن بیولوژیک بالا یا کمبودهای تغذیه‌ای مزمن با تأخیر همراه است.",
+      "پایداری پیوند کلات مس در حضور اسیدهای لایه‌بردار قوی با pH زیر ۴ یا ویتامین C احیاکننده تخریب می‌شود و رعایت فواصل زمانی مصرف الزامی است.",
+    ],
     bibliography: [
       {
         citation: "Pickart, L. et al. (2015). GHK Peptide as a Natural Modulator of Multiple Cellular Pathways in Skin Regeneration.",
@@ -487,6 +504,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Carboxy Complex (CO₂ Transdermal)", "Copper Tripeptide-1", "Bio-Ceramides", "Silica Microspheres"],
     },
+    studyLimitations: [
+      "تعیین پروتکل درموسوتیکال مستلزم ارزیابی انفرادی فوتوتایپ فیتزپاتریک بیمار در کلینیک است و این راهنما جنبه آموزشی داشته و نباید جایگزین تشخیص حضوری پزشک شود.",
+      "نتایج تلفیقی روش‌های کربوکسی و مراقبت لاملار به همکاری منظم بیمار در رژیم هوم‌کر وابسته است.",
+    ],
     bibliography: [
       {
         citation: "Dermer, D. et al. (2024). Clinical Standards for Transdermal Bohr Delivery and Topical Neovascularization.",
@@ -578,6 +599,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["Isothermal Cold-Chain Packaging", "Temperature Indicator Sensors", "CE Class IIb Logistics Protocol"],
     },
+    studyLimitations: [
+      "حفظ دمای ۲ تا ۸ درجه در بسته‌بندی‌های ایزوترمال دارای بازه استاندارد حداکثر ۴۸ ساعته بوده و در شرایط دمایی شدید تابستان باید به پایش حسگرهای رنگی توجه ویژه شود.",
+      "شرایط ترابری و تأخیرات احتمالی فورس‌ماژور لجستیک خارج از حیطه کنترل آزمایشگاه بوده و پروتکل مرجوعی برای بسته‌های با نشانگر حرارتی مخدوش لحاظ گردیده است.",
+    ],
     bibliography: [
       {
         citation: "World Health Organization. (2019). Model guidance for the storage and transport of time- and temperature-sensitive pharmaceutical products (TTSPP).",
@@ -676,6 +701,10 @@ export const BLOG_POSTS: BlogPost[] = [
       ],
       keyIngredients: ["TTAC Unique Identifier (UID)", "Anti-Counterfeit Hologram", "SSL 256-bit Central Ledger"],
     },
+    studyLimitations: [
+      "استعلام برخط کدهای رهگیری TTAC وابسته به سرویس‌های مرکزی سامانه رگولاتوری است و در موارد قطعی موقت شبکه باید بارکد دوبعدی فیزیکی بررسی شود.",
+      "فاکتورهای رسمی و تسویه حسابداری B2B برای سفارش‌های عمده نیازمند تطبیق شماره اقتصادی و شناسه ملی معتبر مرکز درمانی است.",
+    ],
     bibliography: [
       {
         citation: "Dabbous, A. et al. (2020). Combating counterfeit cosmeceuticals and medical devices: The role of unique serialization and track-and-trace systems.",

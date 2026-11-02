@@ -17,6 +17,7 @@ export interface DigitalGrant {
 }
 
 export default function DigitalLicensesManager({ userRole = "SUPER_ADMIN" }: { userRole?: string }) {
+  const canRevoke = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
   const [grants, setGrants] = useState<DigitalGrant[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -185,7 +186,7 @@ export default function DigitalLicensesManager({ userRole = "SUPER_ADMIN" }: { u
                               ? "rejected"
                               : isExpired
                               ? "expired"
-                              : "approved"
+                              : "approved pulse"
                           }`}
                         >
                           {isRevoked ? "باطل شده" : isExpired ? "منقضی" : "فعال"}
@@ -194,9 +195,14 @@ export default function DigitalLicensesManager({ userRole = "SUPER_ADMIN" }: { u
                       <td>
                         {!isRevoked && !isExpired ? (
                           <button
-                            onClick={() => void handleRevoke(g.id)}
-                            disabled={busy}
+                            onClick={() => {
+                              if (!canRevoke) return;
+                              void handleRevoke(g.id);
+                            }}
+                            disabled={busy || !canRevoke}
                             className="btn-reject"
+                            title={!canRevoke ? "صرفاً توسط اپراتور یا مدیر سیستم" : "ابطال لایسنس"}
+                            style={!canRevoke ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
                           >
                             {busy ? "⏳" : "ابطال لایسنس"}
                           </button>

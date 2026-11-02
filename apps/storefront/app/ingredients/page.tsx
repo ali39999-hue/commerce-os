@@ -108,6 +108,28 @@ export default function IngredientsPage() {
             </Link>
           </div>
         </div>
+
+        {/* Regulatory Governance Disclaimer */}
+        <div
+          style={{
+            marginTop: "20px",
+            background: "#f8fafc",
+            border: "1px solid #cbd5e1",
+            borderRadius: "12px",
+            padding: "12px 18px",
+            fontSize: "0.8rem",
+            color: "#475569",
+            lineHeight: "1.7",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <span style={{ fontSize: "1.1rem" }}>⚖️</span>
+          <span>
+            <strong>انطباق با استانداردهای رگولاتوری:</strong> اطلاعات مندرج در این اطلس صرفاً جنبه تشریح بیوشیمیایی و بیوفیزیک مواد مؤثره داشته و بدون اغراق درمانی است. این داده‌ها جایگزین مشاوره و پروتکل‌های تجویزی متخصصین پوست نمی‌باشد.
+          </span>
+        </div>
       </header>
 
       {/* ── Interactive Ingredients Registry with Live Search, CAS, CIR & Filter Pills ── */}

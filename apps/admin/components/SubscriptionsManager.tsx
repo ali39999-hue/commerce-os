@@ -33,7 +33,7 @@ export interface SubscriptionsResponse {
 }
 
 const SUBS_STATUS_PILL: Record<string, { cls: string; fa: string }> = {
-  ACTIVE: { cls: "paid", fa: "فعال" },
+  ACTIVE: { cls: "paid pulse", fa: "فعال" },
   PAUSED: { cls: "paused", fa: "موقتاً متوقف" },
   CANCELLED: { cls: "cancelled", fa: "لغوشده" },
   EXPIRED: { cls: "expired", fa: "منقضی" },

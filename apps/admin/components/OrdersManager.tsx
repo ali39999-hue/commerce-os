@@ -52,8 +52,8 @@ export default function OrdersManager({
   const [actionBusyId, setActionBusyId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Check roles: ACCOUNTANT and OPERATOR have different permissions
-  const canVerifyPayment = userRole === "SUPER_ADMIN" || userRole === "ACCOUNTANT" || userRole === "OPERATOR";
+  // Check roles: ACCOUNTANT and OPERATOR have different permissions (SoD)
+  const canVerifyPayment = userRole === "SUPER_ADMIN" || userRole === "ACCOUNTANT";
   const canDispatchOrder = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
 
   const handlePrintInvoice = (orderId: string, orderNumber: string) => {
@@ -258,13 +258,13 @@ export default function OrdersManager({
                         <td>
                           <span className={`status-pill ${
                             o.status === "PAID"
-                              ? "paid"
+                              ? "paid pulse"
                               : o.status === "PROCESSING"
                               ? "processing"
                               : o.status === "SHIPPED"
                               ? "shipped"
                               : o.status === "DELIVERED"
-                              ? "active"
+                              ? "active pulse"
                               : "rejected"
                           }`}>
                             {o.status === "PAID"
@@ -469,7 +469,7 @@ export default function OrdersManager({
                         <td>
                           <span className={`status-pill ${
                             r.status === "APPROVED"
-                              ? "approved"
+                              ? "approved pulse"
                               : r.status === "PENDING_REVIEW"
                               ? "pending_review"
                               : "rejected"

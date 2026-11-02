@@ -206,11 +206,49 @@ textarea:focus-visible,
   font-size: .8rem;
   font-weight: 700;
 }
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
 .pulse-dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
   background: #10b981;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.status-pill.paid::before,
+.status-pill.approved::before,
+.status-pill.active::before,
+.status-pill.digital-active::before,
+.status-pill.status-success::before,
+.status-pill.balanced::before,
+.badge-live::before,
+.pulse-indicator {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot,
+  .status-pill.paid::before,
+  .status-pill.approved::before,
+  .status-pill.active::before,
+  .status-pill.digital-active::before,
+  .status-pill.status-success::before,
+  .status-pill.balanced::before,
+  .badge-live::before,
+  .pulse-indicator,
+  .cold-chain-tag::before {
+    animation: none !important;
+  }
 }
 
 /* ── KPIs ── */
@@ -1090,18 +1128,77 @@ textarea:focus-visible,
 .cold-chain-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: #e0f2fe;
   color: #0369a1;
-  border: 1px solid #bae6fd;
+  border: 1px solid #7dd3fc;
   border-radius: 6px;
-  padding: 2px 7px;
+  padding: 2px 8px;
   font-size: .75rem;
-  font-weight: 700;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 .cold-chain-tag::before {
-  content: "❄️";
-  font-size: .72rem;
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0284c7;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Domain Access Badge for Sidebar Categories */
+.domain-access-badge {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  margin-right: auto;
+  letter-spacing: 0;
+}
+.domain-access-badge.access-full {
+  background: rgba(16, 185, 129, 0.22);
+  color: #6ee7b7;
+  border: 1px solid rgba(110, 231, 183, 0.3);
+}
+.domain-access-badge.access-view_only {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+  border: 1px solid rgba(253, 230, 138, 0.3);
+}
+.domain-access-badge.access-restricted {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(252, 165, 165, 0.3);
+}
+
+/* Role Notice Banner for SoD Governance */
+.role-notice-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.role-notice-banner.info {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+.role-notice-banner.warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+.role-notice-banner.restricted {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
 }
 
 /* Balance check pill */
@@ -1125,12 +1222,14 @@ textarea:focus-visible,
   border: 1px solid #fecaca;
 }
 
-/* Table container with responsive horizontal scroll */
+/* Table container with responsive horizontal scroll and compact border */
 .table-responsive-container {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
 /* Pagination bar */

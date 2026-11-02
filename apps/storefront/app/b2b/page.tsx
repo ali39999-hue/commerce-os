@@ -149,10 +149,15 @@ export default function B2BPage() {
         setError(`نام کلینیک یا مرکز درمانی باید حداقل ${RULES.companyName.min} کاراکتر باشد.`);
         return false;
       }
+      const isMedicalPractice = clinicType.includes("پزشک") || clinicType.includes("کلینیک تخصصی");
+      if (isMedicalPractice && !medicalLicenseNo.trim() && !licenseFileSimulated) {
+        setError("برای کلینیک‌های تخصصی و مطب‌های پزشکی، درج شماره نظام پزشکی/پروانه مطب یا بارگذاری تصویر مجوز جهت احراز هویت الزامی است.");
+        return false;
+      }
       if (medicalLicenseNo.trim()) {
         const cleanLicense = toAsciiDigits(medicalLicenseNo.trim().replace(/[\s\-_/]/g, ""));
-        if (cleanLicense.length < 4 || cleanLicense.length > 20) {
-          setError("شماره نظام پزشکی یا پروانه مطب باید حداقل ۴ و حداکثر ۲۰ رقم باشد.");
+        if (cleanLicense.length < 4 || cleanLicense.length > 20 || !/^\d+$/.test(cleanLicense)) {
+          setError("شماره نظام پزشکی یا پروانه مطب باید صرفاً شامل ارقام عددی (بین ۴ تا ۲۰ رقم) باشد.");
           return false;
         }
       }

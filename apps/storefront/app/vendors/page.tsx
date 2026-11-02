@@ -14,9 +14,17 @@ import {
   CheckCircle2,
   ExternalLink,
   Search,
+  UserCheck,
 } from "lucide-react";
 
 /* ── Types ── */
+export interface VerifiedPractitioner {
+  name: string;
+  role: string;
+  medicalCouncilNo: string;
+  specialty: string;
+}
+
 interface VendorItem {
   id?: string;
   slug?: string;
@@ -30,6 +38,7 @@ interface VendorItem {
   logoColor?: string | null;
   productCount?: number | string;
   isVerified?: boolean;
+  leadPractitioner?: VerifiedPractitioner;
 }
 
 interface VendorsPayload {
@@ -53,6 +62,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#084f4a",
     productCount: 8,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر مریم سهرابی",
+      role: "پزشک مسئول فنی و سرپرست بالینی",
+      medicalCouncilNo: "۱۳۹۴۸۲",
+      specialty: "بورد تخصصی درماتولوژی، درماتوپاتولوژی و لیزر",
+    },
   },
   {
     id: "clinic_derm_lab",
@@ -68,6 +83,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#0284c7",
     productCount: 6,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر مسعود فرهمند",
+      role: "پزشک معتمد پوست و زیبایی",
+      medicalCouncilNo: "۱۱۸۹۲۰",
+      specialty: "متخصص پوست و سد دفاعی لاملار",
+    },
   },
   {
     id: "clinic_esfahan_reemed",
@@ -83,6 +104,12 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     logoColor: "#0d9488",
     productCount: 5,
     isVerified: true,
+    leadPractitioner: {
+      name: "دکتر علیرضا ناصری",
+      role: "پزشک ناظر و مسئول بخش پلاسما",
+      medicalCouncilNo: "۷۴۲۱۰",
+      specialty: "بورد تخصصی جراحی و تکنولوژی‌های پلاسما",
+    },
   },
 ];
 
@@ -388,6 +415,32 @@ export default function VendorsPage() {
                   <div>
                     <strong style={{ color: "var(--brand-deep)", display: "block" }}>حیطه تخصص و تجهیزات:</strong>
                     <span style={{ color: "var(--muted)", lineHeight: "1.6" }}>{v.specialty}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Verified Practitioner Badge */}
+              {v.leadPractitioner && (
+                <div
+                  style={{
+                    background: "#f0fdf4",
+                    border: "1px solid #bbf7d0",
+                    borderRadius: "10px",
+                    padding: "8px 12px",
+                    fontSize: "0.76rem",
+                    display: "flex",
+                    gap: "8px",
+                    alignItems: "center",
+                  }}
+                >
+                  <UserCheck size={16} color="#16a34a" style={{ flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontWeight: 800, color: "#14532d" }}>
+                      پزشک ناظر بالینی: {v.leadPractitioner.name}
+                    </span>
+                    <span style={{ color: "#15803d", marginRight: "6px" }}>
+                      (نظام پزشکی: {v.leadPractitioner.medicalCouncilNo})
+                    </span>
                   </div>
                 </div>
               )}

@@ -5,7 +5,14 @@ import "../subscriptions/subscriptions.css";
 import "./digital.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatJalaliDateTime, validateNationalId, toAsciiDigits } from "@commerce-os/localization";
+import {
+  formatJalaliDateTime,
+  validateNationalId,
+  toAsciiDigits,
+  maskIranianMobile,
+  maskNationalId,
+  maskPostalAddress,
+} from "@commerce-os/localization";
 import { formatToman } from "../../lib/catalog";
 import { DigitalBadge } from "../../components/discovery/digital-badge";
 
@@ -488,6 +495,17 @@ export default function AccountPage() {
             {orders.map((o) => {
               const s = statusFa(o.status);
               const trackingCode = o.trackingCode || `POST-${o.orderNumber.replace(/\D/g, "").slice(0, 8)}IR`;
+              const stepIndex =
+                o.status === "DELIVERED"
+                  ? 5
+                  : o.status === "SHIPPED"
+                  ? 4
+                  : o.status === "PROCESSING"
+                  ? 3
+                  : o.status === "PAID"
+                  ? 2
+                  : 1;
+
               return (
                 <div key={o.orderNumber} className="order-history-card">
                   <div className="ohc-head">
@@ -516,6 +534,52 @@ export default function AccountPage() {
                     </strong>
                   </div>
 
+                  {/* Visual 5-Stage Tracking Timeline */}
+                  <div className="ohc-timeline-wrapper">
+                    <span className="ohc-timeline-title">مراحل آماده‌سازی و ارسال مرسوله:</span>
+                    <div className="ohc-timeline-steps">
+                      <div className={`ohc-step ${stepIndex === 1 ? "active" : stepIndex > 1 ? "completed" : ""}`}>
+                        <div className="ohc-step-dot">{stepIndex > 1 ? "✓" : "۱"}</div>
+                        <span className="ohc-step-label">ثبت سفارش</span>
+                      </div>
+                      <div className={`ohc-step ${stepIndex === 2 ? "active" : stepIndex > 2 ? "completed" : ""}`}>
+                        <div className="ohc-step-dot">{stepIndex > 2 ? "✓" : "۲"}</div>
+                        <span className="ohc-step-label">تأیید پرداخت</span>
+                      </div>
+                      <div className={`ohc-step ${stepIndex === 3 ? "active" : stepIndex > 3 ? "completed" : ""}`}>
+                        <div className="ohc-step-dot">{stepIndex > 3 ? "✓" : "۳"}</div>
+                        <span className="ohc-step-label">بسته‌بندی ۲–۸°C</span>
+                      </div>
+                      <div className={`ohc-step ${stepIndex === 4 ? "active" : stepIndex > 4 ? "completed" : ""}`}>
+                        <div className="ohc-step-dot">{stepIndex > 4 ? "✓" : "۴"}</div>
+                        <span className="ohc-step-label">تحویل ناوگان</span>
+                      </div>
+                      <div className={`ohc-step ${stepIndex === 5 ? "completed" : ""}`}>
+                        <div className="ohc-step-dot">{stepIndex === 5 ? "✓" : "۵"}</div>
+                        <span className="ohc-step-label">تحویل مشتری</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Masked Customer & Address Details for PII Protection */}
+                  <div className="ohc-details-masked">
+                    {o.customerPhone && (
+                      <span>
+                        تلفن: <strong dir="ltr">{maskIranianMobile(o.customerPhone)}</strong>
+                      </span>
+                    )}
+                    {o.nationalCode && (
+                      <span>
+                        کد ملی: <strong dir="ltr">{maskNationalId(o.nationalCode)}</strong>
+                      </span>
+                    )}
+                    {o.address && (
+                      <span>
+                        نشانی: <strong>{maskPostalAddress(o.address)}</strong>
+                      </span>
+                    )}
+                  </div>
+
                   {/* Active Shipping Tracking Box */}
                   <div className="ohc-tracking-row">
                     <span>کد رهگیری پستی / تیپاکس:</span>
@@ -523,6 +587,8 @@ export default function AccountPage() {
                     <span className="tracking-status-hint">
                       {o.status === "DELIVERED"
                         ? "✓ تحویل داده شده"
+                        : o.status === "SHIPPED"
+                        ? "مرسوله در مسیر توزیع"
                         : "مرسوله در مرکز تفکیک مبادلات پستی"}
                     </span>
                   </div>

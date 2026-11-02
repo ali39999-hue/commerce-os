@@ -217,16 +217,14 @@ export default function CheckoutPage() {
     if (!phoneValidation.isValid) {
       errors.customerPhone = phoneValidation.message;
     }
+    if (!nationalIdValidation.isValid) {
+      errors.nationalCode = nationalIdValidation.message;
+    }
     if (!postalCodeValidation.isValid) {
       errors.postalCode = postalCodeValidation.message;
     }
     if (!postalAddress.trim() || postalAddress.trim().length < 10) {
       errors.postalAddress = "نشانی دقیق پستی شامل خیابان، کوچه و پلاک الزامی است (حداقل ۱۰ کاراکتر)";
-    }
-    if (needTaxInvoice) {
-      if (!nationalIdValidation.isValid) {
-        errors.nationalCode = nationalIdValidation.message;
-      }
     }
     setStepErrors(errors);
     return Object.keys(errors).length === 0;
@@ -426,6 +424,8 @@ export default function CheckoutPage() {
       try {
         const orderHistoryItem = {
           ...orderSnapshot,
+          totalRials: orderSnapshot.totalRials.toString(),
+          totalTomans: orderSnapshot.totalTomans.toString(),
           status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
           ref: orderResult.paymentIntentId || `REF-${Date.now().toString().slice(-8)}`,
         };
@@ -465,6 +465,8 @@ export default function CheckoutPage() {
       try {
         const orderHistoryItem = {
           ...orderSnapshot,
+          totalRials: orderSnapshot.totalRials.toString(),
+          totalTomans: orderSnapshot.totalTomans.toString(),
           status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
           ref: `REF-${Date.now().toString().slice(-8)}`,
         };
@@ -677,7 +679,13 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <section className="state-panel empty-cart-box" style={{ maxWidth: '640px', margin: '60px auto', textAlign: 'center', padding: '48px 24px' }}>
-        <div className="empty-cart-graphic" aria-hidden="true" style={{ fontSize: '3rem', marginBottom: '16px' }}>🛒</div>
+        <div className="empty-cart-graphic" aria-hidden="true" style={{ width: "64px", height: "64px", margin: "0 auto 16px", color: "var(--brand)" }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "100%", height: "100%" }}>
+            <circle cx="8" cy="21" r="1"/>
+            <circle cx="19" cy="21" r="1"/>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+          </svg>
+        </div>
         <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px', color: 'var(--ink)' }}>سبد خرید شما برای تسویه خالی است</h2>
         <p style={{ color: 'var(--muted)', lineHeight: '1.8', marginBottom: '28px' }}>
           کالایی در سبد خرید شما یافت نشد. لطفاً پیش از اقدام به ثبت سفارش، محصولات درمانی مورد نظر خود را به سبد بیفزایید.
@@ -781,6 +789,40 @@ export default function CheckoutPage() {
                   <span className="field-error-msg">{stepErrors.customerPhone}</span>
                 ) : (
                   <small className="field-hint">۱۱ رقم با پیش‌شماره ۰۹ جهت احراز سامانه شاهکار</small>
+                )}
+              </label>
+
+              <label className="form-field">
+                <div className="field-label-row">
+                  <span>کد ملی ۱۰ رقمی (تطبیق با الگوریتم ممیزی ۱۱) *</span>
+                  {nationalCode && (
+                    <span className={`live-valid-badge ${nationalIdValidation.isValid ? "valid" : "invalid"}`}>
+                      {nationalIdValidation.isValid ? "✓ کد ملی معتبر است" : "نامعتبر"}
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  value={nationalCode}
+                  onChange={(e) => {
+                    const clean = toAsciiDigits(e.target.value).replace(/\D/g, "").slice(0, 10);
+                    setNationalCode(clean);
+                  }}
+                  placeholder="0010312013"
+                  dir="ltr"
+                  maxLength={10}
+                  className={`input-text ${
+                    stepErrors.nationalCode
+                      ? "input-error"
+                      : nationalCode && nationalIdValidation.isValid
+                      ? "input-valid"
+                      : ""
+                  }`}
+                />
+                {stepErrors.nationalCode ? (
+                  <span className="field-error-msg">{stepErrors.nationalCode}</span>
+                ) : (
+                  <small className="field-hint">الگوریتم کنترلی Modulo-11 ثبت احوال</small>
                 )}
               </label>
 
@@ -894,49 +936,18 @@ export default function CheckoutPage() {
                   checked={needTaxInvoice}
                   onChange={(e) => setNeedTaxInvoice(e.target.checked)}
                 />
-                <span>درخواست صدور فاکتور رسمی مالیاتی و ثبت در سامانه مودیان (کد ملی / شناسه ملی)</span>
+                <span>درخواست صدور فاکتور رسمی حقوقی و ثبت سامانه مودیان (شناسه ملی / کد اقتصادی شرکت)</span>
               </label>
 
               {needTaxInvoice && (
                 <div className="tax-fields-grid">
-                  <label className="form-field">
-                    <div className="field-label-row">
-                      <span>کد ملی ۱۰ رقمی (تطبیق با الگوریتم ممیزی ۱۱) *</span>
-                      {nationalCode && (
-                        <span className={`live-valid-badge ${nationalIdValidation.isValid ? "valid" : "invalid"}`}>
-                          {nationalIdValidation.isValid ? "✓ کد ملی معتبر است" : "نامعتبر"}
-                        </span>
-                      )}
-                    </div>
-                    <input
-                      type="text"
-                      value={nationalCode}
-                      onChange={(e) => setNationalCode(e.target.value)}
-                      placeholder="0010312013"
-                      dir="ltr"
-                      maxLength={10}
-                      className={`input-text ${
-                        stepErrors.nationalCode
-                          ? "input-error"
-                          : nationalCode && nationalIdValidation.isValid
-                          ? "input-valid"
-                          : ""
-                      }`}
-                    />
-                    {stepErrors.nationalCode ? (
-                      <span className="field-error-msg">{stepErrors.nationalCode}</span>
-                    ) : (
-                      <small className="field-hint">الگوریتم کنترلی Modulo-11 ثبت احوال</small>
-                    )}
-                  </label>
-
-                  <label className="form-field">
-                    <span>شناسه ملی / کد اقتصادی حقوقی (ویژه کلینیک‌ها و شرکت‌ها)</span>
+                  <label className="form-field full-width">
+                    <span>شناسه ملی شرکت / کد اقتصادی حقوقی (ویژه کلینیک‌ها و مراکز درمانی)</span>
                     <input
                       type="text"
                       value={companyEconomicCode}
                       onChange={(e) => setCompanyEconomicCode(e.target.value)}
-                      placeholder="شناسه ۱۱ رقمی شرکت"
+                      placeholder="شناسه ۱۱ رقمی شرکت یا کد اقتصادی"
                       dir="ltr"
                       className="input-text"
                     />

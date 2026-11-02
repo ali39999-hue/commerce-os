@@ -125,6 +125,7 @@ const INITIAL_PRODUCTS: PimProduct[] = [
 ];
 
 export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRole?: string }) {
+  const canEditPim = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
   const [products, setProducts] = useState<PimProduct[]>(INITIAL_PRODUCTS);
   const [selectedProduct, setSelectedProduct] = useState<PimProduct | null>(null);
   const [showEditor, setShowEditor] = useState(false);
@@ -258,13 +259,17 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     <td className="tabular-nums">{faNumber(p.ingredientsCount)} ماده فعال</td>
                     <td className="tabular-nums">{faNumber(p.claimsCount)} ادعای تاییدشده</td>
                     <td>
-                      <span className={`status-pill ${p.status === "PUBLISHED" ? "approved" : "pending_review"}`}>
+                      <span className={`status-pill ${p.status === "PUBLISHED" ? "approved pulse" : "pending_review"}`}>
                         {p.status === "PUBLISHED" ? "منتشر شده" : "پیش‌نویس"}
                       </span>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(p)} className="btn-action">
-                        ✏️ ویرایش PIM
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className="btn-action"
+                        title={!canEditPim ? "حسابدار: فقط مشاهده کاتالوگ" : "ویرایش کاتالوگ PIM"}
+                      >
+                        {canEditPim ? "ویرایش PIM" : "مشاهده PIM"}
                       </button>
                     </td>
                   </tr>

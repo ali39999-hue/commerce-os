@@ -188,7 +188,13 @@ export default function OpsSystemHealth({
     void loadOpsData();
   }, [loadOpsData]);
 
+  const canTriggerWorkers = userRole === "SUPER_ADMIN";
+
   const handleTriggerReaper = () => {
+    if (!canTriggerWorkers) {
+      setActionNotice("خطای دسترسی (SoD): اجرای دستی ورکرها و پاکسازی قفل‌های ردیس فقط توسط مدیر ارشد مجاز است.");
+      return;
+    }
     setActionNotice("فرمان آزادسازی رزروهای انقضایافته با موفقیت به انبار مرکزی ارسال شد.");
     setWorkerLeases((prev) =>
       prev.map((w) =>
@@ -200,6 +206,10 @@ export default function OpsSystemHealth({
   };
 
   const handleTriggerSepidarSync = () => {
+    if (!canTriggerWorkers) {
+      setActionNotice("خطای دسترسی (SoD): همگام‌سازی دستی با سپیدار فقط توسط مدیر ارشد مجاز است.");
+      return;
+    }
     setActionNotice("جاب همگام‌سازی اسناد با سپیدار سیستم در صف اجرا قرار گرفت.");
     setWorkerLeases((prev) =>
       prev.map((w) =>
@@ -423,17 +433,38 @@ export default function OpsSystemHealth({
 
       {subTab === "leases" && (
         <section className="admin-section-box">
+          {!canTriggerWorkers && (
+            <div className="role-notice-banner warning" style={{ marginBottom: "16px" }}>
+              <span>
+                <strong>پایش اجاره‌نامه‌های لیدر (Redlock):</strong> شما با نقش «{userRole === "ACCOUNTANT" ? "حسابدار ارشد" : "اپراتور سفارشات"}» وارد شده‌اید. فراخوانی دستی یا پاکسازی ورکرها در انحصار مدیر ارشد سیستم (SUPER_ADMIN) است.
+              </span>
+              <span className="badge-live">پایش برخط</span>
+            </div>
+          )}
+
           <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <h2>قفل‌های توزیع‌شده و اجاره‌نامه‌های ورکر (Redis Worker Leases)</h2>
               <small>جلوگیری از اجرای همزمان جاب‌های پس‌زمینه با الگوی توزیع‌شده Redlock و کلیدهای TTL</small>
             </div>
             <div className="action-button-group">
-              <button onClick={handleTriggerReaper} className="btn-action">
-                🧹 پاکسازی دستی رزروها
+              <button
+                onClick={handleTriggerReaper}
+                className="btn-action"
+                disabled={!canTriggerWorkers}
+                style={!canTriggerWorkers ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
+                title={!canTriggerWorkers ? "منحصر به مدیر ارشد سیستم" : "فرمان پاکسازی دستی رزروها"}
+              >
+                پاکسازی دستی رزروها
               </button>
-              <button onClick={handleTriggerSepidarSync} className="btn-action">
-                🔄 فراخوانی ورکر سپیدار
+              <button
+                onClick={handleTriggerSepidarSync}
+                className="btn-action"
+                disabled={!canTriggerWorkers}
+                style={!canTriggerWorkers ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
+                title={!canTriggerWorkers ? "منحصر به مدیر ارشد سیستم" : "فراخوانی ورکر سپیدار"}
+              >
+                فراخوانی ورکر سپیدار
               </button>
             </div>
           </div>
@@ -454,8 +485,8 @@ export default function OpsSystemHealth({
                     <td>{w.leaseHeld ? "دارای قفل فعال (Leader)" : "آزاد / آماده"}</td>
                     <td>{w.lastHeartbeat}</td>
                     <td>
-                      <span className={`status-pill ${w.status === "ACTIVE" ? "approved" : "processing"}`}>
-                        {w.status === "ACTIVE" ? "در حال پردازش" : "آماده به کار"}
+                      <span className={`status-pill ${w.status === "ACTIVE" ? "approved pulse" : "processing"}`}>
+                        {w.status === "ACTIVE" ? "در حال پردازش (لیدر فعال)" : "آماده به کار"}
                       </span>
                     </td>
                   </tr>

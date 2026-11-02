@@ -3,7 +3,12 @@
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatJalaliDateTime } from "@commerce-os/localization";
+import {
+  formatJalaliDateTime,
+  maskIranianMobile,
+  maskNationalId,
+  maskPostalAddress,
+} from "@commerce-os/localization";
 import { formatToman, apiBase } from "../../../lib/catalog";
 import { useCart } from "../../../components/cart";
 
@@ -265,24 +270,24 @@ export default function OrderPage() {
             </strong>
           </div>
           <div className="meta-box">
-            <span className="label">تحویل‌گیرنده و موبایل:</span>
+            <span className="label">تحویل‌گیرنده و موبایل (محافظت حریم خصوصی):</span>
             <strong className="value">
               {orderData?.customerName || "علی علوی"} (
-              <span dir="ltr">{orderData?.customerPhone || "09121234567"}</span>)
+              <span dir="ltr">{maskIranianMobile(orderData?.customerPhone || "09121234567")}</span>)
             </strong>
           </div>
           {orderData?.nationalCode && (
             <div className="meta-box">
               <span className="label">کد ملی ثبت سامانه مودیان:</span>
               <strong className="value" dir="ltr">
-                {orderData.nationalCode}
+                {maskNationalId(orderData.nationalCode)}
               </strong>
             </div>
           )}
           <div className="meta-box full-span">
             <span className="label">نشانی و بازه تحویل:</span>
             <strong className="value">
-              {orderData?.address || "تهران، خیابان آزادی، پلاک ۱۲"} | بازه:{" "}
+              {maskPostalAddress(orderData?.address || "تهران، خیابان آزادی، پلاک ۱۲")} | بازه:{" "}
               {orderData?.deliverySlot || "ساعت ۱۳ الی ۱۷"}
             </strong>
           </div>

@@ -11,6 +11,9 @@ interface ProtocolGuide {
   id: string;
   title: string;
   targetAudience: string;
+  audienceCategory: "اختصاصی پزشکان متخصص (MD / Dermatologist)" | "سطح اسکین‌تراپیست (Esthetician)" | "مشترک (پزشک و تراپیست معتمد)";
+  certificationRequirement: string;
+  qrVerificationNote: string;
   indications: string[];
   equipmentAndFormulations: string[];
   duration: string;
@@ -37,6 +40,9 @@ const CLINICAL_PROTOCOLS: ProtocolGuide[] = [
     id: "bohr-carboxy-protocol",
     title: "پروتکل جامع کربوکسی‌تراپی غیرتهاجمی و آزادسازی اکسیژن بافتی (اثر بوهر)",
     targetAudience: "پزشکان متخصص پوست، جراحان پلاستیک، پزشکان عمومی و بیوتی‌تراپیست‌های معتمد",
+    audienceCategory: "مشترک (پزشک و تراپیست معتمد)",
+    certificationRequirement: "گواهینامه سطح ۱ آکادمی (Certified Esthetician) یا پروانه معتبر پزشکی جهت اجرای پروتکل کابین و کار با سیستم‌های ترنس‌درمال.",
+    qrVerificationNote: "پروتکل دارای شناسه یکتای اعتبارسنجی QR جهت تطبیق آنلاین صلاحیت اپراتور و اصالت متریال در سامانه رجیستری مرکزی آکادمی.",
     duration: "۴۵ دقیقه در هر سشن",
     indications: [
       "تیرگی و پف مقاوم اطراف چشم (Periorbital Hyperpigmentation & Edema)",
@@ -115,6 +121,9 @@ const CLINICAL_PROTOCOLS: ProtocolGuide[] = [
     id: "post-procedure-barrier-protocol",
     title: "پروتکل بازسازی فوری سد دفاعی و ریکاوری پوست پست-لیزر و میکرونیدلینگ",
     targetAudience: "کلینیک‌های مجهز به لیزر CO₂ فرکشنال، میکرونیدلینگ، سابسیژن و هایفوتراپی",
+    audienceCategory: "مشترک (پزشک و تراپیست معتمد)",
+    certificationRequirement: "گذراندن ماژول تخصصی مدیریت سد پوستی و ریکاوری زخم بسته در آکادمی دکتر درمر همراه با ارزیابی بالینی.",
+    qrVerificationNote: "استعلام برخط کد رهگیری جهت تضمین رعایت زنجیره استریل و استانداردهای Good Clinical Practice (GCP).",
     duration: "۳۰ دقیقه در مطب + دوره مراقبت خانگی ۴۸ ساعته",
     indications: [
       "التهاب، اریتما و سوزش شدید بلافاصله پس از لیزرهای فرکشنال و ابلیتیو",
@@ -190,6 +199,9 @@ const CLINICAL_PROTOCOLS: ProtocolGuide[] = [
     id: "melasma-pigment-protocol",
     title: "پروتکل کنترل چندمسیره ملاسما و پیگمانتاسیون مقاوم با ترانگزامیک اسید و رتینوئید بافرشده",
     targetAudience: "پزشکان متخصص پوست و مراکز تخصصی درمان لک و تیرگی",
+    audienceCategory: "اختصاصی پزشکان متخصص (MD / Dermatologist)",
+    certificationRequirement: "پروانه معتبر مطب یا شماره نظام پزشکی (سطح ۲ آکادمی)؛ تجویز اسیدهای مدیکال گرید عمیق و ترانگزامیک اسید ۳٪ در انحصار پزشک معالج است.",
+    qrVerificationNote: "احراز هویت دیجیتال پزشک از طریق اسکن بارکد امنیتی روی بسته پیلینگ جهت پیشگیری از استفاده غیرمجاز.",
     duration: "۴۰ دقیقه در هر سشن کلینیکال",
     indications: [
       "ملاسمای مزمن اپیدرمال و درمال مقاوم به درمان‌های سنتی",
@@ -315,20 +327,39 @@ export default function ProtocolsSubPage() {
               }}
             >
               <div>
-                <span
-                  style={{
-                    background: "var(--brand-tint)",
-                    color: "var(--brand-deep)",
-                    fontSize: "0.78rem",
-                    fontWeight: 800,
-                    padding: "4px 12px",
-                    borderRadius: "999px",
-                    display: "inline-block",
-                    marginBottom: "8px",
-                  }}
-                >
-                  ⏱️ {proto.duration}
-                </span>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", marginBottom: "8px" }}>
+                  <span
+                    style={{
+                      background: "var(--brand-tint)",
+                      color: "var(--brand-deep)",
+                      fontSize: "0.78rem",
+                      fontWeight: 800,
+                      padding: "4px 12px",
+                      borderRadius: "999px",
+                    }}
+                  >
+                    ⏱️ {proto.duration}
+                  </span>
+                  <span
+                    style={{
+                      background:
+                        proto.audienceCategory.includes("پزشکان متخصص")
+                          ? "#e0f2fe"
+                          : "var(--paper)",
+                      color:
+                        proto.audienceCategory.includes("پزشکان متخصص")
+                          ? "#0369a1"
+                          : "var(--brand)",
+                      border: "1px solid var(--line)",
+                      fontSize: "0.76rem",
+                      fontWeight: 800,
+                      padding: "4px 12px",
+                      borderRadius: "999px",
+                    }}
+                  >
+                    🎯 {proto.audienceCategory}
+                  </span>
+                </div>
                 <h2 style={{ margin: 0, fontSize: "1.4rem", color: "var(--brand-deep)", lineHeight: "1.4" }}>
                   {proto.title}
                 </h2>
@@ -351,6 +382,37 @@ export default function ProtocolsSubPage() {
               >
                 استعلام قیمت کیت این پروتکل ←
               </Link>
+            </div>
+
+            {/* Certification & QR Verification Banner */}
+            <div
+              style={{
+                background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)",
+                border: "1px solid #a7f3d0",
+                borderRadius: "14px",
+                padding: "16px 20px",
+                marginBottom: "24px",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "14px",
+              }}
+            >
+              <div>
+                <strong style={{ display: "block", color: "#065f46", fontSize: "0.84rem", marginBottom: "4px" }}>
+                  📜 شرط اخذ گواهینامه و صلاحیت اجرایی:
+                </strong>
+                <span style={{ fontSize: "0.82rem", color: "#047857", lineHeight: "1.7" }}>
+                  {proto.certificationRequirement}
+                </span>
+              </div>
+              <div>
+                <strong style={{ display: "block", color: "#0369a1", fontSize: "0.84rem", marginBottom: "4px" }}>
+                  📱 اعتبارسنجی دیجیتال و استعلام اصالت:
+                </strong>
+                <span style={{ fontSize: "0.82rem", color: "#0284c7", lineHeight: "1.7" }}>
+                  {proto.qrVerificationNote}
+                </span>
+              </div>
             </div>
 
             {/* Grid: Indications & Equipment */}

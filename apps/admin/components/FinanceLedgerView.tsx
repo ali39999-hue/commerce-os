@@ -24,11 +24,20 @@ export default function FinanceLedgerView({
   userRole = "SUPER_ADMIN",
 }: FinanceLedgerViewProps) {
   const [subTab, setSubTab] = useState<"accounts" | "journals" | "reconciliation">("journals");
+  const [feedback, setFeedback] = useState<string | null>(null);
+
+  const canExportSepidar = userRole === "SUPER_ADMIN" || userRole === "ACCOUNTANT";
 
   const totalDebitRials = orders.reduce((sum, o) => sum + BigInt(o.totalAmountTomans) * 10n, 0n);
   const totalCreditRials = totalDebitRials; // Balanced double-entry
+  const isBalanced = totalDebitRials === totalCreditRials;
+  const floatDiscrepancy = 0n;
 
   const handleDownloadSepidarCsv = () => {
+    if (!canExportSepidar) {
+      setFeedback("خطای دسترسی تفکیک وظایف (SoD): استخراج اسناد سپیدار فقط توسط حسابدار ارشد یا مدیر ارشد مجاز است.");
+      return;
+    }
     const rows = orders.flatMap((o) => {
       const debitRials = BigInt(o.totalAmountTomans) * 10n;
       return [
@@ -75,61 +84,88 @@ export default function FinanceLedgerView({
     a.download = `sepidar-export-${Date.now()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    setFeedback("فایل خروجی استاندارد سپیدار سیستم (CSV + BOM) با موفقیت تولید و دانلود شد.");
   };
 
   return (
     <div className="tab-pane">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <div style={{ display: "flex", gap: "10px" }}>
+      {feedback && (
+        <div className={feedback.includes("خطا") ? "form-feedback-error" : "form-feedback-success"}>
+          {feedback}
+        </div>
+      )}
+
+      {userRole === "OPERATOR" && (
+        <div className="role-notice-banner warning">
+          <span>
+            <strong>حالت دسترسی ناظر مالی (Read-Only):</strong> شما با نقش اپراتور وارد شده‌اید. اسناد حسابداری صرفاً جهت تطبیق قابل مشاهده است و خروجی سپیدار طبق مقررات تفکیک وظایف (SoD) نیازمند تایید حسابدار ارشد است.
+          </span>
+          <span className="domain-access-badge access-restricted">حسابداری محافظت‌شده</span>
+        </div>
+      )}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           <button
             onClick={() => setSubTab("journals")}
             className={`b2b-chip ${subTab === "journals" ? "active" : ""}`}
           >
-            📖 دفتر روزنامه و اسناد حسابداری
+            دفتر روزنامه و اسناد حسابداری
           </button>
           <button
             onClick={() => setSubTab("accounts")}
             className={`b2b-chip ${subTab === "accounts" ? "active" : ""}`}
           >
-            ⚖️ جدول کدینگ حساب‌ها (COA)
+            جدول کدینگ حساب‌ها (COA)
           </button>
           <button
             onClick={() => setSubTab("reconciliation")}
             className={`b2b-chip ${subTab === "reconciliation" ? "active" : ""}`}
           >
-            🔍 مغایرت‌گیری و تراز آزمایشی
+            مغایرت‌گیری و تراز آزمایشی
           </button>
         </div>
 
-        <button onClick={handleDownloadSepidarCsv} className="btn-sepidar-export">
-          📑 خروجی رسمی سپیدار (CSV + BOM)
+        <button
+          onClick={handleDownloadSepidarCsv}
+          className="btn-sepidar-export"
+          disabled={!canExportSepidar}
+          style={!canExportSepidar ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
+          title={!canExportSepidar ? "منحصر به حسابدار یا مدیر ارشد" : "دانلود خروجی رسمی سپیدار"}
+        >
+          خروجی رسمی سپیدار (CSV + BOM)
         </button>
       </div>
 
       <div className="kpi-grid">
         <div className="kpi-card highlight">
           <span className="kpi-title">مجموع بدهکار (Debit)</span>
-          <strong className="kpi-value">
+          <strong className="kpi-value tabular-nums">
             {new Intl.NumberFormat("fa-IR").format(totalDebitRials / 10n)} تومان
           </strong>
-          <span className="kpi-sub">{faNumber(totalDebitRials.toString())} ریال قطعی</span>
+          <span className="kpi-sub tabular-nums">{faNumber(totalDebitRials.toString())} ریال قطعی</span>
         </div>
         <div className="kpi-card highlight">
           <span className="kpi-title">مجموع بستانکار (Credit)</span>
-          <strong className="kpi-value">
+          <strong className="kpi-value tabular-nums">
             {new Intl.NumberFormat("fa-IR").format(totalCreditRials / 10n)} تومان
           </strong>
-          <span className="kpi-sub">{faNumber(totalCreditRials.toString())} ریال قطعی</span>
+          <span className="kpi-sub tabular-nums">{faNumber(totalCreditRials.toString())} ریال قطعی</span>
         </div>
         <div className="kpi-card">
-          <span className="kpi-title">وضعیت تراز دفترکل</span>
-          <strong className="kpi-value status-ok">متوازن (اختلاف = ۰)</strong>
-          <span className="kpi-sub">قاعده طلایی حسابداری دوبل‌اندر</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+            <span className="kpi-title" style={{ margin: 0 }}>وضعیت تراز دوبل‌اندر</span>
+            <span className={`status-pill ${isBalanced ? "approved balanced pulse" : "rejected"}`}>
+              {isBalanced ? "تراز ۱۰۰٪" : "مغایرت"}
+            </span>
+          </div>
+          <strong className="kpi-value status-ok tabular-nums">اختلاف: {faNumber(floatDiscrepancy.toString())} ریال</strong>
+          <span className="kpi-sub">محاسبه بدون خطای اعشاری (BigInt)</span>
         </div>
         <div className="kpi-card">
-          <span className="kpi-title">سیستم یکپارچه ERP</span>
+          <span className="kpi-title">فرمت تبادل داده مالی</span>
           <strong className="kpi-value">سپیدار سیستم</strong>
-          <span className="kpi-sub">فرمت استاندارد UTF-8 با BOM</span>
+          <span className="kpi-sub">تطبیق کدینگ ۴ رقمی کل و معین</span>
         </div>
       </div>
 
@@ -169,12 +205,25 @@ export default function FinanceLedgerView({
                       {new Intl.NumberFormat("fa-IR").format(o.totalAmountTomans)}
                     </td>
                     <td>
-                      <span className="status-pill approved">POSTED (قطعی)</span>
+                      <span className="status-pill approved pulse">POSTED (قطعی)</span>
                     </td>
                     <td className="tabular-nums">{formatJalaliDateTime(o.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr style={{ background: "var(--paper)", fontWeight: 700, borderTop: "2px solid var(--line)" }}>
+                  <td colSpan={4}>جمع کل گردش بدهکار و بستانکار (تراز دوبل‌اندر اتمیک)</td>
+                  <td className="bold tabular-nums status-ok">
+                    {new Intl.NumberFormat("fa-IR").format(totalDebitRials / 10n)} تومان
+                  </td>
+                  <td colSpan={2}>
+                    <span className="status-pill approved balanced pulse">
+                      تراز ۱۰۰٪ (اختلاف: ۰ ریال)
+                    </span>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </section>

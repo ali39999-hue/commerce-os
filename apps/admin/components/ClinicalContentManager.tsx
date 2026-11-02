@@ -156,7 +156,13 @@ export default function ClinicalContentManager({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const canApproveClinical = userRole === "SUPER_ADMIN";
+
   const handleApproveClaim = (id: string) => {
+    if (!canApproveClinical) {
+      setActionMessage("خطای دسترسی: بر اساس اصل تفکیک وظایف (SoD)، تایید ادعاهای بالینی تنها در صلاحیت ناظر علمی و مدیر ارشد است.");
+      return;
+    }
     setClaims((prev) =>
       prev.map((c) =>
         c.id === id
@@ -173,6 +179,10 @@ export default function ClinicalContentManager({
   };
 
   const handleRejectClaim = (id: string) => {
+    if (!canApproveClinical) {
+      setActionMessage("خطای دسترسی: رد یا بازبینی ادعاهای بالینی منوط به صلاحیت پزشکی است.");
+      return;
+    }
     setClaims((prev) =>
       prev.map((c) => (c.id === id ? { ...c, status: "REJECTED" } : c))
     );
@@ -216,6 +226,15 @@ export default function ClinicalContentManager({
 
   return (
     <div className="tab-pane">
+      {!canApproveClinical && (
+        <div className="role-notice-banner warning">
+          <span>
+            <strong>شورای داوری علمی و نظارت بالینی (Clinical SoD):</strong> نقش فعال شما «{userRole === "ACCOUNTANT" ? "حسابدار ارشد" : "اپراتور فروش و ارسال"}» است. طبق الزامات فاز ۰۶، اعتبارسنجی کارآزمایی‌ها و صدور برچسب اثربخشی فیزیولوژیک صرفاً با صلاحیت ناظر پزشکی مجاز است.
+          </span>
+          <span className="domain-access-badge access-view_only">داوری پزشکی</span>
+        </div>
+      )}
+
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
         <button
           onClick={() => {
@@ -309,7 +328,7 @@ export default function ClinicalContentManager({
                         <span
                           className={`status-pill ${
                             c.status === "APPROVED"
-                              ? "approved"
+                              ? "approved pulse"
                               : c.status === "REVIEW_REQUIRED"
                               ? "pending_review"
                               : "rejected"
@@ -372,12 +391,18 @@ export default function ClinicalContentManager({
             <button
               onClick={() => handleApproveClaim(selectedClaim.id)}
               className="btn-approve"
+              disabled={!canApproveClinical}
+              title={!canApproveClinical ? "صرفاً با نقش ناظر علمی یا مدیر ارشد سیستم" : "تایید ادعا"}
+              style={!canApproveClinical ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
             >
               ✓ تایید نهایی و صدور برچسب علمی
             </button>
             <button
               onClick={() => handleRejectClaim(selectedClaim.id)}
               className="btn-reject"
+              disabled={!canApproveClinical}
+              title={!canApproveClinical ? "صرفاً با نقش ناظر علمی یا مدیر ارشد سیستم" : "رد ادعا"}
+              style={!canApproveClinical ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
             >
               ✕ رد ادعا و ارسال به آزمایشگاه
             </button>

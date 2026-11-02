@@ -156,3 +156,45 @@ export function validatePostalCode(postalCode: string): boolean {
   if (clean.length !== 10) return false;
   return /^[13-9]{4}[1-9][1-9]{5}$/.test(clean);
 }
+
+/**
+ * Masks Iranian mobile number for privacy (e.g. 0912***4567).
+ */
+export function maskIranianMobile(phone: string): string {
+  if (!phone) return "";
+  const clean = toAsciiDigits(phone).replace(/\D/g, "");
+  if (clean.length < 7) return phone;
+  return `${clean.slice(0, 4)}***${clean.slice(-4)}`;
+}
+
+/**
+ * Masks Iranian National ID for privacy (e.g. 001****013).
+ */
+export function maskNationalId(code: string): string {
+  if (!code) return "";
+  const clean = toAsciiDigits(code).replace(/\D/g, "");
+  if (clean.length < 6) return code;
+  return `${clean.slice(0, 3)}****${clean.slice(-3)}`;
+}
+
+/**
+ * Masks Shetab bank card number (e.g. 6219-****-****-9876).
+ */
+export function maskShetabCard(card: string): string {
+  if (!card) return "";
+  const clean = toAsciiDigits(card).replace(/\D/g, "");
+  if (clean.length !== 16) return card;
+  return `${clean.slice(0, 4)}-****-****-${clean.slice(-4)}`;
+}
+
+/**
+ * Masks detailed address for public/overview display.
+ */
+export function maskPostalAddress(address: string): string {
+  if (!address) return "";
+  // Replaces unit/plaque numbers with asterisks (supporting English, Persian, and Arabic digits)
+  return address
+    .replace(/پلاک\s*[0-9\u06F0-\u06F9\u0660-\u0669]+/g, "پلاک **")
+    .replace(/واحد\s*[0-9\u06F0-\u06F9\u0660-\u0669]+/g, "واحد *");
+}
+

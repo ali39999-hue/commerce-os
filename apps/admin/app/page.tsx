@@ -31,6 +31,38 @@ export type AdminTab =
 
 export type AdminUserRole = "SUPER_ADMIN" | "OPERATOR" | "ACCOUNTANT";
 
+export interface DomainAccess {
+  access: "FULL" | "VIEW_ONLY" | "RESTRICTED";
+  labelFa: string;
+}
+
+export const DOMAIN_ACCESS_CONFIG: Record<AdminUserRole, Record<string, DomainAccess>> = {
+  SUPER_ADMIN: {
+    sales: { access: "FULL", labelFa: "دسترسی کامل" },
+    catalog: { access: "FULL", labelFa: "دسترسی کامل" },
+    clinical: { access: "FULL", labelFa: "دسترسی کامل" },
+    b2b: { access: "FULL", labelFa: "دسترسی کامل" },
+    finance: { access: "FULL", labelFa: "دسترسی کامل" },
+    ops: { access: "FULL", labelFa: "دسترسی کامل" },
+  },
+  OPERATOR: {
+    sales: { access: "FULL", labelFa: "عملیات سفارشات" },
+    catalog: { access: "FULL", labelFa: "انبار و ارسال" },
+    clinical: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
+    b2b: { access: "FULL", labelFa: "بررسی استعلام" },
+    finance: { access: "RESTRICTED", labelFa: "محدود به مالی" },
+    ops: { access: "VIEW_ONLY", labelFa: "پایش صف" },
+  },
+  ACCOUNTANT: {
+    sales: { access: "FULL", labelFa: "تایید فیش‌ها" },
+    catalog: { access: "VIEW_ONLY", labelFa: "ارزش‌گذاری انبار" },
+    clinical: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
+    b2b: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
+    finance: { access: "FULL", labelFa: "دفترکل و تراز" },
+    ops: { access: "VIEW_ONLY", labelFa: "پایش صف" },
+  },
+};
+
 interface TabMeta {
   breadcrumb: [string, string, string];
   title: string;
@@ -181,7 +213,13 @@ export default function AdminDashboardPage() {
     );
   };
 
+  const canExportSepidar = userRole === "SUPER_ADMIN" || userRole === "ACCOUNTANT";
+
   const handleDownloadSepidarCsv = () => {
+    if (!canExportSepidar) {
+      alert("خطای دسترسی تفکیک وظایف (SoD): خروجی اسناد رسمی سپیدار صرفاً با دسترسی حسابدار یا مدیر ارشد مجاز است.");
+      return;
+    }
     const rows = orders.flatMap((o) => {
       const debitRials = BigInt(o.totalAmountTomans) * 10n;
       return [
@@ -263,18 +301,23 @@ export default function AdminDashboardPage() {
 
         <nav className="admin-nav" style={{ overflowY: "auto", maxHeight: "calc(100vh - 220px)" }}>
           {/* 1. Sales Operations (عملیات فروش) */}
-          <div className="nav-category-header">عملیات فروش (Sales Operations)</div>
+          <div className="nav-category-header">
+            <span>عملیات فروش (Sales)</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].sales.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].sales.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("overview")}
             className={`nav-btn ${activeTab === "overview" ? "active" : ""}`}
           >
-            📊 داشبورد و شاخص‌ها
+            داشبورد و شاخص‌ها
           </button>
           <button
             onClick={() => setActiveTab("orders")}
             className={`nav-btn ${activeTab === "orders" ? "active" : ""}`}
           >
-            📦 سفارشات و فیش‌ها
+            سفارشات و فیش‌ها
             {pendingReceiptCount > 0 && (
               <span className="badge-count">{pendingReceiptCount}</span>
             )}
@@ -283,77 +326,102 @@ export default function AdminDashboardPage() {
             onClick={() => setActiveTab("coupons")}
             className={`nav-btn ${activeTab === "coupons" ? "active" : ""}`}
           >
-            🎟️ تخفیف و کوپن‌ها (API)
+            تخفیف و کوپن‌ها (API)
           </button>
 
           {/* 2. Catalog & Inventory (کاتالوگ و موجودی) */}
-          <div className="nav-category-header">کاتالوگ و موجودی (Catalog & Inventory)</div>
+          <div className="nav-category-header">
+            <span>کاتالوگ و موجودی</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].catalog.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].catalog.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("catalog")}
             className={`nav-btn ${activeTab === "catalog" ? "active" : ""}`}
           >
-            🧴 کاتالوگ و مدیریت PIM
+            کاتالوگ و مدیریت PIM
           </button>
           <button
             onClick={() => setActiveTab("inventory")}
             className={`nav-btn ${activeTab === "inventory" ? "active" : ""}`}
           >
-            🏬 کنترل انبار و رزروها
+            کنترل انبار و رزروها
             {lowStockCount > 0 && <span className="badge-alert">!</span>}
           </button>
 
           {/* 3. Clinical & Content (کلینیکال و محتوا) */}
-          <div className="nav-category-header">کلینیکال و محتوا (Clinical & Content)</div>
+          <div className="nav-category-header">
+            <span>کلینیکال و محتوا</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].clinical.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].clinical.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("clinical")}
             className={`nav-btn ${activeTab === "clinical" ? "active" : ""}`}
           >
-            🔬 ادعاهای بالینی، INCI و مقالات
+            ادعاهای بالینی، INCI و مقالات
           </button>
 
           {/* 4. B2B Commercial (همکاری تجاری و B2B) */}
-          <div className="nav-category-header">همکاری تجاری (B2B Commercial)</div>
+          <div className="nav-category-header">
+            <span>همکاری تجاری (B2B)</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].b2b.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].b2b.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("b2b")}
             className={`nav-btn ${activeTab === "b2b" ? "active" : ""}`}
           >
-            📑 استعلام‌های عمده B2B
+            استعلام‌های عمده B2B
           </button>
           <button
             onClick={() => setActiveTab("subscriptions")}
             className={`nav-btn ${activeTab === "subscriptions" ? "active" : ""}`}
           >
-            🔁 اشتراک‌های دوره‌ای
+            اشتراک‌های دوره‌ای
           </button>
           <button
             onClick={() => setActiveTab("vendors")}
             className={`nav-btn ${activeTab === "vendors" ? "active" : ""}`}
           >
-            🏢 فروشندگان مارکت‌پلیس
+            فروشندگان مارکت‌پلیس
           </button>
           <button
             onClick={() => setActiveTab("digital")}
             className={`nav-btn ${activeTab === "digital" ? "active" : ""}`}
           >
-            ⬇️ لایسنس‌های دیجیتال
+            لایسنس‌های دیجیتال
           </button>
 
           {/* 5. Finance (امور مالی) */}
-          <div className="nav-category-header">امور مالی (Finance)</div>
+          <div className="nav-category-header">
+            <span>امور مالی (Finance)</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].finance.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].finance.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("finance")}
             className={`nav-btn ${activeTab === "finance" ? "active" : ""}`}
           >
-            ⚖️ دفتر روزنامه و خروجی سپیدار
+            دفتر روزنامه و خروجی سپیدار
           </button>
 
           {/* 6. System Health & Ops (سلامت سیستم و عملیات) */}
-          <div className="nav-category-header">سلامت سیستم و عملیات (Health & Ops)</div>
+          <div className="nav-category-header">
+            <span>سلامت سیستم و عملیات</span>
+            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].ops.access.toLowerCase()}`}>
+              {DOMAIN_ACCESS_CONFIG[userRole].ops.labelFa}
+            </span>
+          </div>
           <button
             onClick={() => setActiveTab("ops")}
             className={`nav-btn ${activeTab === "ops" ? "active" : ""}`}
           >
-            🚨 صف Outbox و اجاره‌نامه‌ها
+            صف Outbox و اجاره‌نامه‌ها
           </button>
         </nav>
 
@@ -387,8 +455,14 @@ export default function AdminDashboardPage() {
             <p>{TAB_METADATA[activeTab].description}</p>
           </div>
           <div className="topbar-actions">
-            <button onClick={handleDownloadSepidarCsv} className="btn-sepidar-export">
-              📑 دانلود خروجی استاندارد سپیدار
+            <button
+              onClick={handleDownloadSepidarCsv}
+              className="btn-sepidar-export"
+              disabled={!canExportSepidar}
+              title={!canExportSepidar ? "منحصر به حسابدار یا مدیر ارشد" : "دانلود خروجی رسمی سپیدار"}
+              style={!canExportSepidar ? { opacity: 0.6, cursor: "not-allowed" } : undefined}
+            >
+              دانلود خروجی استاندارد سپیدار
             </button>
             <div className="server-status-pill">
               <span className="pulse-dot"></span>
@@ -396,6 +470,34 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </header>
+
+        {/* Role Access / SoD Banners */}
+        {activeTab === "finance" && userRole === "OPERATOR" && (
+          <div className="role-notice-banner restricted">
+            <span>
+              <strong>حالت دسترسی محدود (View-Only):</strong> نقش شما اپراتور فروش و ارسال است. بر اساس اصل تفکیک وظایف (SoD)، اصلاح دفاتر، ثبت اسناد و استخراج خروجی سپیدار فقط توسط حسابدار ارشد یا مدیر سیستم مجاز است.
+            </span>
+            <span className="badge-alert">SoD PROTECTED</span>
+          </div>
+        )}
+
+        {activeTab === "clinical" && userRole !== "SUPER_ADMIN" && (
+          <div className="role-notice-banner warning">
+            <span>
+              <strong>شورای داوری پزشکی (Scientific Governance):</strong> تایید رسمی یا رد ادعاهای درمانی نیازمند صلاحیت ناظر بالینی / پزشک معتمد و نقش مدیر ارشد سیستم است.
+            </span>
+            <span className="status-pill in_review">نظارت پزشکی</span>
+          </div>
+        )}
+
+        {activeTab === "ops" && userRole !== "SUPER_ADMIN" && (
+          <div className="role-notice-banner warning">
+            <span>
+              <strong>پایش عملیاتی (Ops Telemetry):</strong> دسترسی ورکرها و اجاره‌نامه‌های توزیع‌شده ردیس در حالت پایش برخط قرار دارد. تغییر وضعیت ورکرها منحصر به مدیر سیستم است.
+            </span>
+            <span className="badge-live">LIVE TELEMETRY</span>
+          </div>
+        )}
 
         {/* Tab Modules */}
         {activeTab === "overview" && (

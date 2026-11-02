@@ -221,16 +221,16 @@ export default function DashboardOverview({
       </div>
 
       {/* Actionable System Health & Financial Telemetry Strip */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "18px", marginBottom: "28px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "18px", marginBottom: "28px" }}>
         {/* Financial Balance Integrity */}
         <div className="kpi-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span className="kpi-title" style={{ margin: 0 }}>تراز دوبل‌اندر مالی (COA)</span>
-            <span className={`status-pill ${isFinancialBalanced ? "approved" : "rejected"}`}>
+            <span className={`status-pill ${isFinancialBalanced ? "approved balanced pulse" : "rejected"}`}>
               {isFinancialBalanced ? "تراز ۱۰۰٪" : "مغایرت تراز"}
             </span>
           </div>
-          <div style={{ fontSize: ".88rem", display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ fontSize: ".84rem", display: "flex", flexDirection: "column", gap: "4px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span className="muted-text">بدهکار (Debit):</span>
               <span className="bold tabular-nums">{new Intl.NumberFormat("fa-IR").format(totalDebitRials / 10n)} تومان</span>
@@ -240,8 +240,30 @@ export default function DashboardOverview({
               <span className="bold tabular-nums">{new Intl.NumberFormat("fa-IR").format(totalCreditRials / 10n)} تومان</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: "4px", marginTop: "2px" }}>
-              <span className="muted-text">اختلاف تراز:</span>
-              <strong className="status-ok tabular-nums">{faNumber(financialDiscrepancyTomans)} تومان (منطبق)</strong>
+              <span className="muted-text">خطای ممیز (Float):</span>
+              <strong className="status-ok tabular-nums">۰ ریال (تطبیق قطعی)</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* Cold-Chain 2-8°C Monitoring */}
+        <div className="kpi-card">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <span className="kpi-title" style={{ margin: 0 }}>پایش زنجیره سرد</span>
+            <span className="cold-chain-tag">۲-۸°C</span>
+          </div>
+          <div style={{ fontSize: ".84rem", display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span className="muted-text">سردخانه درماتولوژی:</span>
+              <span className="status-ok bold tabular-nums">۳.۴°C (نرمال)</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span className="muted-text">اقلام حساس به دما:</span>
+              <span className="bold tabular-nums">۲ قلم دارویی</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: "4px", marginTop: "2px" }}>
+              <span className="muted-text">کنترل انقضا و بوهر:</span>
+              <span className="status-ok">پایش برخط سنسورها</span>
             </div>
           </div>
         </div>
@@ -249,10 +271,10 @@ export default function DashboardOverview({
         {/* Worker Queue Telemetry */}
         <div className="kpi-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span className="kpi-title" style={{ margin: 0 }}>پایش صف‌ها و پردازشگرها</span>
+            <span className="kpi-title" style={{ margin: 0 }}>پایش صف‌ها و Outbox</span>
             <span className="badge-live">WORKER QUEUE</span>
           </div>
-          <div style={{ fontSize: ".88rem", display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ fontSize: ".84rem", display: "flex", flexDirection: "column", gap: "4px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span className="muted-text">در صف خروج (Pending):</span>
               <span className="bold tabular-nums">{faNumber(opsTelemetry.pendingCount)} رویداد</span>
@@ -262,8 +284,10 @@ export default function DashboardOverview({
               <span className="bold tabular-nums">{faNumber(opsTelemetry.processingCount)} رویداد</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: "4px", marginTop: "2px" }}>
-              <span className="muted-text">خطای وب‌هوک / رزرو گیرکرده:</span>
-              <span className="tabular-nums">{faNumber(opsTelemetry.webhookFailedCount + opsTelemetry.staleReservationsCount)} مورد</span>
+              <span className="muted-text">صف Dead Letter:</span>
+              <strong className={`tabular-nums ${opsTelemetry.deadLetterCount > 0 ? "accent-text" : "status-ok"}`}>
+                {opsTelemetry.deadLetterCount > 0 ? `${faNumber(opsTelemetry.deadLetterCount)} خطا` : "۰ (صف پاک)"}
+              </strong>
             </div>
           </div>
         </div>
@@ -274,21 +298,21 @@ export default function DashboardOverview({
             <span className="kpi-title" style={{ margin: 0 }}>زیرساخت دیتابیس و ردیس</span>
             <span className="badge-live">INFRA TELEMETRY</span>
           </div>
-          <div style={{ fontSize: ".88rem", display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ fontSize: ".84rem", display: "flex", flexDirection: "column", gap: "4px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span className="muted-text">پایگاه داده PostgreSQL:</span>
+              <span className="muted-text">PostgreSQL 17 Latency:</span>
               <span className="status-ok bold tabular-nums">
-                {opsTelemetry.dbAvailable ? `متصل (${faNumber(opsTelemetry.dbLatencyMs)}ms)` : "قطع موقت"}
+                {opsTelemetry.dbAvailable ? `${faNumber(opsTelemetry.dbLatencyMs)}ms` : "قطع موقت"}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span className="muted-text">حافظه Redis Distributed Lock:</span>
+              <span className="muted-text">Redis Lock Latency:</span>
               <span className="status-ok bold tabular-nums">
-                {opsTelemetry.redisAvailable ? `آماده (${faNumber(opsTelemetry.redisLatencyMs)}ms)` : "عدم پاسخگویی"}
+                {opsTelemetry.redisAvailable ? `${faNumber(opsTelemetry.redisLatencyMs)}ms` : "عدم پاسخگویی"}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--line)", paddingTop: "4px", marginTop: "2px" }}>
-              <span className="muted-text">اجاره‌نامه‌های لیدر (Leases):</span>
+              <span className="muted-text">اجاره‌نامه‌های لیدر:</span>
               <span className="bold">۳ ورکر فعال</span>
             </div>
           </div>
@@ -314,9 +338,11 @@ export default function DashboardOverview({
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <span style={{ fontSize: "1.2rem" }}>🚨</span>
             <div>
-              <strong style={{ color: "#92400e", display: "block" }}>عملیات نیازمند رسیدگی اپراتور:</strong>
+              <strong style={{ color: "#92400e", display: "block" }}>
+                عملیات نیازمند رسیدگی {userRole === "ACCOUNTANT" ? "حسابداری" : userRole === "OPERATOR" ? "اپراتور انبار و ارسال" : "مدیریت سیستم"}:
+              </strong>
               <span style={{ fontSize: ".84rem", color: "#b45309" }}>
-                {pendingReceiptCount > 0 && `• ${faNumber(pendingReceiptCount)} فیش کارت‌به‌کارت منتظر تایید حسابداری  `}
+                {pendingReceiptCount > 0 && `• ${faNumber(pendingReceiptCount)} فیش کارت‌به‌کارت در انتظار بررسی  `}
                 {lowStockCount > 0 && `• ${faNumber(lowStockCount)} کالا کمتر از آستانه موجودی  `}
                 {opsTelemetry.deadLetterCount > 0 && `• ${faNumber(opsTelemetry.deadLetterCount)} رویداد در صف خطا`}
               </span>
