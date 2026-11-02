@@ -14,6 +14,8 @@ import {
   maskPostalAddress,
 } from "@commerce-os/localization";
 import { formatToman } from "../../lib/catalog";
+import { useCustomerSession } from "../../lib/customer-session";
+import { CustomerLoginCard } from "../../components/customer-login-card";
 import { DigitalBadge } from "../../components/discovery/digital-badge";
 
 interface StoredOrder {
@@ -221,6 +223,35 @@ export default function AccountPage() {
   const [newTicket, setNewTicket] = useState({ subject: "", message: "" });
   const [newConsultationConcern, setNewConsultationConcern] = useState("");
   const [consultations, setConsultations] = useState<ConsultationBooking[]>(DEMO_CONSULTATIONS);
+  const [showLogin, setShowLogin] = useState(false);
+  const { session, ready: sessionReady, logout, authedFetch } = useCustomerSession();
+  const [digitalGrants, setDigitalGrants] = useState<Array<Record<string, unknown>>>([]);
+
+  // Identity-bound digital grants (AUTH-002 step 3): loaded only for a live
+  // OTP session; the phone never travels as a client-controlled parameter.
+  useEffect(() => {
+    if (!session) {
+      setDigitalGrants([]);
+      return;
+    }
+    let alive = true;
+    (async () => {
+      try {
+        const res = await authedFetch("/v1/digital/my-grants", {
+          cache: "no-store",
+          signal: AbortSignal.timeout(4000),
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as { items?: Array<Record<string, unknown>> };
+        if (alive && Array.isArray(data?.items)) setDigitalGrants(data.items);
+      } catch {
+        // grants stay empty on failure; the tab is read-only
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [session, authedFetch]);
 
   useEffect(() => {
     try {
@@ -337,13 +368,73 @@ export default function AccountPage() {
       <aside className="account-sidenav">
         <div className="account-greeting">
           <div className="account-avatar">
-            {profile.fullName.slice(0, 1) || "ک"}
+            {(session?.user.fullName || profile.fullName).slice(0, 1) || "ک"}
           </div>
           <div>
-            <strong>{profile.fullName || "کاربر گرامی"}</strong>
-            <small dir="ltr">{profile.phone}</small>
+            <strong>{session?.user.fullName || profile.fullName || "کاربر گرامی"}</strong>
+            <small dir="ltr">{session?.user.phone || profile.phone}</small>
           </div>
         </div>
+
+        {/* Identity bar (AUTH-002 step 3): real OTP session vs. guest view */}
+        {sessionReady && (
+          session ? (
+            <div
+              className="subs-banner success"
+              role="status"
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", margin: "0 0 12px", fontSize: "0.82rem" }}
+            >
+              <span>
+                نشست احرازشده {digitalGrants.length > 0 ? `· ${digitalGrants.length} لایسنس دیجیتال فعال` : ""}
+              </span>
+              <button
+                onClick={() => logout()}
+                style={{
+                  background: "none",
+                  border: "1px solid currentColor",
+                  borderRadius: "8px",
+                  color: "inherit",
+                  fontSize: "0.75rem",
+                  padding: "3px 10px",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                خروج
+              </button>
+            </div>
+          ) : (
+            <div style={{ margin: "0 0 12px" }}>
+              <div
+                className="subs-banner"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", fontSize: "0.82rem" }}
+              >
+                <span>برای مشاهده لایسنس‌های دیجیتال و داده‌های واقعی خود وارد شوید.</span>
+                <button
+                  onClick={() => setShowLogin((v) => !v)}
+                  style={{
+                    background: "var(--brand, #24594F)",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {showLogin ? "بستن" : "ورود"}
+                </button>
+              </div>
+              {showLogin && (
+                <div style={{ marginTop: "12px" }}>
+                  <CustomerLoginCard onSuccess={() => setShowLogin(false)} />
+                </div>
+              )}
+            </div>
+          )
+        )}
 
         <nav>
           <button
