@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardOverview from "../components/DashboardOverview";
 import OrdersManager, { OrderItem, ReceiptItem } from "../components/OrdersManager";
 import CatalogPimManager from "../components/CatalogPimManager";
@@ -13,6 +13,13 @@ import OpsSystemHealth from "../components/OpsSystemHealth";
 import SubscriptionsManager from "../components/SubscriptionsManager";
 import VendorsManager from "../components/VendorsManager";
 import DigitalLicensesManager from "../components/DigitalLicensesManager";
+import AdminLoginGate from "../components/AdminLoginGate";
+import {
+  ADMIN_ROLES,
+  clearAdminSession,
+  readAdminSession,
+  type AdminSessionUser,
+} from "../components/types";
 import { buildSepidarCsv } from "@commerce-os/finance";
 
 export type AdminTab =
@@ -189,10 +196,28 @@ const INITIAL_RECEIPTS: ReceiptItem[] = [
 ];
 
 export default function AdminDashboardPage() {
+  const [session, setSession] = useState<{ token: string; user: AdminSessionUser } | null>(null);
+  const [sessionLoaded, setSessionLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [userRole, setUserRole] = useState<AdminUserRole>("SUPER_ADMIN");
   const [orders, setOrders] = useState<OrderItem[]>(INITIAL_ORDERS);
   const [receipts, setReceipts] = useState<ReceiptItem[]>(INITIAL_RECEIPTS);
+
+  // Restore the OTP session after hydration (localStorage is client-only).
+  useEffect(() => {
+    const existing = readAdminSession();
+    setSession(existing);
+    if (existing && (ADMIN_ROLES as readonly string[]).includes(existing.user.role)) {
+      setUserRole(existing.user.role as AdminUserRole);
+    }
+    setSessionLoaded(true);
+  }, []);
+
+  const handleLogout = () => {
+    clearAdminSession();
+    setSession(null);
+    setActiveTab("overview");
+  };
 
   const pendingReceiptCount = receipts.filter((r) => r.status === "PENDING_REVIEW").length;
   const lowStockCount = 1; // 1 critical low-stock SKU
@@ -270,6 +295,16 @@ export default function AdminDashboardPage() {
     URL.revokeObjectURL(url);
   };
 
+  // Wait for the localStorage session check before rendering (avoids a
+  // post-hydration flash of the gate for logged-in operators).
+  if (!sessionLoaded) {
+    return <div style={{ minHeight: "100vh", background: "#F7F6F2" }} />;
+  }
+
+  if (!session) {
+    return <AdminLoginGate onSession={setSession} />;
+  }
+
   return (
     <div className="admin-container">
       {/* ── Sidebar ── */}
@@ -299,6 +334,23 @@ export default function AdminDashboardPage() {
             <option value="OPERATOR">اپراتور فروش و ارسال</option>
             <option value="ACCOUNTANT">حسابدار مالی و انبار</option>
           </select>
+          <button
+            onClick={handleLogout}
+            className="admin-btn"
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              background: "transparent",
+              color: "#9FD6CB",
+              border: "1px solid #145e57",
+              fontSize: "0.8rem",
+              padding: "6px",
+              cursor: "pointer",
+            }}
+            title={`خروج از نشست ${session?.user.phone ?? ""}`}
+          >
+            خروج از نشست ({session?.user.role === "SUPER_ADMIN" ? "مدیر ارشد" : session?.user.role === "OPERATOR" ? "اپراتور" : session?.user.role === "ACCOUNTANT" ? "حسابدار" : session?.user.role})
+          </button>
         </div>
 
         <nav className="admin-nav" style={{ overflowY: "auto", maxHeight: "calc(100vh - 220px)" }}>

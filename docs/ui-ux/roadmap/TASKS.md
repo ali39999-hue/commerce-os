@@ -76,3 +76,9 @@
 - [x] **LIB-014**: Formalize dependency governance policy prohibiting unauthorized third-party libraries.
 - [x] **LIB-015**: Synchronize agent context pack (`DESIGN_TOKENS.md`, `COLORS.md`, `TASKS.md`, `PROGRESS.md`).
 
+
+## Phase 9: Security & Access Control (AUTH-001 to AUTH-004)
+- [x] **AUTH-001**: AdminGuard on admin-internal endpoints (`/v1/ops/*`, `/v1/ledger/*`) — OTP session with staff role or timing-safe `x-admin-api-key`; OTP login gate wired into the admin console; runtime-verified 401/200 matrix in `docs/security/SECURITY_BASELINE.md`.
+- [ ] **AUTH-002**: Bind resource ownership/tenancy to the authenticated identity (drop trust of raw `x-user-id`/`x-tenant-id` headers for browser flows).
+- [ ] **AUTH-003**: Extend AdminGuard to every mutating admin module (catalog write, subscriptions, digital licenses, B2B quote state).
+- [ ] **AUTH-004**: Per-endpoint DTOs replacing whole-body pass-through on resource writes.

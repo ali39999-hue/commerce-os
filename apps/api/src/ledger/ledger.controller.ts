@@ -1,8 +1,10 @@
-import { Controller, Get, Headers, Res, UnauthorizedException } from "@nestjs/common";
+import { Controller, Get, Headers, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
 import { LedgerService } from "./ledger.service";
 import type { Response } from "express";
 
 @Controller("ledger")
+@UseGuards(AdminGuard)
 export class LedgerController {
   constructor(private readonly ledgerService: LedgerService) {}
 

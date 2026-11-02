@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { formatJalaliDateTime } from "@commerce-os/localization";
-import { API_BASE, faNumber, str, postTenantJson } from "./types";
+import { faNumber, str, postTenantJson, authedFetch } from "./types";
 
 export interface AuditLogItem {
   id: string;
@@ -152,11 +152,11 @@ export default function OpsSystemHealth({
     setActionNotice(null);
     try {
       const [excRes, metRes] = await Promise.allSettled([
-        fetch(`${API_BASE}/v1/ops/exceptions`, {
+        authedFetch("/v1/ops/exceptions", {
           signal: AbortSignal.timeout(4000),
           cache: "no-store",
         }),
-        fetch(`${API_BASE}/v1/ops/metrics`, {
+        authedFetch("/v1/ops/metrics", {
           signal: AbortSignal.timeout(4000),
           cache: "no-store",
         }),

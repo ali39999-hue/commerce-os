@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { formatJalaliDateTime } from "@commerce-os/localization";
-import { API_BASE, faNumber, str } from "./types";
+import { faNumber, str, authedFetch } from "./types";
 
 export interface DashboardOrder {
   id: string;
@@ -63,11 +63,11 @@ export default function DashboardOverview({
     setLoading(true);
     try {
       const [excRes, metRes] = await Promise.allSettled([
-        fetch(`${API_BASE}/v1/ops/exceptions`, {
+        authedFetch("/v1/ops/exceptions", {
           signal: AbortSignal.timeout(3000),
           cache: "no-store",
         }),
-        fetch(`${API_BASE}/v1/ops/metrics`, {
+        authedFetch("/v1/ops/metrics", {
           signal: AbortSignal.timeout(3000),
           cache: "no-store",
         }),
