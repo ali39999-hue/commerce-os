@@ -93,8 +93,12 @@ export class CheckoutService {
     sessionId: string;
     paymentMethod: "ZARINPAL" | "CARD_TO_CARD" | "WALLET";
     idempotencyKey: string;
+    /** Authenticated identity (AUTH-002 step 4): when present, the order's
+     * customer identity comes from the OTP session — the delivery receiver
+     * phone stays a free-form shipping detail on the address snapshot. */
+    customer?: { phone: string; fullName: string };
   }) {
-    const { sessionId, paymentMethod, idempotencyKey } = params;
+    const { sessionId, paymentMethod, idempotencyKey, customer } = params;
 
     const session = await this.prisma.checkoutSession.findUnique({
       where: { id: sessionId },
@@ -151,8 +155,8 @@ export class CheckoutService {
           tenantId: session.tenantId,
           storeId: session.storeId,
           orderNumber,
-          customerPhone: addressSnapshot?.receiverPhone || "09120000000",
-          customerName: addressSnapshot?.receiverName || "مشتری فروشگاه",
+          customerPhone: customer?.phone ?? addressSnapshot?.receiverPhone ?? "09120000000",
+          customerName: customer?.fullName ?? addressSnapshot?.receiverName ?? "مشتری فروشگاه",
           status: "PENDING_PAYMENT",
           subtotalAmount: quoteSnapshot.subtotal.amount,
           discountAmount: quoteSnapshot.totalDiscount?.amount || 0,

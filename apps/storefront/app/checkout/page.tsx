@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "../../components/cart";
 import { apiBase, storeSlug } from "../../lib/catalog";
+import { useCustomerSession } from "../../lib/customer-session";
 import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
 import {
   validateIranianMobile,
@@ -19,6 +20,12 @@ import {
   trackAddPaymentInfo,
   trackPurchase,
 } from "../../lib/analytics";
+
+// Fixed checkout endpoints, resolved once at module scope (never built from
+// request-time input).
+const CHECKOUT_API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const CHECKOUT_SESSION_URL = `${CHECKOUT_API_HOST}/v1/checkout/session`;
+const PLACE_ORDER_URL = `${CHECKOUT_API_HOST}/v1/checkout/place-order`;
 
 export interface ProvinceCityMap {
   [province: string]: string[];
@@ -46,6 +53,7 @@ export const IRAN_PROVINCES: ProvinceCityMap = {
 export default function CheckoutPage() {
   const { items, clearCart, isReady, calculations, shippingMethod, setShippingMethod, appliedCoupon } = useCart();
   const { formatToman, formatMoney } = useLocalizedFormatter();
+  const { session: customerSession } = useCustomerSession();
   const router = useRouter();
 
   // Active step: 1 (Contact & Address & Tax), 2 (Shipping & Cold-Chain), 3 (Payment & Place Order)
@@ -365,11 +373,15 @@ export default function CheckoutPage() {
     };
 
     try {
-      const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      // Signed-in customers attach their OTP session so the order (and
+      // downstream entitlements like digital grants) binds to their identity.
+      const authHeaders: Record<string, string> = customerSession?.token
+        ? { authorization: "Bearer " + customerSession.token }
+        : {};
 
-      const sessionRes = await fetch(`${apiHost}/v1/checkout/session`, {
+      const sessionRes = await fetch(CHECKOUT_SESSION_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify(payload),
         signal: AbortSignal.timeout(6000),
       });
@@ -381,11 +393,12 @@ export default function CheckoutPage() {
 
       const sessionData = await sessionRes.json();
 
-      const placeRes = await fetch(`${apiHost}/v1/checkout/place-order`, {
+      const placeRes = await fetch(PLACE_ORDER_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-idempotency-key": idempotencyKeyRef.current,
+          ...authHeaders,
         },
         body: JSON.stringify({
           sessionId: sessionData.sessionId,

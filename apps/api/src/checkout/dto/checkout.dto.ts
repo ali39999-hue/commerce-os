@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsIn, IsNumber, IsOptional, IsString, Max, Min, ValidateNested, IsUUID } from "class-validator";
+import { ArrayMinSize, IsArray, IsIn, IsNumber, IsOptional, IsString, Max, Min, MinLength, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 
 /**
@@ -8,7 +8,9 @@ import { Type } from "class-transformer";
  */
 
 export class QuoteLineDto {
-  @IsUUID()
+  // Variant ids are slugs in this system (e.g. "var_cbg_pro"), not UUIDs.
+  @IsString()
+  @MinLength(3)
   variantId!: string;
 
   @IsNumber()
