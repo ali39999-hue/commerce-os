@@ -5,6 +5,7 @@ import Link from 'next/link';
 import './carboxygel.css';
 import { useCart } from '../../components/cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { ClinicalProductGallery } from '@commerce-os/ui';
 
 /* ── 3 Formulations Breakdown Data ── */
 interface FormulationItem {
@@ -519,40 +520,25 @@ export default function CarboxygelLandingPage() {
             </div>
           </div>
 
-          {/* Right: Real Product Visual Showcase with Thumbnail Switcher */}
-          <div className="cbg-showcase-card">
-            <span className="cbg-showcase-badge">تصاویر رسمی محصول و بافت ژل</span>
+          {/* Right: Real Product Visual Showcase with Embla-Powered Clinical Gallery */}
+          <div className="cbg-showcase-card" style={{ padding: '20px' }}>
+            <span className="cbg-showcase-badge" style={{ marginBottom: '14px' }}>تصاویر رسمی محصول و بافت ژل</span>
 
-            <div className="cbg-showcase-img-wrap">
-              <img
-                src={showcaseImages[activeImageIndex].src}
-                alt={showcaseImages[activeImageIndex].alt}
-                className="cbg-showcase-img"
-              />
-            </div>
+            <ClinicalProductGallery
+              productName="CarboxyGel Professional Therapy"
+              images={showcaseImages.map((img, i) => ({
+                id: `cbg_img_${i}`,
+                url: img.src,
+                alt: img.alt,
+                title: img.label,
+                badge: img.label,
+              }))}
+            />
 
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
-                {showcaseImages[activeImageIndex].label}
+            <div style={{ textAlign: 'center', marginTop: '14px' }}>
+              <div style={{ fontSize: '0.84rem', color: '#94a3b8', lineHeight: '1.6' }}>
+                نمای بافت میکروحباب‌های اشباع گاز CO₂ و بسته‌بندی ۵۰۰ میلی‌لیتر کابین درماتولوژی
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>
-                {showcaseImages[activeImageIndex].desc}
-              </div>
-            </div>
-
-            {/* Gallery Thumbnails */}
-            <div className="cbg-showcase-nav">
-              {showcaseImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`cbg-showcase-tab ${activeImageIndex === idx ? 'active' : ''}`}
-                >
-                  <img src={img.src} alt={img.label} />
-                  <span>{img.label}</span>
-                </button>
-              ))}
             </div>
           </div>
         </section>

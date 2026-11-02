@@ -6,6 +6,7 @@ import { LocalizationProvider } from '../lib/localization-context';
 import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
 import { PwaRegister } from '../components/pwa-register';
+import { Toaster } from 'sonner';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_IS_STAGING;
@@ -116,6 +117,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
+        <a href="#main-content" className="skip-to-content-link">
+          پرش به محتوای اصلی صفحه (کلید Enter)
+        </a>
         <LocalizationProvider>
           <CartProvider>
             <div className="page-shell-wrapper">
@@ -128,6 +132,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <CartDrawer />
           </CartProvider>
         </LocalizationProvider>
+        <Toaster position="bottom-left" dir="rtl" richColors closeButton />
         <PwaRegister />
       </body>
     </html>
