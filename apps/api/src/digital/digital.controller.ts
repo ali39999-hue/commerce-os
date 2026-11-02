@@ -30,9 +30,10 @@ export class DigitalController {
   }
 
   // GET /v1/digital/grants?phone=… — legacy verification-script route,
-  // deprecated for browsers: grants are entitlements and must not be
-  // enumerable by arbitrary phone numbers.
+  // locked behind the AdminGuard (AUTH-002 final): grants are entitlements
+  // and must not be enumerable by arbitrary phone numbers from a browser.
   @Get("grants")
+  @UseGuards(AdminGuard)
   async grants(@Query("phone") phone?: string) {
     return this.digitalService.listGrantsByPhone(phone ?? "");
   }

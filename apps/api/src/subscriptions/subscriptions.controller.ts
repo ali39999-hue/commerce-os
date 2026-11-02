@@ -38,15 +38,16 @@ export class SubscriptionsController {
     });
   }
 
-  // GET /v1/subscriptions/users/:userId — legacy route kept for the
-  // verification scripts; browser flows must use the session-bound /me.
+  // GET /v1/subscriptions/users/:userId — legacy verification-script route,
+  // locked behind the AdminGuard (AUTH-002 final): no browser may enumerate
+  // another user's subscriptions by URL. Browser flows use /me.
   @Get("users/:userId")
+  @UseGuards(AdminGuard)
   async listForUser(
     @Param("userId") userId: string,
-    @Headers("x-tenant-id") tenantId?: string
+    @CurrentTenant() tenantId: string
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.listForUser(userId, tenant);
+    return this.subscriptionsService.listForUser(userId, tenantId);
   }
 
   // GET /v1/subscriptions/me — session-bound "my subscriptions" (AUTH-002

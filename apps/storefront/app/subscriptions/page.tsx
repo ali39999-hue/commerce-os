@@ -7,11 +7,6 @@ import { useCustomerSession } from "../../lib/customer-session";
 import { CustomerLoginCard } from "../../components/customer-login-card";
 
 const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const DEMO_USER_ID = "user_demo_1";
-
-// Legacy demo-user endpoint, resolved once as a fixed constant (never built
-// from request-time input).
-const LEGACY_MY_SUBS_URL = `${API_HOST}/v1/subscriptions/users/${DEMO_USER_ID}`;
 
 /* ── Types (resilient: every field optional) ── */
 interface PlanItem {
@@ -210,8 +205,9 @@ export default function SubscriptionsPage() {
       };
     }
 
-    // Guests keep the offline-friendly demo view; a visible login prompt
-    // offers the real identity-bound list.
+    // Guests keep the offline-friendly demo view (no demo-user API
+    // impersonation); a visible login prompt offers the real identity-bound
+    // list.
     try {
       const savedSubsRaw = localStorage.getItem(MY_SUBS_STORAGE_KEY);
       if (savedSubsRaw) {
@@ -226,28 +222,10 @@ export default function SubscriptionsPage() {
       // ignore
     }
 
-    (async () => {
-      try {
-        const res = await fetch(LEGACY_MY_SUBS_URL, {
-          headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
-          cache: "no-store",
-          signal: AbortSignal.timeout(4000),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as MySubsPayload;
-        if (data?.dbAvailable === false) throw new Error("db unavailable");
-        const items = (data?.items ?? []).filter((s): s is MySubItem => Boolean(s));
-        if (items.length === 0) throw new Error("empty");
-        if (!alive) return;
-        setMySubs(items);
-        setMySubsDemo(false);
-      } catch {
-        if (alive) {
-          setMySubs(DEMO_MY_SUBS);
-          setMySubsDemo(true);
-        }
-      }
-    })();
+    if (alive) {
+      setMySubs(DEMO_MY_SUBS);
+      setMySubsDemo(true);
+    }
     return () => {
       alive = false;
     };
