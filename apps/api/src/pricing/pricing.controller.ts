@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { CreateCouponDto } from "../common/dto/resource-writes.dto";
 import { PricingService, CreateCouponInput } from "./pricing.service";
 
 @Controller("pricing")
@@ -31,10 +32,10 @@ export class PricingController {
   @Post("coupons")
   @UseGuards(AdminGuard)
   async createCoupon(
-    @Body() body: CreateCouponInput,
+    @Body() body: CreateCouponDto,
     @CurrentTenant() tenantId: string
   ) {
-    return this.pricingService.createCoupon(body, tenantId);
+    return this.pricingService.createCoupon(body as CreateCouponInput, tenantId);
   }
 
   @Patch("coupons/:id/toggle")

@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { B2bQuoteRequestDto, B2bQuoteStatusDto } from "../common/dto/resource-writes.dto";
 import { B2bService } from "./b2b.service";
 
 // ADR-010: درخواست استعلام قیمت عمده — ثبت عمومی + لیست/تغییر وضعیت ادمین
@@ -21,15 +22,7 @@ export class B2bController {
   // POST /v1/b2b/quote-requests — ثبت سرنخ (عمومی؛ DB-down → lead-capture)
   @Post("quote-requests")
   create(
-    @Body()
-    body?: {
-      companyName?: string;
-      contactName?: string;
-      phone?: string;
-      email?: string;
-      itemsSummary?: string;
-      desiredQty?: number;
-    },
+    @Body() body?: B2bQuoteRequestDto,
     @Headers("x-tenant-id") tenantId?: string
   ) {
     return this.b2bService.createQuoteRequest(
@@ -62,7 +55,7 @@ export class B2bController {
   @UseGuards(AdminGuard)
   updateStatus(
     @Param("id") id: string,
-    @Body() body?: { status?: string; adminNote?: string },
+    @Body() body?: B2bQuoteStatusDto,
     @CurrentTenant() tenantId?: string
   ) {
     return this.b2bService.updateStatus(id, tenantId ?? "", body?.status ?? "", body?.adminNote);

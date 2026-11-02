@@ -1,6 +1,6 @@
 # Security Baseline — Dr Dermer UK Clinical & Commerce OS
 
-> آخرین به‌روزرسانی: ۱۴۰۵/۰۸/۱۱ (۲۰۲۶-۱۱-۰۲) — پس از اجرای AUTH-001، AUTH-003 و AUTH-002 کامل (گام ۱: tenant سرور-محور، گام ۲: نشست مشتری و /subscriptions/me)
+> آخرین به‌روزرسانی: ۱۴۰۵/۰۸/۱۱ (۲۰۲۶-۱۱-۰۲) — **فاز ۹ کامل**: AUTH-001، AUTH-002 (گام ۱+۲)، AUTH-003 و AUTH-004
 >
 > این سند وضعیت **تأییدشده در زمان اجرا** (runtime-verified) کنترل‌های امنیتی را ثبت می‌کند و نقشه بستن یافته‌های ابزار تحلیل ایستا (Mimosa scan-2026-11-02T17-22-12, seal `sha256:4d7a8510…`) را نگه می‌دارد.
 > ⚠️ هیچ‌گاه این سند را به‌عنوان «تأییدیه امنیت» نقل نکنید — فهرست کنترل است، نه گواهی.
@@ -55,6 +55,14 @@
 - **`GET /v1/subscriptions/me`**: userId همیشه از نشست می‌آید، هرگز از URL — مهمان `401` با پیام فارسی، مشتری `200` با لیست هویت‌متصل (تأیید curl + مرورگر).
 - **Storefront**: `CustomerSessionProvider` (`lib/customer-session.tsx`) با ورود OTP دومرحله‌ای، ماندگاری در localStorage و `authedFetch`؛ صفحه اشتراک‌ها برای مشتری واردشده لیست واقعی را می‌خواند و برای مهمان بنر شفاف «نمونه» + کارت ورود نمایش می‌دهد (تأیید مرورگری: بنر سبز نشست + حالت خالی صحیح).
 - مسیر legacy `users/:userId` برای اسکریپت‌ها باقی است و در سند به‌عنوان deprecated علامت خورد.
+
+## ۳-د. AUTH-004 — DTO اختصاصی روی همه نوشتارهای منبع (Runtime-Verified)
+
+- قبل: بدنه‌ها با TS interface اعلان می‌شدند → ValidationPipe برای آن‌ها متادیتای ران‌تایم نداشت و `whitelist/forbidNonWhitelisted` عملاً بی‌اثر بود؛ کل شیء درخواست به سرویس می‌رفت.
+- بعد: کلاس‌های DTO با class-validator در `checkout/dto/checkout.dto.ts` و `common/dto/resource-writes.dto.ts`:
+  - `CheckoutSessionDto` (nested `QuoteLineDto` + `AddressSnapshotDto`، `ArrayMinSize`)، `PlaceOrderDto` (`IsIn` برای درگاه پرداخت)
+  - `CreateCouponDto`، `WalletOperationDto`، `LoyaltyAdjustDto`، `OrderTransitionDto`، `PaymentInitiateDto`، `ReceiptSubmitDto`، `ReceiptApproveDto`، `SubscriptionCreateDto`، `ReviewCreateDto`، `B2bQuoteRequestDto`، `B2bQuoteStatusDto`
+- **تأیید زمان‌اجرا:** کلید ناشناخته روی checkout → `400`؛ `paymentMethod:"HACKED"` → `400`؛ `rating:99` → `400`؛ payload سالم → عبور به هندلر (خطای بعدی، کسب‌وکار)؛ چرخه بالینی ۱۰/۱۰ و مسیر طلایی ۱۹/۱۹ با payloadهای واقعی → سازگاری کامل کلاینت‌ها.
 
 **تست‌ها:** `apps/api/src/common/guards/admin.guard.spec.ts` — ۱۰/۱۰ سبز؛ `verify-clinical-store.mjs` ۱۰/۱۰ و `e2e-golden-path.mjs` ۱۹/۱۹ به‌عنوان کلاینت سرویس‌به‌سرویس با کلید از `.env`.
 

@@ -11,6 +11,7 @@ import {
 } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { LoyaltyAdjustDto } from "../common/dto/resource-writes.dto";
 import { LoyaltyService } from "./loyalty.service";
 
 // ADR-008: باشگاه مشتریان — موجودی/تاریخچه کاربر + تنظیم دستی ادمین
@@ -45,7 +46,7 @@ export class LoyaltyController {
   adminAdjust(
     @Param("userId") userId: string,
     @CurrentTenant() tenantId: string,
-    @Body() body?: { pointsDelta?: number; reason?: string; actor?: string }
+    @Body() body?: LoyaltyAdjustDto
   ) {
     return this.loyaltyService.adminAdjust({
       tenantId,

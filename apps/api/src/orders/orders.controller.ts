@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Param, Query, Body, Res, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { OrderTransitionDto } from "../common/dto/resource-writes.dto";
 import { OrdersService } from "./orders.service";
 import { OrderStatus } from "@commerce-os/domain";
 import type { Response } from "express";
@@ -40,11 +41,11 @@ export class OrdersController {
   @UseGuards(AdminGuard)
   async transitionStatus(
     @Param("id") id: string,
-    @Body() body: { toStatus: OrderStatus; actor?: string; reason?: string }
+    @Body() body: OrderTransitionDto
   ) {
     return this.ordersService.transitionStatus(
       id,
-      body.toStatus,
+      body.toStatus as OrderStatus,
       body.actor || "OPERATOR",
       body.reason
     );

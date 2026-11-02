@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Headers, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { WalletOperationDto } from "../common/dto/resource-writes.dto";
 import { WalletService } from "./wallet.service";
 
 @Controller("wallet")
@@ -25,7 +26,7 @@ export class WalletController {
   async credit(
     @Param("userId") userId: string,
     @CurrentTenant() tenantId: string,
-    @Body() body: { amountRials: number; refType: string; refId: string; description: string }
+    @Body() body: WalletOperationDto
   ) {
     return this.walletService.credit({
       userId,
@@ -42,7 +43,7 @@ export class WalletController {
   async debit(
     @Param("userId") userId: string,
     @CurrentTenant() tenantId: string,
-    @Body() body: { amountRials: number; refType: string; refId: string; description: string }
+    @Body() body: WalletOperationDto
   ) {
     return this.walletService.debit({
       userId,

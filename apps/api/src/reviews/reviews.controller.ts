@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Param, Query, Body, Headers, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { ReviewCreateDto } from "../common/dto/resource-writes.dto";
 import { ReviewsService, CreateReviewInput, ReviewModerationDecision } from "./reviews.service";
 
 const DEFAULT_TENANT_ID = "demo-tenant-id";
@@ -16,7 +17,7 @@ export class ReviewsController {
   @Post("products/:productId")
   async create(
     @Param("productId") productId: string,
-    @Body() body: CreateReviewInput,
+    @Body() body: ReviewCreateDto,
     @Headers("x-tenant-id") tenantId?: string,
     @Headers("x-user-id") userId?: string
   ) {

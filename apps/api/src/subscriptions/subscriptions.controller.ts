@@ -13,6 +13,7 @@ import { AdminGuard } from "../common/guards/admin.guard";
 import { CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
 import { DEFAULT_TENANT_ID, CurrentCustomer } from "../common/guards/current-tenant.decorator";
+import { SubscriptionCreateDto } from "../common/dto/resource-writes.dto";
 import { SubscriptionsService } from "./subscriptions.service";
 
 // ADR-009: اشتراک‌های دوره‌ای — فهرست پلن‌ها، ثبت عضویت، مدیریت کاربر، لیست ادمین
@@ -28,15 +29,7 @@ export class SubscriptionsController {
 
   // POST /v1/subscriptions — ثبت عضویت (عمومی؛ کاربر ناشناس profileBindingId می‌گیرد)
   @Post()
-  create(
-    @Body()
-    body?: {
-      planId?: string;
-      userId?: string;
-      phone?: string;
-      quantity?: number;
-    }
-  ) {
+  create(@Body() body?: SubscriptionCreateDto) {
     return this.subscriptionsService.create({
       planId: body?.planId,
       userId: body?.userId,
