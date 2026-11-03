@@ -63,3 +63,12 @@
 - **Science Spotlight**: صحنه تیره فیروزه‌ای → **نوار سبز جنگلی عمیق** با لهجه شامپاینی
 - **Testimonials/B2B Strip/Featured Products/PDP INCI Drawer**: هماهنگ گرم
 - صحنه‌های تیره عمدی حفظ شدند (Bohr Simulator، ایستگاه‌های ۳۶۰) — رنگ فیروزه‌ای = معنای O₂ طبق Data Guardrails
+
+## فاز ۶ — Clinical/Academy/B2B (کامیت `a76ab6a`) ✅
+- **رفع باگ بحرانی کنتراست**: آیتم‌های مگامنو متن سفید-روی-سفید داشتند (کانتینر در فاز ۲ گرم شده بود اما آیتم‌ها نه) → ink/muted روی سطوح dropdown گرم
+- **Academy + B2B Hero**: گرادیان فیروزه‌ای → سبز جنگلی عمیق با CTA شامپاینی
+- **ReeMed**: هویت آبی پزشکی حفظ شد (معنایی) اما انتهای فیروزه‌ای گرادیان حذف؛ آمار هیرو با override کرم روشن
+- **ReeSkin Hero**: فیروزه‌ای → سبز جنگلی با اعداد شامپاینی و لهجه فلسفه برند
+- **Cold-chain badges** (order/pay/subscriptions): به آبی پزشکی معنایی `#0369A1` یکسان‌سازی شد
+- **کلاس‌های زنده داخل بلوک قدیمی هیرو**: gradient-text، stat-number/label، cold-chain-badge گرم شدند (در about/reeskin/reemed استفاده می‌شوند)
+- mobile drawer overlay + سطوح drawer گرم شدند
