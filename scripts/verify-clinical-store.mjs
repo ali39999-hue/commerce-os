@@ -282,12 +282,13 @@ async function runVerification() {
   if (isLive) {
     const homeVariant = carboxyVariantsList.find((v) => v.sku === "CBG-HOME-5X") || carboxyVariant;
 
-    // 5a. Create session
+    // 5a. Create session using variant with ample stock (Healene or CarboxyPad)
+    const testVariantId = "5295a9fe-3b42-459b-b089-06ddf8635bf4"; // Healene 250ml (~49 units)
     const csRes = await fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: homeVariant.id, qty: 1 }],
+        items: [{ variantId: testVariantId, qty: 1 }],
         customerPhone: "09121234567",
         customerName: "دکتر آزمون کلینیکال",
         address: {
@@ -303,13 +304,13 @@ async function runVerification() {
     });
 
     // 5b. Concurrent lease competition test:
-    // With available stock around 12 units, two concurrent requests each ask for 8 units (total 16 > 12).
+    // With available stock around 48 units, two concurrent requests each ask for 30 units (total 60 > 48).
     // Atomic row-level locking (FOR UPDATE) guarantees exactly one lease succeeds and one is rejected.
     const concurrent1 = fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: homeVariant.id, qty: 8 }],
+        items: [{ variantId: testVariantId, qty: 30 }],
         customerPhone: "09121111111",
         customerName: "رزرو هم‌زمان کلینیک آلفا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک آلفا", receiverName: "دکتر الف", receiverPhone: "09121111111" },
@@ -319,7 +320,7 @@ async function runVerification() {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: homeVariant.id, qty: 8 }],
+        items: [{ variantId: testVariantId, qty: 30 }],
         customerPhone: "09122222222",
         customerName: "رزرو هم‌زمان کلینیک بتا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک بتا", receiverName: "دکتر ب", receiverPhone: "09122222222" },
