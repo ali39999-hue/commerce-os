@@ -493,7 +493,7 @@ export default function SubscriptionsPage() {
 
                 {/* Cold-chain Assurance Tag & Management Action Controls */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed #e2e8f0", paddingTop: "8px", width: "100%" }}>
-                  <span style={{ fontSize: "0.74rem", color: "#0f766e", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                  <span style={{ fontSize: "0.74rem", color: "#0369a1", display: "inline-flex", alignItems: "center", gap: "4px" }}>
                     ❄️ پایش پیوسته زنجیره سرد ۲–۸°C در کلیه تحویل‌های دوره‌ای
                   </span>
 

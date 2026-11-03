@@ -8,12 +8,12 @@
 
 /* Hero Section */
 .reeskin-hero {
-  background: linear-gradient(135deg, #042f2e 0%, #0f766e 50%, #115e59 100%);
+  background: linear-gradient(135deg, #142820 0%, #1E3A2F 50%, #2D5646 100%);
   color: #ffffff;
   border-radius: var(--radius-xl, 28px);
   padding: 56px 44px;
   margin-bottom: 48px;
-  box-shadow: 0 20px 45px -10px rgba(15, 118, 110, 0.35);
+  box-shadow: 0 20px 45px -10px rgba(30, 58, 47, 0.35);
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -26,7 +26,7 @@
   left: -60px;
   width: 280px;
   height: 280px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(200, 214, 204, 0.18) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -87,7 +87,7 @@
 .reeskin-hero .hero-philosophy {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #a7f3d0;
+  color: #E4C9A8;
   margin: 0 0 18px;
   display: flex;
   align-items: center;

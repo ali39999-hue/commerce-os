@@ -93,7 +93,7 @@ const CERTIFICATION_LEVELS = [
     title: "تراپیست مجاز آکادمی (Certified Esthetician)",
     targetGroup: "بیوتی‌تراپیست‌ها، تکنسین‌های فیشیال و مراقبت پوستی کلینیک",
     scope: "اجرای پروتکل‌های غیرتهاجمی کربوکسی‌تراپی بوهر، ماسک‌های ترمیمی و تجویز روتین‌های سد دفاعی",
-    badgeColor: "#0d9488",
+    badgeColor: "#1E3A2F",
     prereqs: "مدرک معتبر فنی و حرفه‌ای یا پیراپزشکی + قبولی در آزمون سطح ۱",
   },
   {
@@ -176,12 +176,12 @@ export default function AcademyPage() {
       {/* ── Academy Hero ── */}
       <section
         style={{
-          background: "linear-gradient(135deg, #063935 0%, #0b6e66 60%, #0d4239 100%)",
+          background: "linear-gradient(135deg, #1E3A2F 0%, #2D5646 60%, #142820 100%)",
           color: "#ffffff",
           borderRadius: "24px",
           padding: "48px 40px",
           marginBottom: "40px",
-          boxShadow: "0 12px 36px rgba(11, 110, 102, 0.25)",
+          boxShadow: "0 12px 36px rgba(30, 58, 47, 0.25)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -216,7 +216,7 @@ export default function AcademyPage() {
               href="#learning-paths"
               style={{
                 background: "#ffffff",
-                color: "#084f4a",
+                color: "#1E3A2F",
                 padding: "12px 24px",
                 borderRadius: "12px",
                 fontWeight: 800,

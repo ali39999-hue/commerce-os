@@ -211,7 +211,7 @@ export default function OrderPage() {
           gap: "12px"
         }}>
           <span style={{
-            background: "#0f766e",
+            background: "#0369a1",
             color: "#ffffff",
             fontWeight: 800,
             fontSize: "0.78rem",
@@ -222,14 +222,14 @@ export default function OrderPage() {
           </span>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <strong style={{ fontSize: "0.86rem", color: "#115e59" }}>
+              <strong style={{ fontSize: "0.86rem", color: "#0369a1" }}>
                 گواهی پایش زنجیره سرد دارویی (GDP Cold-Chain Certified)
               </strong>
               <span style={{ fontSize: "0.72rem", background: "#d1fae5", color: "#065f46", padding: "2px 8px", borderRadius: "4px", fontWeight: 700 }}>
                 پایش سنسور فعال
               </span>
             </div>
-            <p style={{ margin: "4px 0 0", fontSize: "0.76rem", color: "#0f766e", lineHeight: 1.45 }}>
+            <p style={{ margin: "4px 0 0", fontSize: "0.76rem", color: "#0369a1", lineHeight: 1.45 }}>
               مرسوله در بسته‌بندی ایزوترمال با ژل یخ دارویی و شناسه پایش دمایی تحویل ناوگان توزیع گردیده است.
             </p>
           </div>

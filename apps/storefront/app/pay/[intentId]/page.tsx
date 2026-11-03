@@ -113,7 +113,7 @@ export default function PaymentPage() {
             شماره سفارش: <strong dir="ltr">{orderNum}</strong> | مبلغ قابل پرداخت:{" "}
             <strong>{new Intl.NumberFormat("fa-IR").format(Number(String(total).replace(/\D/g, "")) || 1200000)} تومان</strong>
           </p>
-          <div style={{ marginTop: "10px", display: "inline-flex", alignItems: "center", gap: "6px", background: "#f0fdfa", border: "1px solid #ccfbf1", padding: "4px 12px", borderRadius: "999px", fontSize: "0.76rem", color: "#0f766e" }}>
+          <div style={{ marginTop: "10px", display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(2, 132, 199, 0.08)", border: "1px solid rgba(2, 132, 199, 0.25)", padding: "4px 12px", borderRadius: "999px", fontSize: "0.76rem", color: "#0369a1" }}>
             <span style={{ fontWeight: 800 }}>۲–۸°C</span>
             <span>اقلام در انتظار تأیید پرداخت جهت خروج از سردخانه با پایش زنجیره سرد هستند</span>
           </div>

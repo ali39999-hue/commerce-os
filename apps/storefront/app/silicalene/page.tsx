@@ -178,7 +178,7 @@ export default function SilicalenePage() {
             <Link
               href="/products/silicalene"
               className="station-btn-primary"
-              style={{ background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #C69C70 0%, #B08A5E 100%)' }}
             >
               مشاهده برگه فنی کامل در کاتالوگ ←
             </Link>

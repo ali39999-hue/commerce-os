@@ -59,7 +59,7 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     accreditationLevel: "کلینیک طلایی مرجع (Centre of Excellence)",
     description:
       "مرکز تخصصی پروتکل‌های ترنس‌درمال دی‌اکسید کربن و تجهیزات نان‌ترمال پلاسما تحت نظارت مستقیم آزمایشگاه‌های کمبریج Dr Dermer UK.",
-    logoColor: "#084f4a",
+    logoColor: "#1E3A2F",
     productCount: 8,
     isVerified: true,
     leadPractitioner: {
@@ -101,7 +101,7 @@ const ACCREDITED_CLINICS: VendorItem[] = [
     accreditationLevel: "کلینیک طلایی مرجع (Centre of Excellence)",
     description:
       "مرکز مرجع استانی برگزاری کارگاه‌های عملی و پروتکل‌های پیشرفته درمان ملاسما و پیلینگ‌های ترکیبی با استانداردهای رسمی انگلستان.",
-    logoColor: "#0d9488",
+    logoColor: "#8C6A42",
     productCount: 5,
     isVerified: true,
     leadPractitioner: {

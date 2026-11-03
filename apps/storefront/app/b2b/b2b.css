@@ -6,12 +6,12 @@
 
 /* Hero */
 .b2b-hero {
-  background: linear-gradient(135deg, #063935 0%, #0b6e66 50%, #084f4a 100%);
+  background: linear-gradient(135deg, #1E3A2F 0%, #2D5646 55%, #142820 100%);
   color: #ffffff;
   border-radius: 20px;
   padding: 44px 36px;
   margin-bottom: 36px;
-  box-shadow: 0 12px 32px rgba(8, 79, 74, 0.25);
+  box-shadow: 0 12px 32px rgba(30, 58, 47, 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -516,7 +516,7 @@
 }
 
 .b2b-wizard-step-btn.completed .b2b-wizard-step-dot {
-  background: #10b981;
+  background: #16A34A;
   color: #ffffff;
 }
 

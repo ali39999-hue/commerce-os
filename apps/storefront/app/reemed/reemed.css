@@ -8,7 +8,7 @@
 
 /* Hero Section */
 .reemed-hero {
-  background: linear-gradient(135deg, #091e3a 0%, #0369a1 45%, #0f766e 100%);
+  background: linear-gradient(135deg, #091E3A 0%, #0369A1 60%, #075A85 100%);
   color: #ffffff;
   border-radius: var(--radius-xl, 28px);
   padding: 56px 44px;
@@ -109,6 +109,14 @@
   margin-top: 24px;
   padding-top: 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Hero stat labels live on the dark navy stage — override warm-canvas muted for contrast */
+.reemed-hero-stats .stat-label {
+  color: rgba(245, 242, 235, 0.85);
+}
+.reemed-hero-stats .stat-number {
+  color: #E4C9A8;
 }
 
 /* Section Common */

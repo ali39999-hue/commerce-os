@@ -433,7 +433,7 @@ export default function ReeMedBrandPage() {
 
             <div className="device-info-header">
               <h3 id="dev-plasmax-title">PlasmaX™ Multi-Energy Plasma Device</h3>
-              <p className="device-tech-sub" style={{ color: "#0f766e" }}>
+              <p className="device-tech-sub" style={{ color: "#0369a1" }}>
                 سیستم چندفرکانسی پلاسمای سرد آرگون/هلیوم، بلفاروپلاستی غیرتهاجمی و DBD پلاسما
               </p>
             </div>

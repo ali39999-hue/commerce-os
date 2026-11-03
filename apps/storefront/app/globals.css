@@ -614,35 +614,35 @@ textarea:focus-visible,
   margin-top: 2px;
 }
 .reeskin-tag {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  background: rgba(30, 58, 47, 0.08);
+  color: var(--color-brand-forest);
+  border: 1px solid rgba(30, 58, 47, 0.2);
 }
 .reemed-tag {
-  background: rgba(139, 92, 246, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(198, 156, 112, 0.12);
+  color: #755A38;
+  border: 1px solid rgba(198, 156, 112, 0.3);
 }
 .item-content strong {
   display: block;
   font-size: 0.94rem;
-  color: #f8fafc;
+  color: var(--ink);
   margin-bottom: 4px;
 }
 .item-content p {
   font-size: 0.78rem;
-  color: #94a3b8;
+  color: var(--muted);
   line-height: 1.6;
   margin: 0 0 6px;
 }
 .item-action-hint {
   font-size: 0.76rem;
   font-weight: 700;
-  color: #22d3ee;
+  color: var(--brand);
 }
 .dropdown-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--line);
   margin: 8px 0;
 }
 .categories-menu {
@@ -662,7 +662,7 @@ textarea:focus-visible,
   transition: all 0.15s ease;
 }
 .cat-drop-link:hover {
-  background: rgba(6, 182, 212, 0.1);
+  background: rgba(30, 58, 47, 0.05);
 }
 .cat-drop-dot {
   width: 8px;
@@ -673,23 +673,23 @@ textarea:focus-visible,
 .cat-drop-link strong {
   display: block;
   font-size: 0.86rem;
-  color: #f8fafc;
+  color: var(--ink);
 }
 .cat-drop-link small {
   display: block;
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: var(--muted);
 }
 .b2b-nav-badge {
-  color: var(--brand-deep);
-  background: rgba(20, 184, 166, 0.12);
-  border: 1px solid rgba(20, 184, 166, 0.25);
+  color: var(--brand);
+  background: rgba(30, 58, 47, 0.07);
+  border: 1px solid rgba(30, 58, 47, 0.18);
   border-radius: var(--radius-pill);
   padding: 5px 14px;
   font-weight: 700;
 }
 .b2b-nav-badge:hover {
-  background: rgba(20, 184, 166, 0.22);
+  background: rgba(30, 58, 47, 0.14);
 }
 .pulse-mini-dot {
   width: 6px;
@@ -2525,7 +2525,7 @@ textarea:focus-visible,
   margin: 0 0 20px;
 }
 .gradient-text {
-  background: linear-gradient(135deg, #2dd4bf 0%, #38bdf8 60%, #818cf8 100%);
+  background: linear-gradient(120deg, var(--color-brand-forest) 0%, #2D5646 55%, var(--color-champagne-gold) 120%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -2641,14 +2641,15 @@ textarea:focus-visible,
   pointer-events: none;
 }
 .stat-number {
-  color: #2dd4bf;
+  color: var(--color-brand-forest);
   font-size: 1.65rem;
-  font-weight: 950;
+  font-weight: 800;
   line-height: 1;
   margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
 }
 .stat-label {
-  color: #cbd5e1;
+  color: var(--muted);
   font-size: 0.76rem;
   line-height: 1.5;
 }
@@ -2855,9 +2856,9 @@ textarea:focus-visible,
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(2, 132, 199, 0.2);
-  color: #7dd3fc;
-  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: var(--medical-tint);
+  color: #0369a1;
+  border: 1px solid rgba(2, 132, 199, 0.25);
   font-size: 0.72rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -4656,7 +4657,7 @@ textarea:focus-visible,
 .mobile-drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.72);
+  background: rgba(25, 35, 29, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
@@ -4687,7 +4688,7 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f8fafc;
+  background: #FAF8F5;
 }
 .drawer-brand {
   display: flex;
@@ -4738,7 +4739,7 @@ textarea:focus-visible,
   font-family: inherit;
   font-size: 0.88rem;
   outline: none;
-  background: #f8fafc;
+  background: #FAF8F5;
 }
 .drawer-search-input:focus {
   border-color: var(--brand);
@@ -4872,7 +4873,7 @@ textarea:focus-visible,
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: #f8fafc;
+  background: #FAF8F5;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
@@ -4882,7 +4883,7 @@ textarea:focus-visible,
 .mobile-drawer-footer {
   padding: 16px 20px;
   border-top: 1px solid var(--line);
-  background: #f8fafc;
+  background: #FAF8F5;
   display: flex;
   flex-direction: column;
   gap: 12px;
