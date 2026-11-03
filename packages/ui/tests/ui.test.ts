@@ -13,17 +13,17 @@ describe("@commerce-os/ui Primitives & Design Tokens", () => {
   });
 
   it("exports Warm Clinical Minimalism palette tokens", () => {
-    expect(designTokens.color.canvas).toBe("#F7F6F2");
+    expect(designTokens.color.canvas).toBe("#FAF8F5");
     expect(designTokens.color.surface).toBe("#FFFFFF");
-    expect(designTokens.color["surface-soft"]).toBe("#EEF2ED");
-    expect(designTokens.color.ink).toBe("#242D29");
-    expect(designTokens.color.muted).toBe("#69736D");
-    expect(designTokens.color.brand).toBe("#24594F");
-    expect(designTokens.color["brand-strong"]).toBe("#17463E");
-    expect(designTokens.color.sage).toBe("#DCE8DF");
+    expect(designTokens.color["surface-soft"]).toBe("#F2EFE9");
+    expect(designTokens.color.ink).toBe("#19231D");
+    expect(designTokens.color.muted).toBe("#5E6B64");
+    expect(designTokens.color.brand).toBe("#1E3A2F");
+    expect(designTokens.color["brand-strong"]).toBe("#142820");
+    expect(designTokens.color.sage).toBe("#C8D6CC");
     expect(designTokens.color.sand).toBe("#EDE5DA");
     expect(designTokens.color.accent).toBe("#C69C70");
-    expect(designTokens.color.border).toBe("#E6E5DE");
+    expect(designTokens.color.border).toBe("#E7E4DC");
     expect(designTokens.color.danger).toBe("#B84D4D");
   });
 

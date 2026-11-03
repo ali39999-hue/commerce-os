@@ -5,23 +5,23 @@
  */
 
 /**
- * Warm Clinical Minimalism Palette
- * Reference: Dr Dermer Redesign Blueprint Section 3.2 & DD-201
+ * Warm Clinical Minimalism & Editorial Luxury Palette
+ * Reference: Dr Dermer Concept Boards (01, 02, 03) & Design System Kit v1
  */
 export const warmClinicalPalette = {
-  canvas: "#F7F6F2",
-  surface: "#FFFFFF",
-  "surface-soft": "#EEF2ED",
-  surfaceSoft: "#EEF2ED",
-  ink: "#242D29",
-  muted: "#69736D",
-  brand: "#24594F",
-  "brand-strong": "#17463E",
-  brandStrong: "#17463E",
-  sage: "#DCE8DF",
-  sand: "#EDE5DA",
-  accent: "#C69C70",
-  border: "#E6E5DE",
+  canvas: "#FAF8F5", // Warm cream alabaster canvas from Concept Board 01
+  surface: "#FFFFFF", // Pure white elevated cards
+  "surface-soft": "#F2EFE9", // Soft warm neutral
+  surfaceSoft: "#F2EFE9",
+  ink: "#19231D", // Deep botanical ink for high legibility
+  muted: "#5E6B64", // Refined editorial muted tone (WCAG 2.2 compliant)
+  brand: "#1E3A2F", // Forest clinical green (Concept Board Header & Buttons)
+  "brand-strong": "#142820", // Deep forest hover
+  brandStrong: "#142820",
+  sage: "#C8D6CC", // Botanical sage accent
+  sand: "#EDE5DA", // Warm sand editorial tone
+  accent: "#C69C70", // Warm champagne / gold accent
+  border: "#E7E4DC", // Subtle warm linen divider
   danger: "#B84D4D",
 } as const;
 

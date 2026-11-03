@@ -1,0 +1,13 @@
+# Implementation Checklist
+- [ ] Repository and baseline commit recorded
+- [ ] Route inventory and API map complete
+- [ ] Permission matrix reviewed
+- [ ] Tokens validated against actual stack
+- [ ] Official logo, fonts and product assets approved
+- [ ] Figma file created with page structure
+- [ ] Core components and states documented
+- [ ] Pilot approved and implemented
+- [ ] Desktop/mobile/RTL/LTR tested
+- [ ] Screenshot diff and accessibility evidence attached
+- [ ] PR includes rollback note
+- [ ] Human reviewer approved

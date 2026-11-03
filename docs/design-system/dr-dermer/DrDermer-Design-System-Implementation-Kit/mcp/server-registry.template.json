@@ -1,0 +1,29 @@
+{
+  "servers": [
+    {
+      "name": "figma",
+      "purpose": "Canvas read/write",
+      "endpoint": "https://mcp.figma.com/mcp",
+      "access": "OAuth; verify write scopes and plan"
+    },
+    {
+      "name": "playwright",
+      "purpose": "Browser QA",
+      "endpoint": "client-specific official setup",
+      "access": "test environment only"
+    },
+    {
+      "name": "context7",
+      "purpose": "Library docs",
+      "endpoint": "official provider setup",
+      "access": "read-only"
+    },
+    {
+      "name": "repository",
+      "purpose": "Source and PR",
+      "endpoint": "official provider setup",
+      "access": "branch-scoped"
+    }
+  ],
+  "warning": "Template only; validate current transport, scopes and config with official docs."
+}

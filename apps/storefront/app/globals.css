@@ -13,74 +13,73 @@
 svg { max-width: 100%; }
 
 :root {
-  color-scheme: dark;
-  /* Dark Obsidian Clinical Laboratory Aesthetic (DESIGN.md & Phase 09 Canonical Specification) */
-  --color-bg-base: #070b12;         /* Primary obsidian canvas background */
-  --color-bg-surface: #0c131f;      /* Elevated medical console card & surface */
-  --color-bg-glass: rgba(15, 23, 42, 0.75); /* Translucent frosted glass panel */
-  --color-border-subtle: rgba(255, 255, 255, 0.08); /* Minimal hairline panel divider */
-  --color-border-glow: rgba(6, 182, 212, 0.35);    /* Focused / active cyan glow border */
-  --color-teal-primary: #06b6d4;    /* Signature ReeSkin Clinical Teal, Bohr effect */
-  --color-teal-dark: #0891b2;       /* Teal button gradient hover & active state */
-  --color-plasma-purple: #8b5cf6;   /* PlasmaX surgical energy & CME hardware */
-  --color-emerald-green: #10b981;   /* Crystalene polish & bio-inert markers */
-  --color-amber-gold: #f59e0b;      /* Cold-chain alerts, active retinoids, VIP */
-  --color-text-primary: #f8fafc;    /* High-contrast crisp clinical text */
-  --color-text-secondary: #94a3b8;  /* Technical specs, dosages, secondary text */
-  --color-text-muted: #64748b;      /* Footnotes, timestamps, breadcrumbs */
+  color-scheme: light dark;
+  /* ── Warm Editorial Clinical Luxury Palette (Design System Kit v1 & Concept Boards) ── */
+  --color-bg-base: #FAF8F5;         /* Warm cream alabaster canvas */
+  --color-bg-surface: #FFFFFF;      /* Pure white elevated card & panel */
+  --color-bg-glass: rgba(255, 255, 255, 0.88); /* Translucent frosted warm glass */
+  --color-border-subtle: #E7E4DC;   /* Subtle warm linen panel divider */
+  --color-border-glow: rgba(30, 58, 47, 0.25); /* Focused brand glow border */
+  --color-brand-forest: #1E3A2F;    /* Deep Forest Clinical Green (Primary CTA & Heading) */
+  --color-brand-dark: #142820;      /* Dark Forest for buttons and active states */
+  --color-sage-accent: #C8D6CC;     /* Natural Botanical Sage */
+  --color-champagne-gold: #C69C70;  /* Warm Champagne / Sand Gold Accent */
+  --color-text-primary: #19231D;    /* Deep Botanical Ink (High contrast) */
+  --color-text-secondary: #4A5750;  /* Editorial secondary text */
+  --color-text-muted: #5E6B64;      /* Subtle annotations & metadata (WCAG AA >= 4.5:1) */
 
-  /* Legacy & Utility Compatibility Aliases */
+  /* Standard Tokens & Compatibility Aliases */
   --canvas: var(--color-bg-base);
   --paper-warm: var(--color-bg-base);
   --paper: var(--color-bg-surface);
-  --surface: #0e1726;               /* Dark raised surface */
-  --surface-soft: #141f33;          /* Dark subtle panel */
-  --surface-tint: rgba(20, 184, 166, 0.06);
+  --surface: #FFFFFF;
+  --surface-soft: #F2EFE9;
+  --surface-tint: rgba(30, 58, 47, 0.05);
   --ink: var(--color-text-primary);
   --ink-secondary: var(--color-text-secondary);
   --muted: var(--color-text-muted);
-  --line: rgba(255, 255, 255, 0.09);
-  --line-strong: rgba(255, 255, 255, 0.16);
+  --line: #E7E4DC;
+  --line-strong: #D5D1C5;
 
   /* Brand Clinical Palette */
-  --brand: #0d9488;                 /* Medical Teal */
-  --brand-deep: #0f766e;
-  --brand-strong: #14b8a6;
-  --brand-dark: #041f1e;
-  --brand-light: #2dd4bf;
-  --brand-tint: rgba(13, 148, 136, 0.15);
+  --brand: #1E3A2F;                 /* Deep Forest Clinical Green */
+  --brand-deep: #142820;
+  --brand-strong: #142820;
+  --brand-dark: #0E1B15;
+  --brand-light: #2D5646;
+  --brand-tint: rgba(30, 58, 47, 0.08);
 
-  /* Supporting Clinical Tones */
-  --sage: rgba(16, 185, 129, 0.12);
-  --sand: rgba(245, 158, 11, 0.12);
-  --accent: #f59e0b;
-  --accent-hover: #d97706;
-  --accent-tint: rgba(245, 158, 11, 0.15);
-  --accent-sand: rgba(245, 158, 11, 0.08);
+  /* Supporting Botanical Tones */
+  --sage: #C8D6CC;
+  --sand: #EDE5DA;
+  --accent: #C69C70;
+  --accent-hover: #B58A5E;
+  --accent-tint: #FAF4EC;
+  --accent-sand: #EDE5DA;
 
   /* Medical Blue / Cold Chain Accent */
   --medical-blue: #0284c7;
-  --medical-tint: rgba(2, 132, 199, 0.15);
+  --medical-tint: rgba(2, 132, 199, 0.12);
 
   /* Status Colors */
-  --danger: #ef4444;
-  --success: #10b981;
-  --warning: #f59e0b;
+  --danger: #b84d4d;
+  --success: #16a34a;
+  --warning: #d97706;
 
   /* Typography & Sizing */
-  --radius-xl: 28px;
-  --radius: 20px;
-  --radius-md: 14px;
+  --radius-xl: 24px;
+  --radius: 16px;
+  --radius-md: 12px;
   --radius-sm: 8px;
   --radius-pill: 9999px;
 
-  /* Shadows & Glassmorphism */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.08);
-  --shadow-elevated: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 1px rgba(6, 182, 212, 0.3);
-  --shadow-glow: 0 0 35px -5px rgba(6, 182, 212, 0.3);
-  --glass-bg: rgba(12, 19, 31, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  /* Shadows & Luxury Elevation */
+  --shadow-sm: 0 1px 3px rgba(25, 35, 29, 0.06);
+  --shadow-card: 0 4px 20px -2px rgba(25, 35, 29, 0.05), 0 1px 4px rgba(25, 35, 29, 0.03);
+  --shadow-elevated: 0 15px 35px -5px rgba(30, 58, 47, 0.08), 0 4px 12px rgba(25, 35, 29, 0.04);
+  --shadow-glow: 0 0 30px rgba(198, 156, 112, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: #E7E4DC;
 }
 
 * { box-sizing: border-box; }
@@ -144,9 +143,9 @@ textarea:focus-visible,
 .clinical-hero :focus-visible,
 .bohr-simulator-section :focus-visible,
 .devices-showcase-section :focus-visible {
-  outline: 2px solid #2dd4bf;
+  outline: 2px solid var(--color-brand-forest);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.3);
+  box-shadow: 0 0 0 4px rgba(198, 156, 112, 0.25);
 }
 
 .page-shell, .page-shell-wrapper {
@@ -156,11 +155,11 @@ textarea:focus-visible,
 
 /* ── Top Announcement / Promo Bar ── */
 .promo-banner {
-  background: var(--brand-dark);
-  color: #f1f5f9;
+  background: var(--color-brand-forest);
+  color: #F5F2EB;
   font-size: 0.82rem;
   padding: 8px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 101;
 }
@@ -185,8 +184,8 @@ textarea:focus-visible,
   gap: 8px;
 }
 .promo-badge {
-  background: var(--brand-light);
-  color: var(--brand-dark);
+  background: #A8C5B8;
+  color: var(--color-brand-dark);
   font-size: 0.72rem;
   font-weight: 800;
   padding: 3px 9px;
@@ -196,25 +195,25 @@ textarea:focus-visible,
   gap: 5px;
 }
 .cold-chain-pill {
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+  background: linear-gradient(135deg, #E4C9A8 0%, #C69C70 100%);
+  color: #3D2A18;
+  box-shadow: 0 2px 6px rgba(198, 156, 112, 0.35);
 }
 .promo-badge-secondary {
-  background: rgba(20, 184, 166, 0.2);
-  color: #5eead4;
-  border: 1px solid rgba(45, 212, 191, 0.35);
+  background: rgba(200, 214, 204, 0.18);
+  color: #C8D6CC;
+  border: 1px solid rgba(200, 214, 204, 0.35);
   font-size: 0.7rem;
   font-weight: 800;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
 }
 .promo-divider-bullet {
-  color: #64748b;
+  color: rgba(245, 242, 235, 0.4);
   font-size: 0.75rem;
 }
 .promo-text {
-  color: #e2e8f0;
+  color: #E8E5DC;
   font-size: 0.8rem;
 }
 .promo-actions {
@@ -226,7 +225,7 @@ textarea:focus-visible,
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #5eead4;
+  color: #E4C9A8;
   font-weight: 700;
   font-size: 0.8rem;
   transition: color 0.15s ease;
@@ -239,7 +238,7 @@ textarea:focus-visible,
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #2dd4bf;
+  background: #E4C9A8;
   display: inline-block;
 }
 .promo-sep {
@@ -256,25 +255,25 @@ textarea:focus-visible,
   transition: color 0.15s ease;
 }
 .promo-hotline:hover {
-  color: #38bdf8;
+  color: #E4C9A8;
 }
 
-/* ── Global Header (Clinical Luxury Dark Glassmorphism) ── */
+/* ── Global Header (Warm Editorial Clinical Luxury) ── */
 .site-header {
   min-height: 84px;
-  background: rgba(7, 11, 18, 0.85);
+  background: rgba(250, 248, 245, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--line);
   position: sticky;
   top: 0;
   z-index: 100;
   transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 .site-header.scrolled {
-  background: rgba(7, 11, 18, 0.96);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
-  border-bottom-color: rgba(6, 182, 212, 0.2);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8px 25px -5px rgba(25, 35, 29, 0.06);
+  border-bottom-color: var(--line);
 }
 .header-inner {
   max-width: 1400px;
@@ -301,7 +300,7 @@ textarea:focus-visible,
   transition: background 0.15s ease;
 }
 .mobile-menu-toggle:hover {
-  background: var(--surface-tint);
+  background: var(--surface-soft);
 }
 .brand {
   display: flex;
@@ -320,7 +319,6 @@ textarea:focus-visible,
   max-width: 135px;
   object-fit: contain;
   transition: transform 0.2s ease;
-  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.25));
 }
 .brand:hover .brand-logo-img {
   transform: scale(1.03);
@@ -336,15 +334,16 @@ textarea:focus-visible,
 }
 .brand-primary {
   font-size: 1.45rem;
-  font-weight: 950;
-  letter-spacing: -0.04em;
-  color: #f8fafc;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--color-brand-forest);
   line-height: 1.1;
+  font-family: "Playfair Display", Georgia, serif, Vazirmatn;
 }
 .brand-lab-badge {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border: 1px solid rgba(6, 182, 212, 0.35);
+  background: rgba(30, 58, 47, 0.08);
+  color: var(--color-brand-forest);
+  border: 1px solid rgba(30, 58, 47, 0.2);
   font-size: 0.65rem;
   font-weight: 800;
   padding: 2px 8px;
@@ -355,7 +354,7 @@ textarea:focus-visible,
 .brand-sub {
   font-size: 0.64rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--muted);
   letter-spacing: 0.08em;
   direction: ltr;
   text-align: right;
@@ -369,23 +368,23 @@ textarea:focus-visible,
 .header-search-input {
   width: 100%;
   padding: 11px 18px 11px 44px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--line);
   border-radius: var(--radius-pill);
-  background: rgba(15, 23, 42, 0.7);
+  background: #FFFFFF;
   font-family: inherit;
   font-size: 0.88rem;
-  color: #f8fafc;
+  color: var(--ink);
   outline: none;
   transition: all 0.2s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(25, 35, 29, 0.03);
 }
 .header-search-input:focus {
-  border-color: #06b6d4;
-  background: rgba(15, 23, 42, 0.95);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-color: var(--brand);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(30, 58, 47, 0.12);
 }
 .header-search-input::placeholder {
-  color: #64748b;
+  color: var(--muted);
 }
 .header-search-btn {
   position: absolute;
@@ -394,7 +393,7 @@ textarea:focus-visible,
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -403,7 +402,7 @@ textarea:focus-visible,
   transition: color 0.15s ease;
 }
 .header-search-btn:hover {
-  color: #22d3ee;
+  color: var(--brand);
 }
 .header-actions {
   display: flex;
@@ -418,25 +417,26 @@ textarea:focus-visible,
   border-radius: var(--radius-pill);
   font-size: 0.86rem;
   font-weight: 600;
-  color: #cbd5e1;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: #FFFFFF;
   transition: all 0.18s ease;
   position: relative;
+  box-shadow: 0 1px 3px rgba(25, 35, 29, 0.03);
 }
 .header-action-btn:hover {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: rgba(6, 182, 212, 0.35);
-  color: #38bdf8;
+  background: var(--surface-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .header-action-btn.header-action-authed {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: rgba(6, 182, 212, 0.3);
-  color: #38bdf8;
+  background: rgba(30, 58, 47, 0.06);
+  border-color: rgba(30, 58, 47, 0.2);
+  color: var(--brand);
 }
 .header-action-btn.header-action-authed:hover {
-  background: rgba(6, 182, 212, 0.2);
-  border-color: #06b6d4;
+  background: rgba(30, 58, 47, 0.12);
+  border-color: var(--brand);
 }
 .authed-user-label {
   display: inline-flex;
@@ -447,8 +447,8 @@ textarea:focus-visible,
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
   flex-shrink: 0;
 }
 .authed-name-truncate {
@@ -461,11 +461,11 @@ textarea:focus-visible,
   position: absolute;
   top: -2px;
   right: 2px;
-  background: #0891b2;
+  background: var(--color-champagne-gold);
   color: #ffffff;
   border-radius: 999px;
   font-size: 0.7rem;
-  font-weight: 900;
+  font-weight: 800;
   min-width: 18px;
   height: 18px;
   display: inline-flex;
@@ -478,30 +478,30 @@ textarea:focus-visible,
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  background: linear-gradient(135deg, #0e7490 0%, #083344 100%);
+  background: var(--color-brand-forest);
   color: #ffffff;
   padding: 10px 20px;
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
   font-weight: 700;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
-  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.18);
+  border: 1px solid var(--color-brand-dark);
   cursor: pointer;
 }
 .clinical-cart-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(6, 182, 212, 0.45);
-  border-color: #22d3ee;
+  background: var(--color-brand-dark);
+  box-shadow: 0 6px 20px rgba(30, 58, 47, 0.28);
 }
 .cart-badge {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: var(--color-champagne-gold);
   color: #ffffff;
   border-radius: 999px;
   padding: 2px 8px;
   font-size: 0.78rem;
   font-weight: 900;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(25, 35, 29, 0.15);
 }
 .badge-animated {
   animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -512,13 +512,13 @@ textarea:focus-visible,
   100% { transform: scale(1); }
 }
 
-/* ── Multi-Tier Secondary Clinical Sub-navigation ── */
+/* ── Multi-Tier Secondary Clinical Sub-navigation (Warm Editorial) ── */
 .header-subnav {
-  background: rgba(10, 17, 26, 0.92);
+  background: rgba(250, 248, 245, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   position: relative;
   z-index: 90;
 }
@@ -536,7 +536,7 @@ textarea:focus-visible,
 .subnav-link {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--ink);
   padding: 13px 4px;
   white-space: nowrap;
   display: inline-flex;
@@ -552,8 +552,8 @@ textarea:focus-visible,
   font-family: inherit;
 }
 .subnav-link:hover, .subnav-link.highlight {
-  color: #22d3ee;
-  border-bottom-color: #06b6d4;
+  color: var(--brand);
+  border-bottom-color: var(--brand);
 }
 .subnav-dropdown-trigger {
   position: relative;
@@ -563,12 +563,12 @@ textarea:focus-visible,
   position: absolute;
   top: 100%;
   right: 0;
-  background: rgba(10, 17, 26, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 15px 35px -5px rgba(25, 35, 29, 0.08);
   padding: 16px;
   z-index: 150;
   animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -780,8 +780,9 @@ textarea:focus-visible,
 .section-head h2 {
   margin: 4px 0 0;
   font-size: 2.1rem;
-  letter-spacing: -.04em;
-  color: #f8fafc;
+  letter-spacing: -.02em;
+  color: var(--color-brand-forest);
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 .product-grid {
   display: grid;
@@ -789,21 +790,19 @@ textarea:focus-visible,
   gap: 22px;
 }
 .product-card {
-  background: rgba(15, 23, 42, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-sm);
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   display: flex;
   flex-direction: column;
 }
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: var(--shadow-elevated);
+  border-color: rgba(30, 58, 47, 0.3);
 }
 .product-art {
   display: flex;
@@ -812,27 +811,37 @@ textarea:focus-visible,
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(200, 214, 204, 0.3) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
 }
-.product-card:nth-child(3n+2) .product-art { background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%); }
-.product-card:nth-child(3n) .product-art { background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%); }
+.product-card:nth-child(3n+2) .product-art {
+  background:
+    radial-gradient(circle at 30% 25%, rgba(237, 229, 218, 0.6) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
+}
+.product-card:nth-child(3n) .product-art {
+  background:
+    radial-gradient(circle at 30% 25%, rgba(198, 156, 112, 0.18) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
+}
 .art-index {
   font-size: 7.5rem;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.06);
+  font-weight: 800;
+  color: rgba(30, 58, 47, 0.05);
 }
 .art-caption {
   position: absolute;
   bottom: 14px;
   right: 14px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #22d3ee;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line);
+  color: var(--color-brand-forest);
   font-size: .78rem;
   font-weight: 700;
   padding: 4px 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 8px rgba(25, 35, 29, 0.08);
 }
 .product-copy {
   padding: 22px;
@@ -843,10 +852,10 @@ textarea:focus-visible,
 .product-copy h3 {
   font-size: 1.15rem;
   margin: 0 0 8px;
-  color: #f8fafc;
+  color: var(--ink);
 }
 .product-copy p {
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: .88rem;
   flex-grow: 1;
   margin: 0 0 20px;
@@ -857,17 +866,18 @@ textarea:focus-visible,
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
   padding-top: 16px;
 }
 .product-bottom strong {
   font-size: 1.05rem;
-  color: #f8fafc;
+  color: var(--color-brand-forest);
+  font-variant-numeric: tabular-nums;
 }
 .btn-add-cart {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border: 1px solid rgba(6, 182, 212, 0.35);
+  background: var(--color-brand-forest);
+  color: #ffffff;
+  border: 1px solid var(--color-brand-dark);
   border-radius: 999px;
   padding: 8px 16px;
   font-size: .84rem;
@@ -876,17 +886,17 @@ textarea:focus-visible,
   transition: all .2s;
 }
 .btn-add-cart:hover {
-  background: #06b6d4;
-  color: #070b12;
-  box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
+  background: var(--color-brand-dark);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.28);
 }
 .btn-add-cart.added {
-  background: #10b981;
+  background: #16a34a;
   color: #ffffff;
-  border-color: #10b981;
+  border-color: #16a34a;
 }
 .muted-tag {
-  color: #94a3b8;
+  color: var(--muted);
   font-size: .82rem;
 }
 
@@ -2141,8 +2151,9 @@ textarea:focus-visible,
 .rail-head h2 {
   margin: 0;
   font-size: 1.6rem;
-  letter-spacing: -.03em;
-  color: var(--brand-deep);
+  letter-spacing: -.01em;
+  color: var(--color-brand-forest);
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
 }
 .rail-source-hint {
   font-size: .76rem;
@@ -2404,7 +2415,7 @@ textarea:focus-visible,
   gap: 16px;
 }
 .section-eyebrow {
-  color: #22d3ee;
+  color: #4D6B58;
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -2412,25 +2423,26 @@ textarea:focus-visible,
   margin-bottom: 8px;
 }
 .section-eyebrow.light {
-  color: #5eead4;
+  color: #755A38;
 }
 .section-title {
   font-size: clamp(1.8rem, 3.2vw, 2.5rem);
-  font-weight: 900;
-  color: #f8fafc;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  color: var(--color-brand-forest);
+  letter-spacing: -0.01em;
   line-height: 1.3;
   margin: 0 0 12px;
 }
 .section-subtext {
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: 1rem;
   line-height: 1.8;
   margin: 0;
 }
 .section-count-badge {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
+  background: rgba(30, 58, 47, 0.07);
+  color: var(--color-brand-forest);
   border: 1px solid rgba(6, 182, 212, 0.35);
   padding: 6px 16px;
   border-radius: var(--radius-pill);
@@ -2864,23 +2876,21 @@ textarea:focus-visible,
   gap: 20px;
 }
 .trust-card {
-  background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
   position: relative;
   overflow: hidden;
 }
 .trust-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: var(--shadow-elevated);
+  border-color: rgba(30, 58, 47, 0.3);
 }
 .trust-card-top {
   display: flex;
@@ -2892,9 +2902,9 @@ textarea:focus-visible,
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: rgba(6, 182, 212, 0.12);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  color: #22d3ee;
+  background: rgba(30, 58, 47, 0.06);
+  border: 1px solid rgba(30, 58, 47, 0.15);
+  color: var(--color-brand-forest);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2903,9 +2913,9 @@ textarea:focus-visible,
 .trust-micro-badge {
   font-size: 0.65rem;
   font-weight: 800;
-  color: #94a3b8;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: #FAF8F5;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   letter-spacing: 0.05em;
@@ -2913,13 +2923,13 @@ textarea:focus-visible,
 }
 .trust-title {
   font-size: 0.98rem;
-  font-weight: 850;
-  color: #f8fafc;
+  font-weight: 800;
+  color: var(--ink);
   margin: 0 0 8px;
 }
 .trust-desc {
   font-size: 0.83rem;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   line-height: 1.65;
   margin: 0;
 }
@@ -2936,15 +2946,13 @@ textarea:focus-visible,
   gap: 18px;
 }
 .concern-card {
-  background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 22px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-sm);
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -2956,13 +2964,13 @@ textarea:focus-visible,
   right: 0;
   left: 0;
   height: 3px;
-  background: var(--accent-line, #06b6d4);
+  background: var(--accent-line, var(--color-brand-forest));
   opacity: 0.9;
 }
 .concern-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.25);
-  border-color: var(--accent-line, #06b6d4);
+  box-shadow: var(--shadow-elevated);
+  border-color: var(--accent-line, var(--color-brand-forest));
 }
 .concern-card-top {
   display: flex;
@@ -2973,26 +2981,26 @@ textarea:focus-visible,
 .concern-badge {
   font-size: 0.72rem;
   font-weight: 800;
-  color: #22d3ee;
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: var(--color-brand-forest);
+  background: rgba(30, 58, 47, 0.07);
+  border: 1px solid rgba(30, 58, 47, 0.18);
   padding: 3px 8px;
   border-radius: var(--radius-pill);
 }
 .concern-count {
   font-size: 0.76rem;
-  color: #94a3b8;
+  color: var(--muted);
 }
 .concern-title {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--ink);
   margin: 0 0 8px;
   line-height: 1.4;
 }
 .concern-subtitle {
   font-size: 0.84rem;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin: 0 0 20px;
   flex-grow: 1;
@@ -3003,9 +3011,9 @@ textarea:focus-visible,
   justify-content: space-between;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #22d3ee;
+  color: var(--brand);
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
 }
 
 /* ── 6. Brand Families (ReeSkin & ReeMed) — Dark Clinical Luxury ── */
@@ -3380,13 +3388,11 @@ textarea:focus-visible,
   gap: 22px;
 }
 .clinical-card {
-  background: rgba(12, 19, 31, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -3394,8 +3400,8 @@ textarea:focus-visible,
 }
 .clinical-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.85), 0 0 30px rgba(6, 182, 212, 0.2);
-  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: var(--shadow-elevated);
+  border-color: rgba(30, 58, 47, 0.3);
 }
 .card-top-badges {
   display: flex;
@@ -3411,19 +3417,19 @@ textarea:focus-visible,
   border-radius: var(--radius-pill);
 }
 .brand-family-pill.clinical {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  background: rgba(30, 58, 47, 0.07);
+  color: var(--color-brand-forest);
+  border: 1px solid rgba(30, 58, 47, 0.18);
 }
 .brand-family-pill.medical {
-  background: rgba(139, 92, 246, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(198, 156, 112, 0.12);
+  color: #755A38;
+  border: 1px solid rgba(198, 156, 112, 0.3);
 }
 .stock-pill {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--muted);
 }
 .card-media-box {
   min-height: 220px;
@@ -3431,10 +3437,12 @@ textarea:focus-visible,
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, rgba(7, 11, 18, 0.9) 80%);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(200, 214, 204, 0.3) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
   position: relative;
   padding: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--line);
 }
 .product-card-real-img {
   width: auto;
@@ -3442,11 +3450,11 @@ textarea:focus-visible,
   height: 170px;
   object-fit: contain;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 12px 22px rgba(25, 35, 29, 0.15));
 }
 .clinical-card:hover .product-card-real-img {
   transform: scale(1.08) translateY(-4px);
-  filter: drop-shadow(0 16px 32px rgba(6, 182, 212, 0.25));
+  filter: drop-shadow(0 16px 30px rgba(25, 35, 29, 0.2));
 }
 .visual-formula-tag {
   position: absolute;
@@ -3454,9 +3462,9 @@ textarea:focus-visible,
   left: 14px;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--line);
   padding: 3px 9px;
   border-radius: var(--radius-pill);
 }
@@ -3468,29 +3476,29 @@ textarea:focus-visible,
 }
 .card-sku-code {
   font-size: 0.7rem;
-  font-family: monospace;
-  color: #64748b;
+  font-family: "SF Mono", ui-monospace, monospace;
+  color: var(--muted);
   margin-bottom: 6px;
   direction: ltr;
   text-align: right;
 }
 .card-title {
   font-size: 1.1rem;
-  font-weight: 850;
-  color: #f8fafc;
+  font-weight: 800;
+  color: var(--ink);
   margin: 0 0 10px;
   line-height: 1.45;
 }
 .card-title a {
-  color: #f8fafc;
+  color: var(--ink);
   transition: color 0.18s ease;
 }
 .card-title a:hover {
-  color: #22d3ee;
+  color: var(--brand);
 }
 .card-desc {
   font-size: 0.84rem;
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   line-height: 1.7;
   margin: 0 0 24px;
   flex-grow: 1;
@@ -3500,7 +3508,7 @@ textarea:focus-visible,
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--line);
   gap: 12px;
 }
 .price-stack {
@@ -3509,34 +3517,35 @@ textarea:focus-visible,
 }
 .price-label {
   font-size: 0.7rem;
-  color: #64748b;
+  color: var(--muted);
 }
 .price-amount {
   font-size: 1.1rem;
   font-weight: 900;
-  color: #22d3ee;
+  color: var(--color-brand-forest);
+  font-variant-numeric: tabular-nums;
 }
 .btn-add-cart {
-  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  background: var(--color-brand-forest);
   color: #ffffff;
-  border: 1px solid rgba(6, 182, 212, 0.4);
+  border: 1px solid var(--color-brand-dark);
   border-radius: var(--radius-pill);
   padding: 9px 18px;
   font-size: 0.84rem;
-  font-weight: 750;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 3px 10px rgba(30, 58, 47, 0.18);
 }
 .btn-add-cart:hover {
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  background: var(--color-brand-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.5);
+  box-shadow: 0 5px 14px rgba(30, 58, 47, 0.28);
 }
 .btn-add-cart.added {
-  background: #10b981;
+  background: #16a34a;
   color: #ffffff;
-  border-color: #10b981;
+  border-color: #16a34a;
 }
 .out-of-stock-tag {
   background: rgba(255, 255, 255, 0.05);
@@ -4177,10 +4186,10 @@ textarea:focus-visible,
   padding: 0 20px;
 }
 .vip-inner-card {
-  background: linear-gradient(135deg, #115e59 0%, #042f2e 100%);
+  background: linear-gradient(135deg, #1E3A2F 0%, #142820 100%);
   border-radius: var(--radius-xl);
   padding: clamp(36px, 5vw, 60px);
-  color: #ffffff;
+  color: #F5F2EB;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -4193,7 +4202,7 @@ textarea:focus-visible,
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(198, 156, 112, 0.16) 0%, transparent 70%);
   pointer-events: none;
 }
 .vip-content {
@@ -4203,7 +4212,7 @@ textarea:focus-visible,
   margin: 0 auto;
 }
 .vip-eyebrow {
-  color: #5eead4;
+  color: #E4C9A8;
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -4213,14 +4222,15 @@ textarea:focus-visible,
 }
 .vip-title {
   font-size: clamp(1.6rem, 3vw, 2.3rem);
-  font-weight: 900;
+  font-weight: 800;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
   line-height: 1.35;
   margin: 0 0 14px;
 }
 .vip-desc {
   font-size: 0.94rem;
   line-height: 1.75;
-  color: #cbd5e1;
+  color: rgba(245, 242, 235, 0.75);
   margin: 0 0 32px;
 }
 .vip-form {
@@ -4247,8 +4257,8 @@ textarea:focus-visible,
   color: var(--ink);
 }
 .vip-submit-btn {
-  background: #0f766e;
-  color: #ffffff;
+  background: #C69C70;
+  color: #142820;
   border: none;
   padding: 12px 24px;
   border-radius: var(--radius-pill);
@@ -4259,11 +4269,11 @@ textarea:focus-visible,
   transition: all 0.2s ease;
 }
 .vip-submit-btn:hover {
-  background: #115e59;
+  background: #D4AF85;
 }
 .vip-privacy-note {
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.55);
   margin-top: 8px;
 }
 .vip-error-msg {
@@ -4285,11 +4295,11 @@ textarea:focus-visible,
   font-weight: 700;
 }
 
-/* ── 12. Ultra-Premium Comprehensive Clinical Footer ── */
+/* ── 12. Ultra-Premium Comprehensive Clinical Footer (Deep Forest Editorial) ── */
 .clinical-footer {
-  background: #090e17;
-  color: #f8fafc;
-  border-top: 1px solid #1e293b;
+  background: linear-gradient(180deg, #1E3A2F 0%, #142820 100%);
+  color: #F5F2EB;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   margin-top: 70px;
 }
 .footer-top {
@@ -4310,23 +4320,24 @@ textarea:focus-visible,
 }
 .brand-logo-txt {
   font-size: 1.65rem;
-  font-weight: 950;
-  letter-spacing: -0.03em;
-  color: #ffffff;
+  font-weight: 900;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+  color: #FDFBF7;
 }
 .brand-badge-pill {
-  background: rgba(20, 184, 166, 0.18);
-  color: #2dd4bf;
-  border: 1px solid rgba(45, 212, 191, 0.4);
+  background: rgba(200, 214, 204, 0.15);
+  color: #C8D6CC;
+  border: 1px solid rgba(200, 214, 204, 0.35);
   font-size: 0.68rem;
-  font-weight: 850;
+  font-weight: 800;
   padding: 3px 9px;
   border-radius: var(--radius-pill);
   letter-spacing: 0.06em;
   direction: ltr;
 }
 .footer-bio {
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.72);
   font-size: 0.88rem;
   line-height: 1.85;
   margin: 0 0 24px;
@@ -4340,8 +4351,8 @@ textarea:focus-visible,
   margin-bottom: 24px;
 }
 .cert-pill {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-pill);
   padding: 4px 10px;
   display: flex;
@@ -4350,17 +4361,17 @@ textarea:focus-visible,
   transition: border-color 0.15s ease;
 }
 .cert-pill:hover {
-  border-color: #38bdf8;
+  border-color: #E4C9A8;
 }
 .cert-code {
   font-size: 0.68rem;
-  font-weight: 900;
-  color: #38bdf8;
+  font-weight: 800;
+  color: #E4C9A8;
   direction: ltr;
 }
 .cert-desc {
   font-size: 0.68rem;
-  color: #cbd5e1;
+  color: rgba(245, 242, 235, 0.75);
 }
 
 .footer-contacts {
@@ -4373,7 +4384,7 @@ textarea:focus-visible,
   align-items: flex-start;
   gap: 10px;
   font-size: 0.84rem;
-  color: #cbd5e1;
+  color: rgba(245, 242, 235, 0.8);
   line-height: 1.6;
 }
 .contact-icon {
@@ -4381,26 +4392,27 @@ textarea:focus-visible,
   font-size: 0.95rem;
 }
 .hotline-highlight {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(184, 77, 77, 0.15);
+  border: 1px solid rgba(220, 130, 130, 0.3);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
-  color: #fca5a5;
+  color: #F0C8C8;
 }
 .hotline-highlight .alert-icon {
-  color: #ef4444;
+  color: #E89090;
 }
 .hotline-phone {
-  color: #ffffff;
+  color: #FDFBF7;
   font-size: 0.95rem;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.05em;
 }
 
 .footer-heading {
   font-size: 1.08rem;
-  font-weight: 850;
-  color: #ffffff;
+  font-weight: 800;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  color: #FDFBF7;
   margin: 0 0 22px;
   position: relative;
   padding-bottom: 10px;
@@ -4412,7 +4424,7 @@ textarea:focus-visible,
   right: 0;
   width: 36px;
   height: 2px;
-  background: var(--brand-light);
+  background: #C69C70;
   border-radius: 2px;
 }
 .footer-links {
@@ -4424,7 +4436,7 @@ textarea:focus-visible,
   gap: 14px;
 }
 .footer-links li a {
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.68);
   font-size: 0.88rem;
   transition: all 0.18s ease;
   display: flex;
@@ -4432,21 +4444,21 @@ textarea:focus-visible,
   gap: 2px;
 }
 .footer-links li a:hover {
-  color: #ffffff;
+  color: #FDFBF7;
   transform: translateX(-4px);
 }
 .footer-links li a strong {
-  color: #e2e8f0;
+  color: #F0EDE4;
 }
 .link-sub {
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.55);
 }
 
 /* Newsletter & Trust Column */
 .newsletter-desc {
   font-size: 0.84rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.68);
   line-height: 1.7;
   margin: 0 0 16px;
 }
@@ -4459,22 +4471,22 @@ textarea:focus-visible,
 }
 .newsletter-email-input {
   flex: 1;
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-pill);
   padding: 10px 16px;
-  color: #ffffff;
+  color: #FDFBF7;
   font-family: inherit;
   font-size: 0.86rem;
   outline: none;
   transition: border-color 0.15s ease;
 }
 .newsletter-email-input:focus {
-  border-color: #2dd4bf;
+  border-color: #E4C9A8;
 }
 .newsletter-submit-btn {
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-  color: #ffffff;
+  background: #C69C70;
+  color: #142820;
   border: none;
   border-radius: var(--radius-pill);
   padding: 10px 20px;
@@ -4486,6 +4498,7 @@ textarea:focus-visible,
 }
 .newsletter-submit-btn:hover {
   transform: translateY(-1px);
+  background: #D4AF85;
 }
 .newsletter-msg {
   font-size: 0.8rem;
@@ -4494,9 +4507,9 @@ textarea:focus-visible,
   border-radius: var(--radius-sm);
 }
 .newsletter-msg.success {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(200, 214, 204, 0.15);
+  color: #C8D6CC;
+  border: 1px solid rgba(200, 214, 204, 0.3);
 }
 .newsletter-msg.error {
   background: rgba(239, 68, 68, 0.15);
@@ -4511,8 +4524,8 @@ textarea:focus-visible,
   margin-top: 18px;
 }
 .trust-badge-card {
-  background: #131d2e;
-  border: 1px solid #23334d;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-md);
   padding: 12px 8px;
   text-align: center;
@@ -4524,8 +4537,8 @@ textarea:focus-visible,
 }
 .trust-badge-card:hover {
   transform: translateY(-3px);
-  border-color: #38bdf8;
-  background: #182438;
+  border-color: #E4C9A8;
+  background: rgba(255, 255, 255, 0.1);
 }
 .badge-icon-wrap {
   width: 36px;
@@ -4537,25 +4550,25 @@ textarea:focus-visible,
   margin-bottom: 2px;
 }
 .enamad-icon {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
+  background: rgba(200, 214, 204, 0.18);
+  color: #C8D6CC;
 }
 .samandehi-icon {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  background: rgba(198, 156, 112, 0.18);
+  color: #E4C9A8;
 }
 .ttac-icon {
-  background: rgba(2, 132, 199, 0.15);
-  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.2);
+  color: #8FC6E8;
 }
 .badge-initial {
   font-size: 0.84rem;
-  font-weight: 850;
-  color: #f1f5f9;
+  font-weight: 800;
+  color: #F5F2EB;
 }
 .badge-meta {
   font-size: 0.64rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.55);
 }
 .footer-b2b-link-wrap {
   margin-top: 18px;
@@ -4564,19 +4577,19 @@ textarea:focus-visible,
   display: block;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #5eead4;
+  color: #E4C9A8;
   transition: color 0.15s ease;
 }
 .footer-b2b-cta:hover {
-  color: #ffffff;
+  color: #FDFBF7;
   text-decoration: underline;
 }
 
 /* Pharmacovigilance Disclaimer */
 .footer-disclaimer-band {
-  background: #050811;
-  border-top: 1px solid #1e293b;
-  border-bottom: 1px solid #1e293b;
+  background: rgba(14, 27, 21, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 26px 24px;
 }
 .disclaimer-inner {
@@ -4584,8 +4597,8 @@ textarea:focus-visible,
   margin: 0 auto;
 }
 .disclaimer-box {
-  background: rgba(30, 41, 59, 0.45);
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   padding: 18px 24px;
 }
@@ -4593,13 +4606,13 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #f59e0b;
+  color: #E4C9A8;
   font-size: 0.92rem;
   margin-bottom: 10px;
 }
 .disclaimer-box p {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.65);
   line-height: 1.8;
   margin: 0;
 }
@@ -4607,7 +4620,7 @@ textarea:focus-visible,
 /* Footer Bottom Bar */
 .footer-bottom {
   padding: 26px 24px;
-  background: #03060c;
+  background: #0E1B15;
 }
 .bottom-inner {
   max-width: 1400px;
@@ -4623,22 +4636,22 @@ textarea:focus-visible,
   flex-direction: column;
   gap: 4px;
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
 }
 .tech-credit {
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
 }
 .bottom-links {
   display: flex;
   align-items: center;
   gap: 14px;
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
   flex-wrap: wrap;
 }
 .bottom-links a:hover {
-  color: #ffffff;
+  color: #FDFBF7;
 }
 
 /* ── Mobile Navigation Drawer (Luxury Slide-in) ── */

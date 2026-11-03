@@ -14,8 +14,8 @@ const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F7F6F2' },
-    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
+    { media: '(prefers-color-scheme: light)', color: '#FAF8F5' },
+    { media: '(prefers-color-scheme: dark)', color: '#1E3A2F' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -113,7 +113,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap"
           rel="stylesheet"
         />
       </head>

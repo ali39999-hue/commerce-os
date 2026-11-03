@@ -1,13 +1,13 @@
-/* ── Elevated Header, Mega-Menus & Clinical Diagnostic Drawer ── */
+/* ── Elevated Header, Mega-Menus & Clinical Diagnostic Drawer (Warm Editorial) ── */
 
 /* Announcement Bar CTA */
 .promo-diagnostic-cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.25) 0%, rgba(15, 118, 110, 0.45) 100%);
-  color: #5eead4;
-  border: 1px solid rgba(45, 212, 191, 0.5);
+  background: rgba(200, 214, 204, 0.15);
+  color: #E4C9A8;
+  border: 1px solid rgba(200, 214, 204, 0.4);
   border-radius: var(--radius-pill);
   padding: 4px 14px;
   font-size: 0.78rem;
@@ -19,10 +19,10 @@
 }
 
 .promo-diagnostic-cta:hover {
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.45) 0%, rgba(15, 118, 110, 0.7) 100%);
+  background: rgba(200, 214, 204, 0.3);
   color: #ffffff;
-  border-color: #5eead4;
-  box-shadow: 0 0 16px rgba(45, 212, 191, 0.45);
+  border-color: #E4C9A8;
+  box-shadow: 0 0 14px rgba(228, 201, 168, 0.35);
   transform: translateY(-1px);
 }
 
@@ -30,29 +30,29 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #2dd4bf;
+  background: #E4C9A8;
   display: inline-block;
 }
 
 .promo-cta-hint {
-  color: #e2e8f0;
+  color: #E8E5DC;
   font-weight: 500;
   font-size: 0.74rem;
   opacity: 0.9;
 }
 
-/* ── Deep Luxury Dark Mega-Menus ── */
+/* ── Deep Luxury Warm Editorial Mega-Menus ── */
 .subnav-mega-menu {
   display: none;
   position: absolute;
   top: 100%;
   right: 0;
-  background: rgba(10, 17, 26, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 20px 45px -5px rgba(25, 35, 29, 0.08), 0 0 1px rgba(25, 35, 29, 0.04);
   padding: 24px;
   z-index: 200;
   animation: megaFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
@@ -95,12 +95,12 @@
 .mega-col-heading {
   font-size: 0.8rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: var(--color-brand-forest);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 14px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--line);
 }
 
 .mega-links-list {
@@ -119,28 +119,28 @@
 }
 
 .mega-link-item:hover {
-  background: rgba(6, 182, 212, 0.08);
-  border-right-color: #06b6d4;
+  background: var(--surface-soft);
+  border-right-color: var(--brand);
 }
 
 .mega-link-item strong {
   display: block;
   font-size: 0.88rem;
-  color: #f8fafc;
+  color: var(--ink);
   margin-bottom: 2px;
 }
 
 .mega-link-item span {
   display: block;
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: var(--muted);
   line-height: 1.5;
 }
 
 /* Feature Preview Card (Inside Mega Menu) */
 .mega-preview-card {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 14px;
   display: flex;
@@ -149,18 +149,18 @@
 }
 
 .mega-preview-card.reeskin-theme {
-  background: rgba(6, 182, 212, 0.08);
-  border-color: rgba(6, 182, 212, 0.25);
+  background: #FAF8F5;
+  border-color: rgba(30, 58, 47, 0.15);
 }
 
 .mega-preview-card.reemed-theme {
-  background: rgba(139, 92, 246, 0.08);
-  border-color: rgba(139, 92, 246, 0.25);
+  background: #FAF8F5;
+  border-color: rgba(198, 156, 112, 0.25);
 }
 
 .mega-preview-card.academy-theme {
-  background: rgba(245, 158, 11, 0.08);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: #FAF8F5;
+  border-color: rgba(198, 156, 112, 0.25);
 }
 
 .mpc-badge {
@@ -173,18 +173,18 @@
 }
 
 .mpc-badge.green {
-  background: rgba(6, 182, 212, 0.2);
-  color: #22d3ee;
+  background: rgba(30, 58, 47, 0.08);
+  color: var(--brand);
 }
 
 .mpc-badge.blue {
-  background: rgba(139, 92, 246, 0.2);
-  color: #c4b5fd;
+  background: rgba(198, 156, 112, 0.12);
+  color: #755A38;
 }
 
 .mpc-badge.gold {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fbbf24;
+  background: rgba(198, 156, 112, 0.12);
+  color: #755A38;
 }
 
 .mpc-image-wrap {
@@ -197,8 +197,8 @@
   margin-bottom: 10px;
   overflow: hidden;
   border-radius: 6px;
-  background: rgba(7, 11, 18, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #FAF8F5;
+  border: 1px solid var(--line);
 }
 
 .mpc-thumb-img {
@@ -215,13 +215,13 @@
 .mpc-title {
   font-size: 0.88rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--ink);
   margin: 0 0 4px;
 }
 
 .mpc-desc {
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: var(--muted);
   line-height: 1.5;
   margin: 0 0 10px;
 }
@@ -229,20 +229,19 @@
 .mpc-cta-link {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #22d3ee;
+  color: var(--brand);
   margin-top: auto;
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
-/* Clinical Specification Bullet Column */
 .mega-spec-col {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #FAF8F5;
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   padding: 14px;
 }
@@ -252,20 +251,20 @@
   align-items: flex-start;
   gap: 8px;
   font-size: 0.76rem;
-  color: #cbd5e1;
+  color: var(--ink);
   line-height: 1.5;
 }
 
 .spec-bullet-item svg {
-  color: #06b6d4;
+  color: var(--brand);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .spec-bottom-note {
   font-size: 0.72rem;
-  color: #94a3b8;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  border-top: 1px solid var(--line);
   padding-top: 8px;
   margin-top: auto;
 }
@@ -292,15 +291,15 @@
   width: 100%;
   max-width: 620px;
   height: 100%;
-  background: #0c131f;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -20px 0 50px rgba(0, 0, 0, 0.7);
+  background: #FAF8F5;
+  border-left: 1px solid var(--line);
+  box-shadow: -20px 0 50px rgba(25, 35, 29, 0.15);
   display: flex;
   flex-direction: column;
   animation: diagSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   direction: rtl;
-  color: #f8fafc;
+  color: var(--ink);
 }
 
 @keyframes diagSlideIn {
@@ -317,8 +316,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: #070b12;
+  border-bottom: 1px solid var(--line);
+  background: #FFFFFF;
 }
 
 .diag-badge-pill {
@@ -328,9 +327,9 @@
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.05em;
-  color: #22d3ee;
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: var(--color-brand-forest);
+  background: rgba(30, 58, 47, 0.07);
+  border: 1px solid rgba(30, 58, 47, 0.18);
   padding: 3px 10px;
   border-radius: var(--radius-pill);
   margin-bottom: 6px;
@@ -340,14 +339,15 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #2dd4bf;
+  background: var(--color-brand-forest);
   animation: promoPulseRing 1.5s infinite;
 }
 
 .diag-modal-title {
   font-size: 1.15rem;
-  font-weight: 900;
-  color: #f8fafc;
+  font-weight: 800;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  color: var(--color-brand-forest);
   margin: 0;
 }
 
@@ -583,20 +583,20 @@
   position: absolute;
   inset: 12px;
   background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-dark) 100%);
-  color: #5eead4;
+  color: #E4C9A8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
+  font-weight: 800;
   font-size: 1.05rem;
-  box-shadow: 0 0 20px rgba(45, 212, 191, 0.4);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.3);
 }
 
 .diag-analyzing-title {
   font-size: 1.12rem;
-  font-weight: 900;
-  color: var(--brand-dark);
+  font-weight: 800;
+  color: var(--color-brand-forest);
   margin: 0 0 8px;
 }
 

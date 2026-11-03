@@ -4,9 +4,9 @@ import { test, expect } from '@playwright/test';
  * Pilot 01 E2E Playwright Suite — Gate 6 & Gate 7 Verification
  * Dr Dermer UK Clinical & Commerce OS — Phase 09 Agentic Architecture
  *
- * Verifies:
- * 1. Global Header: Glassmorphism, mega-menu, cart drawer trigger, responsive drawer.
- * 2. Homepage Hero Banner: Clinical copy, Cambridge chip, dual CTAs (#featured-products, /b2b).
+ * Verifies (updated for Warm Editorial Clinical Luxury redesign):
+ * 1. Global Header: Warm editorial glassmorphism, brand identity, cart drawer trigger.
+ * 2. Homepage Hero Banner: Clinical copy, Cambridge chip, dual-mode CTAs.
  * 3. Audience Path Selector: 3 triage cards (Homecare, Pro Cabin, Medical Hardware), links, and touch targets.
  * 4. Responsive reflow across Mobile (360px, 390px), Tablet (768px), and Desktop (1280px, 1440px).
  * 5. Tabular typography and zero horizontal layout overflow.
@@ -37,43 +37,48 @@ test.describe('Pilot 01: Header, Hero Banner & Audience Path Selector', () => {
     }
   });
 
-  test('2. Homepage Hero Banner displays authentic clinical claims and dual CTAs', async ({ page }) => {
-    const heroSection = page.locator('section.clinical-hero, [aria-labelledby="hero-main-title"]').first();
+  test('2. Homepage Hero Banner displays authentic clinical claims and dual-mode CTAs', async ({ page }) => {
+    const heroSection = page.locator('section.clinical-hero-v2, [aria-labelledby="hero-main-title"]').first();
     await expect(heroSection).toBeVisible();
 
     // Verify Cambridge Science Park Chip
-    const originChip = heroSection.locator('.hero-eyebrow-chip, .eyebrow-origin').first();
-    if (await originChip.isVisible()) {
-      await expect(originChip).toContainText('Cambridge');
-    }
+    const originChip = heroSection.locator('.institution-chip').first();
+    await expect(originChip).toContainText('CAMBRIDGE SCIENCE PARK');
 
     // Verify Clinical Heading
     const mainHeading = heroSection.locator('h1#hero-main-title, h1.hero-heading').first();
     await expect(mainHeading).toBeVisible();
 
-    // Verify Dual CTAs
+    // Verify Primary CTA (home regimen mode is the initial state)
     const primaryCta = heroSection.locator('a[href*="featured-products"], a.btn-clinical-primary').first();
     await expect(primaryCta).toBeVisible();
 
+    // Verify secondary CTA in home mode
+    const scienceCta = heroSection.locator('a[href="#bohr-simulator"]').first();
+    await expect(scienceCta).toBeVisible();
+
+    // Switch to Clinic equipment mode and verify the B2B commercial CTA appears
+    const clinicTab = heroSection.locator('.hero-mode-switcher .mode-btn').last();
+    await clinicTab.click();
     const b2bCta = heroSection.locator('a[href="/b2b"], a.btn-clinical-secondary').first();
     await expect(b2bCta).toBeVisible();
 
-    // Verify Stat Cards with Tabular Numerals
-    const statCards = heroSection.locator('.stat-card');
+    // Verify Telemetry Cards with Tabular Numerals
+    const statCards = heroSection.locator('.telemetry-card');
     const statCount = await statCards.count();
     expect(statCount).toBeGreaterThanOrEqual(2);
   });
 
   test('3. Audience Path Selector displays 3 distinct journeys', async ({ page }) => {
-    const pathSection = page.locator('section.path-selector-section, [aria-labelledby="path-selector-title"]').first();
+    const pathSection = page.locator('section.path-triage-section, [aria-labelledby="path-triage-title"]').first();
     await expect(pathSection).toBeVisible();
 
     // Verify Section Title
-    const sectionTitle = pathSection.locator('h2#path-selector-title, h2.section-title').first();
+    const sectionTitle = pathSection.locator('h2#path-triage-title, h2.section-title').first();
     await expect(sectionTitle).toBeVisible();
 
     // Verify the 3 distinct cards
-    const pathCards = pathSection.locator('article.path-card');
+    const pathCards = pathSection.locator('article.triage-card');
     await expect(pathCards).toHaveCount(3);
 
     // Verify Home Care Card
