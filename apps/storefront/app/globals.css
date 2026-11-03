@@ -2792,7 +2792,7 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(25, 35, 29, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
@@ -3016,7 +3016,7 @@ textarea:focus-visible,
   border-top: 1px solid var(--line);
 }
 
-/* ── 6. Brand Families (ReeSkin & ReeMed) — Dark Clinical Luxury ── */
+/* ── 6. Brand Families (ReeSkin & ReeMed) — Warm Editorial Luxury ── */
 .brand-family-section {
   max-width: 1400px;
   margin: 48px auto 0;
@@ -3033,26 +3033,24 @@ textarea:focus-visible,
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+  background: #FFFFFF;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 .brand-family-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.85), 0 0 35px rgba(6, 182, 212, 0.2);
+  box-shadow: var(--shadow-elevated);
 }
 .brand-card-top-stripe {
   height: 6px;
   width: 100%;
 }
 .reeskin-stripe {
-  background: linear-gradient(90deg, #06b6d4 0%, #0d9488 50%, #2dd4bf 100%);
+  background: linear-gradient(90deg, #1E3A2F 0%, #2D5646 50%, #C8D6CC 100%);
 }
 .reemed-stripe {
-  background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 50%, #38bdf8 100%);
+  background: linear-gradient(90deg, #C69C70 0%, #B08A5E 50%, #E4C9A8 100%);
 }
 .brand-card-inner {
   padding: clamp(30px, 4.5vw, 48px);
@@ -3061,12 +3059,12 @@ textarea:focus-visible,
   flex-grow: 1;
 }
 .reeskin-card {
-  background: radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.12) 0%, rgba(12, 19, 31, 0.95) 70%);
-  border-color: rgba(6, 182, 212, 0.25);
+  background: radial-gradient(circle at 100% 0%, rgba(200, 214, 204, 0.35) 0%, #FFFFFF 65%);
+  border-color: rgba(30, 58, 47, 0.18);
 }
 .reemed-card {
-  background: radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.12) 0%, rgba(12, 19, 31, 0.95) 70%);
-  border-color: rgba(139, 92, 246, 0.25);
+  background: radial-gradient(circle at 100% 0%, rgba(237, 229, 218, 0.6) 0%, #FFFFFF 65%);
+  border-color: rgba(198, 156, 112, 0.3);
 }
 .brand-card-header {
   margin-bottom: 26px;
@@ -3087,7 +3085,6 @@ textarea:focus-visible,
   width: auto;
   object-fit: contain;
   opacity: 0.95;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
 }
 .brand-flag-group {
   display: flex;
@@ -3103,38 +3100,39 @@ textarea:focus-visible,
   display: inline-block;
 }
 .reeskin-flag {
-  color: #22d3ee;
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.35);
+  color: var(--color-brand-forest);
+  background: rgba(30, 58, 47, 0.07);
+  border: 1px solid rgba(30, 58, 47, 0.2);
 }
 .reemed-flag {
-  color: #c4b5fd;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #755A38;
+  background: rgba(198, 156, 112, 0.12);
+  border: 1px solid rgba(198, 156, 112, 0.35);
 }
 .family-prescription-tag {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #94a3b8;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  background: #FAF8F5;
+  border: 1px solid var(--line);
   padding: 4px 10px;
   border-radius: var(--radius-pill);
 }
 .family-prescription-tag.clinic-tag {
-  color: #38bdf8;
-  background: rgba(2, 132, 199, 0.15);
-  border-color: rgba(56, 189, 248, 0.3);
+  color: #0369a1;
+  background: var(--medical-tint);
+  border-color: rgba(2, 132, 199, 0.3);
 }
 .family-name {
   font-size: 1.85rem;
-  font-weight: 950;
-  color: #f8fafc;
+  font-weight: 700;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  color: var(--color-brand-forest);
   margin: 0 0 10px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 .family-tagline {
-  color: #94a3b8;
+  color: var(--color-text-secondary);
   font-size: 0.94rem;
   margin: 0;
   line-height: 1.75;
@@ -3337,12 +3335,12 @@ textarea:focus-visible,
 }
 .device-title {
   font-size: 0.92rem;
-  font-weight: 900;
-  color: #0f172a;
+  font-weight: 800;
+  color: var(--ink);
 }
 .device-link-txt {
   font-size: 0.68rem;
-  color: #64748b;
+  color: var(--muted);
   margin-top: 2px;
 }
 
@@ -3355,25 +3353,25 @@ textarea:focus-visible,
   padding: 14px 22px;
   border-radius: var(--radius-pill);
   font-size: 0.94rem;
-  font-weight: 750;
+  font-weight: 700;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 4px 12px rgba(30, 58, 47, 0.18);
 }
 .reeskin-btn {
-  background: linear-gradient(135deg, var(--brand-deep) 0%, #042f2e 100%);
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
 }
 .reeskin-btn:hover {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+  background: linear-gradient(135deg, var(--brand-strong) 0%, var(--brand-dark) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(15, 118, 110, 0.35);
+  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.3);
 }
 .reemed-btn {
-  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  background: linear-gradient(135deg, #8C6A42 0%, #755A38 100%);
 }
 .reemed-btn:hover {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  background: linear-gradient(135deg, #A87F52 0%, #8C6A42 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 6px 18px rgba(140, 106, 66, 0.35);
 }
 
 /* ── 6. Featured Clinical Products — Dark Obsidian Laboratory ── */
@@ -3574,11 +3572,11 @@ textarea:focus-visible,
   grid-template-columns: 1.15fr 0.85fr;
   gap: 52px;
   align-items: center;
-  background: radial-gradient(circle at 85% 20%, #064e4b 0%, #042f2e 55%, #021a19 100%);
+  background: radial-gradient(circle at 85% 20%, #1E3A2F 0%, #142820 55%, #0E1B15 100%);
   border-radius: var(--radius-xl);
   padding: clamp(36px, 5.5vw, 72px);
   color: #ffffff;
-  box-shadow: 0 25px 60px -15px rgba(4, 47, 46, 0.45);
+  box-shadow: 0 25px 60px -15px rgba(20, 40, 32, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
@@ -3593,7 +3591,7 @@ textarea:focus-visible,
 .science-lead {
   font-size: 1.02rem;
   line-height: 1.88;
-  color: #cbd5e1;
+  color: rgba(245, 242, 235, 0.78);
   margin-bottom: 34px;
 }
 .science-steps-list {
@@ -3605,7 +3603,7 @@ textarea:focus-visible,
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   padding: 16px 20px;
@@ -3613,8 +3611,8 @@ textarea:focus-visible,
 }
 .science-step-card:hover {
   transform: translateX(-4px);
-  border-color: rgba(45, 212, 191, 0.35);
-  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(228, 201, 168, 0.35);
+  background: rgba(255, 255, 255, 0.12);
 }
 .step-num-wrap {
   display: flex;
@@ -3626,9 +3624,9 @@ textarea:focus-visible,
 .step-num-badge {
   width: 42px;
   height: 42px;
-  background: rgba(45, 212, 191, 0.15);
-  border: 1px solid rgba(45, 212, 191, 0.4);
-  color: #2dd4bf;
+  background: rgba(228, 201, 168, 0.15);
+  border: 1px solid rgba(228, 201, 168, 0.4);
+  color: #E4C9A8;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -3639,7 +3637,7 @@ textarea:focus-visible,
 .step-phase-tag {
   font-size: 0.6rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
   letter-spacing: 0.04em;
   white-space: nowrap;
   direction: ltr;
@@ -3652,12 +3650,12 @@ textarea:focus-visible,
 }
 .step-desc {
   font-size: 0.88rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
   line-height: 1.7;
   margin: 0;
 }
 .diagram-card {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius);
   padding: 26px;
@@ -3683,18 +3681,18 @@ textarea:focus-visible,
 .diagram-badge {
   font-size: 0.7rem;
   font-weight: 850;
-  color: #2dd4bf;
+  color: #E4C9A8;
   letter-spacing: 0.08em;
 }
 .diagram-sub {
   font-size: 0.92rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #F0EDE4;
 }
 .diagram-standard {
   font-size: 0.65rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.3);
   padding: 2px 8px;
   border-radius: var(--radius-pill);
@@ -3737,12 +3735,12 @@ textarea:focus-visible,
 .metric-val {
   font-size: 1.4rem;
   font-weight: 950;
-  color: #38bdf8;
+  color: #E4C9A8;
   line-height: 1.1;
 }
 .metric-lbl {
   font-size: 0.74rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.6);
   margin-top: 4px;
 }
 
@@ -3763,14 +3761,14 @@ textarea:focus-visible,
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 30px 26px;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 20px -2px rgba(25, 35, 29, 0.05);
   text-align: center;
   transition: transform 0.22s ease, box-shadow 0.22s ease;
   position: relative;
 }
 .metric-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 12px 30px -4px rgba(25, 35, 29, 0.1);
   border-color: var(--brand);
 }
 .metric-card-top {
@@ -3816,12 +3814,12 @@ textarea:focus-visible,
 
 /* Visia 3D Skin Analysis Box */
 .visia-analysis-container {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
   border: 1px solid var(--line);
   border-radius: var(--radius-xl);
   padding: 36px 32px;
   margin-bottom: 40px;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 20px -2px rgba(25, 35, 29, 0.04);
 }
 .visia-header {
   display: flex;
@@ -3919,14 +3917,14 @@ textarea:focus-visible,
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 34px;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 20px -2px rgba(25, 35, 29, 0.05);
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease;
 }
 .clinical-testimonial-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 30px -4px rgba(25, 35, 29, 0.08);
   border-color: var(--brand);
 }
 .testimonial-header {
@@ -3973,7 +3971,7 @@ textarea:focus-visible,
   align-items: center;
   gap: 8px;
   font-size: 0.76rem;
-  color: #64748b;
+  color: #5E6B64;
   margin-top: 2px;
 }
 .reg-sep {
@@ -4105,7 +4103,7 @@ textarea:focus-visible,
 .b2b-pulse-dot {
   width: 6px;
   height: 6px;
-  background: #38bdf8;
+  background: #C69C70;
   border-radius: 50%;
 }
 .b2b-title {
@@ -5139,7 +5137,7 @@ textarea:focus-visible,
 .cart-drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(25, 35, 29, 0.45);
   backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
@@ -5819,7 +5817,7 @@ textarea:focus-visible,
 
 /* Dynamic Tiered Threshold Container */
 .tiered-threshold-container {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
   border-bottom: 1px solid var(--line);
   padding: 16px 20px;
 }
@@ -5836,7 +5834,7 @@ textarea:focus-visible,
   font-weight: 700;
 }
 .tier-msg-shipping {
-  color: #0d9488;
+  color: #1E3A2F;
   font-weight: 700;
 }
 .tier-msg-initial {
@@ -5845,23 +5843,23 @@ textarea:focus-visible,
 .tiered-progress-track {
   width: 100%;
   height: 8px;
-  background: #cbd5e1;
+  background: #D5D1C5;
   border-radius: 999px;
   position: relative;
   margin-bottom: 24px;
 }
 .tiered-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--brand) 0%, #0d9488 100%);
+  background: linear-gradient(90deg, var(--brand) 0%, #1E3A2F 100%);
   border-radius: 999px;
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 .tiered-progress-fill.free-complete {
-  background: linear-gradient(90deg, #0d9488 0%, #10b981 100%);
+  background: linear-gradient(90deg, #1E3A2F 0%, #16A34A 100%);
 }
 .tiered-progress-fill.vip-complete {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(90deg, #16A34A 0%, #059669 100%);
 }
 .milestone-pin {
   position: absolute;
@@ -5884,8 +5882,8 @@ textarea:focus-visible,
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2px solid #94a3b8;
-  color: #64748b;
+  border: 2px solid #5E6B64;
+  color: #5E6B64;
   font-size: 0.68rem;
   font-weight: 800;
   display: grid;
@@ -5894,7 +5892,7 @@ textarea:focus-visible,
   transition: all 0.3s ease;
 }
 .milestone-pin.reached .pin-dot {
-  background: #10b981;
+  background: #16A34A;
   border-color: #047857;
   color: #ffffff;
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
@@ -5905,7 +5903,7 @@ textarea:focus-visible,
   white-space: nowrap;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #64748b;
+  color: #5E6B64;
 }
 .milestone-pin.reached .pin-label {
   color: #047857;
@@ -5967,7 +5965,7 @@ textarea:focus-visible,
 .cart-cross-sell-section {
   margin: 20px 0 10px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #E7E4DC;
   border-radius: var(--radius-sm);
   padding: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -6010,8 +6008,8 @@ textarea:focus-visible,
 .cross-sell-rationale {
   margin: 0 0 10px;
   font-size: 0.73rem;
-  color: #334155;
-  background: #f8fafc;
+  color: #8A8578;
+  background: #FAF8F5;
   padding: 6px 10px;
   border-radius: 4px;
   border-right: 3px solid var(--brand);
@@ -6034,7 +6032,7 @@ textarea:focus-visible,
 }
 .original-strike {
   text-decoration: line-through;
-  color: #94a3b8;
+  color: #5E6B64;
   font-size: 0.76rem;
 }
 .bundle-price {
@@ -6058,7 +6056,7 @@ textarea:focus-visible,
   background: var(--brand);
 }
 .btn-add-cross-sell.added {
-  background: #10b981;
+  background: #16A34A;
   color: #ffffff;
 }
 
@@ -6096,7 +6094,7 @@ textarea:focus-visible,
   color: #b91c1c;
 }
 .input-valid {
-  border-color: #10b981 !important;
+  border-color: #16A34A !important;
   background-color: #f0fdf4 !important;
 }
 
@@ -6251,9 +6249,9 @@ textarea:focus-visible,
   border-radius: 50%;
   display: block;
   stroke-width: 3;
-  stroke: #10b981;
+  stroke: #16A34A;
   stroke-miterlimit: 10;
-  box-shadow: inset 0px 0px 0px #10b981;
+  box-shadow: inset 0px 0px 0px #16A34A;
   animation: fill-check 0.4s ease-in-out 0.4s forwards, scale-check 0.3s ease-in-out 0.9s both;
 }
 .checkmark-circle {
@@ -6261,7 +6259,7 @@ textarea:focus-visible,
   stroke-dashoffset: 166;
   stroke-width: 3;
   stroke-miterlimit: 10;
-  stroke: #10b981;
+  stroke: #16A34A;
   fill: none;
   animation: stroke-check 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
@@ -6319,9 +6317,9 @@ textarea:focus-visible,
   letter-spacing: 0.05em;
 }
 .btn-copy-tracking.copied {
-  background: #10b981;
+  background: #16A34A;
   color: #ffffff;
-  border-color: #10b981;
+  border-color: #16A34A;
 }
 .confirmation-action-buttons {
   display: flex;
@@ -6357,7 +6355,7 @@ textarea:focus-visible,
 /* Official Tax Invoice Printable Styles */
 .official-tax-invoice-printable {
   background: #ffffff;
-  border: 2px solid #334155;
+  border: 2px solid #8A8578;
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -6366,7 +6364,7 @@ textarea:focus-visible,
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 2px solid #334155;
+  border-bottom: 2px solid #8A8578;
   padding-bottom: 16px;
   margin-bottom: 18px;
 }
@@ -6377,7 +6375,7 @@ textarea:focus-visible,
 }
 .tax-standard-sub {
   font-size: 0.74rem;
-  color: #64748b;
+  color: #5E6B64;
 }
 .invoice-meta-block {
   text-align: left;
@@ -6387,7 +6385,7 @@ textarea:focus-visible,
   font-size: 0.82rem;
 }
 .meta-pair span {
-  color: #64748b;
+  color: #5E6B64;
   margin-left: 6px;
 }
 .invoice-entities-grid {
@@ -6397,7 +6395,7 @@ textarea:focus-visible,
   margin-bottom: 16px;
 }
 .entity-box {
-  border: 1px solid #cbd5e1;
+  border: 1px solid #D5D1C5;
   border-radius: 6px;
   padding: 12px 14px;
   background: #fafafa;
@@ -6406,7 +6404,7 @@ textarea:focus-visible,
   margin: 0 0 8px;
   font-size: 0.88rem;
   color: #0f172a;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #E7E4DC;
   padding-bottom: 4px;
 }
 .entity-info-list {
@@ -6416,7 +6414,7 @@ textarea:focus-visible,
   font-size: 0.78rem;
 }
 .entity-info-list span {
-  color: #64748b;
+  color: #5E6B64;
 }
 .invoice-cold-chain-note {
   display: flex;
@@ -6438,20 +6436,20 @@ textarea:focus-visible,
 }
 .invoice-items-table th,
 .invoice-items-table td {
-  border: 1px solid #cbd5e1;
+  border: 1px solid #D5D1C5;
   padding: 8px 10px;
   text-align: right;
 }
 .invoice-items-table th {
-  background: #f1f5f9;
+  background: #F2EFE9;
   font-weight: 700;
-  color: #1e293b;
+  color: #19231D;
 }
 .invoice-totals-section {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border-top: 1px solid #cbd5e1;
+  border-top: 1px solid #D5D1C5;
   padding-top: 12px;
   font-size: 0.86rem;
   margin-bottom: 20px;
@@ -6464,17 +6462,17 @@ textarea:focus-visible,
   font-size: 1rem;
   font-weight: 800;
   color: #0f172a;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #8A8578;
   padding-top: 8px;
 }
 .invoice-footer-stamps {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px dashed #cbd5e1;
+  border-top: 1px dashed #D5D1C5;
   padding-top: 16px;
   font-size: 0.78rem;
-  color: #64748b;
+  color: #5E6B64;
 }
 .stamp-graphic {
   border: 2px dashed #047857;
@@ -6496,7 +6494,7 @@ textarea:focus-visible,
 .signature-line {
   width: 140px;
   height: 1px;
-  background: #94a3b8;
+  background: #5E6B64;
   margin-top: 24px;
 }
 
