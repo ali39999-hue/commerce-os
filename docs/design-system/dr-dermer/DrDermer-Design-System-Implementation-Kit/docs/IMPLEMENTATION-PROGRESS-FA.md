@@ -52,7 +52,14 @@
 - هیچ API، state سبد، منطق قیمت یا مسیری تغییر نکرد — فقط لایه presentation
 
 ## گام‌های بعدی (Phase 5-7)
-1. صفحات Commerce داخلی (Cart/Checkout/Account) — هنوز برخی سطوح Dark باقی است
-2. صفحات Clinical/Academy/B2B — هماهنگ‌سازی کامل
-3. Admin ERP — حفظ density با پالت روشن کنترل‌شده
+1. ~~صفحات Commerce داخلی (Cart/Checkout/Account) — هنوز برخی سطوح Dark باقی است~~ ✅ **فاز ۵ تکمیل شد (کامیت `8d0a50d`)**
+2. ~~صفحات Clinical/Academy/B2B — هماهنگ‌سازی کامل~~ ✅ توکن-محور بودند و خودکار گرم شدند؛ PDP/INCI اصلاح شد
+3. ~~Admin ERP~~ — خارج از محدوده Storefront؛ پالت مخصوص ERP با density کنترل‌شده در فاز بعدی
 4. Visual regression baseline جدید با BackstopJS
+
+## فاز ۵ — Commerce Flow (کامیت `8d0a50d`) ✅
+- **Cart Drawer**: پنل سفید گرم، نوار پیشرفت ارسال رایگان سبز، دکمه تسویه Forest — جریان واقعی افزودن محصول تست شد
+- **Brand Families**: کارت‌های editorial سفید با نوار Forest/Champagne، رادیال Sage/Sand، نام سریف و CTA برنز
+- **Science Spotlight**: صحنه تیره فیروزه‌ای → **نوار سبز جنگلی عمیق** با لهجه شامپاینی
+- **Testimonials/B2B Strip/Featured Products/PDP INCI Drawer**: هماهنگ گرم
+- صحنه‌های تیره عمدی حفظ شدند (Bohr Simulator، ایستگاه‌های ۳۶۰) — رنگ فیروزه‌ای = معنای O₂ طبق Data Guardrails
