@@ -1,0 +1,636 @@
+/* ── Redesigned Flagship Hero Banner V2 (Dark Obsidian Glassmorphism) ── */
+
+.clinical-hero-v2 {
+  position: relative;
+  background: radial-gradient(120% 100% at 50% 0%, #0d1726 0%, #070b12 55%, #05080f 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 40px 0 60px;
+  overflow: hidden;
+}
+
+.hero-v2-ambient-glow {
+  position: absolute;
+  top: -150px;
+  right: 15%;
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(13, 148, 136, 0.06) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+.hero-v2-grid-mesh {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at 50% 30%, black 40%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-v2-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Top Institutional Credibility Strip */
+.hero-v2-header-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.institution-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #cbd5e1;
+  letter-spacing: 0.04em;
+}
+
+.inst-divider {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.inst-reg {
+  color: #22d3ee;
+  font-family: monospace;
+  font-size: 0.72rem;
+}
+
+/* Mode Switcher Tabs */
+.hero-mode-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.mode-btn:hover {
+  color: #f8fafc;
+}
+
+.mode-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.mode-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.mode-pulse-dot.teal {
+  background: #06b6d4;
+  box-shadow: 0 0 8px #06b6d4;
+}
+
+.mode-pulse-dot.purple {
+  background: #8b5cf6;
+  box-shadow: 0 0 8px #8b5cf6;
+}
+
+/* Main Split Grid */
+.hero-v2-main-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 48px;
+  align-items: center;
+}
+
+/* Column 1: Copy & Actions */
+.hero-v2-copy-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.clinical-kicker-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #22d3ee;
+  letter-spacing: 0.02em;
+  margin-bottom: 18px;
+}
+
+.kicker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 10px #06b6d4;
+}
+
+.kicker-dot.purple {
+  background: #8b5cf6;
+  box-shadow: 0 0 10px #8b5cf6;
+}
+
+.hero-v2-headline {
+  font-size: clamp(2.3rem, 4.4vw, 3.8rem);
+  font-weight: 950;
+  color: #f8fafc;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+  margin: 0 0 16px;
+}
+
+.holographic-gradient {
+  background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.holographic-gradient-purple {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-v2-motto {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #5eead4;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.hero-v2-lead-prose {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: #94a3b8;
+  max-width: 640px;
+  margin: 0 0 36px;
+}
+
+/* CTA Buttons Deck */
+.hero-v2-cta-deck {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 44px;
+}
+
+.v2-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #0891b2 0%, #0f766e 100%);
+  color: #ffffff;
+  padding: 15px 32px;
+  border-radius: var(--radius-pill);
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.v2-btn-primary.teal-glow {
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35);
+}
+
+.v2-btn-primary.teal-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.55);
+  background: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+}
+
+.v2-btn-primary.purple-glow {
+  background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+}
+
+.v2-btn-primary.purple-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.55);
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.v2-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 14px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.v2-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(6, 182, 212, 0.4);
+  color: #f8fafc;
+  transform: translateY(-2px);
+}
+
+/* Telemetry Cards Grid */
+.hero-v2-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.telemetry-card {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.telemetry-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.telemetry-card-glow {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+.telemetry-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.telemetry-value {
+  font-size: 1.7rem;
+  font-weight: 950;
+  color: #22d3ee;
+  letter-spacing: -0.02em;
+}
+
+.telemetry-tag {
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: #94a3b8;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+}
+
+.telemetry-label {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* Column 2: 3D Stage Pod */
+.hero-v2-visual-column {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-v2-stage-pod {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(12, 19, 31, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  position: relative;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(6, 182, 212, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  overflow: hidden;
+}
+
+.hero-v2-stage-pod.theme-clinic {
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.25);
+}
+
+.stage-pod-aurora {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 200px;
+  background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.theme-clinic .stage-pod-aurora {
+  background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.18) 0%, transparent 70%);
+}
+
+.stage-pod-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.status-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #22d3ee;
+  letter-spacing: 0.05em;
+  font-family: monospace;
+}
+
+.theme-clinic .status-live-pill {
+  color: #c4b5fd;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 10px #06b6d4;
+}
+
+.theme-clinic .live-dot {
+  background: #8b5cf6;
+  box-shadow: 0 0 10px #8b5cf6;
+}
+
+.coldchain-cert {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* Product Visual Showcase */
+.showcase-visual-wrapper {
+  position: relative;
+  border-radius: var(--radius-md);
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.1) 0%, rgba(7, 11, 18, 0.8) 80%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  margin-bottom: 20px;
+}
+
+.stage-featured-image {
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.7));
+  transition: transform 0.3s ease;
+}
+
+.stage-featured-image:hover {
+  transform: scale(1.04);
+}
+
+.stage-featured-image.hardware-view {
+  max-height: 270px;
+}
+
+/* Floating Mechanism Beacon */
+.floating-biotech-beacon {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.floating-biotech-beacon.purple {
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.beacon-thumb-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: #ffffff;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.beacon-thumb-box img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.beacon-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.beacon-info strong {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.beacon-info span {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* Quick Jump Rail */
+.stage-pod-rail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.rail-tile {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.rail-tile:hover {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.3);
+  transform: translateY(-2px);
+}
+
+.rail-tile-badge {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #22d3ee;
+  margin-bottom: 4px;
+}
+
+.rail-tile-badge.purple {
+  color: #c4b5fd;
+}
+
+.rail-tile strong {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rail-tile span {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* Stage Pod Footer */
+.stage-pod-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
+}
+
+.batch-ttac-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.learn-science-link {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #22d3ee;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.learn-science-link:hover {
+  color: #ffffff;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .hero-v2-main-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero-v2-stage-pod {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .clinical-hero-v2 {
+    padding: 24px 0 40px;
+  }
+  .hero-v2-header-badge-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-mode-switcher {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .hero-mode-switcher .mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 0.74rem;
+  }
+  .hero-v2-telemetry-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hero-v2-cta-deck {
+    flex-direction: column;
+    width: 100%;
+  }
+  .hero-v2-cta-deck > * {
+    width: 100%;
+    justify-content: center;
+  }
+  .stage-pod-rail {
+    grid-template-columns: 1fr;
+  }
+}

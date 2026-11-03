@@ -1,6 +1,9 @@
 @import './pdp.css';
 @import '../components/localization/locale-currency-selector.css';
 @import '../components/header-elevated.css';
+@import '../components/home/hero-v2.css';
+@import '../components/home/path-triage.css';
+@import '../components/home/bento-catalog.css';
 @import '../components/home/interactive-features.css';
 @import '../components/interactive/canvas-sequence-player.css';
 @import './clinical-station.css';
@@ -10,42 +13,57 @@
 svg { max-width: 100%; }
 
 :root {
-  color-scheme: light;
-  /* Warm Clinical Minimalism Palette (Dr Dermer Redesign Blueprint Section 3.2) */
-  --canvas: #f7f6f2;             /* Warm canvas background */
-  --paper-warm: #f7f6f2;        /* Warm canvas / cream background */
-  --paper: #f7f6f2;             /* Clean warm canvas base */
-  --surface: #ffffff;           /* Pure white card / surface */
-  --surface-soft: #eef2ed;      /* Soft clean slate / tint */
-  --surface-tint: #eef2ed;      /* Subtle panel background */
-  --ink: #242d29;               /* Deep clinical ink */
-  --ink-secondary: #3d4a44;     /* Mid clinical ink */
-  --muted: #69736d;             /* Subtle clinical text (WCAG AA compliant) */
-  --line: #e6e5de;              /* Crisp minimal divider / border */
-  --line-strong: #d1d0c7;       /* Strong divider */
-  
-  /* Brand Clinical Palette */
-  --brand: #24594f;             /* Deep brand clinical teal/green */
-  --brand-deep: #17463e;        /* Brand strong (hover & deep headers) */
-  --brand-strong: #17463e;      /* Brand strong */
-  --brand-dark: #0c2420;        /* Deepest forest ink */
-  --brand-light: #5d8f82;       /* Mid clinical sage tone */
-  --brand-tint: #eef2ed;        /* Soft clean slate wash */
+  color-scheme: dark;
+  /* Dark Obsidian Clinical Laboratory Aesthetic (DESIGN.md & Phase 09 Canonical Specification) */
+  --color-bg-base: #070b12;         /* Primary obsidian canvas background */
+  --color-bg-surface: #0c131f;      /* Elevated medical console card & surface */
+  --color-bg-glass: rgba(15, 23, 42, 0.75); /* Translucent frosted glass panel */
+  --color-border-subtle: rgba(255, 255, 255, 0.08); /* Minimal hairline panel divider */
+  --color-border-glow: rgba(6, 182, 212, 0.35);    /* Focused / active cyan glow border */
+  --color-teal-primary: #06b6d4;    /* Signature ReeSkin Clinical Teal, Bohr effect */
+  --color-teal-dark: #0891b2;       /* Teal button gradient hover & active state */
+  --color-plasma-purple: #8b5cf6;   /* PlasmaX surgical energy & CME hardware */
+  --color-emerald-green: #10b981;   /* Crystalene polish & bio-inert markers */
+  --color-amber-gold: #f59e0b;      /* Cold-chain alerts, active retinoids, VIP */
+  --color-text-primary: #f8fafc;    /* High-contrast crisp clinical text */
+  --color-text-secondary: #94a3b8;  /* Technical specs, dosages, secondary text */
+  --color-text-muted: #64748b;      /* Footnotes, timestamps, breadcrumbs */
 
-  /* Supporting Warm Clinical Tones */
-  --sage: #dce8df;              /* Pale sage background */
-  --sand: #ede5da;              /* Warm sand editorial */
-  --accent: #c69c70;            /* Warm amber / gold accent */
-  --accent-hover: #b0855a;      /* Deep amber hover */
-  --accent-tint: #fbf7f2;       /* Warm cream wash */
-  --accent-sand: #ede5da;       /* Warm sand editorial */
+  /* Legacy & Utility Compatibility Aliases */
+  --canvas: var(--color-bg-base);
+  --paper-warm: var(--color-bg-base);
+  --paper: var(--color-bg-surface);
+  --surface: #0e1726;               /* Dark raised surface */
+  --surface-soft: #141f33;          /* Dark subtle panel */
+  --surface-tint: rgba(20, 184, 166, 0.06);
+  --ink: var(--color-text-primary);
+  --ink-secondary: var(--color-text-secondary);
+  --muted: var(--color-text-muted);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  /* Brand Clinical Palette */
+  --brand: #0d9488;                 /* Medical Teal */
+  --brand-deep: #0f766e;
+  --brand-strong: #14b8a6;
+  --brand-dark: #041f1e;
+  --brand-light: #2dd4bf;
+  --brand-tint: rgba(13, 148, 136, 0.15);
+
+  /* Supporting Clinical Tones */
+  --sage: rgba(16, 185, 129, 0.12);
+  --sand: rgba(245, 158, 11, 0.12);
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --accent-tint: rgba(245, 158, 11, 0.15);
+  --accent-sand: rgba(245, 158, 11, 0.08);
 
   /* Medical Blue / Cold Chain Accent */
-  --medical-blue: #0369a1;      /* Elevated contrast for light surfaces */
-  --medical-tint: #f0f9ff;
+  --medical-blue: #0284c7;
+  --medical-tint: rgba(2, 132, 199, 0.15);
 
   /* Status Colors */
-  --danger: #b84d4d;            /* Clinical danger / warning */
+  --danger: #ef4444;
   --success: #10b981;
   --warning: #f59e0b;
 
@@ -57,12 +75,12 @@ svg { max-width: 100%; }
   --radius-pill: 9999px;
 
   /* Shadows & Glassmorphism */
-  --shadow-sm: 0 1px 3px rgba(36, 45, 41, 0.05);
-  --shadow-card: 0 4px 20px -2px rgba(36, 45, 41, 0.05), 0 2px 6px -1px rgba(36, 45, 41, 0.02);
-  --shadow-elevated: 0 20px 40px -6px rgba(36, 45, 41, 0.08), 0 8px 16px -4px rgba(36, 45, 41, 0.04);
-  --shadow-glow: 0 0 35px -5px rgba(36, 89, 79, 0.22);
-  --glass-bg: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(230, 229, 222, 0.7);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-elevated: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 1px rgba(6, 182, 212, 0.3);
+  --shadow-glow: 0 0 35px -5px rgba(6, 182, 212, 0.3);
+  --glass-bg: rgba(12, 19, 31, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 * { box-sizing: border-box; }
@@ -241,21 +259,22 @@ textarea:focus-visible,
   color: #38bdf8;
 }
 
-/* ── Global Header (Clinical Luxury Glassmorphism) ── */
+/* ── Global Header (Clinical Luxury Dark Glassmorphism) ── */
 .site-header {
   min-height: 84px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--line);
+  background: rgba(7, 11, 18, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
   transition: box-shadow 0.25s ease, background 0.25s ease;
 }
 .site-header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
+  background: rgba(7, 11, 18, 0.96);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+  border-bottom-color: rgba(6, 182, 212, 0.2);
 }
 .header-inner {
   max-width: 1400px;
@@ -301,6 +320,7 @@ textarea:focus-visible,
   max-width: 135px;
   object-fit: contain;
   transition: transform 0.2s ease;
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.25));
 }
 .brand:hover .brand-logo-img {
   transform: scale(1.03);
@@ -318,13 +338,13 @@ textarea:focus-visible,
   font-size: 1.45rem;
   font-weight: 950;
   letter-spacing: -0.04em;
-  color: var(--brand-deep);
+  color: #f8fafc;
   line-height: 1.1;
 }
 .brand-lab-badge {
-  background: rgba(15, 118, 110, 0.1);
-  color: var(--brand);
-  border: 1px solid rgba(15, 118, 110, 0.25);
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.35);
   font-size: 0.65rem;
   font-weight: 800;
   padding: 2px 8px;
@@ -335,7 +355,7 @@ textarea:focus-visible,
 .brand-sub {
   font-size: 0.64rem;
   font-weight: 700;
-  color: var(--muted);
+  color: #94a3b8;
   letter-spacing: 0.08em;
   direction: ltr;
   text-align: right;
@@ -349,20 +369,23 @@ textarea:focus-visible,
 .header-search-input {
   width: 100%;
   padding: 11px 18px 11px 44px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-pill);
-  background: var(--surface);
+  background: rgba(15, 23, 42, 0.7);
   font-family: inherit;
   font-size: 0.88rem;
-  color: var(--ink);
+  color: #f8fafc;
   outline: none;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 .header-search-input:focus {
-  border-color: var(--brand);
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+  border-color: #06b6d4;
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.header-search-input::placeholder {
+  color: #64748b;
 }
 .header-search-btn {
   position: absolute;
@@ -371,7 +394,7 @@ textarea:focus-visible,
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: var(--muted);
+  color: #94a3b8;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -380,7 +403,7 @@ textarea:focus-visible,
   transition: color 0.15s ease;
 }
 .header-search-btn:hover {
-  color: var(--brand);
+  color: #22d3ee;
 }
 .header-actions {
   display: flex;
@@ -395,24 +418,25 @@ textarea:focus-visible,
   border-radius: var(--radius-pill);
   font-size: 0.86rem;
   font-weight: 600;
-  color: var(--ink-secondary);
-  border: 1px solid transparent;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   transition: all 0.18s ease;
   position: relative;
 }
 .header-action-btn:hover {
-  background: var(--surface-tint);
-  border-color: var(--line);
-  color: var(--brand-deep);
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.35);
+  color: #38bdf8;
 }
 .header-action-btn.header-action-authed {
-  background: rgba(36, 89, 79, 0.08);
-  border-color: rgba(36, 89, 79, 0.22);
-  color: var(--brand-deep);
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: #38bdf8;
 }
 .header-action-btn.header-action-authed:hover {
-  background: rgba(36, 89, 79, 0.14);
-  border-color: var(--brand);
+  background: rgba(6, 182, 212, 0.2);
+  border-color: #06b6d4;
 }
 .authed-user-label {
   display: inline-flex;
@@ -437,7 +461,7 @@ textarea:focus-visible,
   position: absolute;
   top: -2px;
   right: 2px;
-  background: var(--brand);
+  background: #0891b2;
   color: #ffffff;
   border-radius: 999px;
   font-size: 0.7rem;
@@ -448,26 +472,27 @@ textarea:focus-visible,
   align-items: center;
   justify-content: center;
   padding: 0 5px;
-  box-shadow: 0 2px 5px rgba(15, 118, 110, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 .clinical-cart-btn {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  background: linear-gradient(135deg, var(--brand-deep) 0%, #042f2e 100%);
+  background: linear-gradient(135deg, #0e7490 0%, #083344 100%);
   color: #ffffff;
   padding: 10px 20px;
   border-radius: var(--radius-pill);
   font-size: 0.9rem;
   font-weight: 700;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
-  border: none;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.25);
+  border: 1px solid rgba(6, 182, 212, 0.4);
   cursor: pointer;
 }
 .clinical-cart-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(15, 118, 110, 0.38);
+  box-shadow: 0 6px 22px rgba(6, 182, 212, 0.45);
+  border-color: #22d3ee;
 }
 .cart-badge {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
@@ -476,7 +501,7 @@ textarea:focus-visible,
   padding: 2px 8px;
   font-size: 0.78rem;
   font-weight: 900;
-  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 .badge-animated {
   animation: badgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -489,9 +514,11 @@ textarea:focus-visible,
 
 /* ── Multi-Tier Secondary Clinical Sub-navigation ── */
 .header-subnav {
-  background: rgba(255, 255, 255, 0.92);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  background: rgba(10, 17, 26, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   z-index: 90;
 }
@@ -509,7 +536,7 @@ textarea:focus-visible,
 .subnav-link {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--ink-secondary);
+  color: #cbd5e1;
   padding: 13px 4px;
   white-space: nowrap;
   display: inline-flex;
@@ -525,8 +552,8 @@ textarea:focus-visible,
   font-family: inherit;
 }
 .subnav-link:hover, .subnav-link.highlight {
-  color: var(--brand-deep);
-  border-bottom-color: var(--brand);
+  color: #22d3ee;
+  border-bottom-color: #06b6d4;
 }
 .subnav-dropdown-trigger {
   position: relative;
@@ -536,12 +563,12 @@ textarea:focus-visible,
   position: absolute;
   top: 100%;
   right: 0;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid var(--line);
+  background: rgba(10, 17, 26, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.75);
   padding: 16px;
   z-index: 150;
   animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -567,16 +594,16 @@ textarea:focus-visible,
   border: 1px solid transparent;
 }
 .brand-item:hover {
-  background: var(--surface-tint);
-  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 .brand-item.reeskin:hover {
-  background: #f0fdfa;
-  border-color: #ccfbf1;
+  background: rgba(6, 182, 212, 0.1);
+  border-color: rgba(6, 182, 212, 0.3);
 }
 .brand-item.reemed:hover {
-  background: #f0f9ff;
-  border-color: #bae6fd;
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
 }
 .item-icon-tag {
   font-size: 0.65rem;
@@ -587,33 +614,35 @@ textarea:focus-visible,
   margin-top: 2px;
 }
 .reeskin-tag {
-  background: rgba(15, 118, 110, 0.12);
-  color: var(--brand-deep);
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.3);
 }
 .reemed-tag {
-  background: rgba(2, 132, 199, 0.12);
-  color: var(--medical-blue);
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 .item-content strong {
   display: block;
   font-size: 0.94rem;
-  color: var(--brand-dark);
+  color: #f8fafc;
   margin-bottom: 4px;
 }
 .item-content p {
   font-size: 0.78rem;
-  color: var(--muted);
+  color: #94a3b8;
   line-height: 1.6;
   margin: 0 0 6px;
 }
 .item-action-hint {
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--brand);
+  color: #22d3ee;
 }
 .dropdown-divider {
   height: 1px;
-  background: var(--line);
+  background: rgba(255, 255, 255, 0.08);
   margin: 8px 0;
 }
 .categories-menu {
@@ -633,7 +662,7 @@ textarea:focus-visible,
   transition: all 0.15s ease;
 }
 .cat-drop-link:hover {
-  background: var(--surface-tint);
+  background: rgba(6, 182, 212, 0.1);
 }
 .cat-drop-dot {
   width: 8px;
@@ -644,12 +673,12 @@ textarea:focus-visible,
 .cat-drop-link strong {
   display: block;
   font-size: 0.86rem;
-  color: var(--ink);
+  color: #f8fafc;
 }
 .cat-drop-link small {
   display: block;
   font-size: 0.74rem;
-  color: var(--muted);
+  color: #94a3b8;
 }
 .b2b-nav-badge {
   color: var(--brand-deep);
@@ -740,7 +769,7 @@ textarea:focus-visible,
   pointer-events: none;
 }
 
-/* ── Catalog & Product Grid ── */
+/* ── Catalog & Product Grid — Dark Obsidian Laboratory ── */
 .catalog-section { padding-bottom: 72px; }
 .section-head {
   display: flex;
@@ -752,7 +781,7 @@ textarea:focus-visible,
   margin: 4px 0 0;
   font-size: 2.1rem;
   letter-spacing: -.04em;
-  color: var(--brand-deep);
+  color: #f8fafc;
 }
 .product-grid {
   display: grid;
@@ -760,18 +789,21 @@ textarea:focus-visible,
   gap: 22px;
 }
 .product-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
-  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   display: flex;
   flex-direction: column;
 }
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.35);
 }
 .product-art {
   display: flex;
@@ -780,26 +812,27 @@ textarea:focus-visible,
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: #f0e6dc;
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%);
 }
-.product-card:nth-child(3n+2) .product-art { background: #e6efe9; }
-.product-card:nth-child(3n) .product-art { background: #e8ebf0; }
+.product-card:nth-child(3n+2) .product-art { background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%); }
+.product-card:nth-child(3n) .product-art { background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, rgba(7, 11, 18, 0.8) 100%); }
 .art-index {
   font-size: 7.5rem;
   font-weight: 900;
-  color: rgba(11, 110, 102, 0.28);
+  color: rgba(255, 255, 255, 0.06);
 }
 .art-caption {
   position: absolute;
   bottom: 14px;
   right: 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .92);
-  color: var(--brand-deep);
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #22d3ee;
   font-size: .78rem;
   font-weight: 700;
   padding: 4px 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 .product-copy {
   padding: 22px;
@@ -810,10 +843,10 @@ textarea:focus-visible,
 .product-copy h3 {
   font-size: 1.15rem;
   margin: 0 0 8px;
-  color: var(--brand-deep);
+  color: #f8fafc;
 }
 .product-copy p {
-  color: var(--muted);
+  color: #94a3b8;
   font-size: .88rem;
   flex-grow: 1;
   margin: 0 0 20px;
@@ -824,35 +857,36 @@ textarea:focus-visible,
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 16px;
 }
 .product-bottom strong {
   font-size: 1.05rem;
-  color: var(--ink);
+  color: #f8fafc;
 }
 .btn-add-cart {
-  background: var(--brand-tint);
-  color: var(--brand-deep);
-  border: 1px solid var(--brand);
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.35);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: .84rem;
   font-weight: 700;
   cursor: pointer;
   transition: all .2s;
 }
 .btn-add-cart:hover {
-  background: var(--brand);
-  color: #ffffff;
+  background: #06b6d4;
+  color: #070b12;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
 }
 .btn-add-cart.added {
-  background: var(--success);
+  background: #10b981;
   color: #ffffff;
-  border-color: var(--success);
+  border-color: #10b981;
 }
 .muted-tag {
-  color: var(--muted);
+  color: #94a3b8;
   font-size: .82rem;
 }
 
@@ -2370,7 +2404,7 @@ textarea:focus-visible,
   gap: 16px;
 }
 .section-eyebrow {
-  color: var(--brand);
+  color: #22d3ee;
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -2383,21 +2417,21 @@ textarea:focus-visible,
 .section-title {
   font-size: clamp(1.8rem, 3.2vw, 2.5rem);
   font-weight: 900;
-  color: var(--brand-dark);
+  color: #f8fafc;
   letter-spacing: -0.03em;
   line-height: 1.3;
   margin: 0 0 12px;
 }
 .section-subtext {
-  color: var(--muted);
+  color: #94a3b8;
   font-size: 1rem;
   line-height: 1.8;
   margin: 0;
 }
 .section-count-badge {
-  background: var(--brand-tint);
-  color: var(--brand-deep);
-  border: 1px solid rgba(15, 118, 110, 0.2);
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.35);
   padding: 6px 16px;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
@@ -2818,7 +2852,7 @@ textarea:focus-visible,
   border-radius: var(--radius-pill);
 }
 
-/* ── 4. Trust & Clinical Credibility Bar ── */
+/* ── 4. Trust & Clinical Credibility Bar — Dark Clinical Glassmorphism ── */
 .clinical-trust-bar {
   max-width: 1400px;
   margin: 32px auto 0;
@@ -2830,21 +2864,23 @@ textarea:focus-visible,
   gap: 20px;
 }
 .trust-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
   position: relative;
   overflow: hidden;
 }
 .trust-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
-  border-color: var(--brand);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.4);
 }
 .trust-card-top {
   display: flex;
@@ -2856,8 +2892,9 @@ textarea:focus-visible,
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: rgba(15, 118, 110, 0.08);
-  color: var(--brand-deep);
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  color: #22d3ee;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2866,8 +2903,9 @@ textarea:focus-visible,
 .trust-micro-badge {
   font-size: 0.65rem;
   font-weight: 800;
-  color: var(--muted);
-  border: 1px solid var(--line);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   letter-spacing: 0.05em;
@@ -2876,17 +2914,17 @@ textarea:focus-visible,
 .trust-title {
   font-size: 0.98rem;
   font-weight: 850;
-  color: var(--brand-dark);
+  color: #f8fafc;
   margin: 0 0 8px;
 }
 .trust-desc {
   font-size: 0.83rem;
-  color: var(--muted);
+  color: #94a3b8;
   line-height: 1.65;
   margin: 0;
 }
 
-/* ── 5. Category & Concern Quick-Nav ── */
+/* ── 5. Category & Concern Quick-Nav — Dark Obsidian Staging ── */
 .clinical-concerns-section {
   max-width: 1280px;
   margin: 0 auto;
@@ -2898,13 +2936,15 @@ textarea:focus-visible,
   gap: 18px;
 }
 .concern-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   padding: 22px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -2916,13 +2956,13 @@ textarea:focus-visible,
   right: 0;
   left: 0;
   height: 3px;
-  background: var(--accent-line, var(--brand));
-  opacity: 0.8;
+  background: var(--accent-line, #06b6d4);
+  opacity: 0.9;
 }
 .concern-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
-  border-color: var(--accent-line, var(--brand));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.25);
+  border-color: var(--accent-line, #06b6d4);
 }
 .concern-card-top {
   display: flex;
@@ -2933,25 +2973,26 @@ textarea:focus-visible,
 .concern-badge {
   font-size: 0.72rem;
   font-weight: 800;
-  color: var(--brand);
-  background: var(--brand-tint);
+  color: #22d3ee;
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.3);
   padding: 3px 8px;
   border-radius: var(--radius-pill);
 }
 .concern-count {
   font-size: 0.76rem;
-  color: var(--muted);
+  color: #94a3b8;
 }
 .concern-title {
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--ink);
+  color: #f8fafc;
   margin: 0 0 8px;
   line-height: 1.4;
 }
 .concern-subtitle {
   font-size: 0.84rem;
-  color: var(--muted);
+  color: #94a3b8;
   line-height: 1.6;
   margin: 0 0 20px;
   flex-grow: 1;
@@ -2962,12 +3003,12 @@ textarea:focus-visible,
   justify-content: space-between;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--brand-deep);
+  color: #22d3ee;
   padding-top: 12px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ── 6. Brand Families (ReeSkin & ReeMed) ── */
+/* ── 6. Brand Families (ReeSkin & ReeMed) — Dark Clinical Luxury ── */
 .brand-family-section {
   max-width: 1400px;
   margin: 48px auto 0;
@@ -2984,24 +3025,26 @@ textarea:focus-visible,
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
-  border: 1px solid var(--line);
-  background: var(--surface);
+  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 .brand-family-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.85), 0 0 35px rgba(6, 182, 212, 0.2);
 }
 .brand-card-top-stripe {
   height: 6px;
   width: 100%;
 }
 .reeskin-stripe {
-  background: linear-gradient(90deg, #14b8a6 0%, #0d9488 50%, #2dd4bf 100%);
+  background: linear-gradient(90deg, #06b6d4 0%, #0d9488 50%, #2dd4bf 100%);
 }
 .reemed-stripe {
-  background: linear-gradient(90deg, #0284c7 0%, #0369a1 50%, #38bdf8 100%);
+  background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 50%, #38bdf8 100%);
 }
 .brand-card-inner {
   padding: clamp(30px, 4.5vw, 48px);
@@ -3010,12 +3053,12 @@ textarea:focus-visible,
   flex-grow: 1;
 }
 .reeskin-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f0fdfa 100%);
-  border-color: #ccfbf1;
+  background: radial-gradient(circle at 100% 0%, rgba(6, 182, 212, 0.12) 0%, rgba(12, 19, 31, 0.95) 70%);
+  border-color: rgba(6, 182, 212, 0.25);
 }
 .reemed-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
-  border-color: #bae6fd;
+  background: radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.12) 0%, rgba(12, 19, 31, 0.95) 70%);
+  border-color: rgba(139, 92, 246, 0.25);
 }
 .brand-card-header {
   margin-bottom: 26px;
@@ -3035,7 +3078,8 @@ textarea:focus-visible,
   height: 24px;
   width: auto;
   object-fit: contain;
-  opacity: 0.85;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
 }
 .brand-flag-group {
   display: flex;
@@ -3051,39 +3095,132 @@ textarea:focus-visible,
   display: inline-block;
 }
 .reeskin-flag {
-  color: var(--brand);
-  background: rgba(15, 118, 110, 0.12);
-  border: 1px solid rgba(15, 118, 110, 0.2);
+  color: #22d3ee;
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.35);
 }
 .reemed-flag {
-  color: var(--medical-blue);
-  background: rgba(2, 132, 199, 0.12);
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
 }
 .family-prescription-tag {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #64748b;
-  background: rgba(100, 116, 139, 0.1);
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 4px 10px;
   border-radius: var(--radius-pill);
 }
 .family-prescription-tag.clinic-tag {
-  color: #0369a1;
-  background: rgba(2, 132, 199, 0.1);
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.15);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 .family-name {
   font-size: 1.85rem;
   font-weight: 950;
-  color: var(--brand-dark);
+  color: #f8fafc;
   margin: 0 0 10px;
   letter-spacing: -0.02em;
 }
 .family-tagline {
-  color: var(--muted);
+  color: #94a3b8;
   font-size: 0.94rem;
   margin: 0;
   line-height: 1.75;
+}
+.brand-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 34px;
+  flex-grow: 1;
+}
+.feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #cbd5e1;
+}
+.feature-bullet {
+  color: #06b6d4;
+  font-weight: 950;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+.feature-bullet.medical-bullet {
+  color: #8b5cf6;
+}
+.feature-row strong {
+  color: #f8fafc;
+  margin-left: 4px;
+}
+.brand-products-rail,
+.brand-devices-showcase {
+  margin-top: 10px;
+  margin-bottom: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+.products-rail-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+.products-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.product-fast-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #22d3ee;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+.product-fast-chip:hover {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: #06b6d4;
+  transform: translateY(-1px);
+}
+.devices-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.device-spotlight-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.device-spotlight-card:hover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.25);
 }
 .brand-features-list {
   display: flex;
@@ -3231,105 +3368,96 @@ textarea:focus-visible,
   box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
 }
 
-/* ── 6. Featured Clinical Products ── */
+/* ── 6. Featured Clinical Products — Dark Obsidian Laboratory ── */
 .clinical-featured-section {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 .clinical-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
 }
 .clinical-card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  background: rgba(12, 19, 31, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
-  transition: all 0.25s ease;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 .clinical-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-elevated);
-  border-color: var(--line-strong);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.85), 0 0 30px rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.35);
 }
 .card-top-badges {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 18px 0;
+  z-index: 2;
 }
 .brand-family-pill {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
 }
 .brand-family-pill.clinical {
-  background: var(--brand-tint);
-  color: var(--brand);
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.3);
 }
 .brand-family-pill.medical {
-  background: var(--medical-tint);
-  color: var(--medical-blue);
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 .stock-pill {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--muted);
+  color: #94a3b8;
 }
 .card-media-box {
-  min-height: 210px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, rgba(7, 11, 18, 0.9) 80%);
   position: relative;
   padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .product-card-real-img {
   width: auto;
   max-width: 100%;
-  height: 180px;
+  height: 170px;
   object-fit: contain;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.7));
 }
 .clinical-card:hover .product-card-real-img {
-  transform: scale(1.06) translateY(-4px);
-  filter: drop-shadow(0 16px 28px rgba(15, 118, 110, 0.16));
-}
-
-.bottle-art {
-  width: 90px;
-  height: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-.clinical-card:hover .bottle-art {
-  transform: scale(1.08);
-}
-.bottle-svg {
-  width: 100%;
-  height: 100%;
+  transform: scale(1.08) translateY(-4px);
+  filter: drop-shadow(0 16px 32px rgba(6, 182, 212, 0.25));
 }
 .visual-formula-tag {
   position: absolute;
   bottom: 12px;
   left: 14px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--line);
-  padding: 2px 8px;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 3px 9px;
   border-radius: var(--radius-pill);
 }
 .card-content {
@@ -3341,25 +3469,29 @@ textarea:focus-visible,
 .card-sku-code {
   font-size: 0.7rem;
   font-family: monospace;
-  color: var(--muted);
+  color: #64748b;
   margin-bottom: 6px;
   direction: ltr;
   text-align: right;
 }
 .card-title {
-  font-size: 1.08rem;
-  font-weight: 800;
-  color: var(--ink);
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: #f8fafc;
   margin: 0 0 10px;
   line-height: 1.45;
 }
+.card-title a {
+  color: #f8fafc;
+  transition: color 0.18s ease;
+}
 .card-title a:hover {
-  color: var(--brand);
+  color: #22d3ee;
 }
 .card-desc {
-  font-size: 0.85rem;
-  color: var(--muted);
-  line-height: 1.65;
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.7;
   margin: 0 0 24px;
   flex-grow: 1;
 }
@@ -3368,45 +3500,52 @@ textarea:focus-visible,
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 12px;
 }
 .price-stack {
   display: flex;
   flex-direction: column;
 }
 .price-label {
-  font-size: 0.72rem;
-  color: var(--muted);
+  font-size: 0.7rem;
+  color: #64748b;
 }
 .price-amount {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 900;
-  color: var(--brand-dark);
+  color: #22d3ee;
 }
 .btn-add-cart {
-  background: var(--brand-deep);
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(6, 182, 212, 0.4);
   border-radius: var(--radius-pill);
   padding: 9px 18px;
-  font-size: 0.86rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 750;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
 }
 .btn-add-cart:hover {
-  background: var(--brand);
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.5);
 }
 .btn-add-cart.added {
   background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
 }
 .out-of-stock-tag {
-  background: #f1f5f9;
-  color: #94a3b8;
-  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+  font-size: 0.78rem;
   font-weight: 700;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .dynamic-rail-container {
