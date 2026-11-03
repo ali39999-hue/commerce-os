@@ -7,6 +7,7 @@ import { useCart } from "../../components/cart";
 import { apiBase, storeSlug } from "../../lib/catalog";
 import { useCustomerSession } from "../../lib/customer-session";
 import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
+import { maskIranianMobile } from "@commerce-os/localization";
 import {
   validateIranianMobile,
   validatePostalCode,
@@ -55,6 +56,16 @@ export default function CheckoutPage() {
   const { formatToman, formatMoney } = useLocalizedFormatter();
   const { session: customerSession } = useCustomerSession();
   const router = useRouter();
+
+  // Prefill the contact identity from the live OTP session (AUTH-002 step 4
+  // display side): the server overrides the identity for signed-in customers
+  // anyway, so the form should reflect it instead of the static demo values.
+  useEffect(() => {
+    if (customerSession?.user) {
+      setCustomerName(customerSession.user.fullName || "کاربر فروشگاه");
+      setCustomerPhone(customerSession.user.phone);
+    }
+  }, [customerSession]);
 
   // Active step: 1 (Contact & Address & Tax), 2 (Shipping & Cold-Chain), 3 (Payment & Place Order)
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
@@ -759,6 +770,12 @@ export default function CheckoutPage() {
             <p className="section-desc">
               اطلاعات جهت ثبت فاکتور رسمی، انطباق با شاهکار و صدور بارنامه پست پیشتاز و تیپاکس استفاده می‌شود.
             </p>
+
+            {customerSession?.user && (
+              <div className="subs-banner success" role="status" style={{ marginBottom: "14px", fontSize: "0.85rem" }}>
+                خرید با نشست احرازشده ({maskIranianMobile(customerSession.user.phone)}) — سفارش به همین شماره ثبت می‌شود؛ گیرنده مرسوله می‌تواند متفاوت باشد.
+              </div>
+            )}
 
             <div className="form-grid">
               <label className="form-field">
