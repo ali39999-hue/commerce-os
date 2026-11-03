@@ -105,6 +105,7 @@ async function runVerification() {
   let resolvedTenantId = "309f952a-2818-4c9a-90b6-216b795a515e";
   let carboxyProduct = null;
   let carboxyVariant = null;
+  let carboxyVariantsList = [];
 
   // ────────────────────────────────────────────────────────────────
   // Stage 1: Health check & tenant resolution
@@ -147,6 +148,7 @@ async function runVerification() {
     const ingList = ingRes.json?.data ?? data?.ingredients ?? [];
     const claimsList = claimRes.json?.data ?? data?.claims ?? [];
     const variantsList = data?.variants ?? [];
+    carboxyVariantsList = variantsList;
 
     const hasMedia = mediaList.length >= 2 && mediaList.some((m) => m.role === "HERO");
     const hasIngredients = ingList.length >= 2 && ingList.some((i) => i.inciName?.includes("Sodium Bicarbonate"));
@@ -278,12 +280,14 @@ async function runVerification() {
   // ────────────────────────────────────────────────────────────────
   let checkoutSession = null;
   if (isLive) {
+    const homeVariant = carboxyVariantsList.find((v) => v.sku === "CBG-HOME-5X") || carboxyVariant;
+
     // 5a. Create session
     const csRes = await fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: carboxyVariant.id, qty: 1 }],
+        items: [{ variantId: homeVariant.id, qty: 1 }],
         customerPhone: "09121234567",
         customerName: "دکتر آزمون کلینیکال",
         address: {
@@ -299,13 +303,13 @@ async function runVerification() {
     });
 
     // 5b. Concurrent lease competition test:
-    // With available stock ~24, two concurrent requests each ask for 15 units (total 30 > 24).
+    // With available stock around 12 units, two concurrent requests each ask for 8 units (total 16 > 12).
     // Atomic row-level locking (FOR UPDATE) guarantees exactly one lease succeeds and one is rejected.
     const concurrent1 = fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: carboxyVariant.id, qty: 15 }],
+        items: [{ variantId: homeVariant.id, qty: 8 }],
         customerPhone: "09121111111",
         customerName: "رزرو هم‌زمان کلینیک آلفا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک آلفا", receiverName: "دکتر الف", receiverPhone: "09121111111" },
@@ -315,7 +319,7 @@ async function runVerification() {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: carboxyVariant.id, qty: 15 }],
+        items: [{ variantId: homeVariant.id, qty: 8 }],
         customerPhone: "09122222222",
         customerName: "رزرو هم‌زمان کلینیک بتا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک بتا", receiverName: "دکتر ب", receiverPhone: "09122222222" },

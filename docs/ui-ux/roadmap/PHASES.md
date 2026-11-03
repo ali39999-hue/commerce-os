@@ -182,3 +182,34 @@ Deploy the Continuing Medical Education (CME) portal for certified doctors and a
 ### 8.3 Exit Gates
 - [x] Video stream URLs protected against unauthenticated hotlinking.
 - [x] QR code verification endpoint (`/academy/verify/[certId]`) operational.
+
+---
+
+## 9. Phase 9: Agentic Design & Code Integration Architecture
+
+### 9.1 Objective & Scope
+Deploy multi-agent design-to-code assembly pipeline integrating Figma Canvas, Git Repository, MCP tooling, and 13 specialized operational skills.
+
+### 9.2 Key Deliverables
+- **Canonical Canvas & Code Authority**:
+  - Figma Remote MCP (`https://mcp.figma.com/mcp`) established as official design canvas.
+  - Git repository recognized as the absolute source of truth for code and domain logic.
+- **Client MCP Configuration**:
+  - Configured `.mcp.json` (Claude Code) and `.cursor/mcp.json` (Cursor) with Figma, Playwright, and Context7.
+  - Developed `scripts/sync-skills.mjs` for deterministic synchronization between `.agents/skills/` and `.claude/skills/`.
+- **13 Specialized Operational Skills**:
+  - `drdermer-orchestrator`, `drdermer-repo-audit`, `drdermer-design-research`, `drdermer-figma-canvas`, `drdermer-design-system`, `drdermer-design-to-code`, `drdermer-frontend-implementation`, `drdermer-api-integration`, `drdermer-rtl-responsive`, `drdermer-visual-qa`, `drdermer-accessibility`, `drdermer-security-review`, `drdermer-release-gate`.
+- **Pilot 01 Execution (Header + Homepage Hero + Audience Path Selector)**:
+  - Audited, documented, and verified across all viewports (360px, 390px, 768px, 1280px, 1440px).
+- **Quality & Reality Artifacts**:
+  - `FEATURE_REALITY_MATRIX.md`, `BACKEND_COVERAGE.md`, `DESIGN_SYSTEM_STATUS.md`, `PILOT_01_AUDIT_AND_BRIEF.md`, `AGENTIC_INTEGRATION_ARCHITECTURE.md`, `PHASE_09_ACCEPTANCE_REPORT.md`.
+
+### 9.3 Exit Gates
+- [x] Figma Remote MCP, Playwright MCP, and Context7 MCP configured.
+- [x] All 13 base skills implemented and synchronized (35 total skills).
+- [x] RACI matrix and zero-collision file ownership locks documented.
+- [x] Next.js production build passes with 0 errors across 46 routes.
+- [x] 10/10 automated tests pass in `scripts/verify-clinical-store.mjs`.
+- [x] 3/3 load tests pass with p95 <= 139ms in `scripts/load-check.mjs`.
+- [x] Zero PII or credentials exposed in code or configurations.
+

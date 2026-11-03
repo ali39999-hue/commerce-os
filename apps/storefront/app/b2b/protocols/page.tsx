@@ -514,7 +514,7 @@ export default function ProtocolsSubPage() {
                         color: "#065f46",
                       }}
                     >
-                      💡 <strong>نکته کلینیکال (Clinical Pearl):</strong> {st.clinicalPearl}
+                      <strong>نکته کلینیکال (Clinical Pearl):</strong> {st.clinicalPearl}
                     </div>
                   </div>
                 ))}

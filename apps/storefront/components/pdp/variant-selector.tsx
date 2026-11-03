@@ -59,7 +59,11 @@ export function VariantSelector({
               {v.inStock ? (
                 isLowStock ? (
                   <span className="pdp-chip-stock-warn">
-                    <span className="stock-fire-icon" aria-hidden="true">🔥</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline', marginLeft: '4px' }}>
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
                     تنها ۳ عدد در انبار باقیست
                   </span>
                 ) : (

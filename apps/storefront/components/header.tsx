@@ -246,8 +246,10 @@ export function SiteHeader() {
               className={`header-action-btn ${customerSession ? "header-action-authed" : ""}`}
               aria-label={
                 customerSession
-                  ? `حساب ${customerSession.user.fullName || maskIranianMobile(customerSession.user.phone)}`
-                  : "حساب من - ورود یا ثبت‌نام"
+                  ? (customerSession.user.fullName
+                      ? customerSession.user.fullName.split(" ")[0]
+                      : maskIranianMobile(customerSession.user.phone))
+                  : "ورود / حساب"
               }
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -268,7 +270,7 @@ export function SiteHeader() {
               )}
             </Link>
 
-            <Link href="/wishlist" className="header-action-btn" aria-label="علاقه‌مندی‌ها - محصولات ذخیره‌شده">
+            <Link href="/wishlist" className="header-action-btn" aria-label="علاقه‌مندی‌ها">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
@@ -276,7 +278,7 @@ export function SiteHeader() {
               {wishlistCount > 0 && <span className="action-badge pulse-badge">{wishlistCount}</span>}
             </Link>
 
-            <Link href="/compare" className="header-action-btn" aria-label="مقایسه - مقایسه فرمولاسیون و ترکیبات">
+            <Link href="/compare" className="header-action-btn" aria-label="مقایسه">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path>
               </svg>
@@ -288,7 +290,7 @@ export function SiteHeader() {
               type="button"
               onClick={openDrawer}
               className="cart-trigger clinical-cart-btn"
-              aria-label="سبد نسخه - مشاهده سبد خرید و نسخه درمانی"
+              aria-label="سبد نسخه"
             >
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>

@@ -113,13 +113,7 @@
   height: 7px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
-  animation: cp-pulse 2s infinite;
-}
-
-@keyframes cp-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+  display: inline-block;
 }
 
 /* Hero 2-Column Grid */
@@ -209,7 +203,8 @@
 }
 
 .cp-metric-val {
-  font-family: monospace;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.35rem;
   font-weight: 900;
   color: #34d399;
@@ -290,7 +285,8 @@
   padding: 4px 12px;
   font-size: 0.74rem;
   font-weight: 800;
-  font-family: monospace;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
 }
 
 .cp-volume-overlay.cyan {

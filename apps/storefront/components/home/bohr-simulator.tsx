@@ -151,7 +151,7 @@ export function BohrOxygenationSimulator() {
             </div>
 
             <div className="svc-canvas-wrap">
-              <svg viewBox="0 0 460 260" className="svc-capillary-svg" aria-hidden="true">
+              <svg viewBox="0 0 460 260" className="svc-capillary-svg" aria-hidden="true" style={{ overflow: 'hidden' }}>
                 <defs>
                   {/* Capillary walls gradient */}
                   <linearGradient id={`${gradientId}-wall`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -172,7 +172,7 @@ export function BohrOxygenationSimulator() {
 
                 {/* Epidermis Surface Line */}
                 <rect x="0" y="0" width="460" height="22" fill="#fdf2e9" />
-                <text x="440" y="15" fill="#9a3412" fontSize="9" fontWeight="700" textAnchor="end">
+                <text x="230" y="15" fill="#9a3412" fontSize="9" fontWeight="700" textAnchor="middle">
                   سطح پوست / لایه شاخی استراتوم کورنئوم (CarboxyGel Layer)
                 </text>
 
@@ -293,7 +293,7 @@ export function BohrOxygenationSimulator() {
             </div>
 
             <div className="svc-canvas-wrap">
-              <svg viewBox="0 0 460 260" className="svc-bohr-graph-svg" aria-hidden="true">
+              <svg viewBox="0 0 460 260" className="svc-bohr-graph-svg" aria-hidden="true" style={{ overflow: 'hidden' }}>
                 {/* Graph Grid Lines */}
                 <line x1="60" y1="30" x2="60" y2="210" stroke="#cbd5e1" strokeWidth="1.5" />
                 <line x1="60" y1="210" x2="430" y2="210" stroke="#cbd5e1" strokeWidth="1.5" />

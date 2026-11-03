@@ -32,9 +32,9 @@ test.describe('Storefront Critical Pages HTTP & DOM Verification', () => {
 
   test('no horizontal overflow across pages', async ({ page }) => {
     await page.goto('/');
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1); // 1px rounding tolerance
+    const docScrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+    const docClientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+    expect(docScrollWidth).toBeLessThanOrEqual(docClientWidth + 1); // 1px rounding tolerance
   });
 
   test('cart drawer opens and closes without error', async ({ page }) => {

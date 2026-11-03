@@ -67,7 +67,7 @@ export function ScienceMechanismSpotlight() {
             </div>
 
             <div className="diagram-illustration" aria-hidden="true">
-              <svg viewBox="0 0 380 300" className="science-svg" preserveAspectRatio="xMidYMid meet">
+              <svg viewBox="0 0 380 300" className="science-svg" preserveAspectRatio="xMidYMid meet" style={{ overflow: 'hidden' }}>
                 <defs>
                   <linearGradient id="o2GradSci" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#38BDF8" />

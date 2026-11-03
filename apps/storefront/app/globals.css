@@ -7,6 +7,8 @@
 @import './clinical-products.css';
 @import './carboxypod/carboxypod.css';
 
+svg { max-width: 100%; }
+
 :root {
   color-scheme: light;
   /* Warm Clinical Minimalism Palette (Dr Dermer Redesign Blueprint Section 3.2) */
@@ -220,14 +222,7 @@ textarea:focus-visible,
   height: 7px;
   border-radius: 50%;
   background: #2dd4bf;
-  box-shadow: 0 0 8px #2dd4bf;
-}
-.promo-dot.pulse {
-  animation: pulseDot 2s infinite ease-in-out;
-}
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+  display: inline-block;
 }
 .promo-sep {
   opacity: 0.3;
@@ -672,7 +667,7 @@ textarea:focus-visible,
   height: 6px;
   border-radius: 50%;
   background: var(--brand);
-  animation: pulseDot 1.5s infinite ease-in-out;
+  display: inline-block;
 }
 
 /* ── Hero ── */
@@ -3137,6 +3132,8 @@ textarea:focus-visible,
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .product-fast-chip {
   display: inline-flex;
@@ -3518,6 +3515,7 @@ textarea:focus-visible,
   padding: 26px;
   backdrop-filter: blur(20px);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 .diagram-header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -3559,11 +3557,15 @@ textarea:focus-visible,
   align-items: center;
   justify-content: center;
   min-height: 240px;
+  width: 100%;
+  overflow: hidden;
 }
 .science-svg {
   width: 100%;
+  max-width: 100%;
   height: auto;
   max-height: 290px;
+  overflow: hidden;
 }
 .diagram-caption {
   display: flex;
@@ -4885,6 +4887,56 @@ textarea:focus-visible,
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* Brand Family mobile polish */
+  .brand-family-section {
+    padding: 0 12px;
+    margin-top: 28px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .brand-family-grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    width: 100%;
+  }
+  .brand-family-card {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .brand-card-inner {
+    padding: 20px 14px;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .brand-top-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .brand-flag-group {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .brand-products-rail {
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .products-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    box-sizing: border-box;
+    gap: 6px;
+  }
+  .product-fast-chip {
+    white-space: nowrap;
+    font-size: 0.74rem;
+    padding: 4px 10px;
+  }
+
   /* Product Detail Page mobile polish */
   .product-detail-container {
     padding: 20px 14px 60px;
@@ -4996,14 +5048,22 @@ textarea:focus-visible,
 }
 .drawer-close-btn {
   background: none;
-  border: none;
-  font-size: 1.3rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 1.1rem;
   cursor: pointer;
   color: var(--muted);
-  padding: 4px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 .drawer-close-btn:hover {
   color: var(--danger);
+  border-color: var(--danger);
+  background: rgba(184, 77, 77, 0.08);
 }
 
 /* Free Shipping Bar */
@@ -5037,16 +5097,9 @@ textarea:focus-visible,
 }
 
 .badge-free.celebratory, .free-shipping-qualified.celebratory {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: #047857;
   color: #ffffff;
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
-  animation: pulse-celebrate 2s infinite;
-}
-
-@keyframes pulse-celebrate {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-  100% { transform: scale(1); }
+  box-shadow: 0 2px 8px rgba(4, 120, 87, 0.25);
 }
 
 .shipping-unlocked-text {

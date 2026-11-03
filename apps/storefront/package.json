@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "next build",
+    "build": "next build && node -e \"const fs=require('fs'); if(fs.existsSync('.next/standalone')){ fs.cpSync('.next/static', '.next/standalone/apps/storefront/.next/static', {recursive:true}); fs.cpSync('public', '.next/standalone/apps/storefront/public', {recursive:true}); }\"",
     "start": "next start -p 3000",
     "test:e2e": "playwright test"
   },

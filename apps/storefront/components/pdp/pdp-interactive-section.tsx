@@ -96,21 +96,36 @@ export function PdpInteractiveSection({
           {/* Quick trust metrics */}
           <div className="pdp-trust-badges-card">
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">🛡️</span>
+              <span className="pdp-trust-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </span>
               <div>
                 <strong>تضمین ۱۰۰٪ اصالت و پلمپ</strong>
                 <small>بچ‌کد اختصاصی قابل استعلام و بارکد رهگیری</small>
               </div>
             </div>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">🚀</span>
+              <span className="pdp-trust-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+              </span>
               <div>
                 <strong>ارسال سریع کلینیکال</strong>
                 <small>بسته‌بندی ضربه‌گیر عایق دما با پست پیشتاز و تیپاکس</small>
               </div>
             </div>
             <div className="pdp-trust-item">
-              <span className="pdp-trust-icon" aria-hidden="true">👩‍⚕️</span>
+              <span className="pdp-trust-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+              </span>
               <div>
                 <strong>مشاوره تخصصی بیوتی‌ترپیست</strong>
                 <small>پشتیبانی داروسازان و اسکین‌تراپیست‌های بالینی</small>

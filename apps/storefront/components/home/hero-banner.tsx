@@ -7,31 +7,31 @@ export function HeroBanner() {
         {/* Left Column: Clinical Copy & Interactive Dual CTAs */}
         <div className="hero-content-col">
           <div className="hero-eyebrow-chip">
-            <span className="chip-pulsing-dot" aria-hidden="true"></span>
-            <span className="eyebrow-text">Dr Dermer UK · Innovative Medical Devices & Skincare</span>
-            <span className="eyebrow-badge">UK CLINICAL LABS</span>
+            <span className="eyebrow-origin">Cambridge Science Park · UK</span>
+            <span className="eyebrow-divider" aria-hidden="true">/</span>
+            <span className="eyebrow-badge">CLINICAL DERMATOLOGY OS</span>
           </div>
 
           <h1 id="hero-main-title" className="hero-heading">
             محصولات و تجهیزات پزشکی نوآورانه
             <br />
-            <span className="gradient-text">طراحی‌شده برای ایمنی و اثربخشی برتر</span>
+            <span className="gradient-text">طراحی‌شده برای بالاترین ضریب ایمنی و اثربخشی</span>
           </h1>
 
           <div className="hero-english-motto" dir="ltr">
-            “Innovative medical devices & skincare invented to be more safe and effective”
+            “Innovative medical devices & skincare engineered for clinical precision”
           </div>
 
           <p className="hero-description">
-            پیشگام در تکنولوژی‌های بالینی نوین با تلفیق کربوکسی‌تراپی غیرتهاجمی CarboxyGel CO₂ بر پایه مکانیسم فیزیولوژیک
-            اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی و بازسازی سلولی، در کنار پلتفرم پیشرفته دستگاه‌های پزشکی ReeMed™
-            شامل استیشن کربوکسی‌تراپی دقیق CarboX و سیستم انرژی چندگانه پلاسما PlasmaX ویژه درماتولوژیست‌ها و مراکز تخصصی.
+            تلفیق استاندارد درماتولوژی دارویی انگلستان و کربوکسی‌تراپی غیرتهاجمی CarboxyGel بر پایه پدیده فیزیولوژیک
+            اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی عمقی بافت، در کنار پلتفرم پیشرفته تجهیزات پزشکی ReeMed™
+            شامل استیشن تزریق دیجیتال CarboX و سامانه انرژی پلاسمای سرد PlasmaX ویژه پزشکان و کلینیک‌های پوست.
           </p>
 
           <div className="hero-cta-group">
             <Link href="#featured-products" className="btn-clinical-primary btn-glow">
-              <span>مشاهده و خرید محصولات درمانی</span>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <span>مشاهده و سفارش محصولات بالینی</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
@@ -44,28 +44,25 @@ export function HeroBanner() {
                 <line x1="20" y1="8" x2="20" y2="14"></line>
                 <line x1="23" y1="11" x2="17" y2="11"></line>
               </svg>
-              <span>ورود به بخش حرفه‌ای‌ها و کلینیک‌ها (B2B)</span>
+              <span>پرتال پزشکان و مراکز درمانی (B2B)</span>
             </Link>
           </div>
 
           {/* Floating Clinical Stats Cards */}
           <div className="hero-clinical-stats" aria-label="شاخص‌های بالینی اثبات‌شده">
             <div className="stat-card">
-              <div className="stat-card-glow" aria-hidden="true"></div>
-              <strong className="stat-number">+۴۵٪</strong>
-              <span className="stat-label">اکسیژن‌رسانی عمقی سلولی با تحریک اثر بوهر (Bohr Effect)</span>
+              <strong className="stat-number tabular-nums">+۴۵٪</strong>
+              <span className="stat-label">افزایش اکسیژناسیون موضعی با القای اثر بوهر (Bohr Effect)</span>
             </div>
 
             <div className="stat-card">
-              <div className="stat-card-glow" aria-hidden="true"></div>
-              <strong className="stat-number">۱۰۰٪</strong>
-              <span className="stat-label">غیرتهاجمی، بدون قرمزی و نقاهت با CarboxyGel CO₂ Therapy</span>
+              <strong className="stat-number tabular-nums">۷۸٪</strong>
+              <span className="stat-label">کاهش تبخیر آب ترنس‌اپیدرمال (TEWL) با ترمیم سد دفاعی</span>
             </div>
 
             <div className="stat-card">
-              <div className="stat-card-glow" aria-hidden="true"></div>
-              <strong className="stat-number">ReeMed™</strong>
-              <span className="stat-label">تجهیزات پزشکی کلینیکال و های‌تک (CarboX & PlasmaX)</span>
+              <strong className="stat-number">MDR IIb</strong>
+              <span className="stat-label">گواهی تجهیزات پزشکی کلاس پیشرفته اتحادیه اروپا</span>
             </div>
           </div>
         </div>
@@ -78,7 +75,6 @@ export function HeroBanner() {
             {/* Top Badges */}
             <div className="visual-badge-top">
               <div className="tech-badge-group">
-                <span className="pulse-beacon" aria-hidden="true"></span>
                 <span className="badge-tech">BOHR EFFECT CO₂ TECHNOLOGY</span>
               </div>
               <span className="badge-standard">CE MEDICAL 0123</span>
@@ -91,12 +87,17 @@ export function HeroBanner() {
                   src="/assets/drdermer/2025/07/site-combo-carboxy-1.png"
                   alt="کیت جامع CarboxyGel CO2 Therapy و CarboxyPod دکتر درمر"
                   className="hero-main-photo"
+                  width={540}
+                  height={540}
+                  fetchPriority="high"
                 />
                 <div className="hero-bohr-floating-badge" title="Bohr Effect: Hemoglobin O2 Release">
                   <img
                     src="/assets/drdermer/2025/07/bohr-effect.png"
                     alt="مکانیسم علمی اثر بوهر در اکسیژن‌رسانی سلولی"
                     className="hero-bohr-thumb"
+                    width={48}
+                    height={48}
                   />
                   <div className="hero-bohr-tag">
                     <strong>Bohr Effect</strong>
@@ -107,11 +108,13 @@ export function HeroBanner() {
 
               {/* Mini Devices Rail (ReeMed CarboX & PlasmaX) */}
               <div className="hero-devices-preview-grid">
-                <Link href="/products/carbox" className="hero-mini-device-card" title="دستگاه پزشکی کربوکسی تراپی CarboX">
+                <Link href="/carbox" className="hero-mini-device-card" title="دستگاه پزشکی کربوکسی تراپی CarboX">
                   <img
                     src="/assets/drdermer/2025/08/19carbox.webp"
                     alt="دستگاه پزشکی CarboX"
                     className="hero-mini-device-thumb"
+                    width={56}
+                    height={56}
                   />
                   <div className="hero-mini-device-info">
                     <span className="hero-mini-badge">ReeMed Medical</span>
@@ -120,11 +123,13 @@ export function HeroBanner() {
                   </div>
                 </Link>
 
-                <Link href="/products/plasmax" className="hero-mini-device-card" title="دستگاه پیشرفته انرژی پلاسما PlasmaX">
+                <Link href="/plasmax" className="hero-mini-device-card" title="دستگاه پیشرفته انرژی پلاسما PlasmaX">
                   <img
                     src="/assets/drdermer/2025/08/18plasmax.webp"
                     alt="دستگاه پزشکی PlasmaX"
                     className="hero-mini-device-thumb"
+                    width={56}
+                    height={56}
                   />
                   <div className="hero-mini-device-info">
                     <span className="hero-mini-badge">ReeMed Medical</span>

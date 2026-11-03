@@ -26,7 +26,7 @@ export default defineConfig({
     timezoneId: 'Asia/Tehran',
   },
   webServer: {
-    command: 'pnpm run start',
+    command: 'node .next/standalone/apps/storefront/server.js',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: true,
     timeout: 120000,

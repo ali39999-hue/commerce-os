@@ -35,7 +35,7 @@ describe('OrdersService.transitionStatus', () => {
       orderStatusHistory: { create: historyCreate },
     };
     const prisma = {
-      order: { findUnique, update: orderUpdate },
+      order: { findUnique, findFirst: findUnique, update: orderUpdate },
       orderStatusHistory: { create: historyCreate },
       $transaction: jest.fn((cb: (tx: unknown) => Promise<unknown>) => cb(tx)),
     } as unknown as PrismaService;

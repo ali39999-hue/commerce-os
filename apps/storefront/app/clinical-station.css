@@ -73,7 +73,7 @@
   height: 7px;
   border-radius: 50%;
   background: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  display: inline-block;
 }
 
 /* Hero Grid */
@@ -168,7 +168,8 @@
 }
 
 .quick-spec-value {
-  font-family: monospace;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.35rem;
   font-weight: 800;
   color: #34d399;
@@ -332,7 +333,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: monospace;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.15rem;
   font-weight: 800;
 }
@@ -511,7 +513,8 @@
 }
 
 .spec-parameter-val {
-  font-family: monospace;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
   font-size: 1.1rem;
   font-weight: 800;
   color: #ffffff;

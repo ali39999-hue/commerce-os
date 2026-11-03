@@ -194,18 +194,10 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
 
             <div className="pdp-steps-timeline">
               {productData.usageProtocol.steps.map((st) => {
-                const STEP_ICONS: Record<number, string> = {
-                  1: '🧴', // Cleansing
-                  2: '🧪', // Application
-                  3: '🫧', // Activation
-                  4: '💧', // Rinse
-                  5: '✨', // Recovery
-                };
                 return (
                   <div key={st.stepNumber} className="pdp-step-card">
                     <div className="pdp-step-circle">
-                      <span className="step-icon-badge" aria-hidden="true">{STEP_ICONS[st.stepNumber] || '✦'}</span>
-                      <span className="step-index-num">{st.stepNumber}</span>
+                      <span className="step-index-num">مرحله {st.stepNumber}</span>
                     </div>
                     <div className="pdp-step-body">
                       <div className="pdp-step-title-row">
@@ -215,7 +207,7 @@ export function ClinicalTabs({ productData, reviewsElement }: ClinicalTabsProps)
                       <p className="pdp-step-inst">{st.instruction}</p>
                       {st.warning && (
                         <div className="pdp-step-subwarn">
-                          <span aria-hidden="true">⚠️</span> {st.warning}
+                          <strong>هشدار مصرف:</strong> {st.warning}
                         </div>
                       )}
                     </div>

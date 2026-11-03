@@ -185,7 +185,7 @@ export default function CartPage() {
             <div className="tiered-status-headline">
               {tier2Achieved ? (
                 <span className="tier-msg-vip">
-                  🎉 <strong>تبریک ویژه!</strong> ارسال رایگان کلدچین و <strong>مشاوره تخصصی رایگان با پزشک متخصص پوست</strong> فعال شد
+                  <strong>تأییدیه بالینی:</strong> ارسال رایگان کلدچین و <strong>مشاوره تخصصی با پزشک متخصص پوست</strong> فعال شد
                 </span>
               ) : tier1Achieved ? (
                 <span className="tier-msg-shipping">
