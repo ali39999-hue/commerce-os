@@ -96,7 +96,7 @@ export class CheckoutService {
     /** Authenticated identity (AUTH-002 step 4): when present, the order's
      * customer identity comes from the OTP session — the delivery receiver
      * phone stays a free-form shipping detail on the address snapshot. */
-    customer?: { phone: string; fullName: string };
+    customer?: { id?: string; phone: string; fullName: string };
   }) {
     const { sessionId, paymentMethod, idempotencyKey, customer } = params;
 
@@ -155,6 +155,7 @@ export class CheckoutService {
           tenantId: session.tenantId,
           storeId: session.storeId,
           orderNumber,
+          userId: customer?.id ?? null,
           customerPhone: customer?.phone ?? addressSnapshot?.receiverPhone ?? "09120000000",
           customerName: customer?.fullName ?? addressSnapshot?.receiverName ?? "مشتری فروشگاه",
           status: "PENDING_PAYMENT",

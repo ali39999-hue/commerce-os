@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Param, Query, Body, Headers, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
+import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
+import { CurrentCustomer } from "../common/guards/current-tenant.decorator";
 import { ReviewCreateDto } from "../common/dto/resource-writes.dto";
-import { ReviewsService, CreateReviewInput, ReviewModerationDecision } from "./reviews.service";
+import { ReviewsService, ReviewModerationDecision } from "./reviews.service";
 
 const DEFAULT_TENANT_ID = "demo-tenant-id";
 
@@ -14,23 +16,31 @@ export class ReviewsController {
     return this.reviewsService.listForProduct(productId);
   }
 
+  // Customer review submission: session-aware. If signed in, the userId is
+  // bound to the authenticated session customer (AUTH-002), preventing client-
+  // side user impersonation. Guest submissions pass through with userId: null.
   @Post("products/:productId")
+  @UseGuards(SessionUserGuard)
   async create(
     @Param("productId") productId: string,
     @Body() body: ReviewCreateDto,
-    @Headers("x-tenant-id") tenantId?: string,
-    @Headers("x-user-id") userId?: string
+    @CurrentCustomer() customer?: SessionCustomer,
+    @Headers("x-tenant-id") tenantId?: string
   ) {
+    // If signed in, prioritize authenticated identity over arbitrary authorName
+    const resolvedAuthor = customer?.fullName?.trim() || body?.authorName;
+    const resolvedUserId = customer?.id;
+
     return this.reviewsService.create(
       productId,
       {
-        authorName: body?.authorName,
+        authorName: resolvedAuthor,
         rating: body?.rating,
         title: body?.title,
         body: body?.body,
       },
       tenantId || DEFAULT_TENANT_ID,
-      userId
+      resolvedUserId
     );
   }
 

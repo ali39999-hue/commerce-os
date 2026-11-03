@@ -8,8 +8,11 @@ import { COMPARE_CHANGED_EVENT, getCompare } from "../lib/compare";
 import { WISHLIST_CHANGED_EVENT, getWishlist } from "../lib/wishlist";
 import { LocaleCurrencySelector } from "./localization/locale-currency-selector";
 import { SkinDiagnosticDrawer } from "./skin-diagnostic-drawer";
+import { useCustomerSession } from "../lib/customer-session";
+import { maskIranianMobile } from "@commerce-os/localization";
 
 export function SiteHeader() {
+  const { session: customerSession } = useCustomerSession();
   const { itemCount, isReady, openDrawer } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [wishlistCount, setWishlistCount] = useState(0);
@@ -238,12 +241,31 @@ export function SiteHeader() {
 
           {/* Action Hub */}
           <div className="header-actions">
-            <Link href="/account" className="header-action-btn" aria-label="حساب من - پورتال کاربری و پرونده نسخه">
+            <Link
+              href="/account"
+              className={`header-action-btn ${customerSession ? "header-action-authed" : ""}`}
+              aria-label={
+                customerSession
+                  ? `حساب ${customerSession.user.fullName || maskIranianMobile(customerSession.user.phone)}`
+                  : "حساب من - ورود یا ثبت‌نام"
+              }
+            >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              <span className="action-label">حساب من</span>
+              {customerSession ? (
+                <span className="action-label authed-user-label">
+                  <span className="authed-online-dot" aria-hidden="true"></span>
+                  <span className="authed-name-truncate">
+                    {customerSession.user.fullName
+                      ? customerSession.user.fullName.split(" ")[0]
+                      : maskIranianMobile(customerSession.user.phone)}
+                  </span>
+                </span>
+              ) : (
+                <span className="action-label">ورود / حساب</span>
+              )}
             </Link>
 
             <Link href="/wishlist" className="header-action-btn" aria-label="علاقه‌مندی‌ها - محصولات ذخیره‌شده">
@@ -980,14 +1002,16 @@ export function SiteHeader() {
 
               {/* Account Quick Shortcuts */}
               <div className="drawer-section">
-                <div className="drawer-section-title">حساب کاربری و سوابق</div>
+                <div className="drawer-section-title">
+                  {customerSession ? `حساب: ${customerSession.user.fullName || maskIranianMobile(customerSession.user.phone)}` : "حساب کاربری و سوابق"}
+                </div>
                 <div className="drawer-quick-actions">
                   <Link href="/account" className="dqa-btn" onClick={() => setMobileMenuOpen(false)}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span>داشبورد کاربری</span>
+                    <span>{customerSession ? "پروفایل من" : "ورود به حساب"}</span>
                   </Link>
                   <Link href="/wishlist" className="dqa-btn" onClick={() => setMobileMenuOpen(false)}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

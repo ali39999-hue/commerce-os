@@ -102,6 +102,36 @@ export class ReviewsService {
         throw new NotFoundException("محصول یافت نشد");
       }
 
+      // Check if user has a completed order containing this product to grant verified badge
+      let isVerifiedPurchase = false;
+      if (userId) {
+        const user = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { phone: true },
+        });
+
+        const matchingOrder = await this.prisma.order.findFirst({
+          where: {
+            OR: [
+              { userId },
+              ...(user?.phone ? [{ customerPhone: user.phone }] : []),
+            ],
+            status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] },
+            lines: {
+              some: {
+                variant: {
+                  productId: product.id,
+                },
+              },
+            },
+          },
+          select: { id: true },
+        });
+        if (matchingOrder) {
+          isVerifiedPurchase = true;
+        }
+      }
+
       return await this.prisma.review.create({
         data: {
           tenantId: product.tenantId || tenantId,
@@ -112,7 +142,7 @@ export class ReviewsService {
           title,
           body,
           status: "PENDING",
-          isVerifiedPurchase: false,
+          isVerifiedPurchase,
         },
       });
     } catch (error) {

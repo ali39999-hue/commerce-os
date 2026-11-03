@@ -410,6 +410,34 @@ textarea:focus-visible,
   border-color: var(--line);
   color: var(--brand-deep);
 }
+.header-action-btn.header-action-authed {
+  background: rgba(36, 89, 79, 0.08);
+  border-color: rgba(36, 89, 79, 0.22);
+  color: var(--brand-deep);
+}
+.header-action-btn.header-action-authed:hover {
+  background: rgba(36, 89, 79, 0.14);
+  border-color: var(--brand);
+}
+.authed-user-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.authed-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  flex-shrink: 0;
+}
+.authed-name-truncate {
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .action-badge {
   position: absolute;
   top: -2px;

@@ -12,9 +12,10 @@ import {
 export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOrder(orderId: string) {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
+  async getOrder(idOrNumber: string) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrNumber);
+    const order = await this.prisma.order.findFirst({
+      where: isUuid ? { OR: [{ id: idOrNumber }, { orderNumber: idOrNumber }] } : { orderNumber: idOrNumber },
       include: {
         user: true,
         lines: true,
@@ -91,9 +92,10 @@ export class OrdersService {
     return { items, total, limit, offset };
   }
 
-  async transitionStatus(orderId: string, toStatus: OrderStatus, actor: string, reason?: string) {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
+  async transitionStatus(orderIdOrNumber: string, toStatus: OrderStatus, actor: string, reason?: string) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderIdOrNumber);
+    const order = await this.prisma.order.findFirst({
+      where: isUuid ? { OR: [{ id: orderIdOrNumber }, { orderNumber: orderIdOrNumber }] } : { orderNumber: orderIdOrNumber },
     });
 
     if (!order) {
@@ -105,13 +107,13 @@ export class OrdersService {
 
     return await this.prisma.$transaction(async (tx) => {
       const updated = await tx.order.update({
-        where: { id: orderId },
+        where: { id: order.id },
         data: { status: toStatus },
       });
 
       await tx.orderStatusHistory.create({
         data: {
-          orderId,
+          orderId: order.id,
           fromStatus: order.status,
           toStatus,
           actor,

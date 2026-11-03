@@ -40,7 +40,7 @@ export class CheckoutController {
       sessionId: body.sessionId,
       paymentMethod: body.paymentMethod,
       idempotencyKey,
-      customer: customer ? { phone: customer.phone, fullName: customer.fullName } : undefined,
+      customer: customer ? { id: customer.id, phone: customer.phone, fullName: customer.fullName } : undefined,
     });
   }
 }
