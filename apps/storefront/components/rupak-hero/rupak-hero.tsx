@@ -561,7 +561,7 @@ export function RupakHero({
               <Link href={currentSlide.primaryCtaLink} className="rupak-btn-primary">
                 {currentSlide.primaryCtaText}
               </Link>
-              <span className="rupak-cta-sep">یا</span>
+
               <Link href={currentSlide.secondaryCtaLink} className="rupak-btn-secondary">
                 {currentSlide.secondaryCtaText}
               </Link>
