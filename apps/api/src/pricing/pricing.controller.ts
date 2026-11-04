@@ -7,7 +7,11 @@ import {
   Param,
   Query,
   Headers,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { CreateCouponDto } from "../common/dto/resource-writes.dto";
 import { PricingService, CreateCouponInput } from "./pricing.service";
 
 @Controller("pricing")
@@ -22,15 +26,20 @@ export class PricingController {
     return this.pricingService.listCoupons({ storeSlug, tenantId });
   }
 
+  // Coupon management is admin-internal (AUTH-003): storefront checkout
+  // validates coupons through the pricing service, never through these
+  // routes. Tenant resolves from the guard, not the client header (AUTH-002).
   @Post("coupons")
+  @UseGuards(AdminGuard)
   async createCoupon(
-    @Body() body: CreateCouponInput,
-    @Headers("x-tenant-id") tenantId?: string
+    @Body() body: CreateCouponDto,
+    @CurrentTenant() tenantId: string
   ) {
-    return this.pricingService.createCoupon(body, tenantId);
+    return this.pricingService.createCoupon(body as CreateCouponInput, tenantId);
   }
 
   @Patch("coupons/:id/toggle")
+  @UseGuards(AdminGuard)
   async toggleCoupon(@Param("id") id: string) {
     return this.pricingService.toggleCoupon(id);
   }

@@ -8,7 +8,11 @@ import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from '../../components/discovery/wishlist-button';
 import { CompareButton } from '../../components/discovery/compare-button';
 import { trackSearch, trackViewItemList } from '../../lib/analytics';
-import { RECOMMENDED_CLINICAL_PRODUCTS, type CuratedProductItem } from '../../lib/clinical-specs';
+import {
+  RECOMMENDED_CLINICAL_PRODUCTS,
+  getCanonicalProductHref,
+  type CuratedProductItem,
+} from '../../lib/clinical-specs';
 
 interface SearchItem {
   id: string;
@@ -1008,15 +1012,17 @@ function SearchPageContent() {
             </div>
 
             <div style={{ marginTop: '8px' }}>
-              <label style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginBottom: '4px' }}>
+              <label htmlFor="search-budget-slider" style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginBottom: '4px' }}>
                 حداکثر سقف بودجه: {new Intl.NumberFormat('fa-IR').format(priceSliderVal)} تومان
               </label>
               <input
+                id="search-budget-slider"
                 type="range"
                 min={500000}
                 max={8000000}
                 step={250000}
                 value={priceSliderVal}
+                aria-label={`حداکثر سقف بودجه: ${new Intl.NumberFormat('fa-IR').format(priceSliderVal)} تومان`}
                 style={{ width: '100%', accentColor: 'var(--brand)' }}
                 onChange={(e) => {
                   const val = Number(e.target.value);
@@ -1338,44 +1344,47 @@ function SearchPageContent() {
                   <span>پیشنهادات پرطرفدار کلینیکال برای شما</span>
                 </h4>
                 <div className="empty-recommendations-grid">
-                  {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => (
-                    <article className="product-card" key={rec.id}>
-                      <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
-                        <span className="art-index">{rec.title.slice(0, 1)}</span>
-                        <span className="art-caption">✓ موجود در انبار</span>
-                      </Link>
-                      <div className="product-copy">
-                        <span className="product-card-brand">{rec.brand}</span>
-                        <h3>
-                          <Link href={`/products/${encodeURIComponent(rec.slug)}`}>{rec.title}</Link>
-                        </h3>
-                        <p>{rec.description}</p>
-                        <div className="product-bottom">
-                          <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
-                          <div className="rail-actions">
-                            <WishlistButton
-                              variantId={rec.id}
-                              productId={rec.id}
-                              slug={rec.slug}
-                              title={rec.title}
-                              sku={rec.sku}
-                              priceAmount={rec.priceAmount}
-                            />
-                            <CompareButton
-                              variantId={rec.id}
-                              productId={rec.id}
-                              slug={rec.slug}
-                              title={rec.title}
-                              sku={rec.sku}
-                              priceAmount={rec.priceAmount}
-                              inStock={rec.inStock}
-                              categoryTitleFa={rec.categoryTitleFa}
-                            />
+                  {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => {
+                    const recHref = getCanonicalProductHref(rec.slug);
+                    return (
+                      <article className="product-card" key={rec.id}>
+                        <Link className="product-art" href={recHref} tabIndex={-1} aria-hidden="true">
+                          <span className="art-index">{rec.title.slice(0, 1)}</span>
+                          <span className="art-caption">✓ موجود در انبار</span>
+                        </Link>
+                        <div className="product-copy">
+                          <span className="product-card-brand">{rec.brand}</span>
+                          <h3>
+                            <Link href={recHref}>{rec.title}</Link>
+                          </h3>
+                          <p>{rec.description}</p>
+                          <div className="product-bottom">
+                            <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
+                            <div className="rail-actions">
+                              <WishlistButton
+                                variantId={rec.id}
+                                productId={rec.id}
+                                slug={rec.slug}
+                                title={rec.title}
+                                sku={rec.sku}
+                                priceAmount={rec.priceAmount}
+                              />
+                              <CompareButton
+                                variantId={rec.id}
+                                productId={rec.id}
+                                slug={rec.slug}
+                                title={rec.title}
+                                sku={rec.sku}
+                                priceAmount={rec.priceAmount}
+                                inStock={rec.inStock}
+                                categoryTitleFa={rec.categoryTitleFa}
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </article>
-                  ))}
+                      </article>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -1383,11 +1392,11 @@ function SearchPageContent() {
             /* Product Cards (Grid or List View) */
             <div className={`product-grid ${viewMode === 'list' ? 'view-list' : ''}`}>
               {items.map((item) => {
-                const href = `/products/${encodeURIComponent(item.slug)}`;
+                const href = getCanonicalProductHref(item.slug);
                 const variantId = item.variantId ?? item.id;
                 return (
                   <article className="product-card" key={item.id}>
-                    <Link className="product-art" href={href} aria-label={`مشاهده ${item.title}`}>
+                    <Link className="product-art" href={href} tabIndex={-1} aria-hidden="true">
                       <span className="art-index">{item.title.slice(0, 1)}</span>
                       <span className="art-caption">
                         {item.inStock ? '✓ موجود در انبار مرکزی' : 'ناموجود'}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BLOG_POSTS, getAllBlogSlugs, getPost } from "../../../lib/blog";
+import { getCanonicalProductHref } from "../../../lib/clinical-specs";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -308,6 +309,31 @@ export default async function BlogPostPage({ params }: Props) {
         ))}
       </div>
 
+      {/* Study Limitations & Clinical Evidence Boundary */}
+      {post.studyLimitations && post.studyLimitations.length > 0 && (
+        <section
+          style={{
+            marginTop: "30px",
+            padding: "20px 24px",
+            background: "#fffbeb",
+            border: "1px solid #fde68a",
+            borderRadius: "14px",
+          }}
+        >
+          <h3 style={{ margin: "0 0 10px", fontSize: "0.98rem", color: "#92400e", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span>🔬</span>
+            <span>محدودیت‌های بالینی و متدولوژی مطالعات (Study Limitations &amp; Evidence Boundary)</span>
+          </h3>
+          <ul style={{ margin: 0, paddingRight: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+            {post.studyLimitations.map((lim, idx) => (
+              <li key={idx} style={{ fontSize: "0.85rem", color: "#78350f", lineHeight: "1.8" }}>
+                {lim}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {/* Bibliography References */}
       {post.bibliography && post.bibliography.length > 0 && (
         <section
@@ -420,7 +446,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <span style={{ fontSize: "0.84rem", color: "#047857", fontWeight: 800 }}>{prod.priceFormatted}</span>
                   ) : <span />}
                   <Link
-                    href={`/products/${prod.slug}`}
+                    href={getCanonicalProductHref(prod.slug)}
                     style={{
                       background: "var(--brand-deep)",
                       color: "#ffffff",

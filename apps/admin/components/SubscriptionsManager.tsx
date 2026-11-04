@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
-  API_BASE,
   TENANT_HEADERS,
+  authedFetch,
   faNumber,
   formatRialAsTomans,
   postTenantJson,
@@ -33,7 +33,7 @@ export interface SubscriptionsResponse {
 }
 
 const SUBS_STATUS_PILL: Record<string, { cls: string; fa: string }> = {
-  ACTIVE: { cls: "paid", fa: "فعال" },
+  ACTIVE: { cls: "paid pulse", fa: "فعال" },
   PAUSED: { cls: "paused", fa: "موقتاً متوقف" },
   CANCELLED: { cls: "cancelled", fa: "لغوشده" },
   EXPIRED: { cls: "expired", fa: "منقضی" },
@@ -48,7 +48,7 @@ export default function SubscriptionsManager({ userRole = "SUPER_ADMIN" }: { use
   const loadSubscriptions = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/v1/subscriptions/admin`, {
+      const res = await authedFetch("/v1/subscriptions/admin", {
         headers: TENANT_HEADERS,
         signal: AbortSignal.timeout(4000),
         cache: "no-store",
@@ -171,74 +171,76 @@ export default function SubscriptionsManager({ userRole = "SUPER_ADMIN" }: { use
             {loading ? "در حال دریافت اطلاعات از سرور…" : "هیچ اشتراک دوره‌ای ثبت نشده است."}
           </p>
         ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>مشترک</th>
-                <th>پلن درمانی</th>
-                <th>تعداد</th>
-                <th>مبلغ دوره (تومان)</th>
-                <th>سیکل‌های اجرا شده</th>
-                <th>اجرای بعدی</th>
-                <th>وضعیت</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subscriptions.map((s, idx) => {
-                const statusKey = String(s?.status ?? "");
-                const pill = SUBS_STATUS_PILL[statusKey];
-                const subId = typeof s?.id === "string" && s.id ? s.id : "";
-                const busy = actionBusyId === subId;
+          <div className="table-responsive-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>مشترک</th>
+                  <th>پلن درمانی</th>
+                  <th>تعداد</th>
+                  <th>مبلغ دوره (تومان)</th>
+                  <th>سیکل‌های اجرا شده</th>
+                  <th>اجرای بعدی</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subscriptions.map((s, idx) => {
+                  const statusKey = String(s?.status ?? "");
+                  const pill = SUBS_STATUS_PILL[statusKey];
+                  const subId = typeof s?.id === "string" && s.id ? s.id : "";
+                  const busy = actionBusyId === subId;
 
-                return (
-                  <tr key={subId || `sub-${idx}`}>
-                    <td dir="ltr" className="bold">{str(s?.phone)}</td>
-                    <td>{str(s?.plan?.titleFa)}</td>
-                    <td>{faNumber(s?.quantity)}</td>
-                    <td className="bold">{formatRialAsTomans(s?.plan?.priceRials)}</td>
-                    <td>{faNumber(s?.cyclesRun)}</td>
-                    <td>{s?.nextRunAt ? formatJalaliDateTime(s.nextRunAt) : "—"}</td>
-                    <td>
-                      <span className={`status-pill ${pill?.cls ?? ""}`}>{pill?.fa ?? str(statusKey)}</span>
-                    </td>
-                    <td>
-                      {statusKey === "ACTIVE" && subId ? (
-                        <div className="action-button-group">
-                          <button
-                            className="btn-action"
-                            disabled={busy}
-                            onClick={() => void handleAction(subId, "pause")}
-                          >
-                            {busy ? "⏳" : "توقف"}
-                          </button>
-                          <button
-                            className="btn-reject"
-                            disabled={busy}
-                            onClick={() => void handleAction(subId, "cancel")}
-                          >
-                            لغو
-                          </button>
-                        </div>
-                      ) : statusKey === "PAUSED" && subId ? (
-                        <div className="action-button-group">
-                          <button
-                            className="btn-approve"
-                            disabled={busy}
-                            onClick={() => void handleAction(subId, "resume")}
-                          >
-                            {busy ? "⏳" : "ادامه"}
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="muted-text">—</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={subId || `sub-${idx}`}>
+                      <td dir="ltr" className="bold tabular-nums">{str(s?.phone)}</td>
+                      <td>{str(s?.plan?.titleFa)}</td>
+                      <td className="tabular-nums">{faNumber(s?.quantity)}</td>
+                      <td className="bold tabular-nums">{formatRialAsTomans(s?.plan?.priceRials)}</td>
+                      <td className="tabular-nums">{faNumber(s?.cyclesRun)}</td>
+                      <td className="tabular-nums">{s?.nextRunAt ? formatJalaliDateTime(s.nextRunAt) : "—"}</td>
+                      <td>
+                        <span className={`status-pill ${pill?.cls ?? ""}`}>{pill?.fa ?? str(statusKey)}</span>
+                      </td>
+                      <td>
+                        {statusKey === "ACTIVE" && subId ? (
+                          <div className="action-button-group">
+                            <button
+                              className="btn-action"
+                              disabled={busy}
+                              onClick={() => void handleAction(subId, "pause")}
+                            >
+                              {busy ? "⏳" : "توقف"}
+                            </button>
+                            <button
+                              className="btn-reject"
+                              disabled={busy}
+                              onClick={() => void handleAction(subId, "cancel")}
+                            >
+                              لغو
+                            </button>
+                          </div>
+                        ) : statusKey === "PAUSED" && subId ? (
+                          <div className="action-button-group">
+                            <button
+                              className="btn-approve"
+                              disabled={busy}
+                              onClick={() => void handleAction(subId, "resume")}
+                            >
+                              {busy ? "⏳" : "ادامه"}
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="muted-text">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

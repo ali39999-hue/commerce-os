@@ -3,9 +3,10 @@
 import "./subscriptions.css";
 import { useEffect, useState } from "react";
 import { formatToman } from "../../lib/catalog";
+import { useCustomerSession } from "../../lib/customer-session";
+import { CustomerLoginCard } from "../../components/customer-login-card";
 
 const API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const DEMO_USER_ID = "user_demo_1";
 
 /* ── Types (resilient: every field optional) ── */
 interface PlanItem {
@@ -140,6 +141,8 @@ export default function SubscriptionsPage() {
   const [subBusy, setSubBusy] = useState<Record<string, boolean>>({});
   const [subMsg, setSubMsg] = useState<Record<string, SubResult>>({});
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const { session, ready: sessionReady, logout, authedFetch } = useCustomerSession();
 
   /* ── Plans: live fetch, hard-coded demo on fallback/failure ── */
   useEffect(() => {
@@ -169,11 +172,42 @@ export default function SubscriptionsPage() {
     };
   }, []);
 
-  /* ── My subscriptions: live fetch with demo fallback ── */
+  /* ── My subscriptions: session-bound fetch with demo fallback ── */
   useEffect(() => {
+    if (!sessionReady) return;
     let alive = true;
 
-    // First check local storage for custom user changes
+    // Signed-in customers load their real identity-bound subscriptions
+    // (AUTH-002 step 2): the userId comes from the OTP session, never the URL.
+    if (session) {
+      (async () => {
+        try {
+          const res = await authedFetch("/v1/subscriptions/me", {
+            cache: "no-store",
+            signal: AbortSignal.timeout(4000),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = (await res.json()) as MySubsPayload;
+          if (data?.dbAvailable === false) throw new Error("db unavailable");
+          const items = (data?.items ?? []).filter((s): s is MySubItem => Boolean(s));
+          if (!alive) return;
+          setMySubs(items);
+          setMySubsDemo(false);
+        } catch {
+          if (alive) {
+            setMySubs(DEMO_MY_SUBS);
+            setMySubsDemo(true);
+          }
+        }
+      })();
+      return () => {
+        alive = false;
+      };
+    }
+
+    // Guests keep the offline-friendly demo view (no demo-user API
+    // impersonation); a visible login prompt offers the real identity-bound
+    // list.
     try {
       const savedSubsRaw = localStorage.getItem(MY_SUBS_STORAGE_KEY);
       if (savedSubsRaw) {
@@ -188,32 +222,14 @@ export default function SubscriptionsPage() {
       // ignore
     }
 
-    (async () => {
-      try {
-        const res = await fetch(`${API_HOST}/v1/subscriptions/users/${DEMO_USER_ID}`, {
-          headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
-          cache: "no-store",
-          signal: AbortSignal.timeout(4000),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as MySubsPayload;
-        if (data?.dbAvailable === false) throw new Error("db unavailable");
-        const items = (data?.items ?? []).filter((s): s is MySubItem => Boolean(s));
-        if (items.length === 0) throw new Error("empty");
-        if (!alive) return;
-        setMySubs(items);
-        setMySubsDemo(false);
-      } catch {
-        if (alive) {
-          setMySubs(DEMO_MY_SUBS);
-          setMySubsDemo(true);
-        }
-      }
-    })();
+    if (alive) {
+      setMySubs(DEMO_MY_SUBS);
+      setMySubsDemo(true);
+    }
     return () => {
       alive = false;
     };
-  }, []);
+  }, [session, sessionReady, authedFetch]);
 
   const persistMySubs = (nextList: MySubItem[]) => {
     setMySubs(nextList);
@@ -374,6 +390,67 @@ export default function SubscriptionsPage() {
       {/* ── My subscriptions ── */}
       <div className="my-subs-section">
         <h2>مدیریت اشتراک‌های من و ملزومات دوره‌ای</h2>
+
+        {/* Identity bar (AUTH-002 step 2): real session vs. demo view */}
+        {sessionReady && (
+          session ? (
+            <div
+              className="subs-banner success"
+              role="status"
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}
+            >
+              <span>
+                اشتراک‌های واقعی شما (نشست احرازشده: <strong dir="ltr">{session.user.phone}</strong>)
+              </span>
+              <button
+                onClick={() => logout()}
+                style={{
+                  background: "none",
+                  border: "1px solid currentColor",
+                  borderRadius: "8px",
+                  color: "inherit",
+                  fontSize: "0.8rem",
+                  padding: "4px 12px",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                خروج از نشست
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div
+                className="subs-banner"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}
+              >
+                <span>در حال نمایش اشتراک‌های نمونه — برای مشاهده اشتراک‌های واقعی خود وارد شوید.</span>
+                <button
+                  onClick={() => setShowLogin((v) => !v)}
+                  style={{
+                    background: "var(--brand, #24594F)",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    padding: "6px 14px",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {showLogin ? "بستن" : "ورود / ثبت‌نام"}
+                </button>
+              </div>
+              {showLogin && (
+                <div style={{ marginTop: "16px" }}>
+                  <CustomerLoginCard onSuccess={() => setShowLogin(false)} />
+                </div>
+              )}
+            </div>
+          )
+        )}
+
         {mySubsDemo && (
           <p className="subs-demo-note">نمایش داده نمونه — اتصال به API برقرار نشد</p>
         )}

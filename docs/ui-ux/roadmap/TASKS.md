@@ -58,3 +58,27 @@
 ## Phase 7: Continuous Governance & Release Gates
 - [x] **T-070**: Enforce pre-release quality checklist in `RELEASE_CHECKLIST.md`.
 - [x] **T-071**: Maintain live execution progress table in `PROGRESS.md`.
+
+## Phase 8: Library Architecture & Dependency Governance (LIB-001 to LIB-015)
+- [x] **LIB-001**: Comprehensive `package.json` and lockfile audit; compile `DEPENDENCY_ARCHITECTURE.md`.
+- [x] **LIB-002**: Select unified UI primitive foundation in `@commerce-os/ui` (avoid multi-primitive clutter).
+- [x] **LIB-003**: Establish `lucide-react` as the single canonical icon system across all workspaces.
+- [x] **LIB-004**: Adopt `react-hook-form` and `zod` for client-server clinical validation and Modulo-11 national ID.
+- [x] **LIB-005**: Formalize Server/Client/URL state boundaries (TanStack Query / Zustand / native URL).
+- [x] **LIB-006**: Define ERP table standards with high data density, tabular numerals, and status badges.
+- [x] **LIB-007**: Integrate `embla-carousel-react` in `ClinicalProductGallery` for responsive touch galleries.
+- [x] **LIB-008**: Enforce `motion` transition curves with universal `prefers-reduced-motion` compliance.
+- [x] **LIB-009**: Document rich-text, INCI dossier, and clinical protocol publishing models.
+- [x] **LIB-010**: Validate multi-currency (Rial/Toman) and bilingual RTL/LTR typography isolation.
+- [x] **LIB-011**: Standardize testing stack: Vitest (unit), Playwright (E2E), and axe-core (accessibility).
+- [x] **LIB-012**: Enforce visual baseline consistency across 360px, 390px, 768px, 1280px, and 1440px viewports.
+- [x] **LIB-013**: Enforce privacy-first telemetry with strict masking of PII and zero banking leaks.
+- [x] **LIB-014**: Formalize dependency governance policy prohibiting unauthorized third-party libraries.
+- [x] **LIB-015**: Synchronize agent context pack (`DESIGN_TOKENS.md`, `COLORS.md`, `TASKS.md`, `PROGRESS.md`).
+
+
+## Phase 9: Security & Access Control (AUTH-001 to AUTH-004)
+- [x] **AUTH-001**: AdminGuard on admin-internal endpoints (`/v1/ops/*`, `/v1/ledger/*`) — OTP session with staff role or timing-safe `x-admin-api-key`; OTP login gate wired into the admin console; runtime-verified 401/200 matrix in `docs/security/SECURITY_BASELINE.md`.
+- [x] **AUTH-002**: Resource identity/tenancy bound to the authenticated session — Step 1: guarded routes resolve tenant server-side via `@CurrentTenant()` (session → `DEFAULT_TENANT_ID`, service key → trusted header). Step 2: storefront `CustomerSessionProvider` with OTP login; `GET /v1/subscriptions/me` derives the userId from the session, never the URL. Step 3: `GET /v1/digital/my-grants` closes the grants-by-phone IDOR (phone from session only); account hub greeting + identity bar wired to the live session. Step 4: signed-in checkout binds `order.customerPhone/Name` to the session identity (guest checkout unchanged; delivery receiver stays a shipping detail on the address snapshot). Final: legacy enumeration routes (`users/:userId`, `grants?phone=`) locked behind AdminGuard; storefront guest view no longer impersonates the demo user via API. Step 5: financial reads session-bound (`/wallet/my-balance`, `/loyalty/my-balance`; legacy `wallet/:userId` and `loyalty/users/:userId` AdminGuard-locked); account wallet/loyalty tabs show real session data. Step 6: `GET /v1/orders/my` session-bound order history wired into the account hub; the store-wide orders listing locked behind AdminGuard. Step 7: checkout contact form prefilled from active session with PII masked identity banner. Step 8: global SiteHeader session indicator across all 46 routes + session-bound review submissions with automatic `isVerifiedPurchase` detection.
+- [x] **AUTH-003**: AdminGuard extended to every mutating admin route — orders transition, coupon create/toggle, C2C receipt approval, digital license revoke, loyalty adjust, review moderation, wallet credit/debit, subscription pause/resume/cancel + admin list, B2B status change (storefront flows stay public); verification scripts act as service-key clients; IdentityModule is @Global for guard DI.
+- [x] **AUTH-004**: Per-endpoint class-validator DTOs on every resource write (checkout session/place-order, coupons, wallet ops, loyalty adjust, order transition, payment initiate/receipt/approve, subscription signup, review create, B2B lead/status) — the global whitelist/forbidNonWhitelisted ValidationPipe is now effective; runtime-verified 400 on unknown keys, invalid enums and out-of-range values.

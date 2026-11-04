@@ -6,49 +6,115 @@ import { INGREDIENT_ENCYCLOPEDIA } from "../../lib/ingredients";
 export const metadata: Metadata = {
   title: "آکادمی علوم پوست و پروتکل‌های بالینی | دکتر درمر انگلستان",
   description:
-    "پایگاه دانش تخصصی پوست و مو، آموزش پروتکل‌های کربوکسی‌تراپی بدون سوزن، لایه‌برداری و درمان‌های سد دفاعی ویژه پزشکان، درماتولوژیست‌ها و بیوتی‌تراپیست‌ها.",
+    "مرجع جامع آموزش‌های تخصصی درماتولوژی، مسیرهای یادگیری کربوکسی‌تراپی بدون سوزن، پیلینگ شیمیایی و ترمیم سد دفاعی، تفکیک سطوح پزشکان و بیوتی‌تراپیست‌ها همراه با صدور سرتیفیکیت رسمی.",
 };
 
-const PROTOCOL_TRACKS = [
+interface LearningPath {
+  id: string;
+  title: string;
+  level: "سطح پزشکی (MD / Dermatologist)" | "سطح اسکین‌کر (Esthetician)" | "مشترک (پزشک و تراپیست)";
+  targetLevelBadge: string;
+  duration: string;
+  modulesCount: number;
+  prerequisites: string;
+  targetIndications: string;
+  certificationRequirement: string;
+  slug: string;
+  badge: string;
+  description: string;
+}
+
+const LEARNING_PATHS: LearningPath[] = [
   {
-    id: "bohr-carboxy",
-    title: "کربوکسی‌تراپی بدون سوزن و پدیده بوهر",
-    level: "پروتکل کلینیکی پیشرفته",
-    duration: "۴۵ دقیقه / جلسه",
-    target: "تیرگی اطراف چشم، خطوط بیانی، تیرگی بافت، ادم لنفاوی",
+    id: "path-bohr-carboxy",
+    title: "مسیر جامع کربوکسی‌تراپی بدون سوزن و پدیده بوهر",
+    level: "مشترک (پزشک و تراپیست)",
+    targetLevelBadge: "پزشک و اسکین‌تراپیست",
+    duration: "۱۶ ساعت آموزش (تئوری + هندزآن)",
+    modulesCount: 4,
+    prerequisites: "آشنایی با فیزیولوژی گردش خون مویرگی و آناتومی سطحی پوست صورت",
+    targetIndications: "تیرگی مقاوم پریکولار، استریا، خطوط استاتیک، کاهش ادم لنفاوی",
+    certificationRequirement: "شرکت در کارگاه حضوری، آزمون کتبی و ارسال مستندات تصویری ۳ کیس درمانی",
     slug: "bohr-effect-carboxy-therapy-needle-free",
     badge: "Bohr Effect Certified",
+    description:
+      "آموزش سازوکار انتشار ترنس‌درمال دی‌اکسید کربن، تغییر پی‌اچ و افزایش اشباع اکسیژن بافت، تکنیک اپلیکیشن ژل ۱۵۰۰ میلی‌لیتر و پروتکل‌های تلفیقی با اولتراسوند.",
   },
   {
-    id: "barrier-repair",
-    title: "بازسازی سد پوستی و ریکاوری پست-پروسیجر",
-    level: "مراقبت تهاجمی و نیمه‌تهاجمی",
-    duration: "فاز ۱ تا ۳۰ روزه",
-    target: "لیزر CO₂ فرکشنال، میکرونیدلینگ RF، پیلینگ شیمیایی",
+    id: "path-barrier-recovery",
+    title: "مسیر پیشرفته بازسازی سد دفاعی پوست و مراقبت‌های پست-پروسیجر",
+    level: "مشترک (پزشک و تراپیست)",
+    targetLevelBadge: "کلینیکال پست-پروسیجر",
+    duration: "۱۲ ساعت آموزش تخصصی",
+    modulesCount: 3,
+    prerequisites: "گذراندن دوره پایه‌ای بیوشیمی ساختار لاملار اپیدرم و عملکرد لیپیدها",
+    targetIndications: "سوختگی پس از لیزر CO₂، مهار PIH، اگزمای تماسی و دهیدراتاسیون حاد",
+    certificationRequirement: "ارزیابی آزمون تئوری و دفاع از یک پروتکل بالینی مدیریت عوارض لیزر",
     slug: "skin-barrier-restoration-post-procedure",
     badge: "Post-Laser Recovery",
+    description:
+      "تحلیل فارماکولوژیک نسبت طلایی ۳:۱:۱ سرامیدها، کلسترول و اسیدهای چرب، خواص ضدالتهابی مادکاسوساید و متدهای پیشگیری از اسکار و لکه‌های تیره.",
   },
   {
-    id: "pigment-protocol",
-    title: "مهار چندمسیره ملانوژنز و درمان ملاسما",
-    level: "درمان رتینوئیدی بافرشده",
-    duration: "دوره ۸ الی ۱۲ هفته‌ای",
-    target: "ملاسما، کک‌ومک، لکه‌های پس‌التهابی (PIH)",
+    id: "path-melasma-peeling",
+    title: "مسیر تخصصی لایه‌بردارهای شیمیایی و مهار چندمسیره ملانوژنز",
+    level: "سطح پزشکی (MD / Dermatologist)",
+    targetLevelBadge: "اختصاصی پزشکان متخصص",
+    duration: "۲۰ ساعت آموزش پیشرفته",
+    modulesCount: 5,
+    prerequisites: "پروانه معتبر مطب یا شماره نظام پزشکی جهت تجویز اسیدهای مدیکال گرید",
+    targetIndications: "ملاسمای مقاوم درمال، لک‌های پیری و کک‌ومک، هایپرپیگمانتاسیون پس‌التهابی",
+    certificationRequirement: "انجام پروسیجر روی ۲ کیس بالینی در کارگاه و نمره قبولی بالای ۸۵٪ در آزمون جامع",
     slug: "protocol-hyperpigmentation-retinol-niacinamide",
     badge: "Melasma Target",
+    description:
+      "بررسی سینتیک نفوذ اسیدهای AHA/BHA/PHA، ترانگزامیک اسید و رتینوئیدهای بافرشده، معیارهای تشخیص عمق نفوذ، ایمنی فراستینگ و خنثی‌سازی بافری.",
   },
   {
-    id: "peptide-matrix",
-    title: "ریمادلینگ ماتریکس خارج‌سلولی با مس‌پپتید GHK-Cu",
-    level: "بیوتکنولوژی ضدپیری",
-    duration: "روتین بالینی روز و شب",
-    target: "اسکارهای آتروفیک، افتادگی بافت، چروک‌های استاتیک",
+    id: "path-plasma-surgery",
+    title: "مسیر ابلیشن سابلیمیشن پلاسما و جت سرد نان‌ترمال",
+    level: "سطح پزشکی (MD / Dermatologist)",
+    targetLevelBadge: "جراحی سرپایی پلاسما",
+    duration: "۱۸ ساعت آموزش جراحی سرپایی",
+    modulesCount: 4,
+    prerequisites: "داشتن مدرک پزشکی عمومی یا تخصص جراحی/پوست و تسلط بر بی‌حسی موضعی",
+    targetIndications: "پتوز و شلی پلک (بلفاروپلاستی غیرجراحی)، استریلیزاسیون آکنه فعال و زوائد پوستی",
+    certificationRequirement: "آزمون عملی کار با دستگاه PlasmaX بر روی بافت شبیه‌ساز و کیس زنده",
     slug: "signal-peptides-vs-copper-peptides",
-    badge: "ECM Remodeling",
+    badge: "Plasma Surgery Tech",
+    description:
+      "کاربرد قوس فرکانس بالا در تصعید میکرونی اپیدرم بدون آسیب به غشای پایه، سازوکار جت سرد آرگون و هلیوم در نابودی باکتری‌ها و الکتروپوریشن DBD.",
   },
 ];
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
+const CERTIFICATION_LEVELS = [
+  {
+    levelNumber: "۱",
+    title: "تراپیست مجاز آکادمی (Certified Esthetician)",
+    targetGroup: "بیوتی‌تراپیست‌ها، تکنسین‌های فیشیال و مراقبت پوستی کلینیک",
+    scope: "اجرای پروتکل‌های غیرتهاجمی کربوکسی‌تراپی بوهر، ماسک‌های ترمیمی و تجویز روتین‌های سد دفاعی",
+    badgeColor: "#0d9488",
+    prereqs: "مدرک معتبر فنی و حرفه‌ای یا پیراپزشکی + قبولی در آزمون سطح ۱",
+  },
+  {
+    levelNumber: "۲",
+    title: "پزشک معتمد کلینیکال (Accredited Clinical Practitioner)",
+    targetGroup: "پزشکان متخصص پوست، جراحان پلاستیک و پزشکان فعال در حوزه استتیک",
+    scope: "اجرای پروسیجرهای پیلینگ درموسوتیکال عمیق، مدیریت عوارض لیزر، تزریق زیرجلدی CO₂ و پلاسما",
+    badgeColor: "#0369a1",
+    prereqs: "شماره نظام پزشکی معتبر + شرکت در کارگاه هندزآن و دفاع از کیس استادی",
+  },
+  {
+    levelNumber: "۳",
+    title: "کلینیک طلایی مرجع (Centre of Excellence)",
+    targetGroup: "مراکز درمانی و کلینیک‌های دارای تجهیزات کامل CarboX و PlasmaX",
+    scope: "مرکز ارجاع استانی، برگزاری دوره‌های بازآموزی، بهره‌مندی از حداکثر تخفیف‌های تی‌یر B2B",
+    badgeColor: "#d97706",
+    prereqs: "حداقل ۲ پزشک دارای گواهی سطح ۲ + بازرسی استانداردهای بهداشتی و تجهیزاتی",
+  },
+];
+
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://drdermer.ir").replace(/\/$/, "");
 
 export default function AcademyPage() {
   const clinicalPosts = BLOG_POSTS.filter((p) => p.isPeerReviewed);
@@ -79,14 +145,14 @@ export default function AcademyPage() {
       },
       {
         "@type": "ItemList",
-        "@id": `${SITE_URL}/academy#protocols`,
-        name: "پروتکل‌های آموزشی و بالینی مصوب",
-        itemListElement: PROTOCOL_TRACKS.map((track, idx) => ({
+        "@id": `${SITE_URL}/academy#learning-paths`,
+        name: "مسیرهای یادگیری و دوره‌های مصوب آکادمی",
+        itemListElement: LEARNING_PATHS.map((track, idx) => ({
           "@type": "ListItem",
           position: idx + 1,
           name: track.title,
           url: `${SITE_URL}/blog/${track.slug}`,
-          description: `${track.level} - تارگت: ${track.target}`,
+          description: `${track.level} - تارگت: ${track.targetIndications}`,
         })),
       },
     ],
@@ -94,7 +160,7 @@ export default function AcademyPage() {
 
   return (
     <div style={{ padding: "40px 0 90px" }}>
-      {/* ── JSON-LD Structured Data (EducationalOrganization, BreadcrumbList, ItemList) ── */}
+      {/* ── JSON-LD Structured Data ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(academyJsonLd) }}
@@ -120,7 +186,7 @@ export default function AcademyPage() {
           overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: "800px" }}>
+        <div style={{ maxWidth: "840px" }}>
           <div
             style={{
               display: "inline-flex",
@@ -137,17 +203,17 @@ export default function AcademyPage() {
             <span>🎓</span>
             <span>Dr Dermer Clinical Academy &amp; Knowledge Base</span>
           </div>
-          <h1 style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", margin: "0 0 16px", lineHeight: "1.4", fontWeight: 900 }}>
-            آکادمی تخصصی علوم پوست و پروتکل‌های بالینی
+          <h1 style={{ fontSize: "clamp(2rem, 4vw, 2.7rem)", margin: "0 0 16px", lineHeight: "1.4", fontWeight: 900 }}>
+            آکادمی تخصصی علوم پوست، مسیرهای یادگیری و استانداردهای بالینی
           </h1>
-          <p style={{ fontSize: "1.05rem", lineHeight: "1.9", opacity: 0.92, margin: "0 0 28px" }}>
+          <p style={{ fontSize: "1.02rem", lineHeight: "1.9", opacity: 0.92, margin: "0 0 28px" }}>
             مرجع علمی پژوهش‌های فیزیولوژی پوست، متدهای پیشرفته درمان ترنس‌درمال، آنالیز بالینی ترکیبات دارویی و
-            استانداردهای جهانی درماتولوژی برای پزشکان متخصص، کلینیک‌های زیبایی و محققان کازمتیک.
+            استانداردهای جهانی درماتولوژی با مسیرهای یادگیری تفکیک‌شده ویژه پزشکان و بیوتی‌تراپیست‌ها.
           </p>
 
           <div style={{ display: "flex", gap: "14px", flexWrap: "wrap" }}>
             <Link
-              href="#protocols"
+              href="#learning-paths"
               style={{
                 background: "#ffffff",
                 color: "#084f4a",
@@ -159,10 +225,10 @@ export default function AcademyPage() {
                 boxShadow: "0 4px 14px rgba(0,0,0,0.1)",
               }}
             >
-              مشاهده پروتکل‌های درمانی ↓
+              مشاهده مسیرهای آموزشی ↓
             </Link>
             <Link
-              href="/ingredients"
+              href="/b2b/protocols"
               style={{
                 background: "rgba(255,255,255,0.15)",
                 color: "#ffffff",
@@ -174,10 +240,10 @@ export default function AcademyPage() {
                 textDecoration: "none",
               }}
             >
-              دانشنامه ترکیبات فعال (INCI) →
+              پروتکل‌های مصوب کابین →
             </Link>
             <Link
-              href="/b2b#workshops"
+              href="/b2b/workshops"
               style={{
                 background: "var(--accent)",
                 color: "#18221d",
@@ -188,13 +254,13 @@ export default function AcademyPage() {
                 textDecoration: "none",
               }}
             >
-              ورکشاپ‌ها و دوره‌های دارای سرتیفیکیت 📜
+              تقویم ورکشاپ‌های دارای سرتیفیکیت 📜
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Scientific Review Board ── */}
+      {/* ── Scientific Advisory Board ── */}
       <section
         style={{
           background: "var(--surface)",
@@ -215,46 +281,47 @@ export default function AcademyPage() {
             <span>هیئت بازبینی علمی و استانداردهای بالینی (Scientific Advisory Board)</span>
           </div>
           <p style={{ margin: "6px 0 0", fontSize: "0.86rem", color: "var(--muted)", lineHeight: "1.8" }}>
-            تمامی مقالات، دوزهای درمانی و پروتکل‌های اجرایی این آکادمی توسط متخصصین درماتولوژی و شیمیست‌های فرمولاتور
-            بررسی و با مقالات معتبر نمایه شده در PubMed و Cochrane مطابقت داده می‌شوند.
+            تمامی دوره‌ها، سرفصل‌های آموزشی و پروتکل‌های اجرایی این آکادمی توسط متخصصین درماتولوژی و فرمولاتورهای ارشد
+            بررسی و با استانداردهای CME اروپا و مقالات نمایه شده در PubMed مطابقت داده می‌شوند.
           </p>
         </div>
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <div style={{ background: "var(--paper)", padding: "10px 16px", borderRadius: "10px", textAlign: "center", border: "1px solid var(--line)" }}>
             <span style={{ display: "block", fontWeight: 800, color: "var(--brand-deep)", fontSize: "0.9rem" }}>دکتر مریم سهرابی</span>
-            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>بورد تخصصی پوست، مو و زیبایی</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>بورد تخصصی درماتولوژی و لیزر</span>
           </div>
           <div style={{ background: "var(--paper)", padding: "10px 16px", borderRadius: "10px", textAlign: "center", border: "1px solid var(--line)" }}>
             <span style={{ display: "block", fontWeight: 800, color: "var(--brand-deep)", fontSize: "0.9rem" }}>مهندس کیانوش راد</span>
-            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>شیمیست ارشد آرایشی (عضو IFSCC)</span>
+            <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>فرمولاتور ارشد کازمتیک (عضو IFSCC)</span>
           </div>
         </div>
       </section>
 
-      {/* ── Section: Treatment Protocol Guides ── */}
-      <section id="protocols" style={{ marginBottom: "50px" }}>
-        <div style={{ marginBottom: "24px" }}>
-          <div className="eyebrow">Treatment Regimens & Guidelines</div>
+      {/* ── Section: Structured Learning Paths ── */}
+      <section id="learning-paths" style={{ marginBottom: "50px" }}>
+        <div style={{ marginBottom: "26px" }}>
+          <div className="eyebrow">Structured Curriculum & Learning Tracks</div>
           <h2 style={{ fontSize: "1.7rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
-            پروتکل‌های استاندارد درمانی کلینیکال
+            مسیرهای آموزشی آکادمی (تفکیک‌شده بر اساس سطح تخصص)
           </h2>
           <p style={{ color: "var(--muted)", margin: 0 }}>
-            دستورالعمل‌های مرحله‌به‌مرحله با تعیین دوزهای فارماکولوژیک، موارد منع مصرف و اندیکاسیون‌های بالینی
+            دوره‌های مدون گام‌به‌گام با تعریف دقیق پیش‌نیازها، سطح مجاز فعالیت و شروط اعطای مدرک
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
-          {PROTOCOL_TRACKS.map((track) => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "22px" }}>
+          {LEARNING_PATHS.map((track) => (
             <div
               key={track.id}
               style={{
                 background: "var(--surface)",
                 border: "1px solid var(--line)",
                 borderRadius: "18px",
-                padding: "24px",
+                padding: "26px",
                 display: "flex",
                 flexDirection: "column",
                 boxShadow: "var(--shadow-card)",
+                borderTop: "4px solid var(--brand)",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
@@ -270,268 +337,101 @@ export default function AcademyPage() {
                 >
                   {track.badge}
                 </span>
-                <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>⏱️ {track.duration}</span>
+                <span style={{ fontSize: "0.76rem", color: "var(--muted)" }}>⏱️ {track.duration}</span>
               </div>
-              <h3 style={{ fontSize: "1.15rem", margin: "0 0 10px", color: "var(--ink)", lineHeight: "1.5" }}>
+
+              <h3 style={{ fontSize: "1.2rem", margin: "0 0 10px", color: "var(--brand-deep)", lineHeight: "1.4" }}>
                 {track.title}
               </h3>
-              <div style={{ fontSize: "0.82rem", color: "var(--brand)", fontWeight: 700, marginBottom: "8px" }}>
-                سطح پروتکل: {track.level}
-              </div>
-              <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, marginBottom: "16px" }}>
-                <strong>اندیکاسیون:</strong> {track.target}
-              </p>
-              <Link
-                href={`/blog/${track.slug}`}
+
+              <div
                 style={{
-                  display: "block",
-                  textAlign: "center",
+                  display: "inline-block",
                   background: "var(--paper)",
                   border: "1px solid var(--line)",
-                  color: "var(--brand-deep)",
-                  padding: "10px 14px",
-                  borderRadius: "10px",
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.78rem",
                   fontWeight: 700,
-                  fontSize: "0.86rem",
-                  textDecoration: "none",
+                  color: "var(--brand)",
+                  marginBottom: "12px",
+                  alignSelf: "flex-start",
                 }}
               >
-                مطالعه راهنمای کامل پروتکل ←
-              </Link>
+                🎯 {track.level}
+              </div>
+
+              <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.8", margin: "0 0 14px", flexGrow: 1 }}>
+                {track.description}
+              </p>
+
+              <div
+                style={{
+                  background: "var(--paper)",
+                  borderRadius: "10px",
+                  padding: "12px 14px",
+                  fontSize: "0.78rem",
+                  marginBottom: "18px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  border: "1px solid var(--line)",
+                }}
+              >
+                <div>
+                  <strong style={{ color: "var(--brand-deep)" }}>پیش‌نیاز علمی:</strong>{" "}
+                  <span style={{ color: "var(--muted)" }}>{track.prerequisites}</span>
+                </div>
+                <div>
+                  <strong style={{ color: "var(--brand-deep)" }}>تارگت‌های بالینی:</strong>{" "}
+                  <span style={{ color: "var(--muted)" }}>{track.targetIndications}</span>
+                </div>
+                <div>
+                  <strong style={{ color: "#047857" }}>شرط اخذ گواهینامه:</strong>{" "}
+                  <span style={{ color: "var(--muted)" }}>{track.certificationRequirement}</span>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px" }}>
+                <Link
+                  href={`/blog/${track.slug}`}
+                  style={{
+                    flex: 1,
+                    textAlign: "center",
+                    background: "var(--paper)",
+                    border: "1px solid var(--line)",
+                    color: "var(--brand-deep)",
+                    padding: "9px 12px",
+                    borderRadius: "10px",
+                    fontWeight: 700,
+                    fontSize: "0.84rem",
+                    textDecoration: "none",
+                  }}
+                >
+                  سرفصل و متدها ←
+                </Link>
+                <Link
+                  href="/b2b#wizard-section"
+                  style={{
+                    background: "var(--accent)",
+                    color: "#18221d",
+                    padding: "9px 16px",
+                    borderRadius: "10px",
+                    fontWeight: 800,
+                    fontSize: "0.84rem",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  رزرو دوره ✉
+                </Link>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Section: Clinical Procedure Videos & Protocol Guides ── */}
-      <section style={{ marginBottom: "50px" }}>
-        <div style={{ marginBottom: "24px" }}>
-          <div className="eyebrow">Video Demonstrations & Clinical Protocols</div>
-          <h2 style={{ fontSize: "1.7rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
-            ویدیوهای آموزشی پروسیجر و مستندات بالینی
-          </h2>
-          <p style={{ color: "var(--muted)", margin: 0 }}>
-            مشاهده اجرای گام‌به‌گام متدهای بالینی توسط متخصصین پوست همراه با راهنماهای مکتوب قابل دانلود
-          </p>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "18px",
-              padding: "20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div
-              style={{
-                background: "#063935",
-                borderRadius: "12px",
-                height: "170px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                marginBottom: "16px",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: "52px",
-                  height: "52px",
-                  borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.5rem",
-                  marginBottom: "8px",
-                  backdropFilter: "blur(4px)",
-                }}
-              >
-                ▶
-              </div>
-              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی عملیاتی هندزآن</span>
-              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۱۲ دقیقه • کیفیت HD</span>
-            </div>
-            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
-              نحوه اپلیکیشن ژل کربوکسی ۱۵۰۰ml و پدهای اکتیواتور صورت
-            </h3>
-            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
-              آموزش صحیح پخش لایه ۲ میلی‌متری ژل، تکنیک اتصال شیت بدون حبس هوا و اندازه‌گیری واکنش گرمازای ترنس‌درمال.
-            </p>
-            <Link
-              href="/blog/bohr-effect-carboxy-therapy-needle-free"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                background: "var(--paper)",
-                border: "1px solid var(--line)",
-                color: "var(--brand-deep)",
-                padding: "8px 14px",
-                borderRadius: "10px",
-                fontWeight: 700,
-                fontSize: "0.84rem",
-                textDecoration: "none",
-              }}
-            >
-              مشاهده راهنما و دستورالعمل پروتکل ←
-            </Link>
-          </div>
-
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "18px",
-              padding: "20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div
-              style={{
-                background: "#0f766e",
-                borderRadius: "12px",
-                height: "170px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                marginBottom: "16px",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: "52px",
-                  height: "52px",
-                  borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.5rem",
-                  marginBottom: "8px",
-                  backdropFilter: "blur(4px)",
-                }}
-              >
-                ▶
-              </div>
-              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی کلینیکال لایه‌بندی</span>
-              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۹ دقیقه • کیفیت HD</span>
-            </div>
-            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
-              مدیریت رتینوئیدهای انکپسوله در درمان لک‌های مقاوم ملاسما
-            </h3>
-            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
-              بررسی هم‌افزایی نیاسینامید بافرشده و ترانگزامیک اسید در مهار فلاشینگ و پیشگیری از هایپرپیگمانتاسیون پس‌التهابی.
-            </p>
-            <Link
-              href="/blog/protocol-hyperpigmentation-retinol-niacinamide"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                background: "var(--paper)",
-                border: "1px solid var(--line)",
-                color: "var(--brand-deep)",
-                padding: "8px 14px",
-                borderRadius: "10px",
-                fontWeight: 700,
-                fontSize: "0.84rem",
-                textDecoration: "none",
-              }}
-            >
-              مشاهده راهنما و دستورالعمل پروتکل ←
-            </Link>
-          </div>
-
-          <div
-            style={{
-              background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "18px",
-              padding: "20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "var(--shadow-card)",
-            }}
-          >
-            <div
-              style={{
-                background: "#1e293b",
-                borderRadius: "12px",
-                height: "170px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#ffffff",
-                marginBottom: "16px",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: "52px",
-                  height: "52px",
-                  borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: "1.5rem",
-                  marginBottom: "8px",
-                  backdropFilter: "blur(4px)",
-                }}
-              >
-                ▶
-              </div>
-              <span style={{ fontSize: "0.82rem", fontWeight: 700 }}>ویدیوی ریکاوری پست-پروسیجر</span>
-              <span style={{ fontSize: "0.72rem", opacity: 0.8 }}>مدت: ۱۵ دقیقه • کیفیت 4K</span>
-            </div>
-            <h3 style={{ fontSize: "1.08rem", margin: "0 0 8px", color: "var(--ink)", lineHeight: "1.5" }}>
-              پروتکل بازسازی اورژانسی سد دفاعی پس از لیزر CO₂ فرکشنال
-            </h3>
-            <p style={{ fontSize: "0.84rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 14px" }}>
-              مدیریت ۴۸ ساعت اولیه، استفاده از نسبت طلایی ۳:۱:۱ سرامیدها و تسکین التهاب اریتما با غلظت بالای مادکاسوساید.
-            </p>
-            <Link
-              href="/blog/skin-barrier-restoration-post-procedure"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                background: "var(--paper)",
-                border: "1px solid var(--line)",
-                color: "var(--brand-deep)",
-                padding: "8px 14px",
-                borderRadius: "10px",
-                fontWeight: 700,
-                fontSize: "0.84rem",
-                textDecoration: "none",
-              }}
-            >
-              مشاهده راهنما و دستورالعمل پروتکل ←
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Section: Certified Practitioner Roadmap ── */}
+      {/* ── Section: Certification Requirements & Levels ── */}
       <section
         style={{
           background: "var(--surface)",
@@ -542,83 +442,99 @@ export default function AcademyPage() {
           boxShadow: "var(--shadow-card)",
         }}
       >
-        <div style={{ marginBottom: "28px" }}>
-          <div className="eyebrow">Professional Accreditation Roadmap</div>
+        <div style={{ marginBottom: "26px" }}>
+          <div className="eyebrow">Professional Certification Levels</div>
           <h2 style={{ fontSize: "1.6rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
-            نقشه راه اخذ گواهینامه پزشک و درمانگر معتمد آکادمی (Certified Practitioner)
+            سطوح سرتیفیکیت رسمی و اعتبارسنجی درمانگران
           </h2>
           <p style={{ color: "var(--muted)", margin: 0 }}>
-            مسیر ۴ مرحله‌ای دستیابی به سرتیفیکیت معتبر درماتولوژی، ثبت در دایرکتوری مراکز مورد تأیید و تخفیف‌های ویژه سازمانی
+            معیارهای ۳ گانه آکادمی جهت صدور گواهی ممهور به مهر هیئت علمی و استعلام در دایرکتوری مراکز مجاز
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px", marginBottom: "28px" }}>
-          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
-            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
-              ۱
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "18px", marginBottom: "24px" }}>
+          {CERTIFICATION_LEVELS.map((c) => (
+            <div
+              key={c.levelNumber}
+              style={{
+                background: "var(--paper)",
+                border: "1px solid var(--line)",
+                borderRadius: "14px",
+                padding: "20px",
+                display: "flex",
+                flexDirection: "column",
+                borderTop: `4px solid ${c.badgeColor}`,
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                <span
+                  style={{
+                    background: c.badgeColor,
+                    color: "#ffffff",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    display: "grid",
+                    placeItems: "center",
+                    fontWeight: 800,
+                    fontSize: "0.84rem",
+                  }}
+                >
+                  {c.levelNumber}
+                </span>
+                <span style={{ fontSize: "0.76rem", color: "var(--muted)", fontWeight: 700 }}>
+                  {c.targetGroup.split("،")[0]}
+                </span>
+              </div>
+              <h4 style={{ margin: "0 0 8px", fontSize: "1.05rem", color: "var(--brand-deep)" }}>
+                {c.title}
+              </h4>
+              <p style={{ margin: "0 0 12px", fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1 }}>
+                <strong>حیطه اختیارات:</strong> {c.scope}
+              </p>
+              <div
+                style={{
+                  background: "var(--surface)",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--line)",
+                  fontSize: "0.76rem",
+                  color: "var(--ink)",
+                }}
+              >
+                <strong>شرایط و پیش‌نیاز:</strong> {c.prereqs}
+              </div>
             </div>
-            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
-              آموزش تئوری و فیزیولوژی
-            </h4>
-            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
-              تسلط بر مبانی فیزیکی انتشار گاز CO₂، اثر بوهر در آزادسازی اکسیژن موضعی و تحلیل تداخلات فارماکولوژی مواد مؤثره.
-            </p>
-          </div>
-
-          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
-            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
-              ۲
-            </div>
-            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
-              کارگاه عملی و هندزآن
-            </h4>
-            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
-              شرکت در کارگاه حضوری، تمرین پروسیجر روی کیس زنده و یادگیری تکنیک‌های ترکیبی با اولتراسوند و مزوتراپی.
-            </p>
-          </div>
-
-          <div style={{ background: "var(--paper)", border: "1px solid var(--line)", borderRadius: "14px", padding: "20px" }}>
-            <div style={{ background: "var(--brand)", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
-              ۳
-            </div>
-            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "var(--brand-deep)" }}>
-              ارزیابی کیس‌های بالینی
-            </h4>
-            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
-              ثبت مستندات قبل و بعد و ارزیابی اثربخشی حداقل ۵ کیس درمانی در مطب تحت نظارت منتورشیپ هیئت علمی آکادمی.
-            </p>
-          </div>
-
-          <div style={{ background: "var(--paper)", border: "1px solid #a7f3d0", borderRadius: "14px", padding: "20px" }}>
-            <div style={{ background: "#059669", color: "#ffffff", width: "32px", height: "32px", borderRadius: "50%", display: "grid", placeItems: "center", fontWeight: 800, fontSize: "0.9rem", marginBottom: "12px" }}>
-              ۴
-            </div>
-            <h4 style={{ margin: "0 0 8px", fontSize: "1.02rem", color: "#065f46" }}>
-              اعطای سرتیفیکیت و پلاک
-            </h4>
-            <p style={{ margin: 0, fontSize: "0.82rem", color: "#047857", lineHeight: "1.7" }}>
-              اعطای گواهی رسمی، اعطای پلاک کلینیک معتمد، درج در نقشه مراکز مجاز کشور و فعال‌سازی تخفیف‌های ویژه سطح ۳ B2B.
-            </p>
-          </div>
+          ))}
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", borderTop: "1px dashed var(--line)", paddingTop: "20px" }}>
-          <div style={{ fontSize: "0.88rem", color: "var(--muted)" }}>
-            📜 دوره‌ها منطبق بر آخرین استانداردهای بازآموزی CME اروپا و مورد تأیید متخصصین درماتولوژی بریتانیا است.
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "14px",
+            borderTop: "1px dashed var(--line)",
+            paddingTop: "20px",
+          }}
+        >
+          <div style={{ fontSize: "0.84rem", color: "var(--muted)" }}>
+            📜 تمامی مدارک اعطایی دارای QR Code اختصاصی استعلام اصالت در سرورهای بین‌المللی آکادمی هستند.
           </div>
           <Link
-            href="/b2b#workshops"
+            href="/b2b#wizard-section"
             style={{
               background: "var(--accent)",
               color: "#18221d",
-              padding: "10px 24px",
+              padding: "10px 22px",
               borderRadius: "10px",
               fontWeight: 800,
-              fontSize: "0.9rem",
+              fontSize: "0.88rem",
               textDecoration: "none",
             }}
           >
-            شروع فرآیند ثبت‌نام در دوره معتمد ←
+            درخواست ارزیابی مدارک و ثبت‌نام دوره ←
           </Link>
         </div>
       </section>
@@ -666,111 +582,6 @@ export default function AcademyPage() {
             </article>
           ))}
         </div>
-      </section>
-
-      {/* ── Section: Quick Ingredient Encyclopedia Preview ── */}
-      <section
-        style={{
-          background: "var(--surface)",
-          border: "1px solid var(--line)",
-          borderRadius: "20px",
-          padding: "36px 30px",
-          marginBottom: "40px",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
-          <div>
-            <div className="eyebrow">Cosmeceutical Dictionary</div>
-            <h2 style={{ fontSize: "1.5rem", color: "var(--brand-deep)", margin: "4px 0 8px" }}>
-              دانشنامه مواد مؤثره و تحلیل‌های INCI
-            </h2>
-            <p style={{ color: "var(--muted)", margin: 0 }}>
-              بررسی نقش بیولوژیک، پروفایل ایمنی CIR، تداخلات و سینرژی‌های دارویی
-            </p>
-          </div>
-          <Link
-            href="/ingredients"
-            style={{
-              background: "var(--brand-tint)",
-              color: "var(--brand-deep)",
-              padding: "8px 18px",
-              borderRadius: "999px",
-              fontSize: "0.85rem",
-              fontWeight: 800,
-              textDecoration: "none",
-            }}
-          >
-            مشاهده تمام ترکیبات فعال ({new Intl.NumberFormat("fa-IR").format(INGREDIENT_ENCYCLOPEDIA.length)} ماده) ←
-          </Link>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-          {INGREDIENT_ENCYCLOPEDIA.slice(0, 4).map((ing) => (
-            <div
-              key={ing.id}
-              style={{
-                background: "var(--paper)",
-                border: "1px solid var(--line)",
-                borderRadius: "14px",
-                padding: "18px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div style={{ fontSize: "0.76rem", color: "var(--muted)", marginBottom: "4px" }}>{ing.chemicalClass}</div>
-              <h4 style={{ margin: "0 0 6px", fontSize: "0.98rem", color: "var(--brand-deep)" }}>{ing.nameFa}</h4>
-              <div style={{ fontSize: "0.78rem", color: "#64748b", fontFamily: "monospace", direction: "ltr", textAlign: "right", marginBottom: "8px" }}>
-                {ing.inciName}
-              </div>
-              <p style={{ fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7", flexGrow: 1, margin: "0 0 12px" }}>
-                {ing.clinicalRole}
-              </p>
-              <Link href={`/ingredients#${ing.slug}`} style={{ fontSize: "0.82rem", color: "var(--brand)", fontWeight: 700 }}>
-                مشخصات کامل و ایمنی CIR ←
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── B2B CTA Banner ── */}
-      <section
-        style={{
-          background: "linear-gradient(135deg, #18221d 0%, #0d4239 100%)",
-          color: "#ffffff",
-          borderRadius: "20px",
-          padding: "36px 32px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "24px",
-        }}
-      >
-        <div style={{ maxWidth: "650px" }}>
-          <h3 style={{ margin: "0 0 10px", fontSize: "1.45rem", color: "#ffffff" }}>
-            ویژه کلینیک‌ها، پزشکان و بیوتی‌تراپیست‌ها
-          </h3>
-          <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: "1.8", opacity: 0.88 }}>
-            جهت دسترسی به پک‌های حرفه‌ای کابین (CarboxyGel 1500ml)، نرخ‌های عمده‌فروشی پلکانی، ثبت‌نام ورکشاپ‌های تخصصی و
-            احراز هویت پروانه مطب، به پورتال حرفه‌ای B2B ما بپیوندید.
-          </p>
-        </div>
-        <Link
-          href="/b2b"
-          style={{
-            background: "var(--accent)",
-            color: "#18221d",
-            padding: "14px 28px",
-            borderRadius: "12px",
-            fontWeight: 800,
-            fontSize: "0.96rem",
-            textDecoration: "none",
-            whiteSpace: "nowrap",
-          }}
-        >
-          ورود به پورتال پزشکان و کلینیک‌ها ←
-        </Link>
       </section>
     </div>
   );

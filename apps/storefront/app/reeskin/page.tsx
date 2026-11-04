@@ -564,6 +564,46 @@ export default function ReeSkinBrandPage() {
         </div>
       </section>
 
+      {/* ── Decision Guide: How to choose ReeSkin ── */}
+      <section className="reeskin-section" id="decision-guide" aria-labelledby="guide-title">
+        <div className="reeskin-section-header">
+          <span className="section-tag">راهنمای انتخاب بالینی</span>
+          <h2 id="guide-title">چطور محصول مناسب خود را انتخاب کنم؟</h2>
+          <p>
+            انتخاب هدفمند پروتکل درمانی بر پایه وضعیت فعلی پوست، دغدغه بافتی و سطح مراقبت مورد نیاز شما در ۳ گام ساده:
+          </p>
+        </div>
+
+        <div className="reeskin-guide-grid">
+          <div className="guide-card">
+            <div className="guide-step-num">گام ۱</div>
+            <h3>تعیین دغدغه و هدف درمانی</h3>
+            <p>
+              اگر با ملاسما و لک‌های مقاوم مواجهید <strong>CarboxyGel آزالائیک</strong>؛ برای افتادگی و چروک‌ها <strong>مولتی‌اکتیو پپتیدی</strong>؛ و برای بافت خشن و کدر <strong>گلیکولیک اسید</strong> را برگزینید.
+            </p>
+            <span className="guide-tag">هدف‌گذاری بیوشیمیایی</span>
+          </div>
+
+          <div className="guide-card">
+            <div className="guide-step-num">گام ۲</div>
+            <h3>انتخاب پکیج متناسب با مصرف</h3>
+            <p>
+              برای مراقبت فردی دوره‌ای در منزل <strong>کیت خانگی ۵ عددی (Homecare 5x)</strong>، و برای پزشکان و کابین کلینیک‌ها <strong>مخزن ۵۰۰ میلی‌لیتری پرو (همراه با ۲۰ ماسک)</strong> را انتخاب نمایید.
+            </p>
+            <span className="guide-tag">حجم و فرمات بهینه</span>
+          </div>
+
+          <div className="guide-card">
+            <div className="guide-step-num">گام ۳</div>
+            <h3>تکمیل با مراحل پیش‌درمان و تسکین</h3>
+            <p>
+              پیش از کربوکسی، پوست را با <strong>اسکراب دتوکس Silicalene یا خمیر پولیش Crystalene</strong> آماده ساخته و پس از درمان با <strong>ژل التیام‌بخش Healene</strong> سد دفاعی را بازسازی کنید.
+            </p>
+            <span className="guide-tag">هم‌افزایی رژیم ۶گانه</span>
+          </div>
+        </div>
+      </section>
+
       {/* ── Interactive Product Line Matrix ── */}
       <section className="reeskin-section" id="matrix" aria-labelledby="matrix-title">
         <div className="reeskin-section-header">

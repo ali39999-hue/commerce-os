@@ -480,7 +480,7 @@ export default function CarboxLandingPage() {
                   <div className="indication-icon">{i + 1}</div>
                   <div>
                     <h3 className="indication-title">{ind.title}</h3>
-                    <span style={{ fontSize: '0.72rem', color: '#64748b', fontFamily: 'monospace' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
                       {ind.scientific}
                     </span>
                   </div>

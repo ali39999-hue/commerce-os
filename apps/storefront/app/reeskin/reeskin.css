@@ -691,6 +691,75 @@
   text-align: center;
 }
 
+/* ── Decision Guide Grid ── */
+.reeskin-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .reeskin-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.guide-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md, 16px);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-light);
+  box-shadow: var(--shadow-md);
+}
+
+.guide-step-num {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--brand);
+  background: var(--brand-tint);
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  align-self: flex-start;
+  margin-bottom: 14px;
+}
+
+.guide-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.guide-card p {
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--ink-secondary);
+  margin: 0 0 18px;
+  flex: 1;
+}
+
+.guide-tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
 .science-graphic-box {
   background: #ffffff;
   border-radius: 16px;

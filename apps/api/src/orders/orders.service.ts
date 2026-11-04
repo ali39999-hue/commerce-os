@@ -12,9 +12,10 @@ import {
 export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOrder(orderId: string) {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
+  async getOrder(idOrNumber: string) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrNumber);
+    const order = await this.prisma.order.findFirst({
+      where: isUuid ? { OR: [{ id: idOrNumber }, { orderNumber: idOrNumber }] } : { orderNumber: idOrNumber },
       include: {
         user: true,
         lines: true,
@@ -33,6 +34,29 @@ export class OrdersService {
     }
 
     return order;
+  }
+
+  // «سفارش‌های من» (AUTH-002 step 6): orders bound to the session identity —
+  // the phone always comes from the OTP session, never a client parameter.
+  async listMyOrders(params: { phone: string; limit?: number; offset?: number }) {
+    const { phone, limit = 20, offset = 0 } = params;
+
+    const where = { customerPhone: phone };
+    const [items, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          lines: true,
+          paymentIntents: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { items, total, limit, offset, dbAvailable: true };
   }
 
   async listStoreOrders(params: {
@@ -68,9 +92,10 @@ export class OrdersService {
     return { items, total, limit, offset };
   }
 
-  async transitionStatus(orderId: string, toStatus: OrderStatus, actor: string, reason?: string) {
-    const order = await this.prisma.order.findUnique({
-      where: { id: orderId },
+  async transitionStatus(orderIdOrNumber: string, toStatus: OrderStatus, actor: string, reason?: string) {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderIdOrNumber);
+    const order = await this.prisma.order.findFirst({
+      where: isUuid ? { OR: [{ id: orderIdOrNumber }, { orderNumber: orderIdOrNumber }] } : { orderNumber: orderIdOrNumber },
     });
 
     if (!order) {
@@ -82,13 +107,13 @@ export class OrdersService {
 
     return await this.prisma.$transaction(async (tx) => {
       const updated = await tx.order.update({
-        where: { id: orderId },
+        where: { id: order.id },
         data: { status: toStatus },
       });
 
       await tx.orderStatusHistory.create({
         data: {
-          orderId,
+          orderId: order.id,
           fromStatus: order.status,
           toStatus,
           actor,

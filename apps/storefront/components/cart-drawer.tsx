@@ -259,15 +259,42 @@ function LegacyCartDrawerUnused() {
         <div className="cart-drawer-body">
           {items.length === 0 ? (
             <div className="drawer-empty-state">
-              <div className="empty-cart-icon">[سبد خرید]</div>
-              <h4>سبد خرید شما در حال حاضر خالی است</h4>
-              <p>کالاهای تخصصی درمانی و مراقبت بالینی پوست را به سبد خود اضافه کنید.</p>
-              <button
-                onClick={closeDrawer}
-                className="btn-back-to-shop"
-              >
-                مشاهده محصولات فروشگاه
-              </button>
+              <div className="empty-cart-icon" aria-hidden="true" style={{ width: "48px", height: "48px", margin: "0 auto 12px", color: "var(--brand)" }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "100%", height: "100%" }}>
+                  <circle cx="8" cy="21" r="1"/>
+                  <circle cx="19" cy="21" r="1"/>
+                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                </svg>
+              </div>
+              <h4>سبد خرید و نسخه شما خالی است</h4>
+              <p>کالاهای تخصصی درمانی، کربوکسی‌تراپی و مراقبت بالینی پوست را به سبد خود اضافه کنید.</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
+                <Link
+                  href="/#featured-products"
+                  onClick={closeDrawer}
+                  className="btn-back-to-shop"
+                  style={{ textDecoration: "none", textAlign: "center" }}
+                >
+                  مشاهده محصولات منتخب درمانی
+                </Link>
+                <Link
+                  href="/reeskin"
+                  onClick={closeDrawer}
+                  style={{
+                    background: "var(--surface-tint)",
+                    color: "var(--brand-deep)",
+                    border: "1px solid var(--line)",
+                    padding: "8px 18px",
+                    borderRadius: "999px",
+                    fontSize: "0.84rem",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    textAlign: "center"
+                  }}
+                >
+                  خانواده محصولات ReeSkin™
+                </Link>
+              </div>
             </div>
           ) : (
             <>
@@ -287,6 +314,13 @@ function LegacyCartDrawerUnused() {
                         <div className="drawer-item-price">
                           قیمت واحد: {formatToman(item.priceAmount)}
                         </div>
+                        {item.qty >= 3 && (
+                          <div>
+                            <span className="volume-discount-tag">
+                              {item.qty >= 6 ? "۸٪ تخفیف پلکانی تعداد" : "۵٪ تخفیف پلکانی تعداد"}
+                            </span>
+                          </div>
+                        )}
                         <div className="drawer-item-actions">
                           <div className="drawer-qty-control" aria-label="تنظیم تعداد کالا">
                             <button

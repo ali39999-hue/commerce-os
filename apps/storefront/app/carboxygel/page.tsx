@@ -5,6 +5,7 @@ import Link from 'next/link';
 import './carboxygel.css';
 import { useCart } from '../../components/cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { ClinicalProductGallery } from '@commerce-os/ui';
 
 /* ── 3 Formulations Breakdown Data ── */
 interface FormulationItem {
@@ -329,9 +330,43 @@ export default function CarboxygelLandingPage() {
     setCo2Level(bohrStages[stageIdx].co2Target);
   };
 
-  // Cart button states
+  // Active pack selection in Hero Purchase Block
+  const [heroPackChoice, setHeroPackChoice] = useState<'pro' | 'home'>('pro');
+  const [heroQty, setHeroQty] = useState<number>(1);
+  const [heroAdded, setHeroAdded] = useState(false);
   const [addedPro, setAddedPro] = useState(false);
   const [addedHome, setAddedHome] = useState(false);
+
+  const handleHeroAddToCart = () => {
+    if (heroPackChoice === 'pro') {
+      addItem(
+        {
+          variantId: 'var_skin_001_single',
+          productId: 'prod_skin_001',
+          title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
+          sku: 'CBG-PRO-500ML',
+          priceAmount: '48500000',
+          image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
+        },
+        heroQty
+      );
+    } else {
+      addItem(
+        {
+          variantId: 'var_skin_001_home',
+          productId: 'prod_skin_001',
+          title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
+          sku: 'CBG-HOME-5X',
+          priceAmount: '19500000',
+          image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
+        },
+        heroQty
+      );
+    }
+    setHeroAdded(true);
+    openDrawer();
+    setTimeout(() => setHeroAdded(false), 2200);
+  };
 
   const handleAddProToCart = () => {
     addItem({
@@ -420,54 +455,90 @@ export default function CarboxygelLandingPage() {
               </div>
             </div>
 
-            {/* Hero Quick CTA buttons */}
+            {/* Direct Above-The-Fold Purchase Module (Blueprint 6.2 Progressive Disclosure) */}
+            <div className="cbg-hero-order-box">
+              <div className="cbg-order-edition-toggle" role="group" aria-label="انتخاب پکیج محصول">
+                <button
+                  type="button"
+                  className={`cbg-edition-pill ${heroPackChoice === 'pro' ? 'active' : ''}`}
+                  onClick={() => setHeroPackChoice('pro')}
+                >
+                  <span className="edition-badge">انتخاب کلینیک</span>
+                  <strong>پک حرفه‌ای ۵۰۰ میلی‌لیتر</strong>
+                  <span>{formatToman('48500000')}</span>
+                </button>
+                <button
+                  type="button"
+                  className={`cbg-edition-pill ${heroPackChoice === 'home' ? 'active' : ''}`}
+                  onClick={() => setHeroPackChoice('home')}
+                >
+                  <span className="edition-badge">مراقبت خانگی</span>
+                  <strong>کیت ۵ عددی هوم‌کر</strong>
+                  <span>{formatToman('19500000')}</span>
+                </button>
+              </div>
+
+              <div className="cbg-hero-order-action-row">
+                <div className="cbg-hero-qty" aria-label="تعداد سفارش">
+                  <button type="button" onClick={() => setHeroQty((q) => Math.min(20, q + 1))} aria-label="افزایش تعداد">+</button>
+                  <span className="cbg-qty-display">{heroQty}</span>
+                  <button type="button" onClick={() => setHeroQty((q) => Math.max(1, q - 1))} aria-label="کاهش تعداد">-</button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleHeroAddToCart}
+                  className={`cbg-hero-btn-add ${heroAdded ? 'added' : ''}`}
+                >
+                  {heroAdded ? '✓ به سبد خرید افزوده شد' : 'افزودن به سبد نسخه درمانی'}
+                </button>
+              </div>
+
+              <div className="cbg-hero-trust-row">
+                <span>✓ حمل با زنجیره سرد (Cold-Chain)</span>
+                <span>•</span>
+                <span>✓ ارسال رایگان سفارش‌های تخصصی</span>
+                <span>•</span>
+                <span>✓ ضمانت اصالت داروسازی کمبریج</span>
+              </div>
+            </div>
+
+            {/* Progressive Disclosure Jump Links */}
             <div className="cbg-hero-actions">
-              <a href="#order-options" className="cbg-btn-primary">
-                سفارش پک حرفه‌ای ۵۰۰ml یا کیت ۵x خانگی ←
-              </a>
               <a href="#bohr-simulator" className="cbg-btn-secondary">
-                مشاهده شبیه‌ساز اثر بوهر
+                شبیه‌ساز اثر بوهر ↓
               </a>
-              <Link href="/b2b?kit=carboxygel" className="cbg-btn-secondary">
-                پورتال تأمین کابین کلینیک‌ها
-              </Link>
+              <a href="#protocol" className="cbg-btn-secondary">
+                پروتکل بالینی ۵ مرحله‌ای ↓
+              </a>
+              <a href="#inci" className="cbg-btn-secondary">
+                اطلس کامل ترکیبات (INCI) ↓
+              </a>
+              <a href="#contraindications" className="cbg-btn-secondary" style={{ borderColor: 'rgba(239, 68, 68, 0.4)', color: '#fca5a5' }}>
+                هشدارهای بالینی و منع مصرف ↓
+              </a>
             </div>
           </div>
 
-          {/* Right: Real Product Visual Showcase with Thumbnail Switcher */}
-          <div className="cbg-showcase-card">
-            <span className="cbg-showcase-badge">تصاویر رسمی محصول و بافت ژل</span>
+          {/* Right: Real Product Visual Showcase with Embla-Powered Clinical Gallery */}
+          <div className="cbg-showcase-card" style={{ padding: '20px' }}>
+            <span className="cbg-showcase-badge" style={{ marginBottom: '14px' }}>تصاویر رسمی محصول و بافت ژل</span>
 
-            <div className="cbg-showcase-img-wrap">
-              <img
-                src={showcaseImages[activeImageIndex].src}
-                alt={showcaseImages[activeImageIndex].alt}
-                className="cbg-showcase-img"
-              />
-            </div>
+            <ClinicalProductGallery
+              productName="CarboxyGel Professional Therapy"
+              images={showcaseImages.map((img, i) => ({
+                id: `cbg_img_${i}`,
+                url: img.src,
+                alt: img.alt,
+                title: img.label,
+                badge: img.label,
+              }))}
+            />
 
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
-                {showcaseImages[activeImageIndex].label}
+            <div style={{ textAlign: 'center', marginTop: '14px' }}>
+              <div style={{ fontSize: '0.84rem', color: '#94a3b8', lineHeight: '1.6' }}>
+                نمای بافت میکروحباب‌های اشباع گاز CO₂ و بسته‌بندی ۵۰۰ میلی‌لیتر کابین درماتولوژی
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>
-                {showcaseImages[activeImageIndex].desc}
-              </div>
-            </div>
-
-            {/* Gallery Thumbnails */}
-            <div className="cbg-showcase-nav">
-              {showcaseImages.map((img, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`cbg-showcase-tab ${activeImageIndex === idx ? 'active' : ''}`}
-                >
-                  <img src={img.src} alt={img.label} />
-                  <span>{img.label}</span>
-                </button>
-              ))}
             </div>
           </div>
         </section>
@@ -764,15 +835,17 @@ export default function CarboxygelLandingPage() {
 
                 {/* Slider Control */}
                 <div className="cbg-slider-wrap">
-                  <div className="cbg-slider-label-row">
+                  <label htmlFor="cbg-co2-range" className="cbg-slider-label-row">
                     <span style={{ color: '#ffffff' }}>کنترل پیوسته غلظت ترابافتی CO₂:</span>
                     <span style={{ color: '#34d399', fontFamily: 'monospace' }}>{co2Level}٪ اشباع گاز</span>
-                  </div>
+                  </label>
                   <input
+                    id="cbg-co2-range"
                     type="range"
                     min="10"
                     max="100"
                     value={co2Level}
+                    aria-label="کنترل پیوسته غلظت ترابافتی CO₂"
                     onChange={(e) => {
                       const val = Number(e.target.value);
                       setCo2Level(val);
@@ -1094,6 +1167,51 @@ export default function CarboxygelLandingPage() {
                   >
                     مشاهده مشخصات کامل در صفحه محصول ←
                   </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CLINICAL CONTRAINDICATIONS & SAFETY WARNINGS (Blueprint 6.2 Mandatory Safety Disclosure) ── */}
+        <section id="contraindications" className="cbg-section" style={{ marginTop: '48px' }}>
+          <div className="cbg-contraindications-box">
+            <div className="cbg-contra-header">
+              <span className="cbg-contra-badge">هشدارهای بالینی و ایمنی مصرف</span>
+              <h3>موارد منع مصرف، احتیاط و عوارض گذرای کربوکسی‌تراپی CarboxyGel</h3>
+              <p>
+                فرآورده‌های کربوکسی‌تراپی غیرتهاجمی بر پایه واکنش بی‌کربنات و آزادسازی موضعی گاز CO₂ فرموله شده‌اند. برای حفظ سلامت مراجعین و بیماران، رعایت الزامات درماتولوژی زیر ضروری است:
+              </p>
+            </div>
+
+            <div className="cbg-contra-grid">
+              <div className="cbg-contra-card">
+                <div className="cbg-contra-icon alert">⚠️</div>
+                <div>
+                  <strong>عوارض فیزیولوژیک طبیعی و گذرا</strong>
+                  <p>
+                    احساس گرمای موضعی، گزگز ملایم، قلقلک پوست و اریتمای گلگون ناشی از وازودیلاتاسیون (گشادشدن عروق مویرگی) طی ۲۰ الی ۳۰ دقیقه پس از خاتمه پروتکل به طور خودبه‌خودی فروکش خواهد کرد.
+                  </p>
+                </div>
+              </div>
+
+              <div className="cbg-contra-card">
+                <div className="cbg-contra-icon stop">⛔</div>
+                <div>
+                  <strong>موارد منع مصرف قطعی (Absolute Contraindications)</strong>
+                  <p>
+                    وجود زخم‌های باز ترومایی، سوختگی‌های حاد درجه ۲ و ۳، درماتیت فعال چرکی، عفونت ویروسی فعال هرپس سیمپلکس (تبخال)، و پوست‌های تحت پرتوترمی اخیر بدون تایید پزشک معالج.
+                  </p>
+                </div>
+              </div>
+
+              <div className="cbg-contra-card">
+                <div className="cbg-contra-icon caution">🛡️</div>
+                <div>
+                  <strong>مراقبت‌های الزامی پس از پروسیجر (Post-Care)</strong>
+                  <p>
+                    تا ۱۲ ساعت پس از درمان از شستشو با شوینده‌های قلیایی صابونی و آرایش‌های سنگین خودداری فرمایید. مصرف ژل التیام‌بخش Healene و ضدآفتاب فیزیکی SPF 50+ توصیه مؤکد می‌گردد.
+                  </p>
                 </div>
               </div>
             </div>

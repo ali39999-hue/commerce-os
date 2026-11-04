@@ -721,9 +721,11 @@ export default function PlasmaxLandingPage() {
                   </div>
 
                   <div className="station-input-group">
-                    <label>حوزه تخصصی مرکز</label>
+                    <label htmlFor="plasmax-specialty-select">حوزه تخصصی مرکز</label>
                     <select
+                      id="plasmax-specialty-select"
                       className="station-input-field cyan"
+                      aria-label="حوزه تخصصی مرکز"
                       value={specialty}
                       onChange={(e) => setSpecialty(e.target.value)}
                     >

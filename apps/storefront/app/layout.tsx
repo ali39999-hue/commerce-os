@@ -3,9 +3,11 @@ import './globals.css';
 import { CartProvider } from '../components/cart';
 import { CartDrawer } from '../components/cart-drawer';
 import { LocalizationProvider } from '../lib/localization-context';
+import { CustomerSessionProvider } from '../lib/customer-session';
 import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
 import { PwaRegister } from '../components/pwa-register';
+import { Toaster } from 'sonner';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_IS_STAGING;
@@ -116,7 +118,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
+        <a href="#main-content" className="skip-to-content-link">
+          پرش به محتوای اصلی صفحه (کلید Enter)
+        </a>
         <LocalizationProvider>
+          <CustomerSessionProvider>
           <CartProvider>
             <div className="page-shell-wrapper">
               <SiteHeader />
@@ -127,7 +133,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </div>
             <CartDrawer />
           </CartProvider>
+          </CustomerSessionProvider>
         </LocalizationProvider>
+        <Toaster position="bottom-left" dir="rtl" richColors closeButton />
         <PwaRegister />
       </body>
     </html>

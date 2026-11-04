@@ -16,3 +16,4 @@ export * from "./ProtocolStepper.js";
 export * from "./QuickViewModal.js";
 export * from "./InteractiveHotspot.js";
 export * from "./DiagnosticQuizModal.js";
+export * from "./ClinicalProductGallery.js";

@@ -4,6 +4,59 @@ export const TENANT_HEADERS: Record<string, string> = {
   "x-tenant-id": "00000000-0000-0000-0000-000000000000",
 };
 
+export interface AdminSessionUser {
+  id: string;
+  phone: string;
+  fullName: string;
+  role: string;
+}
+
+export const ADMIN_SESSION_KEY = "dermer_admin_session";
+
+export const readAdminSession = (): { token: string; user: AdminSessionUser } | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(ADMIN_SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { token?: string; user?: AdminSessionUser };
+    if (!parsed.token || !parsed.user) return null;
+    return { token: parsed.token, user: parsed.user };
+  } catch {
+    return null;
+  }
+};
+
+export const writeAdminSession = (token: string, user: AdminSessionUser): void => {
+  window.localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({ token, user }));
+};
+
+export const clearAdminSession = (): void => {
+  window.localStorage.removeItem(ADMIN_SESSION_KEY);
+};
+
+export const ADMIN_ROLES = ["SUPER_ADMIN", "OPERATOR", "ACCOUNTANT"] as const;
+
+/**
+ * fetch wrapper that attaches the live OTP session token so admin-internal
+ * endpoints guarded by AdminGuard accept the call.
+ */
+export const authedFetch = async (
+  path: string,
+  init: RequestInit = {},
+): Promise<Response> => {
+  const session = readAdminSession();
+  const headers = new Headers(init.headers);
+  headers.set("content-type", "application/json");
+  if (session?.token) {
+    headers.set("authorization", `Bearer ${session.token}`);
+  }
+  return fetch(`${API_BASE}${path}`, {
+    ...init,
+    headers,
+    signal: init.signal ?? AbortSignal.timeout(5000),
+  });
+};
+
 export interface PostResult {
   ok: boolean;
   status: number;
@@ -17,11 +70,15 @@ export const postTenantJson = async (
   method = "POST"
 ): Promise<PostResult> => {
   try {
+    const session = readAdminSession();
     const res = await fetch(`${API_BASE}${path}`, {
       method,
       headers: {
         "content-type": "application/json",
         ...TENANT_HEADERS,
+        // Admin-internal mutating endpoints are guarded since AUTH-003;
+        // the OTP session token authorizes the console's browser calls.
+        ...(session?.token ? { authorization: `Bearer ${session.token}` } : {}),
       },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(5000),

@@ -307,59 +307,61 @@ export default function PromotionsCouponsManager({
           </button>
         </div>
 
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>کد</th>
-              <th>نوع تخفیف</th>
-              <th>مقدار</th>
-              <th>سقف تخفیف</th>
-              <th>حداقل خرید</th>
-              <th>تعداد مصرف</th>
-              <th>تاریخ انقضا</th>
-              <th>وضعیت</th>
-              <th>عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {coupons.map((c) => {
-              const busy = actionBusyId === c.id;
-              return (
-                <tr key={c.id}>
-                  <td className="bold" dir="ltr">
-                    {c.code}
-                  </td>
-                  <td>{c.type === "PERCENT" ? "درصدی" : "مبلغ ثابت"}</td>
-                  <td className="bold">
-                    {c.type === "PERCENT" ? `${faNumber(c.value)}٪` : `${faNumber(c.value)} تومان`}
-                  </td>
-                  <td>{c.maxDiscountTomans === null ? "—" : `${faNumber(c.maxDiscountTomans)} تومان`}</td>
-                  <td>{c.minPurchaseTomans === 0 ? "—" : `${faNumber(c.minPurchaseTomans)} تومان`}</td>
-                  <td>
-                    {c.usageLimit > 0
-                      ? `${faNumber(c.usedCount)} از ${faNumber(c.usageLimit)}`
-                      : `${faNumber(c.usedCount)} (نامحدود)`}
-                  </td>
-                  <td>{formatJalaliDateTime(c.expiresAt)}</td>
-                  <td>
-                    <span className={`status-pill ${c.active ? "paid" : "rejected"}`}>
-                      {c.active ? "فعال" : "غیرفعال"}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => void handleToggleCoupon(c.id)}
-                      disabled={busy}
-                      className={c.active ? "btn-reject" : "btn-approve"}
-                    >
-                      {busy ? "⏳" : c.active ? "غیرفعال‌سازی" : "فعال‌سازی"}
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="table-responsive-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>کد کوپن</th>
+                <th>نوع تخفیف</th>
+                <th>مقدار تخفیف</th>
+                <th>سقف تخفیف</th>
+                <th>حداقل خرید</th>
+                <th>میزان مصرف</th>
+                <th>تاریخ انقضا</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {coupons.map((c) => {
+                const busy = actionBusyId === c.id;
+                return (
+                  <tr key={c.id}>
+                    <td className="bold" dir="ltr">
+                      {c.code}
+                    </td>
+                    <td>{c.type === "PERCENT" ? "درصدی" : "مبلغ ثابت"}</td>
+                    <td className="bold tabular-nums">
+                      {c.type === "PERCENT" ? `${faNumber(c.value)}٪` : `${new Intl.NumberFormat("fa-IR").format(c.value)} تومان`}
+                    </td>
+                    <td className="tabular-nums">{c.maxDiscountTomans === null ? "—" : `${new Intl.NumberFormat("fa-IR").format(c.maxDiscountTomans)} تومان`}</td>
+                    <td className="tabular-nums">{c.minPurchaseTomans === 0 ? "—" : `${new Intl.NumberFormat("fa-IR").format(c.minPurchaseTomans)} تومان`}</td>
+                    <td className="tabular-nums">
+                      {c.usageLimit > 0
+                        ? `${faNumber(c.usedCount)} از ${faNumber(c.usageLimit)}`
+                        : `${faNumber(c.usedCount)} (نامحدود)`}
+                    </td>
+                    <td className="tabular-nums">{formatJalaliDateTime(c.expiresAt)}</td>
+                    <td>
+                      <span className={`status-pill ${c.active ? "approved" : "rejected"}`}>
+                        {c.active ? "فعال" : "غیرفعال"}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => void handleToggleCoupon(c.id)}
+                        disabled={busy}
+                        className={c.active ? "btn-reject" : "btn-approve"}
+                      >
+                        {busy ? "⏳" : c.active ? "غیرفعال‌سازی" : "فعال‌سازی"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   );

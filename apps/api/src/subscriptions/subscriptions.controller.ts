@@ -7,7 +7,13 @@ import {
   Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
+import { CurrentTenant } from "../common/guards/current-tenant.decorator";
+import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
+import { DEFAULT_TENANT_ID, CurrentCustomer } from "../common/guards/current-tenant.decorator";
+import { SubscriptionCreateDto } from "../common/dto/resource-writes.dto";
 import { SubscriptionsService } from "./subscriptions.service";
 
 // ADR-009: اشتراک‌های دوره‌ای — فهرست پلن‌ها، ثبت عضویت، مدیریت کاربر، لیست ادمین
@@ -23,15 +29,7 @@ export class SubscriptionsController {
 
   // POST /v1/subscriptions — ثبت عضویت (عمومی؛ کاربر ناشناس profileBindingId می‌گیرد)
   @Post()
-  create(
-    @Body()
-    body?: {
-      planId?: string;
-      userId?: string;
-      phone?: string;
-      quantity?: number;
-    }
-  ) {
+  create(@Body() body?: SubscriptionCreateDto) {
     return this.subscriptionsService.create({
       planId: body?.planId,
       userId: body?.userId,
@@ -40,50 +38,66 @@ export class SubscriptionsController {
     });
   }
 
-  // GET /v1/subscriptions/users/:userId — اشتراک‌های من
+  // GET /v1/subscriptions/users/:userId — legacy verification-script route,
+  // locked behind the AdminGuard (AUTH-002 final): no browser may enumerate
+  // another user's subscriptions by URL. Browser flows use /me.
   @Get("users/:userId")
+  @UseGuards(AdminGuard)
   async listForUser(
     @Param("userId") userId: string,
-    @Headers("x-tenant-id") tenantId?: string
+    @CurrentTenant() tenantId: string
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.listForUser(userId, tenant);
+    return this.subscriptionsService.listForUser(userId, tenantId);
   }
 
+  // GET /v1/subscriptions/me — session-bound "my subscriptions" (AUTH-002
+  // step 2): the userId always comes from the OTP session, never the URL.
+  @Get("me")
+  @UseGuards(SessionUserGuard)
+  async listMySubscriptions(@CurrentCustomer() customer: SessionCustomer | undefined) {
+    if (!customer) {
+      throw new UnauthorizedException("برای مشاهده اشتراک‌های خود ابتدا وارد شوید");
+    }
+    return this.subscriptionsService.listForUser(customer.id, DEFAULT_TENANT_ID);
+  }
+
+  // Subscription lifecycle moves are admin console decisions (AUTH-003);
+  // plan listing and signup stay public storefront flows. Tenant comes from
+  // the guard, not the client header (AUTH-002).
   // POST /v1/subscriptions/:id/pause — ACTIVE → PAUSED
   @Post(":id/pause")
+  @UseGuards(AdminGuard)
   pause(
     @Param("id") id: string,
-    @Headers("x-tenant-id") tenantId?: string,
+    @CurrentTenant() tenantId: string,
     @Body() body?: { reason?: string }
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.pause(id, tenant, body?.reason);
+    return this.subscriptionsService.pause(id, tenantId, body?.reason);
   }
 
   // POST /v1/subscriptions/:id/resume — PAUSED → ACTIVE
   @Post(":id/resume")
-  resume(@Param("id") id: string, @Headers("x-tenant-id") tenantId?: string) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.resume(id, tenant);
+  @UseGuards(AdminGuard)
+  resume(@Param("id") id: string, @CurrentTenant() tenantId: string) {
+    return this.subscriptionsService.resume(id, tenantId);
   }
 
   // POST /v1/subscriptions/:id/cancel — ACTIVE|PAUSED → CANCELLED
   @Post(":id/cancel")
+  @UseGuards(AdminGuard)
   cancel(
     @Param("id") id: string,
-    @Headers("x-tenant-id") tenantId?: string,
+    @CurrentTenant() tenantId: string,
     @Body() body?: { reason?: string }
   ) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.cancel(id, tenant, body?.reason);
+    return this.subscriptionsService.cancel(id, tenantId, body?.reason);
   }
 
   // GET /v1/subscriptions/admin?status=ACTIVE — لیست ادمین
   @Get("admin")
-  adminList(@Query("status") status?: string, @Headers("x-tenant-id") tenantId?: string) {
-    const tenant = this.requireTenant(tenantId);
-    return this.subscriptionsService.adminList(tenant, status);
+  @UseGuards(AdminGuard)
+  adminList(@CurrentTenant() tenantId: string, @Query("status") status?: string) {
+    return this.subscriptionsService.adminList(tenantId, status);
   }
 
   // Same guard style as loyalty: x-tenant-id header is required

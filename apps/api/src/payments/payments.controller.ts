@@ -1,4 +1,6 @@
-import { Controller, Post, Get, Body, Param, Query } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Query, UseGuards } from "@nestjs/common";
+import { AdminGuard } from "../common/guards/admin.guard";
+import { PaymentInitiateDto, ReceiptApproveDto, ReceiptSubmitDto } from "../common/dto/resource-writes.dto";
 import { PaymentsService } from "./payments.service";
 
 @Controller("payments")
@@ -8,7 +10,7 @@ export class PaymentsController {
   @Post(":intentId/initiate")
   async initiate(
     @Param("intentId") intentId: string,
-    @Body() body: { callbackBaseUrl?: string }
+    @Body() body: PaymentInitiateDto
   ) {
     const callback = body.callbackBaseUrl || process.env.API_PUBLIC_URL || "http://localhost:4000";
     return this.paymentsService.initiate(intentId, callback);
@@ -25,12 +27,7 @@ export class PaymentsController {
   @Post(":intentId/receipt")
   async submitReceipt(
     @Param("intentId") intentId: string,
-    @Body()
-    body: {
-      referenceNumber: string;
-      payerCardNumber?: string;
-      receiptImageUrl?: string;
-    }
+    @Body() body: ReceiptSubmitDto
   ) {
     return this.paymentsService.submitCardToCardReceipt({
       intentId,
@@ -40,10 +37,13 @@ export class PaymentsController {
     });
   }
 
+  // Card-to-card receipt approval is the admin SoD decision point (AUTH-003).
+  // Customer submission (/:intentId/receipt) stays public by design.
   @Post("receipts/:receiptId/approve")
+  @UseGuards(AdminGuard)
   async approveReceipt(
     @Param("receiptId") receiptId: string,
-    @Body() body: { reviewer?: string }
+    @Body() body: ReceiptApproveDto
   ) {
     return this.paymentsService.approveCardToCardReceipt(
       receiptId,

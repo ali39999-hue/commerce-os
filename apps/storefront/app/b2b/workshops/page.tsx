@@ -2,46 +2,93 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "تقویم ورکشاپ‌های تخصصی و گواهینامه‌های بالینی | دکتر درمر انگلستان",
+  title: "تقویم مسترکلاس‌ها و ورکشاپ‌های دارای سرتیفیکیت بالینی | دکتر درمر انگلستان",
   description:
-    "دوره‌های آموزشی هندزآن کربوکسی‌تراپی بدون سوزن، پیلینگ شیمیایی و ترمیم سد پوستی با اعطای سرتیفیکیت معتبر آکادمی پوست و زیبایی.",
+    "کارگاه‌های عملی و هندزآن کربوکسی‌تراپی بدون سوزن، پیلینگ شیمیایی درموسوتیکال، و مدالیته‌های انرژی پلاسما با اعطای گواهی‌نامه رسمی آکادمی پوست و زیبایی.",
 };
 
 const WORKSHOPS_DATA = [
   {
     id: "ws-bohr-carboxy",
-    title: "مسترکلاس جامع کربوکسی‌تراپی بدون سوزن بر پایه پدیده بوهر (Bohr Effect Masterclass)",
+    title: "مسترکلاس جامع کربوکسی‌تراپی بدون سوزن و فیزیولوژی پدیده بوهر (Bohr Effect Masterclass)",
     dateFa: "پنجشنبه ۲۱ آبان ۱۴۰۵ - ساعت ۹:۰۰ الی ۱۶:۰۰",
-    instructor: "دکتر مریم سهرابی (متخصص پوست و مو) و تیم کلینیکال",
+    instructor: "دکتر مریم سهرابی (متخصص پوست و مو) و مهندس کیانوش راد",
+    targetLevel: "پزشکان متخصص پوست، پزشکان عمومی و بیوتی‌تراپیست‌های ارشد",
+    prerequisites: "آشنایی با آناتومی سطحی عروق سر و گردن و اصول فیزیولوژی تبادل گازها",
     capacity: "ظرفیت محدود: ۱۸ نفر (جهت کار عملی هندزآن بر روی کیس بالینی)",
+    location: "مرکز همایش‌ها و سالن کارگاه‌های بالینی آکادمی علوم پوست دکتر درمر - تهران",
     topics: [
-      "مبانی فیزیولوژی تبادل گاز CO₂ و مکانیسم‌های عروقی پدیده بوهر",
-      "پروتکل‌بندی اختصاصی برای پف و تیرگی مقاوم دور چشم و تیرگی‌های بادی",
-      "پروتکل‌های آماده‌ساز قبل از تزریق مزوتراپی و پی‌آرپی جهت افزایش جذب سلولی",
-      "تمرین عملی کامل روی دو کیس بالینی با ژل‌های حرفه‌ای ۱۵۰۰ میلی‌لیتر و کارتریج‌ها",
-      "مدیریت اریتما و تنظیم آستانه تحمل در پوست‌های حساس و آتوپیک",
+      "مبانی بیوفیزیک انتشار گاز دی‌اکسید کربن و شیفت منحنی هموگلوبین به راست (Bohr Effect)",
+      "پروتکل‌بندی اختصاصی برای پف و تیرگی مقاوم دور چشم و تیرگی‌های موضعی بدن",
+      "آماده‌سازی پوست قبل از تزریق مزوتراپی، فیلر و پی‌آرپی جهت ارتقای ضریب جذب سلولی",
+      "کارگاه عملی کامل روی دو کیس بالینی با ژل‌های حرفه‌ای ۱۵۰۰ میلی‌لیتر و کارتریج‌های تک‌دوز",
+      "مدیریت اریتما، تنظیم دمای بافت و کنترل حساسیت در بیماران با پوست‌های فوق‌العاده حساس",
     ],
-    certification: "اعطای گواهینامه رسمی بین‌المللی ممهور به مهر آکادمی تخصصی پوست و سرتیفیکیت اپراتوری مجاز.",
+    learningOutcomes: [
+      "تسلط بر محاسبات دبی و غلظت اشباع گاز CO₂ ترنس‌درمال در بستر بافت و فعال‌سازی اثر بوهر",
+      "مهارت عملی اجرای پروسیجر ۲ فاز بدون ایجاد تحریک یا ترومای اپیدرمیک در کابین",
+      "توانایی پایش افت و خیز pH و ارزیابی عینی پاسخ اتساع عروقی و اکسیژن‌رسانی هموگلوبین",
+      "طراحی پروتکل درمانی اختصاصی جهت رفع تیرگی پری‌اربیتال و آماده‌سازی بافت برای مزوتراپی",
+    ],
+    certification: "اعطای گواهینامه معتبر رسمی آکادمی دکتر درمر انگلستان با کد رجیستری بین‌المللی و هولوگرام امنیتی.",
+    handouts: "همراه با پکیج آموزشی شامل پروتکل‌بوک مکتوب، ویدیوی باکیفیت 4K پروسیجر و پوستر آناتومی کابین.",
   },
   {
     id: "ws-advanced-peeling",
-    title: "ورکشاپ تخصصی پیلینگ شیمیایی و فرمولاسیون‌های ترمیم سد دفاعی پوست",
+    title: "مسترکلاس پیلینگ شیمیایی پیشرفته، اسیدهای ترکیبی و ترمیم سد دفاعی پوست",
     dateFa: "جمعه ۲۲ آبان ۱۴۰۵ - ساعت ۹:۰۰ الی ۱۵:۰۰",
-    instructor: "مهندس کیانوش راد (شیمیست فرمولاتور آرایشی) و دکتر مریم سهرابی",
+    instructor: "مهندس کیانوش راد (شیمیست ارشد فرمولاتور IFSCC) و دکتر مریم سهرابی",
+    targetLevel: "پزشکان، داروسازان و اسکین‌کر تراپیست‌های دارای گواهی پایه",
+    prerequisites: "تسلط بر رده‌بندی فوتوتایپ فیتزپاتریک و مبانی پیلینگ‌های سطحی",
     capacity: "ظرفیت: ۲۰ نفر",
+    location: "کلینیک آموزش عملی و سالن سمینارهای آکادمی پوست",
     topics: [
-      "بررسی اسیدهای AHA، BHA، PHA و ترکیب ترانگزامیک اسید در درمان ملاسما",
-      "معیارهای تعیین عمق نفوذ و پدیده فراستینگ (Frosting) ایمن",
-      "پروتکل بازسازی فوری سد دفاعی پوست با نسبت طلایی ۳:۱:۱ سرامیدها و مس‌پپتید",
-      "کار عملی با لایه‌بردارهای تخصصی و خنثی‌سازهای فیزیولوژیک",
+      "مقایسه سینتیک نفوذ اسیدهای AHA، BHA، PHA و کاربرد موضعی ترانگزامیک اسید در درمان ملاسما",
+      "معیارهای تشخیص عمق نفوذ، زمان‌بندی خنثی‌سازی و پدیده فراستینگ ایمن (Safety Frosting)",
+      "پروتکل اورژانس بازسازی سد دفاعی لاملار با نسبت طلایی ۳:۱:۱ سرامیدها و مس‌پپتید GHK-Cu",
+      "مدیریت و پیشگیری از عوارض سوختگی ناخواسته و هایپرپیگمانتاسیون پس‌التهابی (PIH)",
+      "کار عملی با لایه‌بردارهای تخصصی و خنثی‌سازهای بافر فیزیولوژیک بر روی کیس‌های واقعی",
     ],
-    certification: "اعطای سرتیفیکیت کارگاه پیشرفته پیلینگ درموسوتیکال.",
+    learningOutcomes: [
+      "تشخیص دقیق فوتوتایپ فیتزپاتریک و تنظیم درصد غلظت اسیدهای درموسوتیکال جهت مهار ایمن ملانوژنز",
+      "تشخیص بالینی تفاوت فراستینگ ایمن اپیدرمیک از نکروز بافتی و زمان‌بندی دقیق بافر خنثی‌کننده",
+      "مهارت اجرای رژیم اورژانس ترمیم سد لیپیدی با فرمولاسیون نسبت طلایی ۳:۱:۱ سرامیدها",
+      "پیشگیری قطعی از عوارض هایپرپیگمانتاسیون پس‌التهابی (PIH) در بیماران با تیپ‌های پوستی تیره",
+    ],
+    certification: "اعطای سرتیفیکیت تخصصی کار با پیلینگ‌های درموسوتیکال و مدیریت سد دفاعی اپیدرم.",
+    handouts: "کیت سمپل اسیدهای آکادمی به همراه فرم‌های رضایت‌نامه بیمار و راهنمای مراقبت خانگی.",
+  },
+  {
+    id: "ws-plasma-modalities",
+    title: "کارگاه پیشرفته مولتی‌مدالیته‌های پلاسما: سابلیمیشن جراحی، جت سرد و DBD",
+    dateFa: "پنجشنبه ۲۸ آبان ۱۴۰۵ - ساعت ۹:۰۰ الی ۱۶:۰۰",
+    instructor: "دکتر مریم سهرابی و تیم بالینی مهندسی پزشکی ReeMed",
+    targetLevel: "منحصراً ویژه پزشکان متخصص پوست، جراحان عمومی و پلاستیک",
+    prerequisites: "پروانه مطب یا شماره نظام پزشکی معتبر",
+    capacity: "ظرفیت محدود: ۱۲ نفر (کار مستقیم با دستگاه‌های ایستگاه بالینی PlasmaX)",
+    location: "واحد جراحی سرپایی و آموزش بالینی تجهیزات مدیکال ReeMed",
+    topics: [
+      "فیزیک حالت چهارم ماده، تفکیک پلاسمای حرارتی سابلیمیشن از پلاسمای غیرحرارتی جت سرد",
+      "بلفاروپلاستی غیرجراحی پلک با پروب میکروتنگستن و جلوگیری از اسکار یا فرورفتگی بافتی",
+      "استریلیزاسیون عمیق آکنه فعال و درمان زخم‌های مزمن با گازهای نجیب آرگون و هلیوم (<38°C)",
+      "تکنیک‌های الکتروپوریشن گذرا و مزوپلاسمای ترنس‌درمال با پروب سرامیکی DBD",
+      "تنظیم ایمن ولتاژ تخلیه (۲.۵ تا ۱۲ کیلوولت) بر مبنای ضخامت اپیدرم در نواحی مختلف آناتومیک",
+    ],
+    learningOutcomes: [
+      "تسلط بر متدولوژی سابلیمیشن میکرونی اپیدرم و انجام بلفاروپلاستی غیرجراحی بدون اسکار دائمی",
+      "مهارت اجرای پروتکل استریلیزاسیون آکنه التهابی حاد با جت سرد گازهای نجیب هلیوم و آرگون",
+      "تنظیم دقیق پارامترهای ژنراتور پلاسما (Duty Cycle و فرکانس بر اساس ضخامت بافت مورد نظر)",
+      "تسلط بر فرآیند مراقبت زخم بسته و تجویز فرآورده‌های لاملار بیومیمتیک پس از پروسیجر پلاسما",
+    ],
+    certification: "اعطای گواهینامه معتبر اپراتوری جراحی پلاسما و مجوز رسمی کار با سامانه PlasmaX.",
+    handouts: "دفترچه راهنمای کالیبراسیون، هندبوک پروتکل‌های بالینی پلاسما و سرنگ‌های استریل مزوپلاسما.",
   },
 ];
 
 export default function WorkshopsSubPage() {
   return (
     <div style={{ padding: "40px 0 90px" }}>
+      {/* ── Breadcrumb ── */}
       <nav className="breadcrumbs-nav" style={{ marginBottom: "24px" }}>
         <Link href="/">صفحه اصلی</Link>
         <span>/</span>
@@ -50,37 +97,52 @@ export default function WorkshopsSubPage() {
         <span>تقویم دوره‌های آموزشی و ورکشاپ‌ها</span>
       </nav>
 
-      <header className="blog-header" style={{ marginBottom: "32px" }}>
-        <div className="eyebrow">Accredited Clinical Training</div>
-        <h1 style={{ margin: "6px 0 10px" }}>کارگاه‌های عملی و مسترکلاس‌های دارای سرتیفیکیت معتبر</h1>
-        <p style={{ maxWidth: "720px", color: "var(--muted)", lineHeight: "1.8" }}>
-          ارتقای مهارت‌های کلینیکی پزشکان و بیوتی‌تراپیست‌ها با جدیدترین متدهای ترنس‌درمال و استانداردهای نوین
-          درماتولوژی همراه با تمرین عملی بر روی کیس زنده و پشتیبانی علمی پیوسته.
+      {/* ── Page Header ── */}
+      <header className="blog-header" style={{ marginBottom: "36px" }}>
+        <div className="eyebrow">Accredited Clinical Masterclasses</div>
+        <h1 style={{ margin: "6px 0 10px" }}>ورکشاپ‌های عملی، هندزآن و مسترکلاس‌های دارای سرتیفیکیت معتبر</h1>
+        <p style={{ maxWidth: "760px", color: "var(--muted)", lineHeight: "1.9" }}>
+          دوره‌های معتبر آموزشی با تدریس اعضای هیئت علمی پوست و فرمولاتورهای ارشد آرایشی، شامل آموزش مبانی تئوری،
+          کار عملی بر روی کیس زنده در اتاق پروسیجر کلینیک و اعطای گواهینامه رسمی با کد استعلام آنلاین.
         </p>
       </header>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "28px", marginBottom: "40px" }}>
+      {/* ── Workshops Cards ── */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "32px", marginBottom: "50px" }}>
         {WORKSHOPS_DATA.map((ws) => (
           <article
             key={ws.id}
+            id={ws.id}
             style={{
               background: "var(--surface)",
               border: "1px solid var(--line)",
               borderRadius: "20px",
-              padding: "28px",
+              padding: "32px",
               boxShadow: "var(--shadow-card)",
-              borderTop: "4px solid var(--brand)",
+              borderTop: "5px solid var(--brand)",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "14px" }}>
+            {/* Header / Badges */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                flexWrap: "wrap",
+                gap: "12px",
+                marginBottom: "16px",
+                borderBottom: "1px solid var(--line)",
+                paddingBottom: "18px",
+              }}
+            >
               <div>
                 <span
                   style={{
                     background: "var(--brand-tint)",
                     color: "var(--brand-deep)",
-                    fontSize: "0.78rem",
+                    fontSize: "0.8rem",
                     fontWeight: 800,
-                    padding: "3px 12px",
+                    padding: "4px 14px",
                     borderRadius: "999px",
                     display: "inline-block",
                     marginBottom: "8px",
@@ -88,15 +150,17 @@ export default function WorkshopsSubPage() {
                 >
                   📅 {ws.dateFa}
                 </span>
-                <h2 style={{ margin: 0, fontSize: "1.35rem", color: "var(--ink)", lineHeight: "1.5" }}>{ws.title}</h2>
+                <h2 style={{ margin: 0, fontSize: "1.35rem", color: "var(--brand-deep)", lineHeight: "1.4" }}>
+                  {ws.title}
+                </h2>
               </div>
               <div
                 style={{
                   background: "#fef3c7",
                   color: "#92400e",
-                  padding: "6px 14px",
+                  padding: "6px 16px",
                   borderRadius: "8px",
-                  fontSize: "0.8rem",
+                  fontSize: "0.82rem",
                   fontWeight: 700,
                 }}
               >
@@ -104,35 +168,130 @@ export default function WorkshopsSubPage() {
               </div>
             </div>
 
-            <div style={{ fontSize: "0.88rem", color: "var(--brand-deep)", fontWeight: 700, marginBottom: "16px" }}>
-              👨‍⚕️ مدرسان دوره: {ws.instructor}
+            {/* Meta Row: Instructor, Level, Location */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "14px",
+                background: "var(--paper)",
+                padding: "16px",
+                borderRadius: "12px",
+                marginBottom: "20px",
+                fontSize: "0.84rem",
+              }}
+            >
+              <div>
+                <strong style={{ color: "var(--brand-deep)", display: "block", marginBottom: "2px" }}>
+                  👨‍⚕️ اساتید و مدرسان دوره:
+                </strong>
+                <span style={{ color: "var(--ink)" }}>{ws.instructor}</span>
+              </div>
+              <div>
+                <strong style={{ color: "var(--brand-deep)", display: "block", marginBottom: "2px" }}>
+                  🎓 سطح مخاطب و پیشنیاز:
+                </strong>
+                <span style={{ color: "var(--ink)" }}>{ws.targetLevel}</span>
+                <small style={{ display: "block", color: "var(--muted)", marginTop: "2px" }}>{ws.prerequisites}</small>
+              </div>
+              <div>
+                <strong style={{ color: "var(--brand-deep)", display: "block", marginBottom: "2px" }}>
+                  📍 محل برگزاری:
+                </strong>
+                <span style={{ color: "var(--ink)" }}>{ws.location}</span>
+              </div>
             </div>
 
-            <div style={{ marginBottom: "18px" }}>
-              <h3 style={{ fontSize: "0.95rem", color: "var(--ink)", margin: "0 0 10px" }}>
-                سرفصل‌های آموزشی و مباحث دوره:
-              </h3>
-              <ul style={{ margin: 0, paddingRight: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                {ws.topics.map((top, idx) => (
-                  <li key={idx} style={{ fontSize: "0.86rem", color: "var(--muted)", lineHeight: "1.8" }}>
-                    {top}
-                  </li>
-                ))}
-              </ul>
+            {/* Syllabus & Learning Outcomes */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "22px" }}>
+              <div style={{ background: "var(--paper)", padding: "18px", borderRadius: "14px", border: "1px solid var(--line)" }}>
+                <h3 style={{ fontSize: "0.95rem", color: "var(--brand-deep)", margin: "0 0 10px" }}>
+                  📚 سرفصل‌های آموزشی و تمرین‌های هندزآن:
+                </h3>
+                <ul style={{ margin: 0, paddingRight: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {ws.topics.map((t, idx) => (
+                    <li key={idx} style={{ fontSize: "0.85rem", color: "var(--muted)", lineHeight: "1.8" }}>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {ws.learningOutcomes && (
+                <div style={{ background: "#f8fafc", padding: "18px", borderRadius: "14px", border: "1px solid #cbd5e1" }}>
+                  <h3 style={{ fontSize: "0.95rem", color: "#0f172a", margin: "0 0 10px" }}>
+                    🎯 اهداف یادگیری و پیامدهای بالینی (Learning Outcomes):
+                  </h3>
+                  <ul style={{ margin: 0, paddingRight: "20px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {ws.learningOutcomes.map((out, idx) => (
+                      <li key={idx} style={{ fontSize: "0.85rem", color: "#334155", lineHeight: "1.8" }}>
+                        {out}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
-            <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", padding: "14px 18px", borderRadius: "12px", marginBottom: "20px" }}>
-              <strong style={{ fontSize: "0.86rem", color: "#065f46", display: "block", marginBottom: "4px" }}>
-                📜 وضعیت مدرک و گواهینامه اعطایی:
-              </strong>
-              <p style={{ margin: 0, fontSize: "0.84rem", color: "#047857", lineHeight: "1.7" }}>
-                {ws.certification}
-              </p>
+            {/* Certificate and Handouts */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: "14px",
+                marginBottom: "22px",
+              }}
+            >
+              <div
+                style={{
+                  background: "#ecfdf5",
+                  border: "1px solid #a7f3d0",
+                  padding: "14px 18px",
+                  borderRadius: "12px",
+                }}
+              >
+                <strong style={{ fontSize: "0.86rem", color: "#065f46", display: "block", marginBottom: "4px" }}>
+                  📜 وضعیت گواهینامه اعطایی:
+                </strong>
+                <p style={{ margin: 0, fontSize: "0.82rem", color: "#047857", lineHeight: "1.7" }}>
+                  {ws.certification}
+                </p>
+              </div>
+
+              <div
+                style={{
+                  background: "var(--paper)",
+                  border: "1px solid var(--line)",
+                  padding: "14px 18px",
+                  borderRadius: "12px",
+                }}
+              >
+                <strong style={{ fontSize: "0.86rem", color: "var(--brand-deep)", display: "block", marginBottom: "4px" }}>
+                  📦 پکیج آموزشی و مدارک همراه:
+                </strong>
+                <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)", lineHeight: "1.7" }}>
+                  {ws.handouts}
+                </p>
+              </div>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {/* CTA */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "14px",
+                borderTop: "1px dashed var(--line)",
+                paddingTop: "18px",
+              }}
+            >
+              <span style={{ fontSize: "0.82rem", color: "var(--muted)" }}>
+                جهت ثبت‌نام، شماره پروانه مطب یا کارت نظام پزشکی مورد نیاز است.
+              </span>
               <Link
-                href="/b2b#quote-form"
+                href="/b2b#wizard-section"
                 style={{
                   background: "var(--accent)",
                   color: "#18221d",
@@ -143,7 +302,7 @@ export default function WorkshopsSubPage() {
                   textDecoration: "none",
                 }}
               >
-                رزرو سهمیه ورکشاپ در پورتال B2B ←
+                رزرو سهمیه ورکشاپ در فرم مرحله‌ای B2B ←
               </Link>
             </div>
           </article>

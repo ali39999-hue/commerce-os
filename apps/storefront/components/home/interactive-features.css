@@ -527,13 +527,243 @@
 
 /* 4. Medical Devices 360-degree Hotspot Showcase (Refactored to ./medical-devices-showcase.css) */
 
+/* 5. Path Selector (Home Care vs Clinical/Pro vs Equipment) */
+.path-selector-section {
+  max-width: 1400px;
+  margin: 48px auto 0;
+  padding: 0 24px;
+}
+
+.path-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.path-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.path-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.09);
+  border-color: var(--brand-light);
+}
+
+.path-card.theme-homecare {
+  border-top: 4px solid var(--brand);
+}
+
+.path-card.theme-pro {
+  border-top: 4px solid #10b981;
+}
+
+.path-card.theme-equipment {
+  border-top: 4px solid #0284c7;
+}
+
+.path-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.path-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.theme-homecare .path-tag {
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--brand-deep);
+}
+
+.theme-pro .path-tag {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
+.theme-equipment .path-tag {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0369a1;
+}
+
+.path-badge {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.path-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.path-desc {
+  font-size: 0.88rem;
+  color: var(--ink-secondary);
+  line-height: 1.7;
+  margin: 0 0 20px;
+  flex: 1;
+}
+
+.path-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.path-highlights li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+}
+
+.theme-homecare .path-highlights svg {
+  color: var(--brand);
+}
+
+.theme-pro .path-highlights svg {
+  color: #10b981;
+}
+
+.theme-equipment .path-highlights svg {
+  color: #0284c7;
+}
+
+.path-action-wrap {
+  margin-top: auto;
+}
+
+.path-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: var(--surface-tint);
+  color: var(--brand-deep);
+  border: 1px solid var(--line);
+}
+
+.path-action-btn:hover {
+  background: var(--brand);
+  color: #ffffff;
+  border-color: var(--brand);
+  transform: translateY(-1px);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
+  .path-selector-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
   .bohr-sim-grid,
   .visia-interactive-container,
   .rf-interactive-wrap,
   .device-stage-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bohr-simulator-section,
+  .devices-showcase-section,
+  .regimen-finder-section,
+  .visia-slider-section {
+    padding: 0 12px;
+    margin-top: 24px;
+  }
+  .bohr-sim-wrapper,
+  .devices-showcase-wrapper,
+  .regimen-finder-card,
+  .visia-slider-wrapper {
+    padding: 20px 14px;
+    border-radius: 18px;
+  }
+  .bohr-sim-grid,
+  .device-stage-grid,
+  .visia-interactive-container,
+  .rf-interactive-wrap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .bohr-sim-control-panel {
+    padding: 16px 12px;
+  }
+  .sim-presets-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sim-presets-bar .preset-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .sim-slider-ticks {
+    font-size: 0.65rem;
+  }
+  .svc-metrics-quad {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .sm-box {
+    padding: 8px;
+  }
+  .device-tabs-row {
+    flex-wrap: wrap;
+  }
+  .bohr-sim-wrapper {
+    overflow: hidden;
+  }
+  .bohr-sim-footer {
+    padding: 14px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .bsf-content {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .bsf-cta-btn {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: normal;
   }
 }

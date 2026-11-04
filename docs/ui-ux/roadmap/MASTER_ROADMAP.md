@@ -13,7 +13,8 @@ The Dr Dermer UK transformation elevates a traditional multi-tenant commerce eng
 1. **Clinical Physiological Rigor**: Interactive transcutaneous CO2/O2 Bohr effect simulators, high-precision histology visualizers, and validated INCI ingredient dossiers.
 2. **Interactive Medical Hardware Stages**: Double-buffered HTML5 canvas 360-degree rotation scrubbers for Carbox and PlasmaX surgical stations with frame-accurate hotspot telemetry.
 3. **Frictionless Iranian E-Commerce**: Modulo-11 National ID checks, 09xx mobile phone normalization, Sheba validation, Shaparak payment port handoffs, and Sepidar B2B tax compliance.
-4. **Luxury British Clinical Aesthetics**: Deep dark obsidian canvas (`#070b12`), frosted glassmorphic panels (`backdrop-filter: blur(16px)`), cyan/plasma energy accents, and typography tailored for Persian Vazirmatn and Latin scientific notation.
+4. **Warm Clinical British & Global Aesthetics**: Calming warm stone canvas (`#f7f6f2`), pure white clinical cards (`#ffffff`), signature deep clinical teal (`#24594f`), and typography tailored for Persian Vazirmatn and Latin scientific notation. Controlled luxury dark stages for medical hardware stations.
+
 
 ---
 

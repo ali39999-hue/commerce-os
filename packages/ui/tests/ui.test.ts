@@ -12,6 +12,21 @@ describe("@commerce-os/ui Primitives & Design Tokens", () => {
     expect(designTokens.colors.deepSlate[900]).toBeDefined();
   });
 
+  it("exports Warm Clinical Minimalism palette tokens", () => {
+    expect(designTokens.color.canvas).toBe("#F7F6F2");
+    expect(designTokens.color.surface).toBe("#FFFFFF");
+    expect(designTokens.color["surface-soft"]).toBe("#EEF2ED");
+    expect(designTokens.color.ink).toBe("#242D29");
+    expect(designTokens.color.muted).toBe("#69736D");
+    expect(designTokens.color.brand).toBe("#24594F");
+    expect(designTokens.color["brand-strong"]).toBe("#17463E");
+    expect(designTokens.color.sage).toBe("#DCE8DF");
+    expect(designTokens.color.sand).toBe("#EDE5DA");
+    expect(designTokens.color.accent).toBe("#C69C70");
+    expect(designTokens.color.border).toBe("#E6E5DE");
+    expect(designTokens.color.danger).toBe("#B84D4D");
+  });
+
   it("exports 4px baseline spacing scale", () => {
     expect(designTokens.spacing[1]).toBe("4px");
     expect(designTokens.spacing[2]).toBe("8px");

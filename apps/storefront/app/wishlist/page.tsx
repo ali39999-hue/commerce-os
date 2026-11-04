@@ -11,7 +11,10 @@ import {
   addToWishlist,
   type WishlistItem,
 } from '../../lib/wishlist';
-import { RECOMMENDED_CLINICAL_PRODUCTS } from '../../lib/clinical-specs';
+import {
+  RECOMMENDED_CLINICAL_PRODUCTS,
+  getCanonicalProductHref,
+} from '../../lib/clinical-specs';
 import { CompareButton } from '../../components/discovery/compare-button';
 
 export default function WishlistPage() {
@@ -68,45 +71,48 @@ export default function WishlistPage() {
               <span>پیشنهاد فرمولاسیون‌های شاخص کلینیکال دکتر درمر جهت ذخیره</span>
             </h3>
             <div className="empty-recommendations-grid">
-              {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => (
-                <article className="product-card" key={rec.id}>
-                  <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
-                    {rec.image ? (
-                      <img src={rec.image} alt={rec.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    ) : (
-                      <span className="art-index">{rec.title.slice(0, 1)}</span>
-                    )}
-                    <span className="art-caption">✓ موجود در انبار مرکزی</span>
-                  </Link>
-                  <div className="product-copy">
-                    <span className="product-card-brand">{rec.brand}</span>
-                    <h4 style={{ margin: '4px 0 8px', fontSize: '0.92rem' }}>
-                      <Link href={`/products/${encodeURIComponent(rec.slug)}`}>{rec.title}</Link>
-                    </h4>
-                    <p style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{rec.description}</p>
-                    <div className="product-bottom">
-                      <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
-                      <button
-                        type="button"
-                        className="btn-transfer"
-                        onClick={() => {
-                          addToWishlist({
-                            variantId: rec.id,
-                            productId: rec.id,
-                            slug: rec.slug,
-                            title: rec.title,
-                            sku: rec.sku,
-                            priceAmount: rec.priceAmount,
-                          });
-                          showToast(`«${rec.title.slice(0, 20)}…» به لیست علاقه‌مندی افزوده شد`);
-                        }}
-                      >
-                        ♥ ذخیره در علاقه‌مندی
-                      </button>
+              {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => {
+                const recHref = getCanonicalProductHref(rec.slug);
+                return (
+                  <article className="product-card" key={rec.id}>
+                    <Link className="product-art" href={recHref}>
+                      {rec.image ? (
+                        <img src={rec.image} alt={rec.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      ) : (
+                        <span className="art-index">{rec.title.slice(0, 1)}</span>
+                      )}
+                      <span className="art-caption">✓ موجود در انبار مرکزی</span>
+                    </Link>
+                    <div className="product-copy">
+                      <span className="product-card-brand">{rec.brand}</span>
+                      <h4 style={{ margin: '4px 0 8px', fontSize: '0.92rem' }}>
+                        <Link href={recHref}>{rec.title}</Link>
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{rec.description}</p>
+                      <div className="product-bottom">
+                        <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
+                        <button
+                          type="button"
+                          className="btn-transfer"
+                          onClick={() => {
+                            addToWishlist({
+                              variantId: rec.id,
+                              productId: rec.id,
+                              slug: rec.slug,
+                              title: rec.title,
+                              sku: rec.sku,
+                              priceAmount: rec.priceAmount,
+                            });
+                            showToast(`«${rec.title.slice(0, 20)}…» به لیست علاقه‌مندی افزوده شد`);
+                          }}
+                        >
+                          ♥ ذخیره در علاقه‌مندی
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -183,7 +189,7 @@ export default function WishlistPage() {
       {/* Responsive Wishlist Grid with Instant Transfer and Quick Removal */}
       <div className="product-grid">
         {items.map((item) => {
-          const href = `/products/${encodeURIComponent(item.slug)}`;
+          const href = getCanonicalProductHref(item.slug);
           const brandName = item.title.includes('ReeMed') || item.slug.includes('reemed') || item.slug.includes('pod')
             ? 'ReeMed Medical Pro'
             : 'ReeSkin Clinical';

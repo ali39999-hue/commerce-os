@@ -125,6 +125,7 @@ const INITIAL_PRODUCTS: PimProduct[] = [
 ];
 
 export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRole?: string }) {
+  const canEditPim = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
   const [products, setProducts] = useState<PimProduct[]>(INITIAL_PRODUCTS);
   const [selectedProduct, setSelectedProduct] = useState<PimProduct | null>(null);
   const [showEditor, setShowEditor] = useState(false);
@@ -133,6 +134,8 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   const [claimInput, setClaimInput] = useState("");
   const [ingredientInput, setIngredientInput] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [brandFilter, setBrandFilter] = useState<"ALL" | "ReeSkin" | "ReeMed">("ALL");
 
   const handleEdit = (p: PimProduct) => {
     setSelectedProduct(p);
@@ -162,6 +165,21 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
     setIngredientInput("");
   };
 
+  const filteredProducts = products.filter((p) => {
+    const matchSearch =
+      !searchQuery.trim() ||
+      p.titleFa.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.slug.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchBrand =
+      brandFilter === "ALL" ||
+      (brandFilter === "ReeSkin" && p.brand.includes("ReeSkin")) ||
+      (brandFilter === "ReeMed" && p.brand.includes("ReeMed"));
+
+    return matchSearch && matchBrand;
+  });
+
   return (
     <div className="tab-pane">
       <section className="admin-section-box">
@@ -173,44 +191,93 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
           <span className="badge-live">PIM / DAM ACTIVE</span>
         </div>
 
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>عنوان محصول</th>
-              <th>دسته‌بندی</th>
-              <th>برند</th>
-              <th>قیمت پایه (تومان)</th>
-              <th>واریانت‌ها</th>
-              <th>مواد موثره</th>
-              <th>ادعای بالینی</th>
-              <th>وضعیت</th>
-              <th>عملیات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id}>
-                <td className="bold">{p.titleFa}</td>
-                <td>{p.category}</td>
-                <td>{p.brand}</td>
-                <td className="bold">{new Intl.NumberFormat("fa-IR").format(p.priceTomans)}</td>
-                <td>{faNumber(p.variantsCount)} واریانت</td>
-                <td>{faNumber(p.ingredientsCount)} ماده فعال</td>
-                <td>{faNumber(p.claimsCount)} ادعای تاییدشده</td>
-                <td>
-                  <span className={`status-pill ${p.status === "PUBLISHED" ? "paid" : "processing"}`}>
-                    {p.status === "PUBLISHED" ? "منتشر شده" : "پیش‌نویس"}
-                  </span>
-                </td>
-                <td>
-                  <button onClick={() => handleEdit(p)} className="btn-action">
-                    ✏️ ویرایش PIM
-                  </button>
-                </td>
+        {/* Toolbar */}
+        <div className="admin-toolbar">
+          <div className="admin-search-wrapper">
+            <input
+              type="text"
+              placeholder="🔍 جستجو در کاتالوگ (نام، دسته‌بندی یا شناسه انگلیسی)..."
+              className="admin-search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="filter-chips-group">
+            <button
+              className={`filter-chip ${brandFilter === "ALL" ? "active" : ""}`}
+              onClick={() => setBrandFilter("ALL")}
+            >
+              همه ({faNumber(products.length)})
+            </button>
+            <button
+              className={`filter-chip ${brandFilter === "ReeSkin" ? "active" : ""}`}
+              onClick={() => setBrandFilter("ReeSkin")}
+            >
+              مراقبت خانگی ReeSkin ({faNumber(products.filter((p) => p.brand.includes("ReeSkin")).length)})
+            </button>
+            <button
+              className={`filter-chip ${brandFilter === "ReeMed" ? "active" : ""}`}
+              onClick={() => setBrandFilter("ReeMed")}
+            >
+              تجهیزات و مطبی ReeMed ({faNumber(products.filter((p) => p.brand.includes("ReeMed")).length)})
+            </button>
+          </div>
+        </div>
+
+        <div className="table-responsive-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>عنوان محصول</th>
+                <th>دسته‌بندی</th>
+                <th>برند</th>
+                <th>قیمت پایه (تومان)</th>
+                <th>واریانت‌ها</th>
+                <th>مواد موثره</th>
+                <th>ادعای بالینی</th>
+                <th>وضعیت انتشار</th>
+                <th>عملیات</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: "center", padding: "20px" }} className="muted-text">
+                    محصولی با این مشخصات یافت نشد.
+                  </td>
+                </tr>
+              ) : (
+                filteredProducts.map((p) => (
+                  <tr key={p.id}>
+                    <td className="bold">{p.titleFa}</td>
+                    <td>{p.category}</td>
+                    <td>
+                      <span className="category-pill">{p.brand}</span>
+                    </td>
+                    <td className="bold tabular-nums">{new Intl.NumberFormat("fa-IR").format(p.priceTomans)}</td>
+                    <td className="tabular-nums">{faNumber(p.variantsCount)} واریانت</td>
+                    <td className="tabular-nums">{faNumber(p.ingredientsCount)} ماده فعال</td>
+                    <td className="tabular-nums">{faNumber(p.claimsCount)} ادعای تاییدشده</td>
+                    <td>
+                      <span className={`status-pill ${p.status === "PUBLISHED" ? "approved pulse" : "pending_review"}`}>
+                        {p.status === "PUBLISHED" ? "منتشر شده" : "پیش‌نویس"}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className="btn-action"
+                        title={!canEditPim ? "حسابدار: فقط مشاهده کاتالوگ" : "ویرایش کاتالوگ PIM"}
+                      >
+                        {canEditPim ? "ویرایش PIM" : "مشاهده PIM"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {showEditor && selectedProduct && (

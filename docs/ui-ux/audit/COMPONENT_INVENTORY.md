@@ -30,6 +30,7 @@ These reusable, headless-compatible atomic primitives provide the foundational b
 | **`Skeleton`** | `packages/ui/src/Skeleton.tsx` | `text`, `card`, `avatar`, `button`, `rect` | shimmering pulse | CSS keyframes | 15+ |
 | **`QuickViewModal`** | `packages/ui/src/QuickViewModal.tsx` | `pdpMinimal`, `withAddToCart` | open, loading, ready | `Modal`, `Button`, `PriceTag` | 4+ |
 | **`DiagnosticQuizModal`**| `packages/ui/src/DiagnosticQuizModal.tsx`| `skinTriageWizard`, `multistep` | step navigation, calculating, recommendation | `Modal`, `Button`, `Card` | 3+ |
+| **`ClinicalProductGallery`**| `packages/ui/src/ClinicalProductGallery.tsx`| `withThumbnails`, `rtlTouchScrubber`, `zoom` | idle, dragging, activeIndex, thumbnail select | `embla-carousel-react`, `lucide-react` | 6+ |
 
 ---
 
@@ -70,6 +71,7 @@ Engineered specifically for clinical accuracy, physiological simulations, and 36
 | Component Name | File Path | Rendering Mode | Purpose & States |
 | :--- | :--- | :--- | :--- |
 | **`HeroBanner`** | `components/home/hero-banner.tsx` | Client / Server | High-impact clinical editorial hero banner with direct CTAs to CarboxyGel and Carbox consoles. |
+| **`PathSelector`** | `components/home/path-selector.tsx` | Client / Server | Blueprint §5 item 4 customer journey path selector: Home Care (ReeSkin) vs Cabin Consumables vs Medical Hardware. |
 | **`TrustBar`** | `components/home/trust-bar.tsx` | Server | 4 clinical trust badges: Cambridge Research, CE Medical Class IIb, 2–8°C Cold Chain, 100% TTAC. |
 | **`CategoryConcernNav`** | `components/home/category-concern-nav.tsx` | Client | 5 clinical skin concern cards linking to filtered search results. |
 | **`BrandFamilyRail`** | `components/home/brand-family-rail.tsx` | Client | Architectural comparison and showcase of ReeSkin Clinical vs. ReeMed Medical Pro. |

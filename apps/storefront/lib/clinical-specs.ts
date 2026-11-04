@@ -246,3 +246,27 @@ export function getClinicalSpecs(item: { slug?: string; title?: string }): Clini
     certifications: ['استاندارد درموسوتیکال UK', 'Cruelty-Free', 'CE Standards'],
   };
 }
+
+/**
+ * Resolves a product or slug to its canonical dedicated route if it exists,
+ * falling back to `/products/${slug}`.
+ */
+export function getCanonicalProductHref(slug?: string | null): string {
+  if (!slug) return '/search';
+  const clean = slug.toLowerCase().trim();
+  const dedicatedRoutes = new Set([
+    'carboxygel',
+    'carboxypod',
+    'carboxypad',
+    'crystalene',
+    'healene',
+    'silicalene',
+    'carbox',
+    'plasmax',
+  ]);
+  if (dedicatedRoutes.has(clean)) {
+    return `/${clean}`;
+  }
+  return `/products/${encodeURIComponent(clean)}`;
+}
+

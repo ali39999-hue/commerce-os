@@ -72,6 +72,14 @@ describe("Iranian Commerce Localization", () => {
     const formatted = formatJalaliDate(d);
     expect(formatted.length).toBeGreaterThan(0);
   });
+
+  it("masks sensitive commerce PII data correctly", async () => {
+    const { maskIranianMobile, maskNationalId, maskShetabCard, maskPostalAddress } = await import("../src/index.js");
+    expect(maskIranianMobile("09121234567")).toBe("0912***4567");
+    expect(maskNationalId("0010312013")).toBe("001****013");
+    expect(maskShetabCard("6219861012345678")).toBe("6219-****-****-5678");
+    expect(maskPostalAddress("تهران، خیابان آزادی، پلاک ۱۲، واحد ۴")).toBe("تهران، خیابان آزادی، پلاک **، واحد *");
+  });
 });
 
 describe("Market & Locale Context", () => {
