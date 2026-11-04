@@ -169,7 +169,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       quantity: qty,
       currency: "IRR",
     });
-    setIsDrawerOpen(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("commerce_os:cart_bump", {
+          detail: { variantId: item.variantId, qty },
+        })
+      );
+    }
   }, []);
 
   const removeItem = useCallback((variantId: string) => {

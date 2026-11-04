@@ -2,6 +2,7 @@
 
 import React, { useState, useId } from "react";
 import Link from "next/link";
+import "./bohr-simulator.css";
 
 export function BohrOxygenationSimulator() {
   const gradientId = useId();
@@ -33,15 +34,15 @@ export function BohrOxygenationSimulator() {
       return {
         stage: "فاز فعال‌سازی و افت اسیدیته (Bohr Transduction Phase)",
         desc: "نفوذ حباب‌های میکرو CO2 باعث افت کنترل‌شده pH بافتی و گسست پیوند آهن-اکسیژن هموگلوبین می‌گردد. عروق مویرگی متسع شده و پرفیوژن خونی سرعت می‌گیرد.",
-        badgeColor: "#14b8a6",
-        glowColor: "rgba(20, 184, 166, 0.35)",
+        badgeColor: "#77B091",
+        glowColor: "rgba(119, 176, 145, 0.35)",
       };
     }
     return {
       stage: "حداکثر اشباع بافتی (Optimal Clinical Hyper-Oxygenation)",
       desc: "سیلاب اکسیژن درون‌سلولی؛ تنفس میتوکندریایی به اوج ۳.۴ برابری رسیده، فیبروبلاست‌ها سنتز کلاژن نوع ۱ و ۳ را آغاز کرده و بازسازی سد دفاعی فعال می‌شود.",
-      badgeColor: "#0284c7",
-      glowColor: "rgba(2, 132, 199, 0.45)",
+      badgeColor: "#d97706",
+      glowColor: "rgba(217, 119, 6, 0.35)",
     };
   };
 
@@ -50,26 +51,24 @@ export function BohrOxygenationSimulator() {
   // Capillary radius for SVG visualization
   const capillaryWidth = 28 + (co2Concentration / 100) * 44;
   // Dissociation shift curve coordinate
-  // Standard curve: start (40, 220), control (120, 160), end (300, 40)
-  // Right shifted curve: start (40, 220), control (170 + co2*0.6, 190), end (300, 80 - co2*0.3)
   const curveCtrlX = 140 + (co2Concentration / 100) * 70;
   const curveCtrlY = 175 + (co2Concentration / 100) * 20;
 
   return (
-    <section className="bohr-simulator-section" aria-labelledby="bohr-sim-title">
+    <section className="bohr-simulator-section" dir="rtl" aria-labelledby="bohr-sim-title">
       <div className="bohr-sim-wrapper">
         {/* Top Header & Context */}
         <div className="bohr-sim-header">
           <div className="sim-badge-row">
             <span className="sim-chip">
-              <span className="sim-chip-pulse"></span>
+              <span className="sim-chip-pulse" aria-hidden="true"></span>
               PHYSIOLOGICAL BOHR EFFECT SIMULATOR
             </span>
             <span className="sim-chip-sub">مدل دینامیک هموگلوبین و اکسیژن‌رسانی عروقی</span>
           </div>
 
           <h2 id="bohr-sim-title" className="bohr-sim-title">
-            شبیه‌ساز تعاملی اثر بوهر: کنترل غلظت CO₂ و رهاسازی اکسیژن بافتی
+            شبیه‌ساز تعاملی اثر بوهر: <span className="highlight">کنترل غلظت CO₂</span> و رهاسازی اکسیژن بافتی
           </h2>
           <p className="bohr-sim-lead">
             اسلایدر غلظت دی‌اکسید کربن ترابافتی را تغییر دهید تا ببینید چگونه فرمولاسیون CarboxyGel دکتر درمر با تغییر میلی‌متری pH، منحنی گسست هموگلوبین را جابه‌جا کرده و سلول‌ها را بدون سوزن از عمق مویرگ‌ها اکسیژن‌باران می‌کند.
@@ -160,19 +159,19 @@ export function BohrOxygenationSimulator() {
                   </linearGradient>
                   {/* Blood lumen plasma gradient */}
                   <radialGradient id={`${gradientId}-plasma`} cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#fef2f2" />
+                    <stop offset="0%" stopColor="#fff1f2" />
                     <stop offset="100%" stopColor="#fee2e2" />
                   </radialGradient>
                   {/* Oxygen burst glow */}
                   <radialGradient id={`${gradientId}-o2glow`} cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.9" />
-                    <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#FFD098" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
                   </radialGradient>
                 </defs>
 
                 {/* Epidermis Surface Line */}
-                <rect x="0" y="0" width="460" height="22" fill="#fdf2e9" />
-                <text x="440" y="15" fill="#9a3412" fontSize="9" fontWeight="700" textAnchor="end">
+                <rect x="0" y="0" width="460" height="22" fill="#FFF6E8" />
+                <text x="440" y="15" fill="#7a4d16" fontSize="9" fontWeight="700" textAnchor="end">
                   سطح پوست / لایه شاخی استراتوم کورنئوم (CarboxyGel Layer)
                 </text>
 
@@ -183,13 +182,13 @@ export function BohrOxygenationSimulator() {
                     cx={50 + i * 50}
                     cy={22 + ((i * 17) % 35)}
                     r={3 + (co2Concentration / 100) * 3.5}
-                    fill="#14b8a6"
-                    opacity={0.4 + (co2Concentration / 100) * 0.55}
+                    fill="#77B091"
+                    opacity={0.5 + (co2Concentration / 100) * 0.5}
                   />
                 ))}
 
                 {/* Dermis background */}
-                <rect x="0" y="22" width="460" height="238" fill="#faf5ff" opacity="0.6" />
+                <rect x="0" y="22" width="460" height="238" fill="#f8fafc" opacity="0.7" />
 
                 {/* Capillary Tube Wall Upper */}
                 <rect
@@ -246,9 +245,9 @@ export function BohrOxygenationSimulator() {
                     {/* Released O2 Molecules bursting towards interstitial tissue */}
                     {co2Concentration > 20 && (
                       <>
-                        <circle cx={rbc.cx - 15} cy={rbc.cy - (capillaryWidth - 5)} r="5" fill="#0284c7" />
-                        <circle cx={rbc.cx + 10} cy={rbc.cy - (capillaryWidth - 10)} r="6" fill="#38bdf8" />
-                        <circle cx={rbc.cx} cy={rbc.cy + (capillaryWidth - 8)} r="5" fill="#0284c7" />
+                        <circle cx={rbc.cx - 15} cy={rbc.cy - (capillaryWidth - 5)} r="5" fill="#f59e0b" />
+                        <circle cx={rbc.cx + 10} cy={rbc.cy - (capillaryWidth - 10)} r="6" fill="#FFD098" stroke="#d97706" strokeWidth="1" />
+                        <circle cx={rbc.cx} cy={rbc.cy + (capillaryWidth - 8)} r="5" fill="#f59e0b" />
                       </>
                     )}
                   </g>
@@ -264,7 +263,7 @@ export function BohrOxygenationSimulator() {
                   />
                 )}
 
-                <text x="230" y="245" fill="#0369a1" fontSize="11" fontWeight="800" textAnchor="middle">
+                <text x="230" y="245" fill="#475569" fontSize="11" fontWeight="800" textAnchor="middle">
                   {`پرفیوژن عروق و رهاسازی اکسیژن آزاد O₂ در مایع بین‌سلولی درمیس`}
                 </text>
               </svg>
@@ -336,10 +335,10 @@ export function BohrOxygenationSimulator() {
                 <path
                   d={`M 60 210 Q ${curveCtrlX} ${curveCtrlY}, 280 115 T 420 ${50 + (co2Concentration / 100) * 35}`}
                   fill="none"
-                  stroke="#0ea5e9"
+                  stroke="#77B091"
                   strokeWidth="3.5"
                 />
-                <text x="280" y="145" fill="#0284c7" fontSize="10" fontWeight="800">
+                <text x="280" y="145" fill="#589073" fontSize="10" fontWeight="800">
                   انتقال به راست (Bohr Shift)
                 </text>
 
@@ -349,10 +348,10 @@ export function BohrOxygenationSimulator() {
                   y1="135"
                   x2="220"
                   y2={135 + (co2Concentration / 100) * 45}
-                  stroke="#ef4444"
+                  stroke="#f43f5e"
                   strokeWidth="2.5"
                 />
-                <text x="230" y={150 + (co2Concentration / 100) * 15} fill="#dc2626" fontSize="10" fontWeight="900">
+                <text x="230" y={150 + (co2Concentration / 100) * 15} fill="#be123c" fontSize="10" fontWeight="900">
                   {`Δ O₂ رهاشده: +${o2Release}٪`}
                 </text>
               </svg>
@@ -374,7 +373,7 @@ export function BohrOxygenationSimulator() {
 
               <div className="sm-box">
                 <span className="smb-label">افت اسیدیته هدفمند</span>
-                <span className="smb-val">pH {pH}</span>
+                <span className="smb-val highlight-gold">pH {pH}</span>
                 <small className="smb-sub">تحریک آنزیم‌های بازسازی</small>
               </div>
 

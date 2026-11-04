@@ -108,6 +108,19 @@ export interface SkincareBundleItem {
   inStock: boolean;
 }
 
+export interface ProductDetailedOverview {
+  introParagraphs?: string[];
+  featuresTitle?: string;
+  features?: string[];
+  ingredientsTitle?: string;
+  keyIngredients?: Array<{
+    name: string;
+    description: string;
+  }>;
+  usageTitle?: string;
+  usageInstructions?: string;
+}
+
 export interface ExtendedProductData {
   id: string;
   slug: string;
@@ -162,4 +175,5 @@ export interface ExtendedProductData {
     ratingValue: number;
     reviewCount: number;
   };
+  detailedOverview?: ProductDetailedOverview;
 }

@@ -20,22 +20,26 @@
   --line: #e2e8f0;              /* Crisp minimal borders */
   --line-strong: #cbd5e1;       /* Strong divider */
   
-  /* Primary Clinical Teal & Deep Oceanic Blue */
-  --brand: #0f766e;             /* Primary Clinical Teal */
-  --brand-deep: #115e59;        /* Deep Medical Teal */
-  --brand-dark: #042f2e;        /* Darkest Forest Slate */
-  --brand-light: #14b8a6;       /* Radiant Bio Teal */
-  --brand-tint: #f0fdfa;        /* Ultra light teal wash */
+  /* Primary Sage Green & Warm Peach Palette (#77B091 & #FFD098) */
+  --brand: #77B091;             /* Primary Fresh Sage Green */
+  --brand-sage: #77B091;
+  --brand-deep: #5e9577;        /* Deep Sage Accent */
+  --brand-dark: #477c60;        /* Forest Slate */
+  --brand-light: #98c6ad;       /* Soft Sage Wash */
+  --brand-tint: rgba(119, 176, 145, 0.12); /* Ultra Light Sage Wash */
 
   /* Medical Blue / Cold Chain Accent */
   --medical-blue: #0369a1;      /* Elevated contrast for light surfaces */
   --medical-tint: #f0f9ff;
 
-  /* Warm Sand / Amber Luxury Accents */
-  --accent: #d97706;            /* Warm Amber / Gold */
-  --accent-hover: #b45309;      /* Rich Gold Hover */
-  --accent-tint: #fffbeb;       /* Warm Cream */
-  --accent-sand: #fbf7ee;       /* Soft Sand */
+  /* Warm Peach / Amber Luxury Accents */
+  --brand-peach: #FFD098;       /* Warm Soft Peach */
+  --brand-warm: #FFD098;
+  --accent: #FFD098;            /* Warm Peach / Gold */
+  --accent-hover: #f5be7e;      /* Rich Peach Hover */
+  --accent-dark: #805626;       /* Deep Amber Bronze */
+  --accent-tint: rgba(255, 208, 152, 0.18); /* Soft Warm Tint */
+  --accent-sand: #fef9f1;       /* Soft Sand */
 
   /* Status Colors */
   --danger: #ef4444;
@@ -62,11 +66,12 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  background: #ffffff;
 }
 body {
   margin: 0;
   overflow-x: hidden;
-  background: var(--paper-warm);
+  background: #ffffff;
   color: var(--ink);
   font-family: Vazirmatn, IRANSansX, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.7;
@@ -3324,183 +3329,14 @@ button { font-family: inherit; }
   padding: 0 20px;
 }
 
-/* ── 7. Science Spotlight & Bohr Effect ── */
+/* ── 7. Science Spotlight & Bohr Effect (Styled in components/home/science-spotlight.css) ── */
 .science-spotlight-section {
-  max-width: 1400px;
-  margin: 52px auto 0;
-  padding: 0 24px;
-}
-.science-layout-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 52px;
-  align-items: center;
-  background: radial-gradient(circle at 85% 20%, #064e4b 0%, #042f2e 55%, #021a19 100%);
-  border-radius: var(--radius-xl);
-  padding: clamp(36px, 5.5vw, 72px);
-  color: #ffffff;
-  box-shadow: 0 25px 60px -15px rgba(4, 47, 46, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-.science-main-heading {
-  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
-  font-weight: 950;
-  line-height: 1.3;
-  margin: 0 0 20px;
-  letter-spacing: -0.03em;
-}
-.science-lead {
-  font-size: 1.02rem;
-  line-height: 1.88;
-  color: #cbd5e1;
-  margin-bottom: 34px;
-}
-.science-steps-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.science-step-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  background: rgba(15, 23, 42, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-}
-.science-step-card:hover {
-  transform: translateX(-4px);
-  border-color: rgba(45, 212, 191, 0.35);
-  background: rgba(15, 23, 42, 0.55);
-}
-.step-num-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
-}
-.step-num-badge {
-  width: 42px;
-  height: 42px;
-  background: rgba(45, 212, 191, 0.15);
-  border: 1px solid rgba(45, 212, 191, 0.4);
-  color: #2dd4bf;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.05rem;
-  font-weight: 950;
-}
-.step-phase-tag {
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  direction: ltr;
-}
-.step-title {
-  font-size: 1.02rem;
-  font-weight: 850;
-  color: #f1f5f9;
-  margin: 0 0 6px;
-}
-.step-desc {
-  font-size: 0.88rem;
-  color: #94a3b8;
-  line-height: 1.7;
-  margin: 0;
-}
-.diagram-card {
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: var(--radius);
-  padding: 26px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-.diagram-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding-bottom: 16px;
-  margin-bottom: 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.dh-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.diagram-badge {
-  font-size: 0.7rem;
-  font-weight: 850;
-  color: #2dd4bf;
-  letter-spacing: 0.08em;
-}
-.diagram-sub {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #e2e8f0;
-}
-.diagram-standard {
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  direction: ltr;
-}
-.diagram-illustration {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 240px;
-}
-.science-svg {
   width: 100%;
-  height: auto;
-  max-height: 290px;
+  max-width: 1200px;
+  margin: 48px auto 64px auto;
+  padding: 0 20px;
 }
-.diagram-caption {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-}
-.caption-metric {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  flex: 1;
-}
-.caption-divider {
-  width: 1px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.15);
-}
-.metric-val {
-  font-size: 1.4rem;
-  font-weight: 950;
-  color: #38bdf8;
-  line-height: 1.1;
-}
-.metric-lbl {
-  font-size: 0.74rem;
-  color: #94a3b8;
-  margin-top: 4px;
-}
+
 
 /* ── 8. Clinical Results & Testimonials ── */
 .clinical-results-section {

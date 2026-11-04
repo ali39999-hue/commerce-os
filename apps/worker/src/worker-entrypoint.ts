@@ -169,7 +169,7 @@ async function handleOutboxEventSideEffects(event: any): Promise<void> {
             const points = Math.floor((totalRials / 10000) * LOYALTY_POINTS_PER_10000_IRR);
 
             if (points > 0) {
-              const newBalance = await prisma.$transaction(async (tx) => {
+              const newBalance = await prisma.$transaction(async (tx: any) => {
                 const account = await tx.loyaltyAccount.upsert({
                   where: { tenantId_userId: { tenantId: orderTenantId, userId } },
                   create: { tenantId: orderTenantId, userId },
@@ -424,7 +424,7 @@ async function sweepExpiredReservations(): Promise<number> {
       WHERE "reservationId" = ${res.id}::uuid
     `;
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       for (const line of lines) {
         await tx.$executeRaw`
           UPDATE inventory_levels
@@ -472,7 +472,7 @@ async function processDueSubscriptions(): Promise<number> {
 
   for (const sub of due) {
     try {
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: any) => {
         // Plan row missing (FK restrict normally prevents this): expire honestly
         if (!sub.plan) {
           await tx.subscription.update({

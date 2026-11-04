@@ -1,0 +1,459 @@
+/* ==========================================================================
+   RUPAK NEWEST PRODUCTS (جدیدترین محصولات)
+   Soft Sage-Green Banner with New Arrivals Carousel
+   ========================================================================== */
+
+.rupak-newest-section {
+  position: relative;
+  background-color: #ffffff;
+  padding-top: 24px;
+  padding-bottom: 60px;
+  direction: rtl;
+  font-family: var(--font-vazirmatn, 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+}
+
+.rupak-newest-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Sage-Green Banner Outer Container
+   -------------------------------------------------------------------------- */
+.rupak-newest-box {
+  background: linear-gradient(135deg, #c5d8cd 0%, #b5ccbf 50%, #a4bfb0 100%);
+  border-radius: 32px;
+  padding: 28px 24px;
+  box-shadow: 0 16px 36px -6px rgba(181, 204, 191, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle ambient sheen & botanical pattern */
+.rupak-newest-box::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.rupak-newest-inner {
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* --------------------------------------------------------------------------
+   Lead Column (Title, Illustration, View All) - Right Side in RTL
+   -------------------------------------------------------------------------- */
+.rupak-newest-lead {
+  flex: 0 0 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  padding: 8px 4px;
+  position: relative;
+  z-index: 5;
+}
+
+.rupak-newest-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.rupak-newest-title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 3px 10px rgba(50, 90, 70, 0.22);
+  letter-spacing: -0.02em;
+}
+
+/* 3 Bottles Art Illustration */
+.rupak-newest-art-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 140px;
+  margin: auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rupak-newest-art-img {
+  max-width: 100%;
+  max-height: 125px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(50, 90, 70, 0.2));
+  animation: rupak-art-float 4s ease-in-out infinite;
+}
+
+@keyframes rupak-art-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.rupak-newest-lead-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.rupak-newest-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.rupak-newest-viewall:hover {
+  background: #ffffff;
+  color: #4b7a61;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rupak-newest-mini-arrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rupak-mini-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.rupak-mini-arrow-btn:hover:not(.disabled) {
+  background: #ffffff;
+  color: #4b7a61;
+  transform: scale(1.08);
+}
+
+.rupak-mini-arrow-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Product Cards Carousel - Left Side in RTL
+   -------------------------------------------------------------------------- */
+.rupak-newest-carousel-wrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+/* Floating Swipe Buttons */
+.rupak-carousel-swipe-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  color: #77B091;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.rupak-carousel-swipe-btn:hover:not(.disabled) {
+  background-color: #FFD098;
+  color: #452b11;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 208, 152, 0.55);
+}
+
+.rupak-carousel-swipe-btn.swipe-left {
+  left: -12px;
+}
+
+.rupak-carousel-swipe-btn.swipe-right {
+  right: -12px;
+}
+
+.rupak-carousel-swipe-btn.disabled {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.8);
+}
+
+.rupak-newest-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 6px 4px 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.rupak-newest-carousel.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+}
+
+.rupak-newest-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.rupak-newest-card {
+  flex: 0 0 215px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  scroll-snap-align: start;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-newest-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Top Discount Badge */
+.rupak-newest-discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.35);
+  z-index: 5;
+}
+
+.rupak-newest-img-box {
+  width: 100%;
+  height: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  overflow: hidden;
+  background-color: #fbfbfc;
+  border-radius: 12px;
+}
+
+.rupak-newest-img {
+  max-width: 90%;
+  max-height: 120px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.rupak-newest-card:hover .rupak-newest-img {
+  transform: scale(1.08);
+}
+
+.rupak-newest-category {
+  font-size: 11px;
+  color: #d97706;
+  font-weight: 700;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rupak-newest-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+  min-height: 38px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.rupak-newest-card:hover .rupak-newest-card-title {
+  color: #77B091;
+}
+
+.rupak-newest-price-row {
+  margin-top: auto;
+  margin-bottom: 12px;
+  text-align: left;
+  direction: rtl;
+}
+
+.rupak-newest-old-price {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  text-decoration: line-through;
+  margin-bottom: 2px;
+}
+
+.rupak-newest-price {
+  font-size: 14px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.rupak-newest-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  margin-right: 3px;
+}
+
+/* "افزودن به سبد خرید" Button */
+.rupak-newest-add-btn {
+  width: 100%;
+  background-color: #77B091;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(95, 168, 125, 0.3);
+  transition: all 0.22s ease;
+}
+
+.rupak-newest-add-btn:hover {
+  background-color: #5e9577;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(95, 168, 125, 0.45);
+}
+
+.rupak-newest-add-btn:active {
+  transform: scale(0.96);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .rupak-newest-inner {
+    flex-direction: column;
+  }
+
+  .rupak-newest-lead {
+    flex: auto;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .rupak-newest-title-block {
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
+
+  .rupak-newest-title {
+    font-size: 26px;
+  }
+
+  .rupak-newest-art-wrap {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .rupak-newest-box {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .rupak-newest-card {
+    flex: 0 0 185px;
+    padding: 12px;
+  }
+
+  .rupak-newest-img-box {
+    height: 110px;
+  }
+}
+
+@media (max-width: 640px) {
+  .rupak-carousel-swipe-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rupak-carousel-swipe-btn.swipe-left {
+    left: 2px;
+  }
+
+  .rupak-carousel-swipe-btn.swipe-right {
+    right: 2px;
+  }
+}

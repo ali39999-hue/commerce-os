@@ -98,9 +98,28 @@ export default function CartPage() {
           هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد خود
           اضافه نکرده‌اید.
         </p>
-        <Link href="/#catalog" className="primary-link">
-          مشاهده کاتالوگ درمانی و محصولات ReeSkin & ReeMed
-        </Link>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "16px" }}>
+          <Link href="/#catalog" className="primary-link">
+            مشاهده کاتالوگ درمانی و محصولات ReeSkin & ReeMed
+          </Link>
+          <Link
+            href="/account"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "10px 22px",
+              borderRadius: "999px",
+              background: "#ffffff",
+              border: "1px solid #cbd5e1",
+              color: "#334155",
+              textDecoration: "none",
+              fontWeight: 700,
+              fontSize: "14px",
+            }}
+          >
+            ورود به پنل کاربری من
+          </Link>
+        </div>
       </section>
     );
   }
@@ -161,9 +180,30 @@ export default function CartPage() {
             <h1>سبد خرید نسخه ({calculations.itemCount} کالا)</h1>
             {isSyncing && <span className="sync-badge">در حال بررسی موجودی زنده…</span>}
           </div>
-          <button onClick={clearCart} className="btn-text-danger">
-            پاک کردن کل سبد
-          </button>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <Link
+              href="/account?tab=cart"
+              style={{
+                fontSize: "12.5px",
+                color: "#274b24",
+                background: "#f1f5f9",
+                border: "1px solid #cbd5e1",
+                padding: "6px 14px",
+                borderRadius: "999px",
+                textDecoration: "none",
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span>مدیریت در پنل کاربری من</span>
+              <span aria-hidden="true">←</span>
+            </Link>
+            <button onClick={clearCart} className="btn-text-danger">
+              پاک کردن کل سبد
+            </button>
+          </div>
         </div>
 
         {/* Dynamic 2-Tier Milestone Progress Bar (1.5M Free Cold-Chain Delivery + 3M VIP Consultation) */}

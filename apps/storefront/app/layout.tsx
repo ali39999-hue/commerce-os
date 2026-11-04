@@ -12,7 +12,7 @@ const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F7F6F2' },
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
   ],
   width: 'device-width',

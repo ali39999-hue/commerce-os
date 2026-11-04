@@ -19,9 +19,34 @@ import {
   trackAddPaymentInfo,
   trackPurchase,
 } from "../../lib/analytics";
+import {
+  MapPin,
+  CheckCircle2,
+  Check,
+  Building,
+  CreditCard,
+  User,
+  Phone,
+  ShieldCheck,
+  Truck,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 export interface ProvinceCityMap {
   [province: string]: string[];
+}
+
+export interface SavedAddressItem {
+  id: string;
+  title: string;
+  receiverName: string;
+  phone: string;
+  province: string;
+  city: string;
+  postalCode: string;
+  postalAddress: string;
+  isDefault: boolean;
 }
 
 export const IRAN_PROVINCES: ProvinceCityMap = {
@@ -65,6 +90,78 @@ export default function CheckoutPage() {
   const [needTaxInvoice, setNeedTaxInvoice] = useState(false);
   const [nationalCode, setNationalCode] = useState("0010312013");
   const [companyEconomicCode, setCompanyEconomicCode] = useState("");
+
+  // Saved addresses from Account panel
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddressItem[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
+  // Synchronize saved addresses and active address from Account panel & localStorage
+  useEffect(() => {
+    const loadAddressFromStorage = () => {
+      try {
+        const rawAddresses = localStorage.getItem("commerce_os.account.addresses.v1");
+        const rawProfile = localStorage.getItem("commerce_os.account.profile.v1");
+        const rawSelectedId = localStorage.getItem("commerce_os.checkout.selectedAddressId");
+
+        const parsedProfile = rawProfile ? JSON.parse(rawProfile) : null;
+        let list: SavedAddressItem[] = rawAddresses ? JSON.parse(rawAddresses) : [];
+
+        // Apply profile defaults if available
+        if (parsedProfile) {
+          if (parsedProfile.fullName) setCustomerName(parsedProfile.fullName);
+          if (parsedProfile.phone) setCustomerPhone(parsedProfile.phone);
+          if (parsedProfile.email) setCustomerEmail(parsedProfile.email);
+          if (parsedProfile.nationalCode) setNationalCode(parsedProfile.nationalCode);
+        }
+
+        if (Array.isArray(list) && list.length > 0) {
+          setSavedAddresses(list);
+
+          // Find active address: selectedAddressId -> isDefault -> first
+          let chosen = list.find((a) => a.id === rawSelectedId);
+          if (!chosen) {
+            chosen = list.find((a) => a.isDefault) || list[0];
+          }
+
+          if (chosen) {
+            setSelectedAddressId(chosen.id);
+            setCustomerName(chosen.receiverName || parsedProfile?.fullName || "رضا موحدی");
+            setCustomerPhone(chosen.phone || parsedProfile?.phone || "09412791874");
+            setProvince(chosen.province || "تهران");
+            setCity(chosen.city || "تهران");
+            setPostalCode(chosen.postalCode || "");
+            setPostalAddress(chosen.postalAddress || "");
+          }
+        }
+      } catch (err) {
+        console.error("Error loading account data in checkout:", err);
+      }
+    };
+
+    loadAddressFromStorage();
+
+    const handleSync = () => loadAddressFromStorage();
+    window.addEventListener("commerce_os:address_selected", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("commerce_os:address_selected", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, []);
+
+  const handleSelectSavedAddress = (addr: SavedAddressItem) => {
+    setSelectedAddressId(addr.id);
+    setCustomerName(addr.receiverName);
+    setCustomerPhone(addr.phone);
+    setProvince(addr.province);
+    setCity(addr.city);
+    setPostalCode(addr.postalCode);
+    setPostalAddress(addr.postalAddress);
+    try {
+      localStorage.setItem("commerce_os.checkout.selectedAddressId", addr.id);
+      window.dispatchEvent(new Event("commerce_os:address_selected"));
+    } catch {}
+  };
 
   // Step 2: Shipping, Cold-Chain & Delivery Slot
   const [deliveryDay, setDeliveryDay] = useState("فردا (روز کاری)");
@@ -425,10 +522,35 @@ export default function CheckoutPage() {
 
       try {
         const orderHistoryItem = {
-          ...orderSnapshot,
-          status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
-          ref: orderResult.paymentIntentId || `REF-${Date.now().toString().slice(-8)}`,
+          orderNumber: orderSnapshot.orderNumber,
+          status: paymentCategory === "WALLET" ? "PAID" : "PROCESSING",
+          totalTomans: String(orderSnapshot.totalTomans || "0"),
+          totalRials: String(orderSnapshot.totalRials || "0"),
+          method: orderSnapshot.paymentMethod,
+          ref: orderResult?.paymentIntentId || `REF-${Date.now().toString().slice(-8)}`,
+          placedAt: orderSnapshot.placedAt,
+          customerName: orderSnapshot.customerName,
+          customerPhone: orderSnapshot.customerPhone,
+          nationalCode: orderSnapshot.nationalCode || null,
+          address: orderSnapshot.address,
+          shippingMethod: orderSnapshot.shippingMethod,
+          deliverySlot: orderSnapshot.deliverySlot,
+          trackingCode: orderSnapshot.trackingCode,
+          items: (orderSnapshot.items || []).map((it) => ({
+            id: it.sku || `item_${Math.random()}`,
+            title: it.title,
+            subtitle: "فرمولاسیون بالینی و مراقبت تخصصی",
+            quantity: it.qty,
+            priceTomans: String(BigInt(it.priceAmount || "0") / 10n),
+            image: it.sku?.includes("differin")
+              ? "/rupak-hero/prod-differin.jpg"
+              : it.sku?.includes("cicalfate") || it.sku?.includes("healene")
+              ? "/rupak-hero/prod-cicalfate.jpg"
+              : "/2-azel-170-hydrapod.webp",
+            category: "سفارش بالینی",
+          })),
         };
+
         localStorage.setItem("commerce_os.checkout.lastOrder", JSON.stringify(orderHistoryItem));
         const existingRaw = localStorage.getItem("commerce_os.account.orders.v1");
         const existing = existingRaw ? JSON.parse(existingRaw) : [];
@@ -436,8 +558,9 @@ export default function CheckoutPage() {
           "commerce_os.account.orders.v1",
           JSON.stringify([orderHistoryItem, ...existing])
         );
-      } catch {
-        // storage fallback
+        window.dispatchEvent(new Event("commerce_os:order_placed"));
+      } catch (e) {
+        console.error("Order storage error:", e);
       }
 
       clearCart();
@@ -464,10 +587,35 @@ export default function CheckoutPage() {
 
       try {
         const orderHistoryItem = {
-          ...orderSnapshot,
-          status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
+          orderNumber: orderSnapshot.orderNumber,
+          status: paymentCategory === "WALLET" ? "PAID" : "PROCESSING",
+          totalTomans: String(orderSnapshot.totalTomans || "0"),
+          totalRials: String(orderSnapshot.totalRials || "0"),
+          method: orderSnapshot.paymentMethod,
           ref: `REF-${Date.now().toString().slice(-8)}`,
+          placedAt: orderSnapshot.placedAt,
+          customerName: orderSnapshot.customerName,
+          customerPhone: orderSnapshot.customerPhone,
+          nationalCode: orderSnapshot.nationalCode || null,
+          address: orderSnapshot.address,
+          shippingMethod: orderSnapshot.shippingMethod,
+          deliverySlot: orderSnapshot.deliverySlot,
+          trackingCode: orderSnapshot.trackingCode,
+          items: (orderSnapshot.items || []).map((it) => ({
+            id: it.sku || `item_${Math.random()}`,
+            title: it.title,
+            subtitle: "فرمولاسیون بالینی و مراقبت تخصصی",
+            quantity: it.qty,
+            priceTomans: String(BigInt(it.priceAmount || "0") / 10n),
+            image: it.sku?.includes("differin")
+              ? "/rupak-hero/prod-differin.jpg"
+              : it.sku?.includes("cicalfate") || it.sku?.includes("healene")
+              ? "/rupak-hero/prod-cicalfate.jpg"
+              : "/2-azel-170-hydrapod.webp",
+            category: "سفارش بالینی",
+          })),
         };
+
         localStorage.setItem("commerce_os.checkout.lastOrder", JSON.stringify(orderHistoryItem));
         const existingRaw = localStorage.getItem("commerce_os.account.orders.v1");
         const existing = existingRaw ? JSON.parse(existingRaw) : [];
@@ -475,8 +623,9 @@ export default function CheckoutPage() {
           "commerce_os.account.orders.v1",
           JSON.stringify([orderHistoryItem, ...existing])
         );
-      } catch {
-        // ignore
+        window.dispatchEvent(new Event("commerce_os:order_placed"));
+      } catch (e) {
+        console.error("Order storage fallback error:", e);
       }
 
       clearCart();
@@ -524,23 +673,42 @@ export default function CheckoutPage() {
 
           <div className="confirmation-action-buttons">
             <Link
+              href="/account?tab=orders"
+              className="btn-view-order-tracking"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#274b24",
+                color: "#ffffff",
+                padding: "12px 24px",
+                borderRadius: "999px",
+                fontWeight: 800,
+                fontSize: "0.92rem",
+                textDecoration: "none",
+                boxShadow: "0 4px 14px rgba(39, 75, 36, 0.25)",
+              }}
+            >
+              مشاهده و رهگیری سفارش در پنل کاربری من ←
+            </Link>
+            <Link
               href={`/order/${confirmedOrder.orderNumber}`}
               className="btn-view-order-tracking"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "var(--brand-deep)",
-                color: "#ffffff",
+                background: "#f1f5f9",
+                color: "#0f172a",
+                border: "1px solid #cbd5e1",
                 padding: "12px 24px",
                 borderRadius: "999px",
                 fontWeight: 700,
                 fontSize: "0.92rem",
                 textDecoration: "none",
-                boxShadow: "0 2px 8px rgba(15, 23, 42, 0.15)",
               }}
             >
-              مشاهده و پیگیری زنده سفارش در سامانه ←
+              مشاهده فاکتور در صفحه سفارش
             </Link>
             <button
               type="button"
@@ -730,6 +898,207 @@ export default function CheckoutPage() {
             <p className="section-desc">
               اطلاعات جهت ثبت فاکتور رسمی، انطباق با شاهکار و صدور بارنامه پست پیشتاز و تیپاکس استفاده می‌شود.
             </p>
+
+            {/* SAVED ADDRESSES SELECTOR FROM ACCOUNT PANEL */}
+            {savedAddresses.length > 0 && (
+              <div
+                style={{
+                  marginBottom: "24px",
+                  padding: "18px 20px",
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "14px",
+                    flexWrap: "wrap",
+                    gap: "8px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "8px",
+                        background: "#274b24",
+                        color: "#ffffff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <MapPin size={16} />
+                    </div>
+                    <div>
+                      <strong style={{ fontSize: "0.95rem", color: "#0f172a", display: "block" }}>
+                        انتخاب از آدرس‌های ذخیره‌شده پنل کاربری
+                      </strong>
+                      <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                        روی نشانی مورد نظر کلیک کنید تا اطلاعات تحویل و بارنامه فورا تنظیم شود
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/account?tab=addresses"
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "#274b24",
+                      fontWeight: 800,
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      background: "#ffffff",
+                      padding: "6px 14px",
+                      borderRadius: "8px",
+                      border: "1px solid #cbd5e1",
+                    }}
+                  >
+                    <span>مدیریت یا افزودن آدرس در پنل</span>
+                    <span>←</span>
+                  </Link>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                    gap: "12px",
+                  }}
+                >
+                  {savedAddresses.map((addr) => {
+                    const isSelected = addr.id === selectedAddressId;
+                    return (
+                      <div
+                        key={addr.id}
+                        onClick={() => handleSelectSavedAddress(addr)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") handleSelectSavedAddress(addr);
+                        }}
+                        style={{
+                          border: isSelected ? "2px solid #274b24" : "1px solid #cbd5e1",
+                          background: isSelected ? "#f0fdf4" : "#ffffff",
+                          borderRadius: "12px",
+                          padding: "14px 16px",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          position: "relative",
+                          boxShadow: isSelected
+                            ? "0 4px 14px rgba(39, 75, 36, 0.12)"
+                            : "0 1px 3px rgba(0,0,0,0.03)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <div
+                              style={{
+                                width: "18px",
+                                height: "18px",
+                                borderRadius: "50%",
+                                border: isSelected ? "5px solid #274b24" : "2px solid #94a3b8",
+                                background: "#ffffff",
+                                flexShrink: 0,
+                                transition: "all 0.2s ease",
+                              }}
+                            />
+                            <strong style={{ fontSize: "0.92rem", color: "#0f172a" }}>
+                              {addr.title}
+                            </strong>
+                          </div>
+
+                          {isSelected ? (
+                            <span
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 800,
+                                background: "#274b24",
+                                color: "#ffffff",
+                                padding: "2px 8px",
+                                borderRadius: "999px",
+                              }}
+                            >
+                              ✓ نشانی منتخب خرید
+                            </span>
+                          ) : addr.isDefault ? (
+                            <span
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 700,
+                                background: "#dcfce7",
+                                color: "#15803d",
+                                padding: "2px 8px",
+                                borderRadius: "999px",
+                              }}
+                            >
+                              پیش‌فرض
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <p
+                          style={{
+                            margin: "4px 0 8px",
+                            fontSize: "0.84rem",
+                            color: "#334155",
+                            lineHeight: "1.5",
+                          }}
+                        >
+                          {addr.province}، {addr.city} — {addr.postalAddress}
+                        </p>
+
+                        <div
+                          style={{
+                            fontSize: "0.78rem",
+                            color: "#64748b",
+                            display: "flex",
+                            gap: "12px",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <span>گیرنده: <strong>{addr.receiverName}</strong></span>
+                          <span>تماس: <span dir="ltr">{addr.phone}</span></span>
+                          {addr.postalCode && (
+                            <span>کد پستی: <span dir="ltr">{addr.postalCode}</span></span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "14px",
+                    fontSize: "0.8rem",
+                    color: "#475569",
+                  }}
+                >
+                  <span style={{ color: "#274b24", fontWeight: 800 }}>ℹ</span>
+                  <span>
+                    اطلاعات نشانی انتخاب‌شده در فیلدهای زیر بارگذاری شده است؛ در صورت نیاز به ویرایش موقت، می‌توانید فیلدها را تغییر دهید:
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div className="form-grid">
               <label className="form-field">

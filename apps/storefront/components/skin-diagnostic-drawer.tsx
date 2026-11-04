@@ -237,7 +237,6 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
     setAddedToCart(true);
     setTimeout(() => {
       onClose();
-      openCartDrawer();
     }, 900);
   };
 

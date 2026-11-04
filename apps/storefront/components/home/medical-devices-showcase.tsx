@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { CanvasSequencePlayer, HotspotPin } from "../interactive/canvas-sequence-player";
+import "./medical-devices-showcase.css";
 
 interface DeviceHotspot {
   id: number;
@@ -156,7 +157,7 @@ export function MedicalDevicesShowcase() {
   const activeSpot = dev.hotspots.find((h) => h.id === selectedHotspotId) || dev.hotspots[0];
 
   return (
-    <section className="devices-showcase-section" aria-labelledby="devices-title">
+    <section className="devices-showcase-section" id="medical-devices" aria-labelledby="devices-title">
       <div className="devices-showcase-wrapper">
         {/* Section Header */}
         <div className="devices-header">
@@ -175,18 +176,18 @@ export function MedicalDevicesShowcase() {
         </div>
 
         {/* Device Switcher Tabs */}
-        <div className="device-tabs-row" role="tablist">
+        <div className="device-tabs-row" role="tablist" aria-label="انتخاب کنسول پزشکی">
           <button
             type="button"
             role="tab"
             aria-selected={activeDevice === "carbox"}
-            className={`dev-tab-btn ${activeDevice === "carbox" ? "active" : ""}`}
+            className={`dev-tab-btn ${activeDevice === "carbox" ? "active carbox" : ""}`}
             onClick={() => {
               setActiveDevice("carbox");
               setSelectedHotspotId(1);
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
               <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
               <line x1="8" y1="21" x2="16" y2="21" />
               <line x1="12" y1="17" x2="12" y2="21" />
@@ -198,13 +199,13 @@ export function MedicalDevicesShowcase() {
             type="button"
             role="tab"
             aria-selected={activeDevice === "plasmax"}
-            className={`dev-tab-btn ${activeDevice === "plasmax" ? "active" : ""}`}
+            className={`dev-tab-btn ${activeDevice === "plasmax" ? "active plasmax" : ""}`}
             onClick={() => {
               setActiveDevice("plasmax");
               setSelectedHotspotId(1);
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
             <span>سامانه پلاسمای سرد PlasmaX™ Cold Jet</span>
@@ -213,67 +214,92 @@ export function MedicalDevicesShowcase() {
 
         {/* 360-Style Interactive Hotspot Viewer Stage */}
         <div className="device-stage-grid">
-          {/* High-Performance 360 Canvas Sequence Player with Hotspot Pins */}
-          <div className="device-hotspot-viewer" style={{ padding: 0, minHeight: 'unset', background: 'transparent' }}>
-            <CanvasSequencePlayer
-              key={dev.id}
-              frameFolder={dev.frameFolder}
-              totalFrames={dev.totalFrames}
-              framePrefix={dev.framePrefix}
-              padDigits={dev.padDigits}
-              fileExtension=".webp"
-              aspectRatio={dev.aspectRatio}
-              autoRotate={true}
-              autoRotateSpeedMs={60}
-              interactiveDrag={true}
-              overlayHotspots={dev.hotspots.map((hs) => ({
-                id: hs.id,
-                label: hs.label,
-                title: hs.title,
-                desc: hs.desc,
-                spec: hs.spec,
-                frame: hs.frame,
-                x: hs.x,
-                y: hs.y,
-              }))}
-              selectedHotspotId={selectedHotspotId}
-              onHotspotSelect={(hs) => {
-                if (typeof hs.id === 'number') {
-                  setSelectedHotspotId(hs.id);
-                }
-              }}
-              label={dev.name}
-            />
+          {/* High-Performance 360 Canvas Sequence Player Column */}
+          <div className="device-hotspot-viewer-col">
+            <div className="device-hotspot-viewer-card">
+              <CanvasSequencePlayer
+                key={dev.id}
+                frameFolder={dev.frameFolder}
+                totalFrames={dev.totalFrames}
+                framePrefix={dev.framePrefix}
+                padDigits={dev.padDigits}
+                fileExtension=".webp"
+                aspectRatio={dev.aspectRatio}
+                autoRotate={true}
+                autoRotateSpeedMs={60}
+                interactiveDrag={true}
+                overlayHotspots={dev.hotspots.map((hs) => ({
+                  id: hs.id,
+                  label: hs.label,
+                  title: hs.title,
+                  desc: hs.desc,
+                  spec: hs.spec,
+                  frame: hs.frame,
+                  x: hs.x,
+                  y: hs.y,
+                }))}
+                selectedHotspotId={selectedHotspotId}
+                onHotspotSelect={(hs) => {
+                  if (typeof hs.id === 'number') {
+                    setSelectedHotspotId(hs.id);
+                  }
+                }}
+                label={dev.name}
+              />
+            </div>
+
+            {/* Quick Hotspot Selector Chips for Mobile Touch & Quick Access */}
+            <div className="dev-hotspot-pills-row" role="tablist" aria-label="انتخاب قطعه سخت‌افزاری">
+              {dev.hotspots.map((hs) => (
+                <button
+                  key={hs.id}
+                  type="button"
+                  className={`dev-hotspot-chip ${selectedHotspotId === hs.id ? "active" : ""}`}
+                  onClick={() => setSelectedHotspotId(hs.id)}
+                  aria-selected={selectedHotspotId === hs.id}
+                >
+                  <span className="dev-hotspot-chip-num">{hs.label}</span>
+                  <span>{hs.title.split("(")[0].trim()}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Hotspot Technical Detail Card */}
           <div className="hotspot-detail-panel">
             <div className="hdp-tag-line">
-              <span>{dev.classTag}</span>
-              <span>•</span>
-              <span>{dev.badge}</span>
+              <span className="hdp-badge-primary">{dev.classTag}</span>
+              <span className="hdp-badge-secondary">{dev.badge}</span>
             </div>
 
             <h3 className="hdp-title">{activeSpot.title}</h3>
             <p className="hdp-desc">{activeSpot.desc}</p>
 
             <div className="hdp-spec-box">
-              <strong>مشخصات فنی مهندسی پزشکی:</strong>
-              <p>{activeSpot.spec}</p>
+              <strong className="hdp-spec-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>مشخصات فنی مهندسی پزشکی:</span>
+              </strong>
+              <p className="hdp-spec-text">{activeSpot.spec}</p>
             </div>
 
-            <p style={{ fontSize: "0.8rem", color: "#94a3b8", margin: 0, lineHeight: 1.6 }}>
+            <p className="hdp-overview-text">
               {dev.overview}
             </p>
 
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
-              <Link href={activeDevice === "carbox" ? "/carbox" : "/plasmax"} className="hdp-cta-btn" style={{ flex: 1, minWidth: "220px", background: "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)" }}>
+            <div className="hdp-actions-row">
+              <Link
+                href={activeDevice === "carbox" ? "/carbox" : "/plasmax"}
+                className={`hdp-cta-btn-primary ${activeDevice === "plasmax" ? "plasmax" : ""}`}
+              >
                 <span>مشاهده صفحه تخصصی و ۳۶۰° {activeDevice === "carbox" ? "CarboX" : "PlasmaX"}</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
               </Link>
-              <Link href="/b2b" className="hdp-cta-btn" style={{ background: "rgba(255, 255, 255, 0.08)" }}>
+              <Link href="/b2b" className="hdp-cta-btn-secondary">
                 <span>استعلام پیش‌فاکتور B2B</span>
               </Link>
             </div>

@@ -1,277 +1,182 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import { LocaleCurrencySelector } from "./localization/locale-currency-selector";
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Phone, MapPin, Clock, ChevronUp } from 'lucide-react';
+import './rupak-footer/rupak-footer.css';
 
 export function SiteFooter() {
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "success" | "error">("idle");
+  const pathname = usePathname();
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newsletterEmail && newsletterEmail.includes("@")) {
-      setNewsletterStatus("success");
-      setNewsletterEmail("");
-    } else {
-      setNewsletterStatus("error");
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
+  if (pathname === '/auth' || pathname === '/login' || pathname === '/register') {
+    return null;
+  }
+
   return (
-    <footer className="clinical-footer" role="contentinfo">
-      {/* ── Main 4-Column Ultra-Premium Footer ── */}
-      <div className="footer-top">
-        <div className="footer-grid">
-          {/* Column 1: Brand & Medical Laboratory Credentials */}
-          <div className="footer-col brand-col">
-            <div className="footer-brand-title">
-              <span className="brand-logo-txt">DR. DERMER</span>
-              <span className="brand-badge-pill">UK CLINICAL LABS</span>
-            </div>
-            
-            <p className="footer-bio">
-              آزمایشگاه‌های پژوهشی دکتر درمر بریتانیا (کمبریج و لندن)، مرجع پیشگام درمان‌های ترابافتی بدون تهاجم و توسعه سیستم‌های کربوکسی‌تراپی بر پایه اثر بوهر (Bohr Effect). ارائه‌دهنده رژیم‌های درمانی درجه دارویی برای متخصصین پوست، کلینیک‌های زیبایی و مراقبت خانگی.
-            </p>
+    <footer className="rupak-footer-root" dir="rtl" role="contentinfo">
+      {/* ── Top Curve & Floating Scroll-to-Top Button ── */}
+      <div className="rupak-footer-top-curve">
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="rupak-footer-scroll-top-btn"
+          aria-label="بازگشت به بالای صفحه"
+          title="بازگشت به بالای صفحه"
+        >
+          <ChevronUp className="rupak-footer-scroll-top-icon" />
+        </button>
+      </div>
 
-            {/* Certifications Badge Row */}
-            <div className="footer-cert-badges" aria-label="گواهینامه‌های پزشکی و استانداردهای دارویی">
-              <div className="cert-pill" title="استاندارد مدیریت کیفیت تجهیزات پزشکی">
-                <span className="cert-code">ISO 13485</span>
-                <span className="cert-desc">تجهیزات پزشکی</span>
+      <div className="rupak-footer-main">
+        <div className="rupak-footer-container">
+          {/* ── 1. Top Contact / Info 3-Column Bar ── */}
+          <div className="rupak-footer-contact-row" aria-label="اطلاعات تماس و دسترسی">
+            {/* Contact Item 1: Phone (Right in RTL) */}
+            <div className="rupak-footer-contact-item">
+              <div className="rupak-footer-contact-icon-box" aria-hidden="true">
+                <Phone className="rupak-footer-contact-icon" />
               </div>
-              <div className="cert-pill" title="استاندارد شرایط خوب تولید مواد آرایشی و درموسوتیکال">
-                <span className="cert-code">GMP / ISO 22716</span>
-                <span className="cert-desc">گرید دارویی</span>
-              </div>
-              <div className="cert-pill" title="انطباق با استانداردهای بهداشت و سلامت اتحادیه اروپا">
-                <span className="cert-code">CE MEDICAL</span>
-                <span className="cert-desc">نشان رسمی اروپا</span>
-              </div>
-            </div>
-
-            {/* Contact & Pharmacovigilance Hotline */}
-            <div className="footer-contacts">
-              <div className="contact-row">
-                <span className="contact-icon" aria-hidden="true">📍</span>
-                <span>تهران، خیابان ولیعصر، بالاتر از ظفر، مجتمع بین‌المللی پزشکی درمر، طبقه ۵</span>
-              </div>
-              <div className="contact-row">
-                <span className="contact-icon" aria-hidden="true">📞</span>
-                <span>تلفن مشاوره علمی و پشتیبانی نسخه: <strong dir="ltr">۰۲۱-۸۸۸۸۰۰۰۰</strong></span>
-              </div>
-              <div className="contact-row hotline-highlight">
-                <span className="contact-icon alert-icon" aria-hidden="true">⚡</span>
-                <span>
-                  خط شبانه‌روزی ثبت عوارض ناخواسته (فارماکوویژلانس ۲۴/۷):{" "}
-                  <strong dir="ltr" className="hotline-phone">۰۲۱-۸۸۸۸۰۰۰۱</strong>
+              <div className="rupak-footer-contact-text">
+                <span className="rupak-footer-contact-label">شماره تماس:</span>
+                <span className="rupak-footer-contact-value" dir="ltr">
+                  ۰۹۳۵۸۷۲۷۴۹۲ و ۰۹۲۱۹۸۶۵۱۴۶
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* Column 2: Product Lines & Clinical Categories */}
-          <div className="footer-col">
-            <h4 className="footer-heading">خانواده محصولات و پروتکل‌ها</h4>
-            <ul className="footer-links">
-              <li>
-                <Link href="/reeskin">
-                  <strong>ReeSkin™ Clinical</strong>
-                  <span className="link-sub">کیت‌های مراقبت خانگی ترابافتی و رژیم‌ها</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/reemed">
-                  <strong>ReeMed™ Medical Pro</strong>
-                  <span className="link-sub">تجهیزات پزشکی CarboX و PlasmaX و اقلام مصرفی</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/carboxygel">
-                  <strong>ReeSkin CarboxyGel™</strong>
-                  <span className="link-sub">کربوکسی‌تراپی غیرتهاجمی و اثر بوهر</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/search?q=پپتید">
-                  سرم‌های پپتیدی بیومیمتیک و EGF
-                </Link>
-              </li>
-              <li>
-                <Link href="/search?q=سرامید">
-                  بازسازی سد دفاعی (کمپلکس سرامید NP)
-                </Link>
-              </li>
-              <li>
-                <Link href="/subscriptions">
-                  اشتراک دوره‌ای نسخه با ارسال یخچال‌دار
-                </Link>
-              </li>
-            </ul>
-          </div>
+            <div className="rupak-footer-contact-divider" aria-hidden="true" />
 
-          {/* Column 3: Science & Clinical Academy */}
-          <div className="footer-col">
-            <h4 className="footer-heading">دانش بالینی و پژوهش</h4>
-            <ul className="footer-links">
-              <li>
-                <Link href="/#science">
-                  مکانیسم بیوشیمیایی اثر بوهر (Bohr Effect)
-                </Link>
-              </li>
-              <li>
-                <Link href="/#clinical-results">
-                  نتایج کارآزمایی‌های بالینی و آنالیز Visia
-                </Link>
-              </li>
-              <li>
-                <Link href="/academy">
-                  آکادمی و پروتکل طلایی ۷ روزه بازسازی
-                </Link>
-              </li>
-              <li>
-                <Link href="/ingredients">
-                  دانشنامه مواد مؤثره و فرمولاسیون (INCI)
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog">
-                  ژورنال علمی مقالات درماتولوژی
-                </Link>
-              </li>
-              <li>
-                <Link href="/b2b">
-                  دوره‌های بازآموزی پزشکان و بیوتی‌تراپیست‌ها
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq">
-                  پرسش‌های متداول درماتولوژی و منع مصرف
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Newsletter, Trust Symbols & Official Seals */}
-          <div className="footer-col newsletter-col">
-            <h4 className="footer-heading">خبرنامه پژوهشی و نمادهای اعتماد</h4>
-            <p className="newsletter-desc">
-              دریافت تازه‌ترین پروتکل‌های بالینی، گایدلاین‌های درماتولوژی و دعوت‌نامه شرکت در کارآزمایی‌های جدید دکتر درمر:
-            </p>
-
-            <form onSubmit={handleNewsletterSubmit} className="footer-newsletter-form">
-              <div className="newsletter-input-group">
-                <input
-                  type="email"
-                  placeholder="ایمیل کاری یا دانشگاهی شما..."
-                  value={newsletterEmail}
-                  onChange={(e) => {
-                    setNewsletterEmail(e.target.value);
-                    if (newsletterStatus !== "idle") setNewsletterStatus("idle");
-                  }}
-                  className="newsletter-email-input"
-                  dir="ltr"
-                  aria-label="آدرس ایمیل برای خبرنامه بالینی"
-                />
-                <button type="submit" className="newsletter-submit-btn">
-                  عضویت
-                </button>
+            {/* Contact Item 2: Address (Center) */}
+            <div className="rupak-footer-contact-item">
+              <div className="rupak-footer-contact-icon-box" aria-hidden="true">
+                <MapPin className="rupak-footer-contact-icon" />
               </div>
-
-              {newsletterStatus === "success" && (
-                <div className="newsletter-msg success">
-                  ✓ اشتراک شما با موفقیت در فهرست VIP بالینی ثبت گردید.
-                </div>
-              )}
-              {newsletterStatus === "error" && (
-                <div className="newsletter-msg error">
-                  لطفاً یک آدرس ایمیل معتبر وارد فرمایید.
-                </div>
-              )}
-            </form>
-
-            {/* Official Trust Seals Container */}
-            <div className="trust-badges-container" aria-label="مجوزها و نمادهای اعتماد رسمی">
-              <div className="trust-badge-card" title="نماد اعتماد الکترونیکی (اینماد)">
-                <div className="badge-icon-wrap enamad-icon">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    <polyline points="9 12 11 14 15 10"></polyline>
-                  </svg>
-                </div>
-                <span className="badge-initial">اینماد</span>
-                <span className="badge-meta">کسب‌وکار ۵ ستاره</span>
-              </div>
-
-              <div className="trust-badge-card" title="نشان ملی ثبت رسانه‌های دیجیتال (ساماندهی)">
-                <div className="badge-icon-wrap samandehi-icon">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                  </svg>
-                </div>
-                <span className="badge-initial">ساماندهی</span>
-                <span className="badge-meta">احراز هویت طلایی</span>
-              </div>
-
-              <div className="trust-badge-card" title="تاییدیه سلامت و اصالت ملزومات وزارت بهداشت (TTAC)">
-                <div className="badge-icon-wrap ttac-icon">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                </div>
-                <span className="badge-initial">TTAC</span>
-                <span className="badge-meta">رهگیری اصالت دارو</span>
+              <div className="rupak-footer-contact-text">
+                <span className="rupak-footer-contact-label">آدرس:</span>
+                <span className="rupak-footer-contact-value">تهران، بازار بزرگ، چهار سوق بزرگ</span>
               </div>
             </div>
 
-            <div className="footer-b2b-link-wrap">
-              <Link href="/b2b" className="footer-b2b-cta">
-                <span>پورتال خرید عمده کلینیک‌ها (فاکتور رسمی و گواهی) ←</span>
+            <div className="rupak-footer-contact-divider" aria-hidden="true" />
+
+            {/* Contact Item 3: Working Hours (Left in RTL) */}
+            <div className="rupak-footer-contact-item">
+              <div className="rupak-footer-contact-icon-box" aria-hidden="true">
+                <Clock className="rupak-footer-contact-icon" />
+              </div>
+              <div className="rupak-footer-contact-text">
+                <span className="rupak-footer-contact-label">ساعت کاری:</span>
+                <span className="rupak-footer-contact-value">روز های کاری ساعت ۹ صبح تا ۵ بعد ظهر</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 2. Middle Row: Nav Pill (Right) + Socials Pill (Left) ── */}
+          <div className="rupak-footer-nav-social-row">
+            {/* Right in RTL: White Nav Pill */}
+            <nav className="rupak-footer-nav-pill" aria-label="منوی دسترسی سریع فوتر">
+              <Link href="/" className="rupak-footer-nav-link active">
+                صفحه اصلی
               </Link>
+              <Link href="/shop" className="rupak-footer-nav-link">
+                فروشگاه
+              </Link>
+              <Link href="/blog" className="rupak-footer-nav-link">
+                وبلاگ
+              </Link>
+              <Link href="/contact" className="rupak-footer-nav-link">
+                تماس با ما
+              </Link>
+              <Link href="/about" className="rupak-footer-nav-link">
+                درباره ما
+              </Link>
+            </nav>
+
+            {/* Left in RTL: Social Icons Pill */}
+            <div className="rupak-footer-social-pill" aria-label="شبکه‌های اجتماعی">
+              <a
+                href="https://t.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rupak-footer-social-btn"
+                aria-label="کانال تلگرام روپاک شاپ"
+                title="تلگرام"
+              >
+                <svg className="rupak-footer-social-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rupak-footer-social-btn"
+                aria-label="صفحه اینستاگرام روپاک شاپ"
+                title="اینستاگرام"
+              >
+                <svg
+                  className="rupak-footer-social-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          {/* ── 3. Bottom Cards: About Box (Right) + Enamad Trust Box (Left) ── */}
+          <div className="rupak-footer-content-grid">
+            {/* Right in RTL: About Rupak Shop Card */}
+            <div className="rupak-footer-about-card">
+              <h3 className="rupak-footer-about-title">درباره روپاک شاپ</h3>
+              <p className="rupak-footer-about-text">
+                روپاک مقصدی منحصر به فرد برای علاقه مندان به محصولات آرایشی و مراقبت از پوست است. ما برندهای معتبر و با کیفیت را با دقت انتخاب کرده‌ایم تا به شما در زیبایی و سلامتی کمک کنیم. ماموریت ما ارائه محصولات اصل و با کیفیت برای ایجاد تجربه‌ای مطمئن و لذت‌بخش است. با انتخاب‌های درست، به زیبایی و اعتماد به نفس خود بیفزایید و به دنیای زیبایی و مراقبت از خود سفر کنید.
+              </p>
+            </div>
+
+            {/* Left in RTL: Enamad Trust Card */}
+            <div className="rupak-footer-trust-card">
+              <h3 className="rupak-footer-trust-title">نماد اعتماد</h3>
+              <div className="rupak-footer-enamad-badge">
+                <svg className="rupak-enamad-logo" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+                  <path
+                    d="M50 12 C28 12 18 30 18 50 C18 72 34 84 52 84 C66 84 76 76 80 68 L68 62 C64 68 58 72 50 72 C38 72 30 64 28 50 L84 50 C86 46 86 40 86 36 C86 24 70 12 50 12 Z M30 38 C32 28 40 24 50 24 C60 24 68 28 68 38 L30 38 Z"
+                    fill="#1e3a8a"
+                  />
+                </svg>
+                <span className="rupak-enamad-brand">eNAMAD.ir</span>
+                <div className="rupak-enamad-stars" aria-label="۵ ستاره اعتماد">
+                  <span aria-hidden="true">⭐</span>
+                  <span aria-hidden="true">⭐</span>
+                  <span aria-hidden="true">⭐</span>
+                  <span aria-hidden="true">⭐</span>
+                  <span aria-hidden="true">⭐</span>
+                </div>
+                <span className="rupak-enamad-sub">جهت اطمینان کلیک نمایید</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── Pharmacovigilance & Medical Disclaimer Band ── */}
-      <div className="footer-disclaimer-band">
-        <div className="disclaimer-inner">
-          <div className="disclaimer-box">
-            <div className="disclaimer-header">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <strong>بیانیه سلب مسئولیت پزشکی و پروتکل فارماکوویژلانس (Pharmacovigilance)</strong>
-            </div>
-            <p>
-              اطلاعات علمی، سازوکار اثر بوهر و راهنماهای بالینی منتشرشده در پلتفرم دکتر درمر صرفاً جنبه آموزشی و آگاهی‌بخشی داشته و هرگز نباید جایگزین معاینه، تشخیص بالینی، تجویز دارو یا مشاوره مستقیم با پزشک متخصص پوست و مو تلقی شوند. پیش از شروع هرگونه پروتکل درمانی با اسیدهای میوه، کربوکسی‌تراپی، رتینوئیدها یا لایه‌بردارهای تخصصی، انجام تست حساسیت پوستی و بررسی عدم کنترااندیکاسیون الزامی است. در صورت بروز هرگونه واکنش آلرژیک غیرمنتظره، مصرف محصول را متوقف کرده و مراتب را سریعاً به سامانه ملی عوارض ناخواسته دارویی یا خط شبانه‌روزی فارماکوویژلانس دکتر درمر (۰۲۱-۸۸۸۸۰۰۰۱) گزارش فرمایید.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Footer Bottom Copyright & Tech Infrastructure Bar ── */}
-      <div className="footer-bottom">
-        <div className="bottom-inner">
-          <div className="copyright-text">
-            <span>© ۲۰۲۶ لابراتوارهای دکتر درمر (Dr Dermer UK Clinical Laboratories). تمامی حقوق مادی و معنوی محفوظ است.</span>
-            <span className="tech-credit">طراحی شده بر بستر هسته مالی Commerce OS · معماری حسابداری دوطرفه بدون خطا، تسویه امن و ضمانت اصالت ۱۰۰٪</span>
-          </div>
-
-          <div className="bottom-links">
-            <LocaleCurrencySelector compact className="footer-locale-selector" />
-            <span className="sep" aria-hidden="true">•</span>
-            <Link href="/legal">حریم خصوصی و داده‌های بالینی</Link>
-            <span className="sep" aria-hidden="true">•</span>
-            <Link href="/legal">ضمانت اصالت و پلمپ آزمایشگاهی</Link>
-            <span className="sep" aria-hidden="true">•</span>
-            <Link href="/faq">شرایط مرجوعی و لجستیک سرد</Link>
-          </div>
+      {/* ── 4. Very Bottom Copyright Bar ── */}
+      <div className="rupak-footer-copyright-bar">
+        <div className="rupak-footer-copyright-inner">
+          <span>کلیه حقوق متعلق به روپاک شاپ می باشد | طراحی شده توسط feloraweb.ir</span>
         </div>
       </div>
     </footer>

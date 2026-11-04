@@ -1,0 +1,352 @@
+/* ==========================================================================
+   RUPAK OFFICIAL STOREFRONT SERVICES & ORDERING WORKFLOW
+   Pixel-accurate matching the uploaded reference design with #77B091 & #FFD098
+   ========================================================================== */
+
+.rupak-services-root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 32px auto 64px auto;
+  padding: 24px 20px 0 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
+  direction: rtl;
+  font-family: inherit;
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SECTION 1: ORDERING GUIDE (نحوه سفارش محصول در روپاک شاپ)
+   ══════════════════════════════════════════════════════════════════ */
+.rupak-order-guide-card {
+  background-color: #ffffff;
+  border: 1.5px solid #edf2f7;
+  border-radius: 28px;
+  padding: 38px 32px 28px 32px;
+  position: relative;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.025);
+  box-sizing: border-box;
+}
+
+.rupak-order-guide-badge-wrap {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.rupak-order-guide-badge {
+  display: inline-block;
+  background-color: #FFD098;
+  color: #452b11;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 7px 32px;
+  border-radius: 9999px;
+  box-shadow: 0 3px 12px rgba(255, 208, 152, 0.5);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.rupak-order-steps-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.rupak-order-step-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.rupak-order-step-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.rupak-order-step-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  background-color: #f1f5f9;
+  border-radius: 999px;
+  padding: 1px 8px;
+  line-height: 1.35;
+  font-feature-settings: 'tnum';
+}
+
+.rupak-order-step-num.green {
+  color: #166534;
+  background-color: #dcfce7;
+}
+
+.rupak-order-step-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.rupak-order-step-item:hover .rupak-order-step-icon-box {
+  transform: scale(1.06);
+}
+
+.rupak-order-step-icon-box.peach {
+  background-color: #FFD098;
+  box-shadow: 0 2px 8px rgba(255, 208, 152, 0.45);
+}
+
+.rupak-order-step-icon-box.green {
+  background-color: #77B091;
+  box-shadow: 0 2px 8px rgba(119, 176, 145, 0.4);
+}
+
+.rupak-order-step-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.rupak-order-step-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.rupak-order-step-divider {
+  width: 1px;
+  height: 44px;
+  background-color: #f1f5f9;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SECTION 2: SERVICES SHOWCASE (خدمات روپاک شاپ)
+   ══════════════════════════════════════════════════════════════════ */
+.rupak-services-showcase {
+  background-color: #77B091;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18) 0%, transparent 70%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 16px, transparent 16px, transparent 32px);
+  border-radius: 28px;
+  padding: 34px 28px 46px 28px;
+  position: relative;
+  box-shadow: 0 10px 32px rgba(119, 176, 145, 0.22);
+}
+
+.rupak-services-main-title {
+  text-align: center;
+  font-size: 23px;
+  font-weight: 800;
+  color: #FFD098;
+  margin: 0 0 52px 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  letter-spacing: -0.01em;
+}
+
+.rupak-services-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.rupak-service-card-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rupak-service-watermark {
+  position: absolute;
+  top: -54px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 110px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 1;
+  font-feature-settings: 'tnum';
+  user-select: none;
+}
+
+.rupak-service-card {
+  background-color: #ffffff;
+  border-radius: 22px;
+  padding: 24px 22px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  box-sizing: border-box;
+  text-align: right;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.rupak-service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+}
+
+.rupak-service-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.rupak-service-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background-color: #FFD098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(255, 208, 152, 0.35);
+}
+
+.rupak-service-icon {
+  width: 21px;
+  height: 21px;
+  color: #5c3813;
+}
+
+.rupak-service-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rupak-service-desc {
+  font-size: 13.5px;
+  line-height: 2.15;
+  color: #475569;
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Bottom decorative wave points */
+.rupak-services-bottom-tips {
+  position: absolute;
+  bottom: -11px;
+  left: 28px;
+  right: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  pointer-events: none;
+}
+
+.rupak-services-bottom-tips .tip {
+  justify-self: center;
+  width: 26px;
+  height: 12px;
+  background-color: #77B091;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  opacity: 0.95;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 992px) {
+  .rupak-order-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .rupak-order-step-divider {
+    display: none;
+  }
+
+  .rupak-services-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .rupak-service-watermark {
+    top: -42px;
+    font-size: 85px;
+  }
+
+  .rupak-services-bottom-tips {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .rupak-services-root {
+    margin: 24px auto 48px auto;
+    padding: 20px 14px 0 14px;
+    gap: 28px;
+  }
+
+  .rupak-order-guide-card {
+    padding: 30px 18px 22px 18px;
+    border-radius: 20px;
+  }
+
+  .rupak-order-guide-badge {
+    font-size: 12.5px;
+    padding: 6px 22px;
+  }
+
+  .rupak-order-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .rupak-order-step-title {
+    font-size: 13px;
+  }
+
+  .rupak-services-showcase {
+    padding: 28px 16px 34px 16px;
+    border-radius: 20px;
+  }
+
+  .rupak-services-main-title {
+    font-size: 20px;
+    margin-bottom: 42px;
+  }
+
+  .rupak-service-card {
+    padding: 20px 16px;
+  }
+
+  .rupak-service-title {
+    font-size: 15px;
+  }
+
+  .rupak-service-desc {
+    font-size: 13px;
+    line-height: 2.0;
+  }
+}
