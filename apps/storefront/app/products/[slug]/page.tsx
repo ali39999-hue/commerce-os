@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProduct } from '../../../lib/catalog';
 import { buildExtendedProductData } from '../../../lib/pdp-data';
-import { PdpInteractiveSection } from '../../../components/pdp/pdp-interactive-section';
+import { RupakPdpSection } from '../../../components/pdp/rupak-pdp-section';
 import { ProductReviews } from '../../../components/product-reviews';
 import { ProductRail } from '../../../components/discovery/product-rail';
 import { DigitalBadge } from '../../../components/discovery/digital-badge';
@@ -170,8 +170,8 @@ export default async function ProductPage({ params }: Props) {
         </div>
       )}
 
-      {/* Interactive PDP Section: Gallery, Variant Selector, Pricing, Add-to-Cart & Tabs */}
-      <PdpInteractiveSection
+      {/* Interactive PDP Section: Rupak Floating Dual-Card Layout */}
+      <RupakPdpSection
         productData={extendedData}
         isDigital={isDigital}
         vendorTitleFa={vendorTitleFa}

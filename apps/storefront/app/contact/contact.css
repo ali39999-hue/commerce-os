@@ -1,0 +1,325 @@
+/* ── Contact Page Styles (Khanoumi / Rupak Clinical Design System) ── */
+
+.contact-page-wrapper {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  direction: rtl;
+}
+
+/* Breadcrumbs */
+.contact-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.contact-breadcrumbs a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.contact-breadcrumbs a:hover {
+  color: #0f172a;
+}
+
+.contact-breadcrumbs .separator {
+  color: #cbd5e1;
+}
+
+.contact-breadcrumbs .current {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* Main Split Card */
+.contact-main-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 36px 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: stretch;
+}
+
+/* Right Details Column */
+.contact-details-col {
+  display: flex;
+  flex-direction: column;
+  justifyContent: center;
+}
+
+.contact-heading {
+  font-size: 26px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
+}
+
+.contact-tagline {
+  font-size: 15px;
+  color: #475569;
+  margin: 0 0 28px;
+  line-height: 1.7;
+}
+
+.contact-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contact-info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.contact-info-label {
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 105px;
+  flex-shrink: 0;
+}
+
+.contact-info-value {
+  color: #334155;
+  font-weight: 500;
+}
+
+.contact-info-value a {
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.contact-info-value a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.contact-info-row.address-row {
+  align-items: flex-start;
+}
+
+.contact-info-row.address-row .contact-info-value {
+  line-height: 1.8;
+}
+
+/* Order Tracking Callout */
+.contact-tracking-callout {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 15px;
+  color: #334155;
+}
+
+.contact-link-highlight {
+  color: #2563eb;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.15s;
+}
+
+.contact-link-highlight:hover {
+  color: #1d4ed8;
+}
+
+/* Left Map Column */
+.contact-map-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.contact-map-frame {
+  flex: 1;
+  min-height: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  background: #f8fafc;
+  position: relative;
+}
+
+.contact-map-skeleton {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  background: #f1f5f9;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.map-skeleton-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #cbd5e1;
+  border-top-color: #274b24;
+  border-radius: 50%;
+  animation: mapSpin 0.8s linear infinite;
+}
+
+@keyframes mapSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Quick Navigation Links */
+.contact-nav-apps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.contact-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #334155;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.contact-nav-btn:hover {
+  background: #274b24;
+  border-color: #274b24;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Secondary Working Hours Section */
+.contact-hours-strip {
+  margin-top: 28px;
+  background: #fafdfa;
+  border: 1px solid #dcfce7;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.contact-hour-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-hour-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #dcfce7;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-hour-content strong {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.contact-hour-content span {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* Contact Form Section */
+.contact-form-section {
+  margin-top: 40px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 36px 40px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+}
+
+.contact-form-header {
+  margin-bottom: 24px;
+}
+
+.contact-form-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.contact-form-header p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Custom Pin Styling for Leaflet */
+.khanoumi-target-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .contact-main-card {
+    grid-template-columns: 1fr;
+    padding: 28px 24px;
+    gap: 28px;
+  }
+
+  .contact-map-col {
+    order: 2;
+  }
+
+  .contact-details-col {
+    order: 1;
+  }
+
+  .contact-map-frame {
+    min-height: 340px;
+  }
+
+  .contact-info-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .contact-info-label {
+    min-width: unset;
+  }
+
+  .contact-form-section {
+    padding: 28px 20px;
+  }
+}

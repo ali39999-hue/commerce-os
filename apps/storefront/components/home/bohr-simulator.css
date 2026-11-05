@@ -1,0 +1,522 @@
+/* ==========================================================================
+   BOHR EFFECT OXYGENATION SIMULATOR
+   Refactored for Dr Dermer / Rupak light clinical aesthetic
+   Palette: #77B091 (Sage Green) & #FFD098 (Warm Gold / Peach)
+   ========================================================================== */
+
+.bohr-simulator-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 48px auto 64px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+  direction: rtl;
+  font-family: inherit;
+}
+
+.bohr-sim-wrapper {
+  background-color: #ffffff;
+  background-image: 
+    radial-gradient(circle at 100% 0%, rgba(119, 176, 145, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, rgba(255, 208, 152, 0.12) 0%, transparent 50%);
+  border: 1.5px solid #edf4f0;
+  border-radius: 28px;
+  padding: clamp(32px, 4vw, 56px);
+  color: #1e293b;
+  box-shadow: 0 10px 35px rgba(119, 176, 145, 0.08), 0 2px 10px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ── Top Header & Context ── */
+.bohr-sim-header {
+  margin-bottom: 30px;
+}
+
+.sim-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.sim-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #FFD098;
+  color: #452b11;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px rgba(255, 208, 152, 0.45);
+}
+
+.sim-chip-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #77B091;
+  box-shadow: 0 0 0 3px rgba(119, 176, 145, 0.3);
+  animation: promoPulseRing 1.8s infinite;
+}
+
+.sim-chip-sub {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.bohr-sim-title {
+  font-size: clamp(1.75rem, 2.7vw, 2.25rem);
+  font-weight: 900;
+  line-height: 1.4;
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
+  color: #1e293b;
+}
+
+.bohr-sim-title .highlight {
+  color: #77B091;
+}
+
+.bohr-sim-lead {
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: #475569;
+  max-width: 950px;
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* ── Control Panel ── */
+.bohr-sim-control-panel {
+  background: #f8fafc;
+  border: 1.5px solid #eef2f6;
+  border-radius: 22px;
+  padding: 24px 26px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.sim-slider-group {
+  margin-bottom: 20px;
+}
+
+.sim-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sim-slider-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.sim-slider-val-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: #FFF6E8;
+  border: 1px solid #FFD098;
+  padding: 5px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(255, 208, 152, 0.3);
+}
+
+.val-number {
+  font-size: 1.3rem;
+  font-weight: 950;
+  color: #b45309;
+  font-feature-settings: 'tnum';
+}
+
+.val-unit {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #7a4d16;
+}
+
+.bohr-range-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  background: linear-gradient(to left, #FFD098 0%, #a2cbb5 50%, #77B091 100%);
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.bohr-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3.5px solid #77B091;
+  box-shadow: 0 2px 10px rgba(119, 176, 145, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.bohr-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.sim-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-feature-settings: 'tnum';
+}
+
+.sim-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid #eef2f6;
+}
+
+.presets-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.preset-btn {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.preset-btn:hover {
+  background: #f0fdf4;
+  border-color: #77B091;
+  color: #77B091;
+}
+
+.preset-btn.active {
+  background: #77B091;
+  border-color: #77B091;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(119, 176, 145, 0.35);
+}
+
+/* ── Twin Visualization Grid ── */
+.bohr-sim-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  margin-bottom: 28px;
+}
+
+.sim-visual-card {
+  background: #ffffff;
+  border: 1.5px solid #edf4f0;
+  border-radius: 24px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+}
+
+.svc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.svc-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.svc-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #77B091;
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.svc-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.svc-metric-live {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: #FFF6E8;
+  padding: 5px 12px;
+  border-radius: 10px;
+  border: 1px solid #FFD098;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(255, 208, 152, 0.25);
+}
+
+.svc-metric-live span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7a4d16;
+}
+
+.svc-metric-live strong {
+  font-size: 1.05rem;
+  color: #b45309;
+  font-weight: 900;
+  font-feature-settings: 'tnum';
+}
+
+.svc-canvas-wrap {
+  background: #fbfdfc;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.svc-capillary-svg,
+.svc-bohr-graph-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.svc-footer-info {
+  margin-top: auto;
+}
+
+.svc-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid #77B091;
+  background: rgba(119, 176, 145, 0.12);
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.svc-status-pill .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.svc-status-desc {
+  font-size: 12.8px;
+  color: #475569;
+  line-height: 1.75;
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* 4 Quantitative Telemetry Boxes */
+.svc-metrics-quad {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: auto;
+}
+
+.sm-box {
+  background: #f8fafc;
+  border: 1.5px solid #eef2f6;
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.smb-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.smb-val {
+  font-size: 1.3rem;
+  font-weight: 950;
+  color: #1e293b;
+  font-feature-settings: 'tnum';
+  line-height: 1.2;
+}
+
+.smb-val.highlight-blue {
+  color: #77B091;
+}
+
+.smb-val.highlight-teal {
+  color: #77B091;
+}
+
+.smb-val.highlight-gold {
+  color: #d97706;
+}
+
+.smb-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+/* ── Sim Footer ── */
+.bohr-sim-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1.5px solid #eef2f6;
+  border-radius: 20px;
+  padding: 20px 24px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.bsf-content strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.bsf-content p {
+  font-size: 13.5px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.bsf-cta-btn {
+  background: #77B091;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: all 0.22s ease;
+  box-shadow: 0 4px 14px rgba(119, 176, 145, 0.4);
+  text-decoration: none;
+}
+
+.bsf-cta-btn:hover {
+  background: #5d9779;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(119, 176, 145, 0.5);
+}
+
+/* ── Responsive Design ── */
+@media (max-width: 1024px) {
+  .bohr-sim-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bohr-simulator-section {
+    margin: 32px auto 48px auto;
+    padding: 0 14px;
+  }
+
+  .bohr-sim-wrapper {
+    padding: 24px 16px;
+    border-radius: 20px;
+  }
+
+  .sim-chip {
+    font-size: 11.5px;
+    padding: 5px 14px;
+  }
+
+  .bohr-sim-title {
+    font-size: 1.45rem;
+    line-height: 1.4;
+  }
+
+  .bohr-sim-lead {
+    font-size: 13.5px;
+    line-height: 1.8;
+  }
+
+  .bohr-sim-control-panel {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+
+  .sim-slider-title {
+    font-size: 13.5px;
+  }
+
+  .sim-presets-bar {
+    gap: 8px;
+  }
+
+  .preset-btn {
+    font-size: 11.5px;
+    padding: 6px 12px;
+  }
+
+  .sim-visual-card {
+    padding: 16px 14px;
+    border-radius: 18px;
+  }
+
+  .svc-metrics-quad {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .bohr-sim-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .bsf-cta-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

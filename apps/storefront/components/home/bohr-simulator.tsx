@@ -46,8 +46,8 @@ export function BohrOxygenationSimulator() {
       phaseCode: "PHASE 03 · CLINICAL PEAK",
       desc: "سیلاب اکسیژن درون‌سلولی؛ تنفس میتوکندریایی به اوج ۳.۴ برابری رسیده، فیبروبلاست‌ها سنتز کلاژن نوع ۱ و ۳ را شتاب بخشیده و بافت عمقی بازسازی می‌شود.",
       badgeColor: "#B83A2E",
-      productRecommendation: "پروتکل کلینیکال: سیستم هوشمند CarboX و ماسک آلکالاین صورت CarboxyPad",
-      productLink: "/carbox",
+      productRecommendation: "پروتکل بالینی: ژل غلیظ CarboxyGel Pro و پدهای آناتومیک CarboxyPad",
+      productLink: "/carboxygel",
     };
   };
 

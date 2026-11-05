@@ -1,0 +1,632 @@
+/* ==========================================================================
+   Dr. Dermer UK — Authentication (Login & Signup Full-Screen Split)
+   Full-screen edge-to-edge layout matching the clean botanical reference image
+   ========================================================================== */
+
+.auth-page-container {
+  min-height: 100vh;
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  direction: rtl;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.auth-split-card {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── 1. Form Side (Full-Height Column) ── */
+.auth-form-column {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px min(6vw, 64px);
+  background: #ffffff;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 16px 0;
+}
+
+/* ── Top Navigation inside Form ── */
+.auth-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.auth-back-link:hover {
+  color: #0f172a;
+}
+
+.auth-brand-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.auth-brand-name {
+  color: #274b24;
+  font-weight: 800;
+}
+
+/* ── Form Header ── */
+.auth-header-area {
+  margin-bottom: 24px;
+}
+
+.auth-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(40, 77, 38, 0.08);
+  color: #274b24;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.auth-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.auth-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Mode Switcher Pills ── */
+.auth-mode-switch-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+
+.auth-mode-tab-btn {
+  flex: 1;
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.auth-mode-tab-btn.active {
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+/* ── Form Inputs ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth-label-required {
+  color: #ef4444;
+  margin-right: 4px;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  padding-left: 42px; /* Eye button on the left in RTL */
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+  direction: rtl;
+  text-align: right;
+}
+
+.auth-input::placeholder {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #274b24;
+  box-shadow: 0 0 0 3px rgba(39, 75, 36, 0.15);
+}
+
+.auth-input.error {
+  border-color: #ef4444;
+  background: #fffafa;
+}
+
+.auth-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.auth-input.success {
+  border-color: #10b981;
+}
+
+/* Eye / Action toggle on the left of input in RTL */
+.auth-input-toggle-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.auth-input-toggle-btn:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+/* ── Password Strength Bar ── */
+.auth-password-strength {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auth-strength-meters {
+  display: flex;
+  gap: 4px;
+  height: 4px;
+  width: 100%;
+}
+
+.auth-strength-bar {
+  flex: 1;
+  height: 100%;
+  background: #e2e8f0;
+  border-radius: 2px;
+  transition: background-color 0.25s ease;
+}
+
+.auth-strength-bar.weak {
+  background: #ef4444;
+}
+
+.auth-strength-bar.medium {
+  background: #f59e0b;
+}
+
+.auth-strength-bar.strong {
+  background: #10b981;
+}
+
+.auth-strength-label {
+  font-size: 0.72rem;
+  color: #64748b;
+  display: flex;
+  justify-content: space-between;
+}
+
+.auth-match-hint {
+  font-size: 0.75rem;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.auth-match-hint.match {
+  color: #059669;
+}
+
+.auth-match-hint.mismatch {
+  color: #dc2626;
+}
+
+/* ── Checkbox & Remember ── */
+.auth-remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.auth-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  accent-color: #274b24;
+  cursor: pointer;
+}
+
+.auth-terms-link {
+  color: #274b24;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-forgot-link {
+  font-size: 0.8rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.auth-forgot-link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+/* ── Primary Submit Button (Deep botanical green matching the screenshot) ── */
+.auth-submit-btn {
+  width: 100%;
+  padding: 13px 20px;
+  background: #274b24; /* Nature Forest Green from reference photo */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  box-shadow: 0 4px 12px rgba(39, 75, 36, 0.25);
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #1f3b1d;
+  box-shadow: 0 6px 18px rgba(39, 75, 36, 0.35);
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Divider ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 18px 0;
+  color: #94a3b8;
+  font-size: 0.82rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.auth-divider-text {
+  padding: 0 14px;
+  font-weight: 500;
+}
+
+/* ── Social Login Buttons ── */
+.auth-social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.auth-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.auth-social-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.06);
+}
+
+.auth-social-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── Footer Switcher ── */
+.auth-footer-prompt {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.86rem;
+  color: #64748b;
+}
+
+.auth-switch-link-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0 4px;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.auth-switch-link-btn:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+/* ── Feedback Banner ── */
+.auth-alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.auth-alert.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.auth-alert.success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+/* ── 2. Image Side (Full-Screen Pure Monstera Nature Photo) ── */
+.auth-banner-column {
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  background-color: #f1f5f9;
+  background-image: url("/auth-banner.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Curved Organic Boundary Divider (Connecting Image & Form) ── */
+.auth-curve-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -1px;
+  width: clamp(55px, 6vw, 100px);
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  filter: drop-shadow(-6px 0 16px rgba(0, 0, 0, 0.08));
+}
+
+/* ── Responsive Reflow (Mobile Full Botanical Background + Glassmorphic Card) ── */
+@media (max-width: 900px) {
+  .auth-page-container {
+    min-height: 100vh;
+    padding: 28px 16px;
+    background-image: url("/auth-banner.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Ambient soft natural vignette overlay for optimal contrast */
+  .auth-page-container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(12, 28, 14, 0.2) 0%, rgba(8, 20, 10, 0.45) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .auth-split-card {
+    grid-template-columns: 1fr;
+    background: transparent;
+    min-height: auto;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .auth-banner-column {
+    display: none;
+  }
+
+  .auth-curve-divider {
+    display: none;
+  }
+
+  .auth-form-column {
+    background: transparent;
+    padding: 0;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  /* ── Mobile Frosted GLASS Card ── */
+  .auth-form-inner {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 24px;
+    padding: 32px 24px;
+    box-shadow: 0 24px 50px -12px rgba(10, 25, 12, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    margin: 0 auto;
+  }
+
+  .auth-title {
+    font-size: 1.65rem;
+  }
+
+  .auth-mode-switch-tabs {
+    background: rgba(241, 245, 249, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  .auth-input {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(203, 213, 225, 0.9);
+  }
+
+  .auth-input:focus {
+    background: #ffffff;
+  }
+
+  .auth-social-btn {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page-container {
+    padding: 18px 12px;
+  }
+
+  .auth-form-inner {
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+
+  .auth-social-row {
+    grid-template-columns: 1fr;
+  }
+}

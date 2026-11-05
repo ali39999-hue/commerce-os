@@ -1,0 +1,412 @@
+/* ==========================================================================
+   RUPAK OFFICIAL STOREFRONT FOOTER STYLES
+   Pixel-accurate matching the uploaded reference design with #77B091 & #FFD098
+   ========================================================================== */
+
+.rupak-footer-root {
+  width: 100%;
+  position: relative;
+  margin-top: 60px;
+  font-family: inherit;
+  direction: rtl;
+  color: #ffffff;
+}
+
+/* ── Top Curve & Floating Scroll-to-Top Button ── */
+.rupak-footer-top-curve {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.rupak-footer-scroll-top-btn {
+  pointer-events: auto;
+  width: 56px;
+  height: 56px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+  margin-bottom: -24px;
+}
+
+.rupak-footer-scroll-top-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.rupak-footer-scroll-top-btn:active {
+  transform: translateY(0);
+}
+
+.rupak-footer-scroll-top-icon {
+  width: 24px;
+  height: 24px;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.rupak-footer-scroll-top-btn:hover .rupak-footer-scroll-top-icon {
+  color: #77B091;
+}
+
+/* ── Main Footer Body (Sage Green with Watermark) ── */
+.rupak-footer-main {
+  background-color: #77B091;
+  background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 20px, transparent 20px, transparent 40px);
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+  padding: 48px 24px 36px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rupak-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── 1. Top Contact / Info 3-Column Bar ── */
+.rupak-footer-contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.rupak-footer-contact-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: right;
+}
+
+.rupak-footer-contact-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #FFD098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.rupak-footer-contact-icon {
+  width: 20px;
+  height: 20px;
+  color: #5c3813;
+}
+
+.rupak-footer-contact-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rupak-footer-contact-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.rupak-footer-contact-value {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.01em;
+}
+
+.rupak-footer-contact-divider {
+  width: 1px;
+  height: 38px;
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ── 2. Middle Row: Nav Pill (Right) + Socials Pill (Left) ── */
+.rupak-footer-nav-social-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+/* Nav Pill (Right in RTL) */
+.rupak-footer-nav-pill {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  padding: 10px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 32px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.rupak-footer-nav-link {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.rupak-footer-nav-link:hover {
+  color: #77B091;
+}
+
+.rupak-footer-nav-link.active {
+  color: #d97706;
+  font-weight: 800;
+}
+
+/* Socials Pill (Left in RTL) */
+.rupak-footer-social-pill {
+  background-color: rgba(255, 255, 255, 0.22);
+  border-radius: 9999px;
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(6px);
+  flex-shrink: 0;
+}
+
+.rupak-footer-social-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #FFD098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5c3813;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.rupak-footer-social-btn:hover {
+  transform: translateY(-2px);
+  background-color: #ffe1b8;
+}
+
+.rupak-footer-social-icon {
+  width: 17px;
+  height: 17px;
+  color: #ffffff;
+}
+
+/* ── 3. Bottom Cards: About Box (Right) + Enamad Trust Box (Left) ── */
+.rupak-footer-content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Right in RTL: About Card */
+.rupak-footer-about-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 26px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  text-align: right;
+}
+
+.rupak-footer-about-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #d97706;
+  margin: 0;
+}
+
+.rupak-footer-about-text {
+  font-size: 13.5px;
+  line-height: 2.1;
+  color: #475569;
+  margin: 0;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Left in RTL: Enamad Trust Card */
+.rupak-footer-trust-card {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.rupak-footer-trust-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  align-self: flex-start;
+}
+
+.rupak-footer-enamad-badge {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 160px;
+}
+
+.rupak-enamad-logo {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.rupak-enamad-brand {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1e3a8a;
+  direction: ltr;
+  letter-spacing: 0.02em;
+}
+
+.rupak-enamad-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 10px;
+}
+
+.rupak-enamad-sub {
+  font-size: 9.5px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+/* ── 4. Very Bottom Copyright Bar ── */
+.rupak-footer-copyright-bar {
+  background-color: #FFD098;
+  padding: 13px 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.rupak-footer-copyright-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 13px;
+  font-weight: 700;
+  color: #452b11;
+  letter-spacing: -0.01em;
+}
+
+/* ── Responsive Reflow ── */
+@media (max-width: 960px) {
+  .rupak-footer-contact-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .rupak-footer-contact-divider {
+    display: none;
+  }
+
+  .rupak-footer-contact-item {
+    min-width: 220px;
+  }
+
+  .rupak-footer-nav-social-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rupak-footer-nav-pill {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px 18px;
+    border-radius: 16px;
+  }
+
+  .rupak-footer-social-pill {
+    align-self: center;
+  }
+
+  .rupak-footer-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rupak-footer-trust-card {
+    align-items: center;
+  }
+
+  .rupak-footer-trust-title {
+    align-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .rupak-footer-main {
+    padding: 40px 16px 28px 16px;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+  }
+
+  .rupak-footer-contact-item {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .rupak-footer-about-card {
+    padding: 20px 18px;
+  }
+
+  .rupak-footer-about-text {
+    font-size: 13px;
+    line-height: 2.0;
+  }
+
+  .rupak-footer-copyright-bar {
+    padding: 14px 16px;
+  }
+
+  .rupak-footer-copyright-inner {
+    font-size: 12px;
+    line-height: 1.8;
+    text-align: center;
+  }
+}

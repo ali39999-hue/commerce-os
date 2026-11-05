@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "../../components/cart";
 import { apiBase, storeSlug } from "../../lib/catalog";
-import { useCustomerSession } from "../../lib/customer-session";
 import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
-import { maskIranianMobile } from "@commerce-os/localization";
 import {
   validateIranianMobile,
   validatePostalCode,
@@ -21,15 +19,34 @@ import {
   trackAddPaymentInfo,
   trackPurchase,
 } from "../../lib/analytics";
-
-// Fixed checkout endpoints, resolved once at module scope (never built from
-// request-time input).
-const CHECKOUT_API_HOST = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const CHECKOUT_SESSION_URL = `${CHECKOUT_API_HOST}/v1/checkout/session`;
-const PLACE_ORDER_URL = `${CHECKOUT_API_HOST}/v1/checkout/place-order`;
+import {
+  MapPin,
+  CheckCircle2,
+  Check,
+  Building,
+  CreditCard,
+  User,
+  Phone,
+  ShieldCheck,
+  Truck,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 export interface ProvinceCityMap {
   [province: string]: string[];
+}
+
+export interface SavedAddressItem {
+  id: string;
+  title: string;
+  receiverName: string;
+  phone: string;
+  province: string;
+  city: string;
+  postalCode: string;
+  postalAddress: string;
+  isDefault: boolean;
 }
 
 export const IRAN_PROVINCES: ProvinceCityMap = {
@@ -54,18 +71,7 @@ export const IRAN_PROVINCES: ProvinceCityMap = {
 export default function CheckoutPage() {
   const { items, clearCart, isReady, calculations, shippingMethod, setShippingMethod, appliedCoupon } = useCart();
   const { formatToman, formatMoney } = useLocalizedFormatter();
-  const { session: customerSession } = useCustomerSession();
   const router = useRouter();
-
-  // Prefill the contact identity from the live OTP session (AUTH-002 step 4
-  // display side): the server overrides the identity for signed-in customers
-  // anyway, so the form should reflect it instead of the static demo values.
-  useEffect(() => {
-    if (customerSession?.user) {
-      setCustomerName(customerSession.user.fullName || "کاربر فروشگاه");
-      setCustomerPhone(customerSession.user.phone);
-    }
-  }, [customerSession]);
 
   // Active step: 1 (Contact & Address & Tax), 2 (Shipping & Cold-Chain), 3 (Payment & Place Order)
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
@@ -84,6 +90,78 @@ export default function CheckoutPage() {
   const [needTaxInvoice, setNeedTaxInvoice] = useState(false);
   const [nationalCode, setNationalCode] = useState("0010312013");
   const [companyEconomicCode, setCompanyEconomicCode] = useState("");
+
+  // Saved addresses from Account panel
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddressItem[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
+  // Synchronize saved addresses and active address from Account panel & localStorage
+  useEffect(() => {
+    const loadAddressFromStorage = () => {
+      try {
+        const rawAddresses = localStorage.getItem("commerce_os.account.addresses.v1");
+        const rawProfile = localStorage.getItem("commerce_os.account.profile.v1");
+        const rawSelectedId = localStorage.getItem("commerce_os.checkout.selectedAddressId");
+
+        const parsedProfile = rawProfile ? JSON.parse(rawProfile) : null;
+        let list: SavedAddressItem[] = rawAddresses ? JSON.parse(rawAddresses) : [];
+
+        // Apply profile defaults if available
+        if (parsedProfile) {
+          if (parsedProfile.fullName) setCustomerName(parsedProfile.fullName);
+          if (parsedProfile.phone) setCustomerPhone(parsedProfile.phone);
+          if (parsedProfile.email) setCustomerEmail(parsedProfile.email);
+          if (parsedProfile.nationalCode) setNationalCode(parsedProfile.nationalCode);
+        }
+
+        if (Array.isArray(list) && list.length > 0) {
+          setSavedAddresses(list);
+
+          // Find active address: selectedAddressId -> isDefault -> first
+          let chosen = list.find((a) => a.id === rawSelectedId);
+          if (!chosen) {
+            chosen = list.find((a) => a.isDefault) || list[0];
+          }
+
+          if (chosen) {
+            setSelectedAddressId(chosen.id);
+            setCustomerName(chosen.receiverName || parsedProfile?.fullName || "رضا موحدی");
+            setCustomerPhone(chosen.phone || parsedProfile?.phone || "09412791874");
+            setProvince(chosen.province || "تهران");
+            setCity(chosen.city || "تهران");
+            setPostalCode(chosen.postalCode || "");
+            setPostalAddress(chosen.postalAddress || "");
+          }
+        }
+      } catch (err) {
+        console.error("Error loading account data in checkout:", err);
+      }
+    };
+
+    loadAddressFromStorage();
+
+    const handleSync = () => loadAddressFromStorage();
+    window.addEventListener("commerce_os:address_selected", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("commerce_os:address_selected", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, []);
+
+  const handleSelectSavedAddress = (addr: SavedAddressItem) => {
+    setSelectedAddressId(addr.id);
+    setCustomerName(addr.receiverName);
+    setCustomerPhone(addr.phone);
+    setProvince(addr.province);
+    setCity(addr.city);
+    setPostalCode(addr.postalCode);
+    setPostalAddress(addr.postalAddress);
+    try {
+      localStorage.setItem("commerce_os.checkout.selectedAddressId", addr.id);
+      window.dispatchEvent(new Event("commerce_os:address_selected"));
+    } catch {}
+  };
 
   // Step 2: Shipping, Cold-Chain & Delivery Slot
   const [deliveryDay, setDeliveryDay] = useState("فردا (روز کاری)");
@@ -236,14 +314,16 @@ export default function CheckoutPage() {
     if (!phoneValidation.isValid) {
       errors.customerPhone = phoneValidation.message;
     }
-    if (!nationalIdValidation.isValid) {
-      errors.nationalCode = nationalIdValidation.message;
-    }
     if (!postalCodeValidation.isValid) {
       errors.postalCode = postalCodeValidation.message;
     }
     if (!postalAddress.trim() || postalAddress.trim().length < 10) {
       errors.postalAddress = "نشانی دقیق پستی شامل خیابان، کوچه و پلاک الزامی است (حداقل ۱۰ کاراکتر)";
+    }
+    if (needTaxInvoice) {
+      if (!nationalIdValidation.isValid) {
+        errors.nationalCode = nationalIdValidation.message;
+      }
     }
     setStepErrors(errors);
     return Object.keys(errors).length === 0;
@@ -384,15 +464,11 @@ export default function CheckoutPage() {
     };
 
     try {
-      // Signed-in customers attach their OTP session so the order (and
-      // downstream entitlements like digital grants) binds to their identity.
-      const authHeaders: Record<string, string> = customerSession?.token
-        ? { authorization: "Bearer " + customerSession.token }
-        : {};
+      const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-      const sessionRes = await fetch(CHECKOUT_SESSION_URL, {
+      const sessionRes = await fetch(`${apiHost}/v1/checkout/session`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...authHeaders },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         signal: AbortSignal.timeout(6000),
       });
@@ -404,12 +480,11 @@ export default function CheckoutPage() {
 
       const sessionData = await sessionRes.json();
 
-      const placeRes = await fetch(PLACE_ORDER_URL, {
+      const placeRes = await fetch(`${apiHost}/v1/checkout/place-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-idempotency-key": idempotencyKeyRef.current,
-          ...authHeaders,
         },
         body: JSON.stringify({
           sessionId: sessionData.sessionId,
@@ -447,12 +522,35 @@ export default function CheckoutPage() {
 
       try {
         const orderHistoryItem = {
-          ...orderSnapshot,
-          totalRials: orderSnapshot.totalRials.toString(),
-          totalTomans: orderSnapshot.totalTomans.toString(),
-          status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
-          ref: orderResult.paymentIntentId || `REF-${Date.now().toString().slice(-8)}`,
+          orderNumber: orderSnapshot.orderNumber,
+          status: paymentCategory === "WALLET" ? "PAID" : "PROCESSING",
+          totalTomans: String(orderSnapshot.totalTomans || "0"),
+          totalRials: String(orderSnapshot.totalRials || "0"),
+          method: orderSnapshot.paymentMethod,
+          ref: orderResult?.paymentIntentId || `REF-${Date.now().toString().slice(-8)}`,
+          placedAt: orderSnapshot.placedAt,
+          customerName: orderSnapshot.customerName,
+          customerPhone: orderSnapshot.customerPhone,
+          nationalCode: orderSnapshot.nationalCode || null,
+          address: orderSnapshot.address,
+          shippingMethod: orderSnapshot.shippingMethod,
+          deliverySlot: orderSnapshot.deliverySlot,
+          trackingCode: orderSnapshot.trackingCode,
+          items: (orderSnapshot.items || []).map((it) => ({
+            id: it.sku || `item_${Math.random()}`,
+            title: it.title,
+            subtitle: "فرمولاسیون بالینی و مراقبت تخصصی",
+            quantity: it.qty,
+            priceTomans: String(BigInt(it.priceAmount || "0") / 10n),
+            image: it.sku?.includes("differin")
+              ? "/rupak-hero/prod-differin.jpg"
+              : it.sku?.includes("cicalfate") || it.sku?.includes("healene")
+              ? "/rupak-hero/prod-cicalfate.jpg"
+              : "/2-azel-170-hydrapod.webp",
+            category: "سفارش بالینی",
+          })),
         };
+
         localStorage.setItem("commerce_os.checkout.lastOrder", JSON.stringify(orderHistoryItem));
         const existingRaw = localStorage.getItem("commerce_os.account.orders.v1");
         const existing = existingRaw ? JSON.parse(existingRaw) : [];
@@ -460,8 +558,9 @@ export default function CheckoutPage() {
           "commerce_os.account.orders.v1",
           JSON.stringify([orderHistoryItem, ...existing])
         );
-      } catch {
-        // storage fallback
+        window.dispatchEvent(new Event("commerce_os:order_placed"));
+      } catch (e) {
+        console.error("Order storage error:", e);
       }
 
       clearCart();
@@ -488,12 +587,35 @@ export default function CheckoutPage() {
 
       try {
         const orderHistoryItem = {
-          ...orderSnapshot,
-          totalRials: orderSnapshot.totalRials.toString(),
-          totalTomans: orderSnapshot.totalTomans.toString(),
-          status: paymentCategory === "WALLET" ? "PAID" : "PENDING_PAYMENT",
+          orderNumber: orderSnapshot.orderNumber,
+          status: paymentCategory === "WALLET" ? "PAID" : "PROCESSING",
+          totalTomans: String(orderSnapshot.totalTomans || "0"),
+          totalRials: String(orderSnapshot.totalRials || "0"),
+          method: orderSnapshot.paymentMethod,
           ref: `REF-${Date.now().toString().slice(-8)}`,
+          placedAt: orderSnapshot.placedAt,
+          customerName: orderSnapshot.customerName,
+          customerPhone: orderSnapshot.customerPhone,
+          nationalCode: orderSnapshot.nationalCode || null,
+          address: orderSnapshot.address,
+          shippingMethod: orderSnapshot.shippingMethod,
+          deliverySlot: orderSnapshot.deliverySlot,
+          trackingCode: orderSnapshot.trackingCode,
+          items: (orderSnapshot.items || []).map((it) => ({
+            id: it.sku || `item_${Math.random()}`,
+            title: it.title,
+            subtitle: "فرمولاسیون بالینی و مراقبت تخصصی",
+            quantity: it.qty,
+            priceTomans: String(BigInt(it.priceAmount || "0") / 10n),
+            image: it.sku?.includes("differin")
+              ? "/rupak-hero/prod-differin.jpg"
+              : it.sku?.includes("cicalfate") || it.sku?.includes("healene")
+              ? "/rupak-hero/prod-cicalfate.jpg"
+              : "/2-azel-170-hydrapod.webp",
+            category: "سفارش بالینی",
+          })),
         };
+
         localStorage.setItem("commerce_os.checkout.lastOrder", JSON.stringify(orderHistoryItem));
         const existingRaw = localStorage.getItem("commerce_os.account.orders.v1");
         const existing = existingRaw ? JSON.parse(existingRaw) : [];
@@ -501,8 +623,9 @@ export default function CheckoutPage() {
           "commerce_os.account.orders.v1",
           JSON.stringify([orderHistoryItem, ...existing])
         );
-      } catch {
-        // ignore
+        window.dispatchEvent(new Event("commerce_os:order_placed"));
+      } catch (e) {
+        console.error("Order storage fallback error:", e);
       }
 
       clearCart();
@@ -550,23 +673,42 @@ export default function CheckoutPage() {
 
           <div className="confirmation-action-buttons">
             <Link
+              href="/account?tab=orders"
+              className="btn-view-order-tracking"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#274b24",
+                color: "#ffffff",
+                padding: "12px 24px",
+                borderRadius: "999px",
+                fontWeight: 800,
+                fontSize: "0.92rem",
+                textDecoration: "none",
+                boxShadow: "0 4px 14px rgba(39, 75, 36, 0.25)",
+              }}
+            >
+              مشاهده و رهگیری سفارش در پنل کاربری من ←
+            </Link>
+            <Link
               href={`/order/${confirmedOrder.orderNumber}`}
               className="btn-view-order-tracking"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "var(--brand-deep)",
-                color: "#ffffff",
+                background: "#f1f5f9",
+                color: "#0f172a",
+                border: "1px solid #cbd5e1",
                 padding: "12px 24px",
                 borderRadius: "999px",
                 fontWeight: 700,
                 fontSize: "0.92rem",
                 textDecoration: "none",
-                boxShadow: "0 2px 8px rgba(15, 23, 42, 0.15)",
               }}
             >
-              مشاهده و پیگیری زنده سفارش در سامانه ←
+              مشاهده فاکتور در صفحه سفارش
             </Link>
             <button
               type="button"
@@ -702,26 +844,12 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <section className="state-panel empty-cart-box" style={{ maxWidth: '640px', margin: '60px auto', textAlign: 'center', padding: '48px 24px' }}>
-        <div className="empty-cart-graphic" aria-hidden="true" style={{ width: "64px", height: "64px", margin: "0 auto 16px", color: "var(--brand)" }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "100%", height: "100%" }}>
-            <circle cx="8" cy="21" r="1"/>
-            <circle cx="19" cy="21" r="1"/>
-            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-          </svg>
-        </div>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px', color: 'var(--ink)' }}>سبد خرید شما برای تسویه خالی است</h2>
-        <p style={{ color: 'var(--muted)', lineHeight: '1.8', marginBottom: '28px' }}>
-          کالایی در سبد خرید شما یافت نشد. لطفاً پیش از اقدام به ثبت سفارش، محصولات درمانی مورد نظر خود را به سبد بیفزایید.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => router.push("/#featured-products")} className="primary-link" style={{ background: 'var(--brand)', color: '#ffffff', padding: '12px 24px', borderRadius: 'var(--radius-pill)', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-            مشاهده کاتالوگ محصولات
-          </button>
-          <button onClick={() => router.push("/reeskin")} className="primary-link" style={{ background: 'var(--surface-tint)', color: 'var(--brand-deep)', border: '1px solid var(--line)', padding: '12px 24px', borderRadius: 'var(--radius-pill)', fontWeight: 700, cursor: 'pointer' }}>
-            محصولات خانگی ReeSkin™
-          </button>
-        </div>
+      <section className="state-panel empty-cart-box">
+        <h2>سبد خرید شما خالی است</h2>
+        <p>برای تکمیل خرید ابتدا کالاهای موردنظر را به سبد خرید اضافه کنید.</p>
+        <button onClick={() => router.push("/#catalog")} className="primary-link">
+          مشاهده کاتالوگ محصولات
+        </button>
       </section>
     );
   }
@@ -771,9 +899,204 @@ export default function CheckoutPage() {
               اطلاعات جهت ثبت فاکتور رسمی، انطباق با شاهکار و صدور بارنامه پست پیشتاز و تیپاکس استفاده می‌شود.
             </p>
 
-            {customerSession?.user && (
-              <div className="subs-banner success" role="status" style={{ marginBottom: "14px", fontSize: "0.85rem" }}>
-                خرید با نشست احرازشده ({maskIranianMobile(customerSession.user.phone)}) — سفارش به همین شماره ثبت می‌شود؛ گیرنده مرسوله می‌تواند متفاوت باشد.
+            {/* SAVED ADDRESSES SELECTOR FROM ACCOUNT PANEL */}
+            {savedAddresses.length > 0 && (
+              <div
+                style={{
+                  marginBottom: "24px",
+                  padding: "18px 20px",
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "14px",
+                    flexWrap: "wrap",
+                    gap: "8px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "8px",
+                        background: "#274b24",
+                        color: "#ffffff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <MapPin size={16} />
+                    </div>
+                    <div>
+                      <strong style={{ fontSize: "0.95rem", color: "#0f172a", display: "block" }}>
+                        انتخاب از آدرس‌های ذخیره‌شده پنل کاربری
+                      </strong>
+                      <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
+                        روی نشانی مورد نظر کلیک کنید تا اطلاعات تحویل و بارنامه فورا تنظیم شود
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/account?tab=addresses"
+                    style={{
+                      fontSize: "0.82rem",
+                      color: "#274b24",
+                      fontWeight: 800,
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      background: "#ffffff",
+                      padding: "6px 14px",
+                      borderRadius: "8px",
+                      border: "1px solid #cbd5e1",
+                    }}
+                  >
+                    <span>مدیریت یا افزودن آدرس در پنل</span>
+                    <span>←</span>
+                  </Link>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                    gap: "12px",
+                  }}
+                >
+                  {savedAddresses.map((addr) => {
+                    const isSelected = addr.id === selectedAddressId;
+                    return (
+                      <div
+                        key={addr.id}
+                        onClick={() => handleSelectSavedAddress(addr)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") handleSelectSavedAddress(addr);
+                        }}
+                        style={{
+                          border: isSelected ? "2px solid #274b24" : "1px solid #cbd5e1",
+                          background: isSelected ? "#f0fdf4" : "#ffffff",
+                          borderRadius: "12px",
+                          padding: "14px 16px",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          position: "relative",
+                          boxShadow: isSelected
+                            ? "0 4px 14px rgba(39, 75, 36, 0.12)"
+                            : "0 1px 3px rgba(0,0,0,0.03)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <div
+                              style={{
+                                width: "18px",
+                                height: "18px",
+                                borderRadius: "50%",
+                                border: isSelected ? "5px solid #274b24" : "2px solid #94a3b8",
+                                background: "#ffffff",
+                                flexShrink: 0,
+                                transition: "all 0.2s ease",
+                              }}
+                            />
+                            <strong style={{ fontSize: "0.92rem", color: "#0f172a" }}>
+                              {addr.title}
+                            </strong>
+                          </div>
+
+                          {isSelected ? (
+                            <span
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 800,
+                                background: "#274b24",
+                                color: "#ffffff",
+                                padding: "2px 8px",
+                                borderRadius: "999px",
+                              }}
+                            >
+                              ✓ نشانی منتخب خرید
+                            </span>
+                          ) : addr.isDefault ? (
+                            <span
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 700,
+                                background: "#dcfce7",
+                                color: "#15803d",
+                                padding: "2px 8px",
+                                borderRadius: "999px",
+                              }}
+                            >
+                              پیش‌فرض
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <p
+                          style={{
+                            margin: "4px 0 8px",
+                            fontSize: "0.84rem",
+                            color: "#334155",
+                            lineHeight: "1.5",
+                          }}
+                        >
+                          {addr.province}، {addr.city} — {addr.postalAddress}
+                        </p>
+
+                        <div
+                          style={{
+                            fontSize: "0.78rem",
+                            color: "#64748b",
+                            display: "flex",
+                            gap: "12px",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <span>گیرنده: <strong>{addr.receiverName}</strong></span>
+                          <span>تماس: <span dir="ltr">{addr.phone}</span></span>
+                          {addr.postalCode && (
+                            <span>کد پستی: <span dir="ltr">{addr.postalCode}</span></span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    marginTop: "14px",
+                    fontSize: "0.8rem",
+                    color: "#475569",
+                  }}
+                >
+                  <span style={{ color: "#274b24", fontWeight: 800 }}>ℹ</span>
+                  <span>
+                    اطلاعات نشانی انتخاب‌شده در فیلدهای زیر بارگذاری شده است؛ در صورت نیاز به ویرایش موقت، می‌توانید فیلدها را تغییر دهید:
+                  </span>
+                </div>
               </div>
             )}
 
@@ -819,40 +1142,6 @@ export default function CheckoutPage() {
                   <span className="field-error-msg">{stepErrors.customerPhone}</span>
                 ) : (
                   <small className="field-hint">۱۱ رقم با پیش‌شماره ۰۹ جهت احراز سامانه شاهکار</small>
-                )}
-              </label>
-
-              <label className="form-field">
-                <div className="field-label-row">
-                  <span>کد ملی ۱۰ رقمی (تطبیق با الگوریتم ممیزی ۱۱) *</span>
-                  {nationalCode && (
-                    <span className={`live-valid-badge ${nationalIdValidation.isValid ? "valid" : "invalid"}`}>
-                      {nationalIdValidation.isValid ? "✓ کد ملی معتبر است" : "نامعتبر"}
-                    </span>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  value={nationalCode}
-                  onChange={(e) => {
-                    const clean = toAsciiDigits(e.target.value).replace(/\D/g, "").slice(0, 10);
-                    setNationalCode(clean);
-                  }}
-                  placeholder="0010312013"
-                  dir="ltr"
-                  maxLength={10}
-                  className={`input-text ${
-                    stepErrors.nationalCode
-                      ? "input-error"
-                      : nationalCode && nationalIdValidation.isValid
-                      ? "input-valid"
-                      : ""
-                  }`}
-                />
-                {stepErrors.nationalCode ? (
-                  <span className="field-error-msg">{stepErrors.nationalCode}</span>
-                ) : (
-                  <small className="field-hint">الگوریتم کنترلی Modulo-11 ثبت احوال</small>
                 )}
               </label>
 
@@ -966,18 +1255,49 @@ export default function CheckoutPage() {
                   checked={needTaxInvoice}
                   onChange={(e) => setNeedTaxInvoice(e.target.checked)}
                 />
-                <span>درخواست صدور فاکتور رسمی حقوقی و ثبت سامانه مودیان (شناسه ملی / کد اقتصادی شرکت)</span>
+                <span>درخواست صدور فاکتور رسمی مالیاتی و ثبت در سامانه مودیان (کد ملی / شناسه ملی)</span>
               </label>
 
               {needTaxInvoice && (
                 <div className="tax-fields-grid">
-                  <label className="form-field full-width">
-                    <span>شناسه ملی شرکت / کد اقتصادی حقوقی (ویژه کلینیک‌ها و مراکز درمانی)</span>
+                  <label className="form-field">
+                    <div className="field-label-row">
+                      <span>کد ملی ۱۰ رقمی (تطبیق با الگوریتم ممیزی ۱۱) *</span>
+                      {nationalCode && (
+                        <span className={`live-valid-badge ${nationalIdValidation.isValid ? "valid" : "invalid"}`}>
+                          {nationalIdValidation.isValid ? "✓ کد ملی معتبر است" : "نامعتبر"}
+                        </span>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={nationalCode}
+                      onChange={(e) => setNationalCode(e.target.value)}
+                      placeholder="0010312013"
+                      dir="ltr"
+                      maxLength={10}
+                      className={`input-text ${
+                        stepErrors.nationalCode
+                          ? "input-error"
+                          : nationalCode && nationalIdValidation.isValid
+                          ? "input-valid"
+                          : ""
+                      }`}
+                    />
+                    {stepErrors.nationalCode ? (
+                      <span className="field-error-msg">{stepErrors.nationalCode}</span>
+                    ) : (
+                      <small className="field-hint">الگوریتم کنترلی Modulo-11 ثبت احوال</small>
+                    )}
+                  </label>
+
+                  <label className="form-field">
+                    <span>شناسه ملی / کد اقتصادی حقوقی (ویژه کلینیک‌ها و شرکت‌ها)</span>
                     <input
                       type="text"
                       value={companyEconomicCode}
                       onChange={(e) => setCompanyEconomicCode(e.target.value)}
-                      placeholder="شناسه ۱۱ رقمی شرکت یا کد اقتصادی"
+                      placeholder="شناسه ۱۱ رقمی شرکت"
                       dir="ltr"
                       className="input-text"
                     />

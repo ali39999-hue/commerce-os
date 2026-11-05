@@ -1,0 +1,1158 @@
+/* ==========================================================================
+   RUPAK SHOP — LUXURY CLINICAL & BOTANICAL HERO SECTION STYLES
+   Pixel-perfect replication of Persian WooCommerce / React Hero Layout
+   ========================================================================== */
+
+.rupak-hero-root {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #77B091 0%, #77B091 50%, #588e6c 100%);
+  color: #ffffff;
+  font-family: var(--font-vazirmatn, 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  overflow-x: clip;
+  direction: rtl;
+  padding-bottom: 90px;
+  min-height: 580px;
+  box-sizing: border-box;
+}
+
+/* Subtle background grain & soft botanical lighting */
+.rupak-hero-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.18) 0%, transparent 60%),
+                    radial-gradient(circle at 25% 70%, rgba(255, 255, 255, 0.12) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rupak-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+/* --------------------------------------------------------------------------
+   Top Utility Bar
+   -------------------------------------------------------------------------- */
+.rupak-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  padding-bottom: 8px;
+  position: relative;
+  z-index: 30;
+}
+
+.rupak-phone-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #FFD098;
+  color: #1e293b;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.rupak-phone-badge:hover {
+  background-color: #ffd098;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.rupak-phone-icon {
+  width: 16px;
+  height: 16px;
+  color: #1e293b;
+  transition: transform 0.2s ease;
+}
+
+.rupak-phone-badge:hover .rupak-phone-icon {
+  transform: scale(1.15) rotate(-10deg);
+}
+
+.rupak-search-wrapper {
+  position: relative;
+  width: 270px;
+}
+
+.rupak-search-input {
+  width: 100%;
+  background-color: #ffffff;
+  color: #334155;
+  border-radius: 9999px;
+  padding: 8px 18px 8px 38px;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.rupak-search-input:focus {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), 0 0 0 2px rgba(247, 212, 156, 0.6);
+}
+
+.rupak-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.rupak-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Main Navbar with Center SVG Bulge
+   -------------------------------------------------------------------------- */
+.rupak-navbar-placeholder {
+  height: 68px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.rupak-navbar-wrapper {
+  margin-top: 10px;
+  position: relative;
+  z-index: 50;
+  filter: drop-shadow(0 10px 22px rgba(18, 47, 30, 0.12));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+}
+
+/* Sticky Navbar on Scroll (Navbar stays fixed when scrolling down) */
+.rupak-navbar-wrapper.is-sticky {
+  position: fixed;
+  top: 12px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+  z-index: 999999 !important;
+  animation: rupakNavbarStickySlide 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 14px 34px rgba(15, 23, 42, 0.16));
+}
+
+.rupak-navbar-wrapper.is-sticky .rupak-navbar {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.rupak-navbar-wrapper.is-sticky .rupak-logo-bulge-svg path {
+  fill: #ffffff !important;
+}
+
+@keyframes rupakNavbarStickySlide {
+  from {
+    transform: translateY(-16px);
+    opacity: 0.85;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .rupak-navbar-wrapper.is-sticky {
+    top: 8px;
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rupak-navbar-placeholder {
+    height: 60px;
+  }
+}
+
+.rupak-navbar {
+  background-color: #ffffff;
+  color: #334155;
+  border-radius: 20px;
+  padding: 0 32px;
+  height: 68px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* Central SVG Protrusion / Emblem Bulge */
+.rupak-logo-bulge-svg {
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 104px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rupak-logo-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.rupak-logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-logo-container:hover .rupak-logo-mark {
+  transform: scale(1.06);
+}
+
+.rupak-logo-text {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  color: #475569;
+  margin-top: -2px;
+  transition: color 0.2s ease;
+}
+
+.rupak-logo-container:hover .rupak-logo-text {
+  color: #0f172a;
+}
+
+/* Navbar Menu Links */
+.rupak-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rupak-nav-link {
+  color: #475569;
+  text-decoration: none;
+  position: relative;
+  padding: 6px 2px;
+  transition: color 0.2s ease;
+}
+
+.rupak-nav-link:hover {
+  color: #77B091;
+}
+
+.rupak-nav-link.active {
+  color: #e2a856;
+  font-weight: 800;
+}
+
+.rupak-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: #e2a856;
+}
+
+/* Navbar Actions (Left in RTL) */
+.rupak-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rupak-btn-login {
+  background: transparent;
+  color: #334155;
+  border: 1.5px solid #334155;
+  padding: 8px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.rupak-btn-login:hover {
+  background-color: #f8fafc;
+  border-color: #0f172a;
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+.rupak-btn-login.rupak-btn-logged-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #274b24;
+  font-weight: 800;
+  border-color: #77B091;
+}
+
+.rupak-user-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.rupak-btn-cart {
+  background-color: #FFD098;
+  color: #1e293b;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.rupak-btn-cart:hover {
+  background-color: #ffd098;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.09);
+}
+
+.rupak-cart-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rupak-cart-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  background-color: #f43f5e;
+  border-radius: 50%;
+  border: 1.5px solid #FFD098;
+}
+
+.rupak-cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -9px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-feature-settings: 'tnum';
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+@keyframes rupakBadgeBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.7;
+  }
+  35% {
+    transform: scale(1.55);
+    background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+    box-shadow: 0 0 14px rgba(225, 29, 72, 0.6);
+  }
+  65% {
+    transform: scale(0.85);
+  }
+  85% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.rupak-cart-badge.badge-pop {
+  animation: rupakBadgeBounce 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes rupakHeroCartPulse {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  60% {
+    transform: scale(0.97);
+  }
+  80% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rupak-btn-cart.cart-bump-active {
+  animation: rupakHeroCartPulse 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Mobile Toggle */
+.rupak-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #334155;
+  padding: 6px;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Hero Content Grid
+   -------------------------------------------------------------------------- */
+.rupak-hero-content {
+  padding-top: 54px;
+  padding-bottom: 24px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 48px;
+  position: relative;
+  z-index: 15;
+}
+
+/* Center Mode (When Image is Removed) */
+.rupak-hero-content.centered-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 56px;
+  padding-bottom: 36px;
+}
+
+.rupak-hero-content.centered-mode .rupak-text-col {
+  text-align: center;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rupak-hero-content.centered-mode .rupak-hero-heading {
+  font-size: 40px;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rupak-hero-content.centered-mode .rupak-hero-desc {
+  font-size: 16px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rupak-hero-content.centered-mode .rupak-cta-row {
+  justify-content: center;
+}
+
+/* Text Column (Right in RTL default) */
+.rupak-text-col {
+  text-align: right;
+  max-width: 620px;
+}
+
+.rupak-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #FFD098;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.rupak-hero-heading {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.02em;
+}
+
+.rupak-hero-heading .rupak-heading-accent {
+  color: #ffd098;
+}
+
+.rupak-hero-desc {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0 0 28px 0;
+  max-width: 540px;
+}
+
+.rupak-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rupak-btn-primary {
+  background-color: #ffd098;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 12px 28px;
+  border-radius: 12px;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-btn-primary:hover {
+  background-color: #FFD098;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.rupak-cta-sep {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.rupak-btn-secondary {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rupak-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Visual Column (Left in RTL) */
+.rupak-visual-col {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+.rupak-glow-sphere {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.08) 55%, transparent 75%);
+  border-radius: 50%;
+  filter: blur(28px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rupak-product-floating-stage {
+  position: relative;
+  z-index: 5;
+  animation: rupak-floating 4.5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes rupak-floating {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+.rupak-hero-product-img {
+  max-width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 25px rgba(18, 47, 30, 0.28));
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Slider Navigation Arrows (< and >)
+   -------------------------------------------------------------------------- */
+.rupak-slider-arrow {
+  position: absolute;
+  top: 54%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #334155;
+  border: none;
+  box-shadow: 0 4px 12px rgba(18, 47, 30, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-slider-arrow:hover {
+  background-color: #ffffff;
+  color: #77B091;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 18px rgba(18, 47, 30, 0.22);
+}
+
+.rupak-slider-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.rupak-slider-arrow.arrow-right {
+  right: 18px;
+}
+
+.rupak-slider-arrow.arrow-left {
+  left: 18px;
+}
+
+/* Slider Pagination Dots */
+.rupak-slider-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  margin: 32px auto 16px;
+  z-index: 20;
+}
+
+.rupak-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.rupak-dot.active {
+  width: 24px;
+  background-color: #ffd098;
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Wave Curve & Scroll Down Button
+   -------------------------------------------------------------------------- */
+.rupak-bottom-wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow-x: clip;
+  line-height: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.rupak-bottom-wave-svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 65px;
+}
+
+.rupak-scroll-btn {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #64748b;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 24px rgba(18, 47, 30, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 12;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-scroll-btn.scrolled-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transform: translate(-50%, 60%) scale(0.8) !important;
+}
+
+.rupak-scroll-btn:hover {
+  color: #77B091;
+  transform: translate(-50%, 45%) scale(1.05);
+  box-shadow: 0 14px 28px rgba(18, 47, 30, 0.18);
+}
+
+.rupak-scroll-btn:active {
+  transform: translate(-50%, 52%) scale(0.96);
+}
+
+.rupak-scroll-arrow {
+  width: 24px;
+  height: 24px;
+  animation: rupak-arrow-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes rupak-arrow-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .rupak-nav-menu {
+    gap: 16px;
+    font-size: 13px;
+  }
+  
+  .rupak-hero-heading {
+    font-size: 32px;
+  }
+
+  .rupak-hero-content.centered-mode .rupak-hero-heading {
+    font-size: 34px;
+  }
+  
+  .rupak-hero-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 860px) {
+  .rupak-nav-menu {
+    display: none;
+  }
+
+  .rupak-mobile-toggle {
+    display: flex;
+  }
+
+  .rupak-hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: 32px;
+    gap: 36px;
+  }
+
+  .rupak-hero-content.centered-mode {
+    padding-top: 36px;
+  }
+
+  .rupak-text-col {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .rupak-hero-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .rupak-cta-row {
+    justify-content: center;
+  }
+
+  .rupak-topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .rupak-search-wrapper {
+    width: 100%;
+    order: 2;
+  }
+
+  .rupak-phone-badge {
+    order: 1;
+  }
+
+  .rupak-slider-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .rupak-navbar {
+    padding: 0 16px;
+    height: 60px;
+  }
+
+  .rupak-logo-bulge-svg {
+    width: 120px;
+    height: 86px;
+    top: -14px;
+  }
+
+  .rupak-hero-heading,
+  .rupak-hero-content.centered-mode .rupak-hero-heading {
+    font-size: 24px;
+  }
+
+  .rupak-btn-login {
+    display: none;
+  }
+
+  .rupak-scroll-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .rupak-scroll-arrow {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ==========================================================================
+   RUPAK CATEGORY WAVE SECTION (Directly Under Hero Scroll Button)
+   Staggered cards, peach gradient background & top center notch
+   ========================================================================== */
+.rupak-category-section {
+  position: relative;
+  background-color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 48px;
+  overflow: visible;
+  direction: rtl;
+  z-index: 2;
+}
+
+.rupak-category-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.rupak-category-box {
+  position: relative;
+  background: linear-gradient(180deg, #fcd9ae 0%, #fde9d2 100%);
+  border-radius: 36px;
+  padding: 44px 24px 36px;
+  box-shadow: 0 12px 35px -5px rgba(251, 213, 166, 0.35);
+}
+
+/* Cutout / Notch below hero scroll button */
+.rupak-category-notch {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 70px;
+  background-color: #ffffff;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Desktop Grid Layout (Staggered Wave) */
+.rupak-category-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+  align-items: start;
+  position: relative;
+  z-index: 10;
+}
+
+.rupak-category-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+/* Staggered Wave Heights (Wave shape matching center notch) */
+@media (min-width: 1024px) {
+  .rupak-category-card-wrapper.stagger-1 {
+    transform: translateY(-18px);
+  }
+  .rupak-category-card-wrapper.stagger-2 {
+    transform: translateY(-8px);
+  }
+  .rupak-category-card-wrapper.stagger-3 {
+    transform: translateY(12px);
+  }
+  .rupak-category-card-wrapper.stagger-4 {
+    transform: translateY(12px);
+  }
+  .rupak-category-card-wrapper.stagger-5 {
+    transform: translateY(-8px);
+  }
+  .rupak-category-card-wrapper.stagger-6 {
+    transform: translateY(-18px);
+  }
+
+  .rupak-category-card-wrapper:hover {
+    transform: translateY(-26px) scale(1.02);
+  }
+}
+
+.rupak-category-card {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-card {
+  box-shadow: 0 16px 32px -5px rgba(0, 0, 0, 0.12);
+}
+
+.rupak-category-img-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow-x: clip;
+  margin-bottom: 12px;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rupak-category-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-img {
+  transform: scale(1.1);
+}
+
+.rupak-category-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-title {
+  color: #77B091;
+}
+
+/* Capsule "مشاهده" Button */
+.rupak-category-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 12px 3px 5px;
+  border-radius: 9999px;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-btn {
+  background-color: #77B091;
+  color: #ffffff;
+}
+
+.rupak-category-btn-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #77B091;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-btn-icon {
+  background-color: #ffffff;
+  color: #77B091;
+}
+
+/* Pedestal / Diamond Stand under card */
+.rupak-category-stand {
+  width: 28px;
+  height: 28px;
+  background-color: rgba(102, 168, 132, 0.2);
+  transform: rotate(45deg);
+  margin-top: -12px;
+  z-index: 5;
+  border-radius: 4px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.rupak-category-card-wrapper:hover .rupak-category-stand {
+  transform: rotate(45deg) scale(0.8);
+  background-color: rgba(102, 168, 132, 0.35);
+}
+
+/* Mobile & Tablet Carousel Mode */
+@media (max-width: 1023px) {
+  .rupak-category-box {
+    padding: 36px 16px 24px;
+    border-radius: 28px;
+  }
+
+  .rupak-category-notch {
+    width: 130px;
+    height: 55px;
+    top: -26px;
+  }
+
+  .rupak-category-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+    padding-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .rupak-category-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rupak-category-card-wrapper {
+    flex: 0 0 160px;
+    scroll-snap-align: start;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .rupak-category-card-wrapper {
+    flex: 0 0 140px;
+  }
+
+  .rupak-category-title {
+    font-size: 13px;
+  }
+}

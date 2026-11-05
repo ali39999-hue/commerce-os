@@ -91,27 +91,33 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <section className="state-panel empty-cart-box" style={{ maxWidth: '640px', margin: '60px auto', textAlign: 'center', padding: '48px 24px' }}>
-        <div className="empty-cart-graphic" aria-hidden="true" style={{ width: "64px", height: "64px", margin: "0 auto 16px", color: "var(--brand)" }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "100%", height: "100%" }}>
-            <circle cx="8" cy="21" r="1"/>
-            <circle cx="19" cy="21" r="1"/>
-            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-          </svg>
-        </div>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '12px', color: 'var(--ink)' }}>سبد خرید و نسخه شما خالی است</h2>
-        <p style={{ color: 'var(--muted)', lineHeight: '1.8', marginBottom: '28px' }}>
-          هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد نسخه خود اضافه نکرده‌اید. برای شروع درمان، از کاتالوگ محصولات دیدن فرمایید.
+      <section className="state-panel empty-cart-box">
+        <div className="empty-cart-graphic" aria-hidden="true">🛒</div>
+        <h2>سبد خرید و نسخه شما خالی است</h2>
+        <p>
+          هنوز هیچ محصول مراقبت بالینی، کربوکسی‌تراپی یا ملزومات کلینیکال به سبد خود
+          اضافه نکرده‌اید.
         </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/#featured-products" className="primary-link" style={{ background: 'var(--brand)', color: '#ffffff', padding: '12px 24px', borderRadius: 'var(--radius-pill)', textDecoration: 'none', fontWeight: 700 }}>
-            مشاهده محصولات منتخب درمانی
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "16px" }}>
+          <Link href="/#catalog" className="primary-link">
+            مشاهده کاتالوگ درمانی و محصولات ReeSkin & ReeMed
           </Link>
-          <Link href="/reeskin" className="primary-link" style={{ background: 'var(--surface-tint)', color: 'var(--brand-deep)', border: '1px solid var(--line)', padding: '12px 24px', borderRadius: 'var(--radius-pill)', textDecoration: 'none', fontWeight: 700 }}>
-            خانواده محصولات خانگی ReeSkin™
-          </Link>
-          <Link href="/carboxygel" className="primary-link" style={{ background: 'var(--surface-tint)', color: 'var(--brand-deep)', border: '1px solid var(--line)', padding: '12px 24px', borderRadius: 'var(--radius-pill)', textDecoration: 'none', fontWeight: 700 }}>
-            ژل کربوکسی‌تراپی CarboxyGel
+          <Link
+            href="/account"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "10px 22px",
+              borderRadius: "999px",
+              background: "#ffffff",
+              border: "1px solid #cbd5e1",
+              color: "#334155",
+              textDecoration: "none",
+              fontWeight: 700,
+              fontSize: "14px",
+            }}
+          >
+            ورود به پنل کاربری من
           </Link>
         </div>
       </section>
@@ -174,9 +180,30 @@ export default function CartPage() {
             <h1>سبد خرید نسخه ({calculations.itemCount} کالا)</h1>
             {isSyncing && <span className="sync-badge">در حال بررسی موجودی زنده…</span>}
           </div>
-          <button onClick={clearCart} className="btn-text-danger">
-            پاک کردن کل سبد
-          </button>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <Link
+              href="/account?tab=cart"
+              style={{
+                fontSize: "12.5px",
+                color: "#274b24",
+                background: "#f1f5f9",
+                border: "1px solid #cbd5e1",
+                padding: "6px 14px",
+                borderRadius: "999px",
+                textDecoration: "none",
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <span>مدیریت در پنل کاربری من</span>
+              <span aria-hidden="true">←</span>
+            </Link>
+            <button onClick={clearCart} className="btn-text-danger">
+              پاک کردن کل سبد
+            </button>
+          </div>
         </div>
 
         {/* Dynamic 2-Tier Milestone Progress Bar (1.5M Free Cold-Chain Delivery + 3M VIP Consultation) */}

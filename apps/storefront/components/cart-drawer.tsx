@@ -8,6 +8,11 @@ import { trackViewCart, trackBeginCheckout } from "../lib/analytics";
 import { CrossSellProtocol, CLINICAL_CROSS_SELLS } from "../lib/cart";
 
 export function CartDrawer() {
+  // Drawer modal replaced with dedicated cart page and panel tab per user request
+  return null;
+}
+
+function LegacyCartDrawerUnused() {
   const {
     items,
     addItem,
