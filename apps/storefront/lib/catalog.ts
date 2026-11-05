@@ -121,8 +121,4 @@ export const DEMO_PRODUCT_SLUGS = [
   'crystalene',
   'healene',
   'silicalene',
-  'carbox',
-  'plasmax',
-  'carbox-station',
-  'plasmax-pro',
 ] as const;

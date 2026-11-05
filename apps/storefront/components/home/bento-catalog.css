@@ -1,10 +1,12 @@
-/* ── Bento Clinical Product Grid V3 (Warm Editorial Clinical Luxury) ──
-   Reference: Dr Dermer Concept Board 01/02 — white editorial product cards on ivory canvas */
+/* ── Dr Dermer Physiology Atlas — Herbarium Product Plates (Bento Catalog) ──
+   Aesthetic: Botanical Specimen Plates · Precision Ruling · Markazi Typography
+   Typeface: Markazi Text + Vazirmatn + JetBrains Mono
+*/
 
 .bento-catalog-section {
-  max-width: 1440px;
-  margin: 64px auto 0;
-  padding: 0 24px;
+  max-width: 1400px;
+  margin: 72px auto 0;
+  padding: 0 28px;
 }
 
 .bento-catalog-container {
@@ -13,14 +15,14 @@
   gap: 36px;
 }
 
-/* Header & Tabs */
+/* Header & Folio Filter Tabs */
 .bento-catalog-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 24px;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -33,10 +35,10 @@
   align-items: center;
   gap: 8px;
   font-size: 0.72rem;
-  font-weight: 800;
-  color: #755A38;
+  font-weight: 700;
+  color: var(--color-brand-forest);
   letter-spacing: 0.06em;
-  font-family: "SF Mono", ui-monospace, monospace;
+  font-family: "JetBrains Mono", monospace;
   margin-bottom: 8px;
 }
 
@@ -44,34 +46,34 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-champagne-gold);
+  background: var(--color-brand-forest);
 }
 
 .bch-headline {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: clamp(2.2rem, 3.6vw, 3rem);
   font-weight: 700;
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-  color: var(--color-brand-forest);
-  line-height: 1.35;
+  color: var(--ink);
+  line-height: 1.25;
   letter-spacing: -0.01em;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
 }
 
 .bch-subtext {
-  font-size: 0.94rem;
+  font-size: 0.96rem;
   color: var(--color-text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
   margin: 0;
 }
 
 .catalog-tabs-bar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #FFFFFF;
   border: 1px solid var(--line);
-  padding: 4px;
-  border-radius: var(--radius-pill);
+  padding: 3px;
+  border-radius: var(--radius-md);
   flex-wrap: wrap;
   box-shadow: var(--shadow-sm);
 }
@@ -80,12 +82,12 @@
   background: transparent;
   border: none;
   color: var(--muted);
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.18s ease;
   font-family: inherit;
 }
 
@@ -95,40 +97,41 @@
 
 .cat-tab-btn.active {
   background: var(--color-brand-forest);
-  color: #ffffff;
-  box-shadow: 0 3px 10px rgba(30, 58, 47, 0.25);
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(30, 58, 47, 0.2);
 }
 
-/* 4-Column Bento Grid */
+/* 4-Column Specimen Plate Grid */
 .bento-product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 20px;
 }
 
 .bento-product-card {
   background: #FFFFFF;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .bento-product-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-elevated);
+  border-color: var(--ink);
 }
 
 .bento-product-card.theme-reeskin:hover {
-  border-color: rgba(30, 58, 47, 0.35);
+  border-color: var(--color-brand-forest);
 }
 
 .bento-product-card.theme-reemed:hover {
-  border-color: rgba(198, 156, 112, 0.45);
+  border-color: #755A38;
 }
 
 /* Card Top Bar */
@@ -136,37 +139,40 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 18px 0;
+  padding: 14px 16px 0;
   z-index: 2;
 }
 
 .bpc-family-pill {
-  font-size: 0.68rem;
-  font-weight: 800;
-  padding: 3px 9px;
-  border-radius: var(--radius-pill);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
 }
 
 .bpc-family-pill.reeskin {
-  background: rgba(30, 58, 47, 0.07);
+  background: var(--canvas);
   color: var(--color-brand-forest);
-  border: 1px solid rgba(30, 58, 47, 0.18);
+  border: 1px solid var(--line);
 }
 
 .bpc-family-pill.reemed {
-  background: rgba(198, 156, 112, 0.12);
+  background: var(--canvas);
   color: #755A38;
-  border: 1px solid rgba(198, 156, 112, 0.3);
+  border: 1px solid var(--line);
 }
 
 .bpc-coldchain-pill {
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.65rem;
   font-weight: 700;
   color: #0369a1;
   background: var(--medical-tint);
   border: 1px solid rgba(2, 132, 199, 0.25);
-  padding: 3px 8px;
-  border-radius: var(--radius-pill);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
 }
 
 .bpc-stock-status {
@@ -174,53 +180,55 @@
   color: var(--muted);
 }
 
-/* Image Stage */
+/* Specimen Observation Stage */
 .bpc-image-stage {
-  min-height: 220px;
+  min-height: 230px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 30% 25%, rgba(200, 214, 204, 0.3) 0%, transparent 60%),
-    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FAF8F5 100%);
   position: relative;
-  padding: 24px;
+  padding: 24px 20px;
   border-bottom: 1px solid var(--line);
   text-decoration: none;
 }
 
 .theme-reemed .bpc-image-stage {
-  background:
-    radial-gradient(circle at 30% 25%, rgba(237, 229, 218, 0.6) 0%, transparent 60%),
-    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FAF6EE 100%);
 }
 
 .bpc-real-img {
   width: auto;
   max-width: 100%;
-  height: 175px;
+  height: 180px;
+  max-height: 180px;
   object-fit: contain;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  filter: drop-shadow(0 14px 24px rgba(25, 35, 29, 0.15));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 10px 20px rgba(22, 26, 24, 0.12));
 }
 
 .bento-product-card:hover .bpc-real-img {
-  transform: scale(1.08) translateY(-4px);
-  filter: drop-shadow(0 18px 32px rgba(25, 35, 29, 0.2));
+  transform: scale(1.06) translateY(-2px);
 }
 
 .bpc-formula-chip {
   position: absolute;
-  bottom: 10px;
+  bottom: 12px;
   left: 12px;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.65rem;
   font-weight: 700;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--line);
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
+  color: var(--color-brand-forest);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line-strong);
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 6px rgba(25, 35, 29, 0.06);
+}
+
+.theme-reemed .bpc-formula-chip {
+  color: #755A38;
 }
 
 /* Card Body */
@@ -237,19 +245,22 @@
 
 .bpc-sku-code {
   font-size: 0.68rem;
-  font-family: "SF Mono", ui-monospace, monospace;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
   color: var(--muted);
   direction: ltr;
   display: block;
   text-align: right;
+  letter-spacing: 0.04em;
 }
 
 .bpc-title {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: 1.45rem;
+  font-weight: 700;
   color: var(--ink);
-  margin: 0 0 10px;
-  line-height: 1.45;
+  margin: 0 0 4px;
+  line-height: 1.3;
 }
 
 .bpc-title a {
@@ -259,41 +270,58 @@
 }
 
 .bpc-title a:hover {
-  color: var(--brand);
+  color: var(--color-brand-forest);
 }
 
 .theme-reemed .bpc-title a:hover {
   color: #755A38;
 }
 
+.bpc-english-title {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
 .bpc-description {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: var(--color-text-secondary);
-  line-height: 1.7;
-  margin: 0 0 18px;
+  line-height: 1.75;
+  margin: 0 0 16px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 44px;
 }
 
-/* Actives Deck */
+/* INCI Actives Tag Strip */
 .bpc-actives-deck {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 22px;
-  min-height: 48px;
+  margin-bottom: 20px;
+  min-height: 52px;
 }
 
 .bpc-active-chip {
-  font-size: 0.68rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.66rem;
   font-weight: 600;
   color: var(--color-text-secondary);
-  background: #FAF8F5;
+  background: var(--surface-soft);
   border: 1px solid var(--line);
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease;
+}
+
+.bpc-active-chip:hover {
+  border-color: var(--color-brand-forest);
 }
 
 /* Pricing & Action Footer */
@@ -303,7 +331,7 @@
   justify-content: space-between;
   padding-top: 16px;
   border-top: 1px solid var(--line);
-  gap: 10px;
+  gap: 12px;
   margin-top: auto;
 }
 
@@ -313,14 +341,17 @@
 }
 
 .bpc-price-label {
-  font-size: 0.66rem;
-  color: var(--muted);
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
 .bpc-price-val {
-  font-size: 1.08rem;
-  font-weight: 900;
-  color: var(--color-brand-forest);
+  font-family: "JetBrains Mono", Vazirmatn, monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 
@@ -333,13 +364,23 @@
   align-items: center;
 }
 
+.theme-reemed .btn-add-cart {
+  background: #755A38;
+  border-color: #5C4428;
+}
+
+.theme-reemed .btn-add-cart:hover {
+  background: #5C4428;
+  box-shadow: 0 4px 14px rgba(117, 90, 56, 0.3);
+}
+
 .bpc-out-stock-pill {
   font-size: 0.74rem;
   color: var(--muted);
-  background: #FAF8F5;
+  background: var(--canvas);
   border: 1px solid var(--line);
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
 }
 
 /* Responsive */

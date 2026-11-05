@@ -1,45 +1,47 @@
-/* ── Redesigned Flagship Hero Banner V3 (Warm Editorial Clinical Luxury) ──
-   Reference: Dr Dermer Concept Boards 01/02/03 & Design System Kit v1
-   Ivory canvas · Serif editorial headline · Forest green CTA · Champagne accents */
+/* ── Dr Dermer UK Flagship Luxury Clinical Hero Banner (Kit v1 & Concept Boards) ──
+   Aesthetic: Warm Editorial Clinical Luxury · British Cambridge R&D Rigor
+   Typeface: Markazi Text (Persian Serif) + Playfair Display + Vazirmatn + JetBrains Mono
+   Palette: Luminous Alabaster #FAF8F5, Deep Botanical Ink #19231D, Clinical Forest #1E3A2F, Champagne Gold #C69C70
+*/
 
 .clinical-hero-v2 {
   position: relative;
-  background:
-    radial-gradient(90% 80% at 85% 10%, rgba(200, 214, 204, 0.35) 0%, transparent 60%),
-    radial-gradient(70% 70% at 10% 90%, rgba(237, 229, 218, 0.5) 0%, transparent 60%),
-    linear-gradient(180deg, #FAF8F5 0%, #F5F2EB 100%);
+  background-color: var(--canvas);
+  background-image:
+    radial-gradient(ellipse at 85% 20%, rgba(198, 156, 112, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 15% 85%, rgba(30, 58, 47, 0.06) 0%, transparent 60%);
   border-bottom: 1px solid var(--line);
   padding: 40px 0 64px;
   overflow: hidden;
 }
 
+/* Technical Subtle Ambient Line */
 .hero-v2-ambient-glow {
   position: absolute;
-  top: -180px;
-  left: 15%;
-  width: 620px;
-  height: 620px;
-  background: radial-gradient(circle, rgba(198, 156, 112, 0.14) 0%, rgba(200, 214, 204, 0.08) 50%, transparent 70%);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--line) 20%, var(--line) 80%, transparent 100%);
   pointer-events: none;
-  z-index: 0;
-  filter: blur(50px);
 }
 
 .hero-v2-grid-mesh {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(to right, rgba(30, 58, 47, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 58, 47, 0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at 50% 30%, black 30%, transparent 75%);
+  background-image:
+    linear-gradient(to right, rgba(30, 58, 47, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 58, 47, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at 50% 40%, black 45%, transparent 85%);
   pointer-events: none;
   z-index: 0;
 }
 
 .hero-v2-container {
-  max-width: 1440px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 28px;
   position: relative;
   z-index: 1;
 }
@@ -51,24 +53,35 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 36px;
-  padding-bottom: 20px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--line);
 }
 
 .institution-chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.85);
+  gap: 12px;
+  background: #FFFFFF;
   border: 1px solid var(--line);
-  padding: 6px 16px;
-  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--color-text-secondary);
+  color: var(--ink);
   letter-spacing: 0.04em;
   box-shadow: var(--shadow-sm);
+}
+
+.inst-flag-icon {
+  font-size: 0.9rem;
+}
+
+.inst-title {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .inst-divider {
@@ -77,19 +90,24 @@
 
 .inst-reg {
   color: var(--color-brand-forest);
-  font-family: "SF Mono", ui-monospace, monospace;
-  font-size: 0.72rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  padding: 2px 8px;
+  border-radius: 2px;
 }
 
-/* Mode Switcher Tabs */
+/* Mode Selector Switcher (ReeSkin vs ReeMed) */
 .hero-mode-switcher {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  gap: 4px;
+  background: #FFFFFF;
   border: 1px solid var(--line);
   padding: 4px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
 
@@ -101,11 +119,11 @@
   border: none;
   color: var(--muted);
   padding: 8px 18px;
-  border-radius: var(--radius-pill);
-  font-size: 0.82rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.18s ease;
   font-family: inherit;
 }
 
@@ -115,33 +133,26 @@
 
 .mode-btn.active {
   background: var(--color-brand-forest);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(30, 58, 47, 0.25);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(30, 58, 47, 0.25);
 }
 
 .mode-pulse-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-}
-
-.mode-pulse-dot.teal {
-  background: var(--color-brand-forest);
-}
-
-.mode-pulse-dot.purple {
   background: var(--color-champagne-gold);
 }
 
 .mode-btn.active .mode-pulse-dot.teal {
-  background: #A8C5B8;
+  background: #C8D6CC;
 }
 
 .mode-btn.active .mode-pulse-dot.purple {
   background: #E4C9A8;
 }
 
-/* Main Split Grid */
+/* Two-Column Balanced Hero Grid */
 .hero-v2-main-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -149,21 +160,20 @@
   align-items: center;
 }
 
-/* Column 1: Copy & Actions */
 .hero-v2-copy-column {
   display: flex;
   flex-direction: column;
 }
 
+/* Kicker Tag */
 .clinical-kicker-tag {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 800;
+  gap: 10px;
+  font-size: 0.84rem;
+  font-weight: 700;
   color: var(--color-brand-forest);
-  letter-spacing: 0.02em;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .kicker-dot {
@@ -174,121 +184,162 @@
 }
 
 .kicker-dot.purple {
-  background: var(--color-champagne-gold);
+  background: #755A38;
 }
 
+/* Majestic Headline */
 .hero-v2-headline {
-  font-size: clamp(2.3rem, 4.4vw, 3.7rem);
+  font-family: "Markazi Text", "Playfair Display", Georgia, serif;
+  font-size: clamp(2.4rem, 4.4vw, 3.8rem);
   font-weight: 700;
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-  color: var(--color-brand-forest);
-  line-height: 1.3;
+  color: var(--ink);
+  line-height: 1.22;
   letter-spacing: -0.01em;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
 }
 
 .holographic-gradient {
-  background: linear-gradient(120deg, var(--color-brand-forest) 0%, #2D5646 60%, var(--color-champagne-gold) 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-brand-forest);
+  position: relative;
+  display: inline-block;
+}
+
+.holographic-gradient::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-champagne-gold);
+  opacity: 0.6;
+  border-radius: 2px;
 }
 
 .holographic-gradient-purple {
-  background: linear-gradient(120deg, #755A38 0%, var(--color-champagne-gold) 70%, #A8C5B8 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #755A38;
+  position: relative;
+  display: inline-block;
 }
 
-.hero-v2-motto {
-  font-size: 0.95rem;
-  font-style: italic;
-  color: #755A38;
-  margin-bottom: 20px;
-  opacity: 0.95;
+.holographic-gradient-purple::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-champagne-gold);
+  opacity: 0.6;
+  border-radius: 2px;
 }
 
 .hero-v2-lead-prose {
-  font-size: 1.05rem;
-  line-height: 1.9;
+  font-size: 1.02rem;
+  line-height: 1.95;
   color: var(--color-text-secondary);
-  max-width: 640px;
-  margin: 0 0 36px;
+  max-width: 600px;
+  margin: 0 0 32px;
 }
 
-/* CTA Buttons Deck */
+/* CTA Actions */
 .hero-v2-cta-deck {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 44px;
+  margin-bottom: 28px;
 }
 
 .v2-btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: var(--color-brand-forest);
-  color: #ffffff;
-  padding: 15px 32px;
-  border-radius: var(--radius-pill);
-  font-size: 1rem;
+  color: #FFFFFF;
+  padding: 14px 30px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
   font-weight: 700;
   text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid var(--color-brand-dark);
-  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.22);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.22);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.v2-btn-primary.teal-glow:hover,
-.v2-btn-primary.purple-glow:hover {
-  transform: translateY(-2px);
+.v2-btn-primary:hover {
   background: var(--color-brand-dark);
-  box-shadow: 0 10px 24px rgba(30, 58, 47, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(30, 58, 47, 0.3);
 }
 
 .v2-btn-primary.purple-glow {
   background: #755A38;
-  border-color: #7A5A36;
-  box-shadow: 0 6px 18px rgba(140, 106, 66, 0.25);
+  border-color: #5C4428;
+  box-shadow: 0 4px 14px rgba(117, 90, 56, 0.25);
 }
 
 .v2-btn-primary.purple-glow:hover {
-  background: #7A5A36;
-  box-shadow: 0 10px 24px rgba(140, 106, 66, 0.32);
+  background: #5C4428;
+  box-shadow: 0 8px 22px rgba(117, 90, 56, 0.35);
 }
 
 .v2-btn-secondary {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.92);
+  background: #FFFFFF;
   border: 1px solid var(--line-strong);
   color: var(--ink);
   padding: 14px 24px;
-  border-radius: var(--radius-pill);
-  font-size: 0.94rem;
-  font-weight: 700;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.18s ease;
 }
 
 .v2-btn-secondary:hover {
-  background: #ffffff;
-  border-color: var(--brand);
-  color: var(--brand);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--color-brand-forest);
+  color: var(--color-brand-forest);
+  background: var(--surface-soft);
+  transform: translateY(-1px);
 }
 
-/* Telemetry Cards Grid */
+/* Institutional Trust Features Row */
+.hero-trust-features-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 34px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+
+.trust-feature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trust-feature-icon {
+  font-size: 1rem;
+}
+
+.trust-feature-sep {
+  color: var(--line-strong);
+  font-size: 0.7rem;
+}
+
+/* Telemetry Observations Grid */
 .hero-v2-telemetry-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding-top: 28px;
+  gap: 14px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
 }
 
@@ -296,29 +347,23 @@
   background: #FFFFFF;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: 18px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .telemetry-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(30, 58, 47, 0.25);
+  border-color: var(--color-brand-forest);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-card);
 }
 
 .telemetry-card-glow {
-  position: absolute;
-  top: -20px;
-  left: -20px;
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle, rgba(200, 214, 204, 0.4), transparent 70%);
-  pointer-events: none;
+  display: none;
 }
 
 .telemetry-top {
@@ -329,19 +374,20 @@
 }
 
 .telemetry-value {
-  font-size: 1.7rem;
+  font-family: "JetBrains Mono", Vazirmatn, monospace;
+  font-size: 1.55rem;
   font-weight: 800;
   color: var(--color-brand-forest);
-  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .telemetry-tag {
-  font-size: 0.64rem;
-  font-weight: 800;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
   color: var(--muted);
-  font-family: "SF Mono", ui-monospace, monospace;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
 }
 
 .telemetry-label {
@@ -350,7 +396,7 @@
   line-height: 1.6;
 }
 
-/* Column 2: Editorial Stage Pod */
+/* Visual Column & Stage Pod */
 .hero-v2-visual-column {
   display: flex;
   justify-content: center;
@@ -358,135 +404,129 @@
 
 .hero-v2-stage-pod {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   background: #FFFFFF;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-xl);
-  padding: 28px;
+  padding: 24px;
   position: relative;
-  box-shadow: 0 24px 50px -12px rgba(25, 35, 29, 0.1), 0 4px 12px rgba(25, 35, 29, 0.04);
-  overflow: hidden;
-}
-
-.hero-v2-stage-pod.theme-clinic {
-  box-shadow: 0 24px 50px -12px rgba(140, 106, 66, 0.12), 0 4px 12px rgba(25, 35, 29, 0.04);
-  border-color: rgba(198, 156, 112, 0.35);
+  box-shadow: var(--shadow-elevated);
 }
 
 .stage-pod-aurora {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 200px;
-  background: radial-gradient(circle at 50% 0%, rgba(200, 214, 204, 0.35) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.theme-clinic .stage-pod-aurora {
-  background: radial-gradient(circle at 50% 0%, rgba(237, 229, 218, 0.5) 0%, transparent 70%);
+  display: none;
 }
 
 .stage-pod-status-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--line);
 }
 
 .status-live-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-brand-forest);
-  letter-spacing: 0.05em;
-  font-family: "SF Mono", ui-monospace, monospace;
-}
-
-.theme-clinic .status-live-pill {
-  color: #755A38;
+  letter-spacing: 0.04em;
 }
 
 .live-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--color-brand-forest);
-}
-
-.theme-clinic .live-dot {
-  background: var(--color-champagne-gold);
+  background: #10B981;
 }
 
 .coldchain-cert {
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.68rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #0369a1;
   background: var(--medical-tint);
   border: 1px solid rgba(2, 132, 199, 0.25);
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
 }
 
-/* Product Visual Showcase */
+/* Modern Showcase Display */
 .showcase-visual-wrapper {
   position: relative;
   border-radius: var(--radius-md);
-  background:
-    radial-gradient(circle at 30% 20%, rgba(200, 214, 204, 0.25) 0%, transparent 60%),
-    linear-gradient(180deg, #FAF8F5 0%, #F2EFE9 100%);
+  background: radial-gradient(circle at center, #FFFFFF 0%, #F8F6F1 100%);
   border: 1px solid var(--line);
-  padding: 24px 16px;
+  padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 280px;
-  margin-bottom: 20px;
+  min-height: 290px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.showcase-visual-wrapper.modern-editorial {
+  padding: 0;
+  background: #FAF8F5;
+  border: 1px solid var(--line);
 }
 
 .stage-featured-image {
   max-width: 100%;
-  max-height: 250px;
+  max-height: 260px;
   object-fit: contain;
-  filter: drop-shadow(0 16px 28px rgba(25, 35, 29, 0.18));
+  filter: drop-shadow(0 14px 20px rgba(22, 26, 24, 0.12));
   transition: transform 0.3s ease;
 }
 
-.stage-featured-image:hover {
-  transform: scale(1.04);
+.stage-featured-image.radiant-visual {
+  width: 100%;
+  height: 100%;
+  max-height: 310px;
+  object-fit: cover;
+  filter: none;
+  transition: transform 0.35s ease;
+}
+
+.stage-featured-image.radiant-visual:hover {
+  transform: scale(1.02);
 }
 
 .stage-featured-image.hardware-view {
   max-height: 270px;
 }
 
-/* Floating Mechanism Beacon */
+/* Modern Floating Mechanism Beacon */
 .floating-biotech-beacon {
   position: absolute;
   bottom: 12px;
   right: 12px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 8px 20px rgba(25, 35, 29, 0.1);
+  box-shadow: 0 4px 14px rgba(25, 35, 29, 0.08);
 }
 
 .floating-biotech-beacon.purple {
-  border-color: rgba(198, 156, 112, 0.4);
+  border-color: rgba(117, 90, 56, 0.4);
 }
 
 .beacon-thumb-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  background: #FAF8F5;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: var(--canvas);
   border: 1px solid var(--line);
   padding: 2px;
   display: flex;
@@ -507,38 +547,42 @@
 }
 
 .beacon-info strong {
-  font-size: 0.8rem;
-  font-weight: 800;
+  font-size: 0.78rem;
   color: var(--ink);
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .beacon-info span {
   font-size: 0.68rem;
   color: var(--muted);
+  line-height: 1.3;
 }
 
-/* Quick Jump Rail */
+/* Flagship Products Quick Rail (4 products) */
 .stage-pod-rail {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
 }
 
 .rail-tile {
-  background: #FAF8F5;
+  background: var(--canvas);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  padding: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  text-decoration: none;
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  align-items: center;
+  transition: all 0.18s ease;
 }
 
 .rail-tile:hover {
-  background: #ffffff;
-  border-color: rgba(30, 58, 47, 0.3);
+  background: #FFFFFF;
+  border-color: var(--color-brand-forest);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -547,8 +591,12 @@
   font-size: 0.62rem;
   font-weight: 800;
   color: var(--color-brand-forest);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 1px 6px;
   margin-bottom: 4px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .rail-tile-badge.purple {
@@ -557,93 +605,103 @@
 
 .rail-tile strong {
   font-size: 0.8rem;
-  font-weight: 800;
   color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 700;
+  display: block;
+  line-height: 1.3;
 }
 
 .rail-tile span {
   font-size: 0.68rem;
   color: var(--muted);
+  line-height: 1.3;
 }
 
-/* Stage Pod Footer */
+/* Bottom Security / Authenticity Seal */
 .stage-pod-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 16px;
   border-top: 1px solid var(--line);
-  gap: 12px;
+  padding-top: 14px;
+  font-size: 0.74rem;
 }
 
 .batch-ttac-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.72rem;
-  color: var(--muted);
+  color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
 .learn-science-link {
-  font-size: 0.78rem;
+  color: var(--color-brand-forest);
   font-weight: 700;
-  color: var(--brand);
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  flex-shrink: 0;
+  text-decoration: none;
 }
 
 .learn-science-link:hover {
-  color: var(--color-brand-dark);
+  text-decoration: underline;
 }
 
-/* Responsive Breakpoints */
+/* Responsive Reflow & Ergonimics */
 @media (max-width: 1024px) {
   .hero-v2-main-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
   }
+
+  .hero-v2-visual-column {
+    order: -1;
+  }
+
   .hero-v2-stage-pod {
     max-width: 100%;
+  }
+
+  .hero-v2-header-badge-row {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 640px) {
   .clinical-hero-v2 {
-    padding: 24px 0 40px;
+    padding: 24px 0 44px;
   }
-  .hero-v2-header-badge-row {
-    flex-direction: column;
-    align-items: flex-start;
+
+  .hero-v2-container {
+    padding: 0 16px;
   }
-  .hero-mode-switcher {
-    width: 100%;
-    justify-content: stretch;
+
+  .hero-v2-headline {
+    font-size: 2.1rem;
+    line-height: 1.25;
   }
-  .hero-mode-switcher .mode-btn {
-    flex: 1;
-    justify-content: center;
-    padding: 8px 10px;
-    font-size: 0.74rem;
-  }
-  .hero-v2-telemetry-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+
   .hero-v2-cta-deck {
     flex-direction: column;
-    width: 100%;
+    align-items: stretch;
+    gap: 12px;
   }
-  .hero-v2-cta-deck > * {
-    width: 100%;
+
+  .v2-btn-primary,
+  .v2-btn-secondary {
     justify-content: center;
+    width: 100%;
   }
+
+  .hero-v2-telemetry-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   .stage-pod-rail {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
 }

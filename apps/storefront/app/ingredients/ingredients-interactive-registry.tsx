@@ -476,8 +476,8 @@ export function IngredientsInteractiveRegistry({ ingredients }: Props) {
                 <div>
                   <strong>شواهد بالینی مرجع:</strong> {ing.clinicalEvidence}
                 </div>
-                <Link href="/academy" style={{ color: "var(--brand)", fontWeight: 700, textDecoration: "none" }}>
-                  مشاهده پروتکل‌های درمانی این ترکیب ←
+                <Link href="/blog" style={{ color: "var(--brand)", fontWeight: 700, textDecoration: "none" }}>
+                  مطالعه مقالات مرتبط با این ترکیب ←
                 </Link>
               </div>
             </article>

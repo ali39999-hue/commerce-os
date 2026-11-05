@@ -4,13 +4,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 /**
- * Re-architected Audience Path Selector (Luxury Clinical Triage)
- * Dr Dermer UK Clinical & Commerce OS — Phase 09 Architectural Redesign
- *
- * Implements:
- * - Interactive 3-Way Journey Triage: At-Home Patient vs Clinic Cabin Consumables vs Medical Hardware
- * - Rich visual badges, active ingredient highlights, and direct pathway preview
- * - Clinical metrics & statutory regulatory classifications
+ * Re-architected Audience Path Selector (Skincare & Clinical Formulations Focus)
+ * Pure formulations, carboxy regimens, and transdermal protocols — no hardware devices.
  */
 export function PathSelector() {
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
@@ -18,11 +13,15 @@ export function PathSelector() {
   const paths = [
     {
       id: 'home-care',
-      tag: 'HOME CLINICAL REGIMEN',
-      regBadge: 'نسخه بدون سوزن • استفاده فردی',
-      category: 'ReeSkin™ Cosmeceuticals',
+      tag: 'DAILY CLINICAL REGIMEN',
+      regBadge: 'مراقبت فردی • نسخه خانگی',
+      category: 'ReeSkin™ Skincare Essentials',
       title: 'رژیم مراقبت بالینی خانگی',
-      lead: 'فرمولاسیون‌های دارویی ترنس‌درمال ۲ فاز CarboxyGel، ترمیم سد دفاعی پوست، لایه‌برداری ملایم میکرودرم و پپتیدهای جوانساز با تحریک طبیعی اثر بوهر در منزل.',
+      lead: 'فرمولاسیون‌های دارویی ترنس‌درمال، ترمیم سد دفاعی پوست، لایه‌برداری ملایم میکرودرم و پپتیدهای جوانساز با تحریک طبیعی اثر بوهر در منزل.',
+      heroImg: '/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png',
+      heroAlt: 'فرمولاسیون ژل ترنس‌درمال CarboxyGel دکتر درمر',
+      stageBadge: 'ReeSkin™ Daily Care',
+      stageSubtitle: 'روتین پایدار سلامت و درخشش پوست',
       metrics: [
         { label: 'افزایش اکسیژناسیون', val: '+۴۵٪' },
         { label: 'پایداری سد دفاعی', val: '۷۲ ساعت' },
@@ -34,75 +33,84 @@ export function PathSelector() {
         'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene',
       ],
       iconSvg: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
         </svg>
       ),
-      ctaLabel: 'مشاهده و سفارش محصولات خانگی',
-      catalogCount: '۸ فرمولاسیون فعال',
+      ctaLabel: 'مشاهده و سفارش روتین خانگی',
+      catalogCount: 'فرمولاسیون‌های فعال',
       href: '/reeskin',
       themeKey: 'theme-homecare',
-      accentColor: '#06b6d4',
+      accentColor: '#1E3A2F',
     },
     {
-      id: 'clinical-pro',
-      tag: 'CLINIC CONSUMABLES & PROTOCOLS',
-      regBadge: 'ویژه مطب و مراکز درمانی',
-      category: 'ReeMed™ Cabin Consumables',
-      title: 'اقلام کابین و پروتکل‌های مطبی',
-      lead: 'مخازن بزرگ اقتصادی ۵۰۰ و ۱۵۰۰ میلی‌لیتر ژل کربوکسی همراه با شیت‌های استریل ۵۰ ستی صورت و گردن و کارتریج‌های تک‌دوز فعال‌ساز CarboxyPod.',
+      id: 'carboxy-protocols',
+      tag: 'BOHR EFFECT ADVANCED PROTOCOLS',
+      regBadge: 'کربوکسی‌تراپی بدون سوزن',
+      category: 'ReeSkin™ Carboxy System',
+      title: 'پروتکل‌های کربوکسی‌تراپی ۲ فاز',
+      lead: 'هم‌افزایی ژل‌های تخصصی گلیکولیک، آزالائیک و مولتی‌اکتیو با کپسول‌های فعال‌ساز CarboxyPod جهت اکسیژن‌رسانی عمقی و رفع ریشه‌ای لک و چین‌وچروک.',
+      heroImg: '/assets/drdermer/2025/07/carbon-carboxypod-1-1-445x600.png',
+      heroAlt: 'کارتریج‌های فعال‌ساز ترابافتی CarboxyPod',
+      stageBadge: 'CarboxyPod™ Activation',
+      stageSubtitle: 'انفوزیون نانوحباب‌های متراکم CO₂',
       metrics: [
-        { label: 'سفارش حجم بالا', val: 'تخفیف پلکانی' },
-        { label: 'ارسال سرد ایمن', val: '۲°C - ۸°C' },
+        { label: 'رهایش اکسیژن بافتی', val: '+۷۶٪' },
+        { label: 'کنترل بدون سوزن', val: '۱۰۰٪ ایمن' },
       ],
       highlights: [
-        'مخازن ۵۰۰ml و ۱۵۰۰ml کربوکسی کابین',
-        'پدهای فیبری استریل ۵۰ ستی صورت و گردن',
-        'فاکتور رسمی شرکتی با شناسه رهگیری TTAC',
-        'پک‌های ژل تخصصی بعد از لیزر و میکرونیدلینگ',
+        'ژل اسید آزالائیک ۱۵٪ ضدلک و تیرگی ملاسما',
+        'ژل اسید گلیکولیک ۱۰٪ جوانساز و ضدچروک',
+        'ژل مولتی‌اکتیو ترمیم‌کننده پوست‌های حساس',
+        'کپسول‌های تخصص‌یافته کربن، ویتامین و هیدرا',
       ],
       iconSvg: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
           <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
           <line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
       ),
-      ctaLabel: 'مشاهده اقلام کابین و مطب',
-      catalogCount: 'پک‌های حرفه‌ای کلینیک',
-      href: '/reemed#consumables',
+      ctaLabel: 'بررسی کیت‌های کربوکسی‌تراپی',
+      catalogCount: 'کیت‌های کامل درمانی',
+      href: '/carboxygel',
       themeKey: 'theme-pro',
-      accentColor: '#10b981',
+      accentColor: '#4D6B58',
     },
     {
-      id: 'medical-equipment',
-      tag: 'MEDICAL HARDWARE & STATIONS',
-      regBadge: 'MDR Class IIb Certified · CE 0123',
-      category: 'ReeMed™ Digital Consoles',
-      title: 'تجهیزات و سامانه‌های پزشکی',
-      lead: 'ایستگاه‌های پیشرفته تزریق دیجیتال CO₂ با دقت فوق‌العاده ۱cc/min در کنار سامانه بیورزونانس پلاسمای سرد اتمسفری ویژه متخصصین درماتولوژی و جراحان پوست.',
+      id: 'activator-pads',
+      tag: 'ANATOMIC ACTIVATOR SHEETS',
+      regBadge: 'شیت‌های میکروپرمنبران',
+      category: 'ReeSkin™ Sheet Matrices',
+      title: 'ماسک‌ها و پدهای فعال‌ساز ترنس‌درمال',
+      lead: 'پدهای کاتالیزور پیش‌برش‌خورده با برش آناتومیک برای صورت، گردن، زیر چشم و دکلته؛ به دام انداختن گاز CO₂ و بیشینه‌سازی راندمان اثر بوهر روی پوست.',
+      heroImg: '/assets/drdermer/2025/07/carboxygel-activator-mask-and-pads-1-600x600.png',
+      heroAlt: 'پدهای فعال‌ساز آناتومیک صورت و گردن CarboxyPad',
+      stageBadge: 'CarboxyPad™ Matrices',
+      stageSubtitle: 'برش آناتومیک صورت، گردن و پلک',
       metrics: [
-        { label: 'دقت دوز گاز', val: '±۰.۵ cc' },
-        { label: 'گارانتی طلایی', val: '۲۴ ماه تعویض' },
+        { label: 'راندمان تبادل گازی', val: '+۴۰٪' },
+        { label: 'پکینگ استریل', val: 'فویل محافظ' },
       ],
       highlights: [
-        'ایستگاه تخصصی تزریق گاز CarboX™ Digital',
-        'سامانه انرژی پلاسمای سرد و تخلیه جرقه‌ای PlasmaX™',
-        'آموزش‌های دارای امتیاز بازآموزی (CME بریتانیا)',
-        'پشتیبانی فنی و تأمین قطعات یدکی شرکتی',
+        'ماسک‌های کامل ارگونومیک صورت (Facial Sheets)',
+        'پدهای پیش‌برش‌خورده اختصاصی گردن و غبغب',
+        'پدهای ظریف مخصوص خطوط دور چشم و پلک',
+        'سازگار با تمامی فرمولاسیون‌های ژل کربوکسی',
       ],
       iconSvg: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-          <line x1="8" y1="21" x2="16" y2="21" />
-          <line x1="12" y1="17" x2="12" y2="21" />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+          <line x1="9" y1="9" x2="9.01" y2="9" />
+          <line x1="15" y1="9" x2="15.01" y2="9" />
         </svg>
       ),
-      ctaLabel: 'بررسی تجهیزات و استعلام B2B',
-      catalogCount: 'کنسول‌های MDR اروپا',
-      href: '/reemed#devices',
+      ctaLabel: 'مشاهده شیت‌ها و پدهای فعال‌ساز',
+      catalogCount: 'پدهای آناتومیک',
+      href: '/carboxypad',
       themeKey: 'theme-equipment',
-      accentColor: '#8b5cf6',
+      accentColor: '#755A38',
     },
   ];
 
@@ -113,15 +121,15 @@ export function PathSelector() {
         <div className="path-triage-header">
           <div className="triage-eyebrow-pill">
             <span className="triage-dot" />
-            <span>CLINICAL AUDIENCE TRIAGE · مسیرهای سه‌گانه تخصصی</span>
+            <span>CLINICAL SKINCARE TRIAGE · مسیرهای سه‌گانه تخصصی پوست</span>
           </div>
 
           <h2 id="path-triage-title" className="triage-headline">
-            شما در کدام مسیر تخصصی همراه دکتر درمر هستید؟
+            شما در کدام مسیر مراقبت پوستی همراه دکتر درمر هستید؟
           </h2>
 
           <p className="triage-lead">
-            برای تسریع در دسترسی به محصولات و پروتکل‌ها، رسته مورد نظر خود را متناسب با نیاز مصرف فردی، ملزومات کابین مطب یا تجهیزات جراحی انتخاب فرمایید.
+            برای تسریع در دسترسی به محصولات و پروتکل‌ها، رسته مورد نظر خود را متناسب با روتین روزمره، پروتکل‌های تخصصی کربوکسی‌تراپی یا شیت‌های فعال‌ساز انتخاب فرمایید.
           </p>
         </div>
 
@@ -136,39 +144,54 @@ export function PathSelector() {
                 onMouseEnter={() => setHoveredPath(p.id)}
                 onMouseLeave={() => setHoveredPath(null)}
               >
-                {/* Visual Top Glow Aura */}
-                <div className="triage-card-aura" />
+                {/* Top Identification Badge */}
+                <div className="triage-top-bar">
+                  <span className="triage-reg-badge">{p.regBadge}</span>
+                  <span className="triage-cat-tag">{p.category}</span>
+                </div>
 
-                {/* Top Badge & Category */}
-                <div className="triage-card-header">
-                  <div className="triage-badge-group">
-                    <span className="triage-tag">{p.tag}</span>
-                    <span className="triage-reg-pill">{p.regBadge}</span>
+                {/* Hero Title & Lead */}
+                <div className="triage-hero-text">
+                  <div className="triage-title-row">
+                    <span className="triage-icon-wrap" aria-hidden="true">
+                      {p.iconSvg}
+                    </span>
+                    <h3 className="triage-card-title">{p.title}</h3>
                   </div>
-                  <div className="triage-icon-wrap" aria-hidden="true">
-                    {p.iconSvg}
+                  <p className="triage-card-lead">{p.lead}</p>
+                </div>
+
+                {/* Visual Product Showcase Stage */}
+                <div className="triage-visual-stage">
+                  <div className="triage-image-box">
+                    <img
+                      src={p.heroImg}
+                      alt={p.heroAlt}
+                      className="triage-product-img"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="triage-stage-caption">
+                    <span className="stage-badge">{p.stageBadge}</span>
+                    <span className="stage-sub">{p.stageSubtitle}</span>
                   </div>
                 </div>
 
-                <div className="triage-category-kicker">{p.category}</div>
-                <h3 className="triage-card-title">{p.title}</h3>
-                <p className="triage-card-lead">{p.lead}</p>
-
-                {/* Quick Metrics Bar */}
-                <div className="triage-metrics-row">
-                  {p.metrics.map((m, idx) => (
-                    <div className="triage-metric-box" key={idx}>
-                      <span className="tmb-label">{m.label}</span>
-                      <strong className="tmb-val">{m.val}</strong>
+                {/* Clinical Metrics Strip */}
+                <div className="triage-metrics-strip">
+                  {p.metrics.map((m, i) => (
+                    <div className="triage-metric-item" key={i}>
+                      <span className="triage-metric-val">{m.val}</span>
+                      <span className="triage-metric-lbl">{m.label}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Highlights List */}
-                <ul className="triage-features-list" aria-label="شاخص‌های برجسته این مسیر">
-                  {p.highlights.map((h, idx) => (
-                    <li key={idx}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <ul className="triage-highlights-list">
+                  {p.highlights.map((h, i) => (
+                    <li key={i}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                       <span>{h}</span>
@@ -176,20 +199,16 @@ export function PathSelector() {
                   ))}
                 </ul>
 
-                {/* Bottom Action Footer */}
-                <div className="triage-action-footer">
-                  <Link href={p.href} className="triage-cta-button">
-                    <div className="cta-txt-wrap">
-                      <span className="cta-main-txt">{p.ctaLabel}</span>
-                      <span className="cta-sub-txt">{p.catalogCount}</span>
-                    </div>
-                    <div className="cta-arrow-circle" aria-hidden="true">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="19" y1="12" x2="5" y2="12" />
-                        <polyline points="12 19 5 12 12 5" />
-                      </svg>
-                    </div>
+                {/* Card Action Link */}
+                <div className="triage-action-wrap">
+                  <Link href={p.href} className="triage-action-btn">
+                    <span>{p.ctaLabel}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="19" y1="12" x2="5" y2="12" />
+                      <polyline points="12 19 5 12 12 5" />
+                    </svg>
                   </Link>
+                  <span className="triage-count-note">{p.catalogCount}</span>
                 </div>
               </article>
             );

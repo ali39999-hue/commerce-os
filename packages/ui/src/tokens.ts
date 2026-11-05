@@ -5,48 +5,52 @@
  */
 
 /**
- * Warm Clinical Minimalism & Editorial Luxury Palette
- * Reference: Dr Dermer Concept Boards (01, 02, 03) & Design System Kit v1
+ * Physiology Atlas Design Tokens
+ * Dr Dermer UK Clinical & Commerce OS — Creative Master Redesign
+ * 
+ * Aesthetic: Physiology Atlas / Cambridge Research Laboratory Monograph
+ * Palette: Specimen Canvas, Carbon Ink, Arterial Bohr Oxy-Red, Histology Forest
  */
-export const warmClinicalPalette = {
-  canvas: "#FAF8F5", // Warm cream alabaster canvas from Concept Board 01
-  surface: "#FFFFFF", // Pure white elevated cards
-  "surface-soft": "#F2EFE9", // Soft warm neutral
-  surfaceSoft: "#F2EFE9",
-  ink: "#19231D", // Deep botanical ink for high legibility
-  muted: "#5E6B64", // Refined editorial muted tone (WCAG 2.2 compliant)
-  brand: "#1E3A2F", // Forest clinical green (Concept Board Header & Buttons)
-  "brand-strong": "#142820", // Deep forest hover
-  brandStrong: "#142820",
-  sage: "#C8D6CC", // Botanical sage accent
-  sand: "#EDE5DA", // Warm sand editorial tone
-  accent: "#C69C70", // Warm champagne / gold accent
-  border: "#E7E4DC", // Subtle warm linen divider
-  danger: "#B84D4D",
+export const physiologyAtlasPalette = {
+  canvas: "#F7F4EE",          // Archival specimen paper substrate
+  surface: "#FFFFFF",         // Crisp white observation plate & specimen container
+  "surface-soft": "#EFECE4",  // Toned rag paper divider
+  surfaceSoft: "#EFECE4",
+  ink: "#161A18",             // Specimen carbon ink (high visual authority)
+  muted: "#5A615D",           // Editorial annotation & reference tone (WCAG 2.2 AAA >= 5.5:1)
+  brand: "#1E3A2F",           // Histology forest green (clinical validation)
+  "brand-strong": "#13261F",  // Deepest chlorophyll press
+  brandStrong: "#13261F",
+  sage: "#C8D6CC",            // Botanical sage tissue
+  sand: "#EDE5DA",            // Warm sand parchment
+  accent: "#B83A2E",          // Arterial Bohr Oxy-Red (O2 dissociation active signature)
+  "accent-soft": "#FBF1EE",   // Gentle capillary flush
+  accentSoft: "#FBF1EE",
+  border: "#E2DDD2",          // Fine ruled technical boundary
+  danger: "#B83A2E",
 } as const;
 
-export type WarmClinicalPalette = typeof warmClinicalPalette;
-export const color = warmClinicalPalette;
+export const warmClinicalPalette = physiologyAtlasPalette;
+export type WarmClinicalPalette = typeof physiologyAtlasPalette;
+export const color = physiologyAtlasPalette;
 
 export const designTokens = {
-  // Direct Warm Clinical Minimalism palette mapping
-  color: warmClinicalPalette,
+  color: physiologyAtlasPalette,
 
   colors: {
-    // Warm Clinical Minimalism Primary Palette Tokens
-    canvas: "#F7F6F2",
-    surfaceSoft: "#EEF2ED",
-    "surface-soft": "#EEF2ED",
-    ink: "#242D29",
-    muted: "#69736D",
-    brandStrong: "#17463E",
-    "brand-strong": "#17463E",
-    sage: "#DCE8DF",
+    canvas: "#F7F4EE",
+    surfaceSoft: "#EFECE4",
+    "surface-soft": "#EFECE4",
+    ink: "#161A18",
+    muted: "#5A615D",
+    brandStrong: "#13261F",
+    "brand-strong": "#13261F",
+    sage: "#C8D6CC",
     sand: "#EDE5DA",
-    accent: "#C69C70",
-    border: "#E6E5DE",
-    danger: "#B84D4D",
-    warmClinical: warmClinicalPalette,
+    accent: "#B83A2E",
+    border: "#E2DDD2",
+    danger: "#B83A2E",
+    warmClinical: physiologyAtlasPalette,
 
     // Clinical Brand (Warm Clinical Minimalist primary)
     clinicalBrand: {

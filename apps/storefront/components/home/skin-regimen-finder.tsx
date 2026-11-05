@@ -18,12 +18,12 @@ export function SkinRegimenFinderWidget() {
   const getRecommendation = () => {
     if (targetGoal === "anti_aging" || skinType === "dry_mature") {
       return {
-        gelName: "کربوکسی‌ژل اسید گلیکولیک (Glycolic Acid CarboxyGel)",
+        gelName: "کربوکسی‌ژل اسید گلیکولیک CarboxyGel™",
         gelSub: "ReeSkin™ Glycolic 10% + Matrixyl 3000 · pH 3.5",
-        podName: "پاد ترابافتی CarboxyPod Carbo-Pod (هسته کربن فعال)",
+        podName: "پاد ترابافتی CarboxyPod Carbo-Pod",
         podDesc: "محرک سنتز فیبروبلاست و نوسازی کلاژن نوع ۱ و ۳",
         actives: ["اسید گلیکولیک ۱۰٪", "پپتید ماتریکسیل", "اسید هیالورونیک ریزمولکول"],
-        image: "/assets/drdermer/2025/07/glycolic-acid-carboxygel-207x300.png",
+        image: "/assets/drdermer/2025/07/glycolic-acid-carboxygel-600x600.png",
         variantId: "glycolic-gel-1",
         price: 2680000,
         badge: "کاندید ایده‌آل جوانسازی و خطوط عمیق",
@@ -31,12 +31,12 @@ export function SkinRegimenFinderWidget() {
     }
     if (targetGoal === "clarity" || skinType === "oily_acne") {
       return {
-        gelName: "کربوکسی‌ژل اسید آزالائیک (Azelaic Acid CarboxyGel)",
+        gelName: "کربوکسی‌ژل اسید آزالائیک CarboxyGel™",
         gelSub: "ReeSkin™ Azelaic 15% + Niacinamide 4% · pH 4.0",
-        podName: "پاد ترابافتی CarboxyPod Hydra-Pod (هیدراسیون اسمزی)",
+        podName: "پاد ترابافتی CarboxyPod Hydra-Pod",
         podDesc: "مهارکننده تیروزیناز، ضداکنه و ضدلک التهابی PIH",
         actives: ["اسید آزالائیک ۱۵٪", "نیاسینامید ۴٪", "ترانگزامیک اسید ۲٪"],
-        image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png",
+        image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel-600x600.png",
         variantId: "azelaic-gel-1",
         price: 2450000,
         badge: "کاندید ایده‌آل لک ملاسما و آکنه",
@@ -44,12 +44,12 @@ export function SkinRegimenFinderWidget() {
     }
     // Default / Sensitive / Barrier
     return {
-      gelName: "کربوکسی‌ژل مولتی‌اکتیو (Multi-Active CarboxyGel)",
+      gelName: "کربوکسی‌ژل مولتی‌اکتیو CarboxyGel™",
       gelSub: "ReeSkin™ Biomimetic Peptides & Ceramide NP · pH 3.8",
-      podName: "پاد ترابافتی CarboxyPod Vita-Pod (مولتی‌ویتامین)",
+      podName: "پاد ترابافتی CarboxyPod Vita-Pod",
       podDesc: "ترمیم سد دفاعی آسیب‌دیده، تسکین روزاسه و اریتم عروقی",
       actives: ["فاکتور رشد بیومیمتیک EGF", "پپتید مس GHK-Cu", "سرامید NP و پانتنول"],
-      image: "/assets/drdermer/2025/07/multi-active-carboxygel-207x300.png",
+      image: "/assets/drdermer/2025/07/multi-active-carboxygel-600x600.png",
       variantId: "multi-gel-1",
       price: 2550000,
       badge: "کاندید ایده‌آل سد دفاعی و پوست حساس",

@@ -1315,6 +1315,10 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     },
   },
 
+  /* Removed medical devices */
+};
+
+const _REMOVED_DEVICES = {
   'carbox': {
     id: 'prod_drdermer_007',
     slug: 'carbox',
@@ -1815,16 +1819,7 @@ CLINICAL_SKINCARE_PRODUCTS['carboxypad'] = {
   ],
 };
 
-// Aliases for equipment slugs
-CLINICAL_SKINCARE_PRODUCTS['carbox-station'] = {
-  ...CLINICAL_SKINCARE_PRODUCTS['carbox'],
-  slug: 'carbox-station',
-};
-
-CLINICAL_SKINCARE_PRODUCTS['plasmax-pro'] = {
-  ...CLINICAL_SKINCARE_PRODUCTS['plasmax'],
-  slug: 'plasmax-pro',
-};
+// Aliases for equipment slugs removed
 
 /**
  * Creates extended clinical/e-commerce product information for standard products

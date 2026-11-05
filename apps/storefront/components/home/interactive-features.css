@@ -1,7 +1,7 @@
 /* ── Luxury Interactive Homepage Features CSS ── */
 svg { max-width: 100%; }
 
-/* 1. Bohr Effect Oxygenation Simulator */
+/* 1. Bohr Effect Oxygenation Simulator (Warm Editorial Clinical Luxury) */
 .bohr-simulator-section {
   max-width: 1400px;
   margin: 52px auto 0;
@@ -9,12 +9,12 @@ svg { max-width: 100%; }
 }
 
 .bohr-sim-wrapper {
-  background: radial-gradient(circle at 85% 15%, #083344 0%, #042f2e 45%, #021a19 100%);
-  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at 85% 15%, #193328 0%, #10211A 55%, #0A1510 100%);
+  border-radius: var(--radius-xl, 24px);
   padding: clamp(32px, 5vw, 64px);
   color: #ffffff;
-  box-shadow: 0 25px 60px -15px rgba(4, 47, 46, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 60px -15px rgba(10, 21, 16, 0.45);
+  border: 1px solid rgba(226, 221, 210, 0.18);
   position: relative;
   overflow: hidden;
 }
@@ -28,17 +28,17 @@ svg { max-width: 100%; }
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .sim-chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(45, 212, 191, 0.15);
-  color: #2dd4bf;
-  border: 1px solid rgba(45, 212, 191, 0.35);
-  padding: 4px 12px;
+  background: rgba(198, 156, 112, 0.15);
+  color: #E4C9A8;
+  border: 1px solid rgba(198, 156, 112, 0.4);
+  padding: 4px 14px;
   border-radius: var(--radius-pill);
   font-size: 0.72rem;
   font-weight: 800;
@@ -49,38 +49,79 @@ svg { max-width: 100%; }
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #2dd4bf;
+  background: #10B981;
   animation: promoPulseRing 1.8s infinite;
 }
 
 .sim-chip-sub {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.65);
+}
+
+.sim-header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: flex-start;
 }
 
 .bohr-sim-title {
-  font-size: clamp(1.6rem, 2.8vw, 2.3rem);
+  font-family: var(--font-markazi, serif), var(--font-vazirmatn), serif;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
   font-weight: 900;
-  line-height: 1.35;
+  line-height: 1.3;
   margin: 0 0 14px;
   letter-spacing: -0.02em;
+  color: #FFFFFF;
 }
 
 .bohr-sim-lead {
-  font-size: 0.96rem;
-  line-height: 1.8;
-  color: #cbd5e1;
+  font-size: 0.98rem;
+  line-height: 1.85;
+  color: rgba(245, 242, 235, 0.82);
   max-width: 900px;
   margin: 0;
 }
 
+.sim-header-badge-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(198, 156, 112, 0.35);
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 320px;
+}
+.shb-label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #E4C9A8;
+}
+.shb-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 6px;
+  direction: ltr;
+  text-align: left;
+}
+.shb-sub {
+  font-size: 0.68rem;
+  color: rgba(245, 242, 235, 0.6);
+}
+
 /* Control Panel */
 .bohr-sim-control-panel {
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-md, 12px);
   padding: 24px;
   margin-bottom: 32px;
+  backdrop-filter: blur(14px);
 }
 
 .sim-slider-group {
@@ -100,27 +141,37 @@ svg { max-width: 100%; }
   font-size: 0.94rem;
   font-weight: 700;
   color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sim-ppm-telemetry {
+  font-size: 0.82rem;
+  color: #E4C9A8;
+  font-weight: 700;
 }
 
 .sim-slider-val-badge {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  background: rgba(14, 165, 233, 0.2);
-  border: 1px solid rgba(56, 189, 248, 0.4);
+  background: rgba(198, 156, 112, 0.15);
+  border: 1px solid rgba(198, 156, 112, 0.45);
   padding: 4px 14px;
   border-radius: var(--radius-pill);
 }
 
 .val-number {
-  font-size: 1.25rem;
+  font-family: var(--font-markazi, serif), serif;
+  font-size: 1.4rem;
   font-weight: 950;
-  color: #38bdf8;
+  color: #E4C9A8;
 }
 
 .val-unit {
   font-size: 0.72rem;
-  color: #cbd5e1;
+  color: rgba(245, 242, 235, 0.75);
 }
 
 .bohr-range-slider {
@@ -128,7 +179,7 @@ svg { max-width: 100%; }
   height: 8px;
   border-radius: 4px;
   outline: none;
-  background: linear-gradient(to right, #0284c7 0%, #14b8a6 50%, #10b981 100%);
+  background: linear-gradient(to right, #1E3A2F 0%, #10B981 45%, #C69C70 80%, #B83A2E 100%);
   cursor: pointer;
   -webkit-appearance: none;
 }
@@ -139,8 +190,8 @@ svg { max-width: 100%; }
   height: 26px;
   border-radius: 50%;
   background: #ffffff;
-  border: 3px solid #0284c7;
-  box-shadow: 0 0 15px rgba(2, 132, 199, 0.8);
+  border: 3px solid #C69C70;
+  box-shadow: 0 0 12px rgba(198, 156, 112, 0.8);
   cursor: pointer;
   transition: transform 0.15s ease;
 }
@@ -153,7 +204,7 @@ svg { max-width: 100%; }
   display: flex;
   justify-content: space-between;
   font-size: 0.72rem;
-  color: #94a3b8;
+  color: rgba(245, 242, 235, 0.65);
   margin-top: 8px;
   flex-wrap: wrap;
   gap: 6px;
@@ -162,21 +213,28 @@ svg { max-width: 100%; }
 .sim-presets-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .presets-label {
-  font-size: 0.8rem;
-  color: #cbd5e1;
+  font-size: 0.82rem;
+  color: rgba(245, 242, 235, 0.85);
+  font-weight: 750;
+}
+.presets-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .preset-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
+  color: #F5F2EB;
   font-size: 0.76rem;
   font-weight: 600;
   padding: 6px 14px;
@@ -187,15 +245,16 @@ svg { max-width: 100%; }
 }
 
 .preset-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: #5eead4;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #E4C9A8;
 }
 
 .preset-btn.active {
-  background: var(--brand);
-  border-color: #5eead4;
-  color: #ffffff;
-  box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+  background: #C69C70;
+  border-color: #E4C9A8;
+  color: #161A18;
+  font-weight: 850;
+  box-shadow: 0 0 14px rgba(198, 156, 112, 0.4);
 }
 
 /* Twin Grid */
@@ -207,12 +266,14 @@ svg { max-width: 100%; }
 }
 
 .sim-visual-card {
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-lg, 16px);
+  padding: 22px;
   display: flex;
   flex-direction: column;
+  color: var(--ink, #161A18);
+  box-shadow: 0 4px 20px rgba(25, 35, 29, 0.05);
 }
 
 .svc-header {
@@ -224,18 +285,18 @@ svg { max-width: 100%; }
 }
 
 .svc-badge {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  color: #38bdf8;
+  color: var(--color-brand-forest, #1E3A2F);
   letter-spacing: 0.05em;
   display: block;
   margin-bottom: 4px;
 }
 
 .svc-title {
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: var(--ink, #161A18);
   margin: 0;
   line-height: 1.4;
 }
@@ -244,29 +305,30 @@ svg { max-width: 100%; }
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  background: rgba(255, 255, 255, 0.06);
-  padding: 4px 10px;
+  background: var(--surface-soft, #EFECE4);
+  padding: 4px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border, #E2DDD2);
   flex-shrink: 0;
 }
 
 .svc-metric-live span {
   font-size: 0.68rem;
-  color: #94a3b8;
+  color: var(--muted, #5A615D);
 }
 
 .svc-metric-live strong {
-  font-size: 1rem;
-  color: #2dd4bf;
+  font-family: var(--font-markazi, serif), serif;
+  font-size: 1.25rem;
+  color: var(--color-brand-forest, #1E3A2F);
   font-weight: 900;
 }
 
 .svc-canvas-wrap {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-sm);
-  padding: 10px;
+  background: #FDFBF8;
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 12px);
+  padding: 8px;
   margin-bottom: 16px;
   position: relative;
   overflow: hidden;
@@ -290,12 +352,14 @@ svg { max-width: 100%; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid #14b8a6;
-  background: rgba(20, 184, 166, 0.1);
-  padding: 5px 12px;
+  border: 1px solid var(--border, #E2DDD2);
+  background: var(--canvas, #F7F4EE);
+  color: var(--ink, #161A18);
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 
 .svc-status-pill .dot {
@@ -303,11 +367,18 @@ svg { max-width: 100%; }
   height: 7px;
   border-radius: 50%;
 }
+.pill-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--muted, #5A615D);
+  direction: ltr;
+}
 
 .svc-status-desc {
-  font-size: 0.78rem;
-  color: #94a3b8;
-  line-height: 1.6;
+  font-size: 0.82rem;
+  color: var(--muted, #5A615D);
+  line-height: 1.65;
   margin: 0;
 }
 
@@ -319,41 +390,44 @@ svg { max-width: 100%; }
 }
 
 .sm-box {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  background: var(--canvas, #F7F4EE);
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 10px);
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
 }
 
 .smb-label {
   font-size: 0.72rem;
-  color: #94a3b8;
+  color: var(--muted, #5A615D);
   margin-bottom: 2px;
+  font-weight: 700;
 }
 
 .smb-val {
-  font-size: 1.2rem;
+  font-family: var(--font-markazi, serif), serif;
+  font-size: 1.45rem;
   font-weight: 950;
-  color: #ffffff;
+  color: var(--ink, #161A18);
+  line-height: 1.2;
 }
 
-.smb-val.highlight-blue {
-  color: #38bdf8;
-}
-
-.smb-val.highlight-teal {
-  color: #2dd4bf;
+.smb-val.highlight-forest {
+  color: var(--color-brand-forest, #1E3A2F);
 }
 
 .smb-val.highlight-gold {
-  color: #fbbf24;
+  color: #B45309;
+}
+
+.smb-val.highlight-red {
+  color: #B83A2E;
 }
 
 .smb-sub {
   font-size: 0.68rem;
-  color: #64748b;
+  color: var(--muted, #5A615D);
   margin-top: 2px;
 }
 
@@ -362,58 +436,72 @@ svg { max-width: 100%; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: 18px 24px;
-  gap: 20px;
+  background: #FFFFFF;
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-lg, 16px);
+  padding: 22px 28px;
+  gap: 24px;
   flex-wrap: wrap;
+  box-shadow: 0 4px 14px rgba(25, 35, 29, 0.04);
 }
 
-.bsf-content strong {
+.bsf-tag {
   display: block;
-  font-size: 0.88rem;
-  color: #5eead4;
+  font-size: 0.75rem;
+  font-weight: 850;
+  color: #B45309;
+  letter-spacing: 0.04em;
   margin-bottom: 4px;
 }
 
 .bsf-content p {
-  font-size: 0.82rem;
-  color: #cbd5e1;
-  margin: 0;
-  line-height: 1.6;
+  font-size: 0.86rem;
+  color: var(--ink-secondary, #38423B);
+  margin: 0 0 6px;
+  line-height: 1.65;
+}
+
+.bsf-active-rec {
+  font-size: 0.84rem;
+  color: var(--color-brand-forest, #1E3A2F);
+}
+.bsf-active-rec strong {
+  font-weight: 850;
 }
 
 .bsf-cta-btn {
-  background: var(--brand);
+  background: var(--color-brand-forest, #1E3A2F);
   color: #ffffff;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  font-size: 0.86rem;
-  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 0.88rem;
+  font-weight: 850;
   white-space: nowrap;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.25);
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 .bsf-cta-btn:hover {
-  background: var(--brand-deep);
-  transform: translateY(-1px);
+  background: var(--brand-strong, #13261F);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.35);
 }
 
-/* 2. Before & After Visia Trial Comparison Slider */
+/* 2. Before & After Visia Trial Comparison Slider — Warm Editorial Clinical Luxury */
 .visia-slider-section {
   max-width: 1400px;
-  margin: 52px auto 0;
+  margin: 64px auto 0;
   padding: 0 24px;
 }
 
 .visia-slider-wrapper {
-  background: var(--surface);
-  border-radius: var(--radius-xl);
-  padding: clamp(32px, 4.5vw, 60px);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-card);
+  background: var(--surface, #FFFFFF);
+  border-radius: var(--radius-xl, 24px);
+  padding: clamp(34px, 4.5vw, 60px);
+  border: 1px solid var(--border, #E2DDD2);
+  box-shadow: 0 20px 48px -12px rgba(25, 35, 29, 0.08);
 }
 
 .visia-slider-header {
@@ -425,28 +513,38 @@ svg { max-width: 100%; }
 .visia-chip-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--brand-deep);
-  background: rgba(15, 118, 110, 0.1);
-  border: 1px solid #ccfbf1;
-  padding: 4px 14px;
+  font-weight: 850;
+  color: var(--color-brand-forest, #1E3A2F);
+  background: var(--brand-tint, rgba(30, 58, 47, 0.08));
+  border: 1px solid rgba(30, 58, 47, 0.2);
+  padding: 5px 16px;
   border-radius: var(--radius-pill);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  letter-spacing: 0.06em;
+}
+.visia-chip-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
 }
 
 .visia-main-title {
-  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-family: var(--font-markazi, serif), var(--font-vazirmatn), serif;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
   font-weight: 900;
-  color: var(--brand-dark);
+  color: var(--color-brand-forest, #1E3A2F);
   margin: 0 0 12px;
+  line-height: 1.25;
 }
 
 .visia-lead-text {
-  font-size: 0.94rem;
-  color: var(--muted);
-  line-height: 1.75;
+  font-size: 0.98rem;
+  color: var(--ink-secondary, #38423B);
+  line-height: 1.8;
   margin: 0;
 }
 
@@ -454,55 +552,62 @@ svg { max-width: 100%; }
 .visia-case-tabs {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 34px;
   flex-wrap: wrap;
 }
 
 .visia-case-tab-btn {
-  background: var(--paper-warm);
-  border: 1px solid var(--line);
-  color: var(--ink-secondary);
+  background: var(--canvas, #F7F4EE);
+  border: 1px solid var(--border, #E2DDD2);
+  color: var(--ink, #161A18);
   border-radius: var(--radius-pill);
-  padding: 8px 18px;
-  font-size: 0.84rem;
-  font-weight: 700;
+  padding: 10px 20px;
+  font-size: 0.86rem;
+  font-weight: 750;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   font-family: inherit;
 }
 
 .visia-case-tab-btn:hover {
-  background: var(--surface-tint);
-  border-color: var(--brand-light);
+  background: #FFFFFF;
+  border-color: var(--color-brand-forest, #1E3A2F);
 }
 
 .visia-case-tab-btn.active {
-  background: var(--brand);
+  background: var(--color-brand-forest, #1E3A2F);
   color: #ffffff;
-  border-color: var(--brand);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+  border-color: var(--color-brand-forest, #1E3A2F);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.25);
 }
 
 /* Comparison Layout */
 .visia-interactive-container {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 1fr 1.15fr;
   gap: 36px;
   align-items: center;
+}
+
+.visia-stage-outer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .visia-compare-stage {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg, 16px);
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
-  border: 1px solid var(--line);
+  box-shadow: 0 16px 36px rgba(25, 35, 29, 0.12);
+  border: 1px solid var(--border, #E2DDD2);
   user-select: none;
   cursor: ew-resize;
-  background: #0f172a;
+  background: #F7F4EE;
+  touch-action: none;
 }
 
 .visia-image-layer {
@@ -510,6 +615,7 @@ svg { max-width: 100%; }
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
 .visia-image-layer img {
@@ -519,20 +625,13 @@ svg { max-width: 100%; }
   display: block;
 }
 
-.visia-after-layer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  height: 100%;
-}
-
 .visia-divider-handle {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 3px;
   background: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -545,39 +644,66 @@ svg { max-width: 100%; }
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--color-brand-forest, #1E3A2F);
   border: 3px solid #ffffff;
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 16px rgba(25, 35, 29, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: ew-resize;
+  pointer-events: auto;
 }
 
 .visia-label-tag {
   position: absolute;
-  bottom: 16px;
-  padding: 6px 14px;
+  top: 14px;
+  padding: 5px 12px;
   border-radius: var(--radius-pill);
-  font-size: 0.74rem;
-  font-weight: 800;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.72rem;
+  font-weight: 850;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .visia-label-tag.before {
-  right: 16px;
-  background: rgba(15, 23, 42, 0.75);
-  color: #f1f5f9;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  left: 14px;
+  background: rgba(22, 26, 24, 0.88);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .visia-label-tag.after {
-  left: 16px;
-  background: rgba(15, 118, 110, 0.85);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  right: 14px;
+  background: rgba(30, 58, 47, 0.92);
+  color: #FFFFFF;
+  border: 1px solid rgba(198, 156, 112, 0.6);
+}
+
+.visia-stage-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--canvas, #F7F4EE);
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 10px);
+}
+.caption-text {
+  font-size: 0.76rem;
+  color: var(--muted, #5A615D);
+}
+.caption-standard {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--color-brand-forest, #1E3A2F);
+  direction: ltr;
 }
 
 /* Trial Details Panel */
@@ -595,125 +721,193 @@ svg { max-width: 100%; }
 
 .vcd-pill {
   font-size: 0.72rem;
-  font-weight: 800;
-  padding: 3px 10px;
+  font-weight: 850;
+  padding: 4px 12px;
   border-radius: var(--radius-pill);
 }
 
 .vcd-pill.dark {
-  background: var(--ink);
+  background: var(--color-brand-forest, #1E3A2F);
   color: #ffffff;
 }
 
 .vcd-pill.teal {
-  background: var(--brand-tint);
-  color: var(--brand-deep);
-  border: 1px solid #ccfbf1;
+  background: var(--surface-soft, #EFECE4);
+  color: var(--ink, #161A18);
+  border: 1px solid var(--border, #E2DDD2);
 }
 
 .vcd-title {
   font-size: 1.25rem;
   font-weight: 900;
-  color: var(--brand-dark);
+  color: var(--ink, #161A18);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .vcd-patient-meta {
   font-size: 0.82rem;
-  color: var(--muted);
+  color: var(--muted, #5A615D);
   margin: 0;
 }
 
 .vcd-stat-card {
-  background: var(--paper-warm);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: 14px;
+  background: var(--canvas, #F7F4EE);
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+.vcd-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .vcd-stat-label {
-  font-size: 0.82rem;
-  color: var(--ink-secondary);
+  font-size: 0.8rem;
+  color: var(--muted, #5A615D);
+  font-weight: 750;
 }
 
 .vcd-stat-val {
-  font-size: 1.35rem;
+  font-family: var(--font-markazi, serif), serif;
+  font-size: 1.6rem;
   font-weight: 950;
-  color: var(--brand-deep);
+  color: var(--color-brand-forest, #1E3A2F);
+  line-height: 1;
+}
+.vcd-stat-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(30, 58, 47, 0.1);
+  color: var(--color-brand-forest, #1E3A2F);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .vcd-desc {
-  font-size: 0.84rem;
-  color: var(--ink-secondary);
+  font-size: 0.86rem;
+  color: var(--ink-secondary, #38423B);
   line-height: 1.7;
   margin: 0;
 }
 
 .vcd-protocol-box {
-  background: var(--brand-tint);
-  border: 1px solid #ccfbf1;
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  font-size: 0.78rem;
-  color: var(--brand-deep);
+  background: var(--surface-soft, #EFECE4);
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 12px);
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  color: var(--ink, #161A18);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.protocol-title {
+  font-weight: 850;
+  color: var(--color-brand-forest, #1E3A2F);
+}
+.protocol-content {
+  line-height: 1.6;
 }
 
-.vcd-protocol-box strong {
-  display: block;
-  margin-bottom: 2px;
+.vcd-notes-box {
+  font-size: 0.8rem;
+  color: var(--muted, #5A615D);
+  line-height: 1.65;
+  background: var(--canvas, #F7F4EE);
+  border: 1px solid var(--border, #E2DDD2);
+  border-radius: var(--radius-md, 10px);
+  padding: 10px 14px;
+}
+.notes-heading {
+  font-weight: 850;
+  color: var(--ink, #161A18);
+  margin-left: 6px;
+}
+.notes-body {
+  margin: 4px 0 0;
 }
 
-/* 3. Skin Diagnostic Regimen Finder Widget */
+.vcd-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-brand-forest, #1E3A2F);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 0.88rem;
+  font-weight: 850;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.25);
+  text-align: center;
+}
+.vcd-cta-btn:hover {
+  background: var(--brand-strong, #13261F);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.35);
+}
+
+/* 3. Skin Diagnostic Regimen Finder Widget — Warm Editorial Clinical Luxury */
 .regimen-finder-section {
   max-width: 1400px;
-  margin: 52px auto 0;
-  padding: 0 24px;
+  margin: 64px auto 0;
+  padding: 0 28px;
 }
 
 .regimen-finder-card {
-  background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 50%, #f7f6f2 100%);
-  border: 1.5px solid #ccfbf1;
+  background: #FFFFFF;
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-xl);
-  padding: clamp(32px, 4.5vw, 56px);
-  box-shadow: 0 15px 40px -10px rgba(15, 118, 110, 0.12);
+  padding: clamp(34px, 4.5vw, 56px);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
 }
 
 .rf-header {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto 34px;
+  max-width: 820px;
+  margin: 0 auto 36px;
 }
 
 .rf-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(15, 118, 110, 0.12);
-  color: var(--brand-deep);
-  border: 1px solid rgba(45, 212, 191, 0.4);
+  gap: 8px;
+  background: var(--surface-soft);
+  color: var(--color-brand-forest);
+  border: 1px solid var(--line);
   padding: 4px 14px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
 }
 
 .rf-title {
-  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
-  font-weight: 900;
-  color: var(--brand-dark);
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: clamp(2rem, 3.4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--ink);
   margin: 0 0 10px;
+  line-height: 1.25;
 }
 
 .rf-lead {
-  font-size: 0.94rem;
-  color: var(--muted);
-  line-height: 1.7;
+  font-size: 0.96rem;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
   margin: 0;
 }
 
@@ -725,14 +919,14 @@ svg { max-width: 100%; }
 }
 
 .rf-questions-side {
-  background: var(--surface);
+  background: var(--canvas);
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  padding: 28px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .rf-q-block {
@@ -742,24 +936,26 @@ svg { max-width: 100%; }
 }
 
 .rf-q-label {
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--brand-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .rf-q-label .q-num {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--color-brand-forest);
   color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
+  font-family: "JetBrains Mono", Vazirmatn, monospace;
+  font-weight: 800;
 }
 
 .rf-pills-row {
@@ -769,39 +965,41 @@ svg { max-width: 100%; }
 }
 
 .rf-pill-btn {
-  background: var(--surface-tint);
-  border: 1.5px solid var(--line);
-  color: var(--ink-secondary);
+  background: #FFFFFF;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
   border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 0.8rem;
+  padding: 9px 16px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   font-family: inherit;
+  box-shadow: var(--shadow-sm);
 }
 
 .rf-pill-btn:hover {
-  background: #f0fdfa;
-  border-color: #5eead4;
+  background: var(--surface-soft);
+  border-color: var(--color-brand-forest);
+  color: var(--color-brand-forest);
 }
 
 .rf-pill-btn.active {
-  background: var(--brand);
-  border-color: var(--brand);
+  background: var(--color-brand-forest);
+  border-color: var(--color-brand-dark);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 4px 12px rgba(30, 58, 47, 0.22);
 }
 
 /* Result Recommendation Card */
 .rf-recommendation-side {
-  background: var(--surface);
-  border: 2px solid #5eead4;
-  border-radius: var(--radius-md);
-  padding: 24px;
+  background: #FFFFFF;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 25px rgba(20, 184, 166, 0.15);
+  box-shadow: var(--shadow-elevated);
   position: relative;
 }
 
@@ -809,39 +1007,44 @@ svg { max-width: 100%; }
   position: absolute;
   top: -12px;
   right: 20px;
-  background: var(--brand-deep);
-  color: #ffffff;
-  font-size: 0.68rem;
+  background: var(--color-brand-forest);
+  color: #FFFFFF;
+  font-size: 0.72rem;
   font-weight: 800;
-  padding: 3px 12px;
+  padding: 4px 14px;
   border-radius: var(--radius-pill);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(30, 58, 47, 0.25);
+  letter-spacing: 0.02em;
 }
 
 .rf-rec-top {
   display: flex;
-  gap: 16px;
+  gap: 18px;
   align-items: center;
   margin-top: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--line);
 }
 
 .rf-rec-thumb-box {
-  width: 90px;
+  width: 96px;
   height: 110px;
-  background: var(--paper-warm);
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FAF8F5 100%);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   border: 1px solid var(--line);
+  padding: 6px;
 }
 
 .rf-rec-thumb {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(25, 35, 29, 0.1));
 }
 
 .rf-rec-info {
@@ -849,130 +1052,148 @@ svg { max-width: 100%; }
 }
 
 .rf-rec-brand {
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.68rem;
   font-weight: 800;
-  color: var(--brand);
+  color: var(--color-brand-forest);
   display: block;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
 }
 
 .rf-rec-title {
-  font-size: 1.05rem;
-  font-weight: 900;
-  color: var(--brand-dark);
-  margin: 3px 0;
-  line-height: 1.4;
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 4px;
+  line-height: 1.3;
 }
 
 .rf-rec-sub {
-  font-size: 0.74rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
   color: var(--muted);
   margin: 0;
 }
 
 .rf-match-pod {
-  background: var(--surface-tint);
+  background: var(--surface-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  font-size: 0.8rem;
-  margin-bottom: 14px;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  color: var(--color-text-secondary);
+}
+
+.rf-match-pod svg {
+  color: var(--color-brand-forest);
+  flex-shrink: 0;
 }
 
 .rf-match-pod strong {
-  color: var(--brand-deep);
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .rf-actives-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .rf-active-tag {
+  font-family: "JetBrains Mono", monospace;
   font-size: 0.72rem;
-  background: var(--brand-tint);
-  border: 1px solid #ccfbf1;
-  color: var(--brand-deep);
-  padding: 3px 8px;
-  border-radius: var(--radius-pill);
+  font-weight: 600;
+  background: var(--canvas);
+  border: 1px solid var(--line);
+  color: var(--color-brand-forest);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
 }
 
 .rf-add-cart-btn {
   margin-top: auto;
-  background: var(--brand);
+  background: var(--color-brand-forest);
   color: #ffffff;
-  border: none;
+  border: 1px solid var(--color-brand-dark);
   border-radius: var(--radius-sm);
-  padding: 12px 18px;
-  font-size: 0.9rem;
+  padding: 14px 20px;
+  font-size: 0.92rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.18s ease;
+  gap: 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.22);
 }
 
 .rf-add-cart-btn:hover {
-  background: var(--brand-deep);
-  transform: translateY(-1px);
+  background: var(--color-brand-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.32);
 }
 
-/* 4. Medical Devices 360-degree Hotspot Showcase */
+/* 4. Medical Devices 360-degree Hotspot Showcase (Warm Editorial Clinical Luxury) */
 .devices-showcase-section {
   max-width: 1400px;
-  margin: 52px auto 0;
+  margin: 64px auto 0;
   padding: 0 24px;
 }
 
 .devices-showcase-wrapper {
-  background: radial-gradient(circle at 15% 20%, #032b28 0%, #021a19 60%, #000f0e 100%);
-  border-radius: var(--radius-xl);
-  padding: clamp(32px, 5vw, 64px);
+  background: radial-gradient(circle at 80% 20%, #162B22 0%, #0D1C16 55%, #07100D 100%);
+  border-radius: var(--radius-xl, 24px);
+  padding: clamp(34px, 5vw, 64px);
   color: #ffffff;
-  border: 1px solid rgba(45, 212, 191, 0.25);
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(198, 156, 112, 0.3);
+  box-shadow: 0 25px 60px -15px rgba(7, 16, 13, 0.6);
   position: relative;
   overflow: hidden;
 }
 
 .devices-header {
   text-align: center;
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto 36px;
 }
 
 .dev-badge-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  background: rgba(2, 132, 199, 0.2);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  padding: 4px 14px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  background: rgba(198, 156, 112, 0.15);
+  color: #E4C9A8;
+  border: 1px solid rgba(198, 156, 112, 0.4);
+  padding: 5px 16px;
   border-radius: var(--radius-pill);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .dev-main-title {
-  font-size: clamp(1.7rem, 2.9vw, 2.4rem);
+  font-family: var(--font-markazi, serif), var(--font-vazirmatn), serif;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
   font-weight: 900;
   margin: 0 0 12px;
-  line-height: 1.35;
+  line-height: 1.25;
+  color: #FFFFFF;
 }
 
 .dev-lead-text {
-  font-size: 0.95rem;
-  color: #94a3b8;
-  line-height: 1.75;
+  font-size: 0.98rem;
+  color: rgba(245, 242, 235, 0.8);
+  line-height: 1.8;
   margin: 0;
 }
 
@@ -980,175 +1201,138 @@ svg { max-width: 100%; }
 .device-tabs-row {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   margin-bottom: 36px;
+  flex-wrap: wrap;
 }
 
 .dev-tab-btn {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(245, 242, 235, 0.85);
   padding: 10px 24px;
   border-radius: var(--radius-pill);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
   font-family: inherit;
 }
 
 .dev-tab-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #38bdf8;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #E4C9A8;
+  color: #FFFFFF;
 }
 
 .dev-tab-btn.active {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(15, 118, 110, 0.6) 100%);
+  background: var(--color-brand-forest, #1E3A2F);
   color: #ffffff;
-  border-color: #5eead4;
-  box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+  border-color: #C69C70;
+  box-shadow: 0 4px 18px rgba(30, 58, 47, 0.45);
 }
 
 /* Device Stage Layout */
 .device-stage-grid {
   display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 40px;
-  align-items: center;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 36px;
+  align-items: stretch;
 }
 
 .device-hotspot-viewer {
   position: relative;
-  background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15) 0%, rgba(15, 23, 42, 0.6) 70%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
-  padding: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 440px;
-}
-
-.device-main-render {
-  max-width: 80%;
-  max-height: 380px;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6));
-  transition: transform 0.3s ease;
-}
-
-/* Interactive Hotspot Pins */
-.hotspot-pin {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(20, 184, 166, 0.9);
-  border: 2px solid #ffffff;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 900;
-  cursor: pointer;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px rgba(45, 212, 191, 0.7);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  font-family: monospace;
-}
-
-.hotspot-pin:hover {
-  transform: translate(-50%, -50%) scale(1.2);
-  background: #38bdf8;
-  box-shadow: 0 0 22px rgba(56, 189, 248, 0.9);
-}
-
-.hotspot-pin.active {
-  background: #0284c7;
-  border-color: #5eead4;
-  transform: translate(-50%, -50%) scale(1.25);
-  box-shadow: 0 0 25px #2dd4bf;
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Hotspot Detail Panel */
 .hotspot-detail-panel {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-md);
-  padding: 26px;
+  border-radius: var(--radius-lg, 16px);
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 18px;
+  backdrop-filter: blur(16px);
 }
 
 .hdp-tag-line {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--font-mono, monospace);
   font-size: 0.72rem;
   font-weight: 800;
-  color: #38bdf8;
+  color: #E4C9A8;
   letter-spacing: 0.05em;
+  direction: ltr;
 }
 
 .hdp-title {
-  font-size: 1.3rem;
+  font-family: var(--font-markazi, serif), var(--font-vazirmatn), serif;
+  font-size: 1.45rem;
   font-weight: 900;
   color: #ffffff;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .hdp-desc {
-  font-size: 0.86rem;
-  color: #cbd5e1;
-  line-height: 1.75;
+  font-size: 0.88rem;
+  color: rgba(245, 242, 235, 0.8);
+  line-height: 1.8;
   margin: 0;
 }
 
 .hdp-spec-box {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-  padding: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(198, 156, 112, 0.3);
+  border-radius: var(--radius-md, 10px);
+  padding: 14px 18px;
 }
 
 .hdp-spec-box strong {
   display: block;
-  font-size: 0.76rem;
-  color: #5eead4;
+  font-size: 0.78rem;
+  color: #E4C9A8;
   margin-bottom: 6px;
+  font-weight: 850;
 }
 
 .hdp-spec-box p {
-  font-size: 0.78rem;
-  color: #94a3b8;
+  font-size: 0.82rem;
+  color: #cbd5e1;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .hdp-cta-btn {
-  background: linear-gradient(135deg, var(--medical-blue) 0%, var(--brand) 100%);
+  background: var(--color-brand-forest, #1E3A2F);
   color: #ffffff;
-  padding: 12px 18px;
-  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  border-radius: var(--radius-pill, 9999px);
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 850;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.3);
+  text-decoration: none;
 }
 
 .hdp-cta-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(45, 212, 191, 0.45);
+  background: var(--brand-strong, #13261F);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 58, 47, 0.45);
 }
 
 /* 5. Path Selector (Home Care vs Clinical/Pro vs Equipment) — Dark Clinical Glassmorphism */
@@ -1367,6 +1551,10 @@ svg { max-width: 100%; }
   .path-selector-grid {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+  .sim-header-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
   .bohr-sim-grid,
   .visia-interactive-container,

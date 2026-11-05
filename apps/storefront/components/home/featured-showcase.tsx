@@ -15,11 +15,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_001',
     slug: 'carboxygel',
-    title: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel Professional (ReeSkin)',
-    description: 'ژل ۲ فاز ماتریکسی با تحریک فیزیولوژیک اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی عمیق سلولی، بهبود اسکار و سنتز کلاژن بدون سوزن.',
+    title: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel',
+    englishTitle: 'CarboxyGel™ Professional Transdermal Regimen',
+    description: 'ژل ۲ فاز ماتریکسی با القای فیزیولوژیک اثر بوهر (Bohr Effect) جهت رهایش اکسیژن بافتی، تسریع بازسازی کلاژن و رفع خطوط پوستی بدون سوزن.',
     inciActives: ['8.5% Sodium Bicarbonate', '5% Centella Asiatica', '2% Multi-HA'],
     category: 'carboxy',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: true,
     variants: [
       {
@@ -35,11 +36,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_002',
     slug: 'carboxypod',
-    title: 'پادهای فعال‌ساز کربوکسی‌پاد CarboxyPod (ReeSkin)',
-    description: 'کپسول‌های فعال‌ساز گاز CO₂ و لایه‌برداری همزمان ترابافتی در سه مدل درمانی کربن فعال (Carbon)، روشن‌کننده (Vita) و آبرسان (Hydra).',
+    title: 'پادهای فعال‌ساز ترابافتی CarboxyPod',
+    englishTitle: 'CarboxyPod™ Bio-Activation Capsules',
+    description: 'کپسول‌های فعال‌ساز گاز CO₂ و لایه‌برداری همزمان ترابافتی در سه مدل درمانی کربن فعال (Carbon)، ویتامین C پایدار و آبرسان (Hydra).',
     inciActives: ['Citric Acid Micro-Spheres', 'Activated Bamboo Charcoal', 'Magnesium Ascorbyl'],
     category: 'carboxy',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: false,
     variants: [
       {
@@ -55,11 +57,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_003',
     slug: 'carboxypad',
-    title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad (ReeSkin)',
-    description: 'شیت‌های فیبری میکروپرمنبران پیش‌برش‌خورده با برش آناتومیک صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل.',
+    title: 'پدهای آلکالاین صورت و گردن CarboxyPad',
+    englishTitle: 'CarboxyPad™ Alkaline Activation Sheets',
+    description: 'شیت‌های فیبری میکروپرمنبران پیش‌برش‌خورده با برش آناتومیک صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل کربوکسی.',
     inciActives: ['Micro-perforated Fiber', 'Alkaline Dry Activator', 'Cellulose Matrix'],
     category: 'carboxy',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: false,
     variants: [
       {
@@ -75,11 +78,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_004',
     slug: 'crystalene',
-    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste (ReeSkin)',
-    description: 'میکرودرم ابریشمی ملایم با میکروکریستال‌های خالص آلومینای گرید پزشکی، نیاسینامید، اسید لاکتیک و روغن آرگان.',
+    title: 'خمیر پولیش و لایه‌بردار Crystalene',
+    englishTitle: 'Crystalene™ Alumina Microderm Polish',
+    description: 'میکرودرم ابریشمی ملایم با میکروکریستال‌های خالص آلومینای گرید پزشکی، نیاسینامید، اسید لاکتیک و روغن آرگان جهت نوسازی اپیدرم.',
     inciActives: ['Medical Grade Alumina', '4% Niacinamide', 'Lactic Acid AHA', 'Pure Argan'],
     category: 'homecare',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: false,
     variants: [
       {
@@ -95,11 +99,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_005',
     slug: 'healene',
-    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel (ReeSkin)',
-    description: 'ژل سبک آبرسان و ترمیم‌کننده با نیاسینامید، پانتنول B5، هیالورونیک اسید، آلانتوئین و عصاره‌های گیاهی میموزا و سنتلا آسیاتیکا.',
+    title: 'ژل تسکین‌بخش و التیام‌دهنده Healene',
+    englishTitle: 'Healene™ Post-Procedure Soothing Gel',
+    description: 'ژل سبک آبرسان و ترمیم‌کننده با نیاسینامید، پانتنول B5، هیالورونیک اسید، آلانتوئین و عصاره‌های گیاهی میموزا جهت رفع فوری التهاب.',
     inciActives: ['5% D-Panthenol B5', 'Madecassoside', 'Mimosa Tenuiflora', 'Centella Extract'],
     category: 'homecare',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: true,
     variants: [
       {
@@ -115,11 +120,12 @@ const CURATED_CLINICAL_PRODUCTS = [
   {
     id: 'prod_drdermer_006',
     slug: 'silicalene',
-    title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub (ReeSkin)',
-    description: 'پاکسازی عمقی منافذ، کنترل چربی اضافه و رفع جوش‌های سرسیاه با میکروسفرهای کاملاً کروی سیلیکا، زغال فعال و BHA.',
+    title: 'اسکراب دتوکس منافذ Silicalene',
+    englishTitle: 'Silicalene™ Mild Silica Detox Scrub',
+    description: 'پاکسازی عمقی منافذ، کنترل چربی اضافه و رفع جوش‌های سرسیاه با میکروسفرهای کاملاً کروی سیلیکا، زغال فعال بامبو و سالیسیلیک اسید.',
     inciActives: ['Spherical Hydrated Silica', '2% Salicylic Acid BHA', 'Activated Carbon'],
     category: 'homecare',
-    brandFamily: 'ReeSkin',
+    brandFamily: 'ReeSkin™',
     coldChain: false,
     variants: [
       {
@@ -132,109 +138,54 @@ const CURATED_CLINICAL_PRODUCTS = [
       },
     ],
   },
-  {
-    id: 'prod_drdermer_007',
-    slug: 'carbox',
-    title: 'دستگاه پزشکی کربوکسی‌تراپی و تزریق گاز CarboX (ReeMed)',
-    description: 'ایستگاه کاری دوگانه تزریق زیرجلدی فوق‌دقیق گاز CO₂ پزشکی به همراه هندپیس ارگونومیک فعال‌سازی CarboxyPod ویژه مطب‌ها و کلینیک‌ها.',
-    inciActives: ['Digital Gas Flow: 1cc/min', 'Heating Modality: 42°C', 'MDR Class IIb Certified'],
-    category: 'hardware',
-    brandFamily: 'ReeMed Pro',
-    coldChain: false,
-    variants: [
-      {
-        id: 'var_cbx_station',
-        sku: 'RM-DEV-CARBOX-PRO',
-        title: 'کنسول پرتابل مدیکال با گارانتی رسمی',
-        priceAmount: '450000000', // 45,000,000 Tomans
-        currency: 'IRR',
-        inStock: true,
-      },
-    ],
-  },
-  {
-    id: 'prod_drdermer_008',
-    slug: 'plasmax',
-    title: 'دستگاه پیشرفته انرژی پلاسما و جت سرد PlasmaX (ReeMed)',
-    description: 'سیستم ۴ کاره انرژی پلاسما با تکنولوژی تخلیه پیوسته، پلاسمای سرد آرگون و هلیوم و DBD پلاسما جهت بلفاروپلاستی غیرتهاجمی و درمان اسکار.',
-    inciActives: ['Cold Atmospheric Plasma (CAP)', 'DBD Direct Jet Mode', 'Argon Micro-Arc Generator'],
-    category: 'hardware',
-    brandFamily: 'ReeMed Pro',
-    coldChain: false,
-    variants: [
-      {
-        id: 'var_plx_station',
-        sku: 'RM-DEV-PLASMAX-PRO',
-        title: 'کنسول ایستاده کلینیکال با پروب‌های کامل',
-        priceAmount: '580000000', // 58,000,000 Tomans
-        currency: 'IRR',
-        inStock: true,
-      },
-    ],
-  },
 ];
 
 function getProductPhoto(slug: string): { src: string; alt: string; standardTag: string } {
   const s = slug.toLowerCase();
-  if (s.includes('plasmax')) {
-    return {
-      src: '/assets/drdermer/2025/08/18plasmax.webp',
-      alt: 'دستگاه پیشرفته انرژی پلاسما PlasmaX دکتر درمر انگلستان',
-      standardTag: 'استاندارد مدیکال CE 0123',
-    };
-  }
-  if (s.includes('carbox') && !s.includes('carboxypod') && !s.includes('carboxypad') && !s.includes('carboxygel')) {
-    return {
-      src: '/assets/drdermer/2025/08/19carbox.webp',
-      alt: 'دستگاه کربوکسی‌تراپی و تزریق گاز CarboX دکتر درمر انگلستان',
-      standardTag: 'استاندارد مدیکال CE 0123',
-    };
-  }
   if (s.includes('carboxypad')) {
     return {
-      src: '/assets/drdermer/2025/08/carboxypad.webp',
+      src: '/assets/drdermer/2025/07/carboxygel-activator-mask-and-pads-1-600x600.png',
       alt: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad دکتر درمر',
       standardTag: 'فرمول استاندارد UK',
     };
   }
   if (s.includes('carboxypod')) {
     return {
-      src: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
+      src: '/assets/drdermer/2025/07/carbon-carboxypod-app-1-551x600.png',
       alt: 'پادهای فعال‌ساز کربوکسی‌پاد CarboxyPod دکتر درمر',
       standardTag: 'فرمول استاندارد UK',
     };
   }
   if (s.includes('crystalene')) {
     return {
-      src: '/assets/drdermer/2025/08/15crystalene.webp',
+      src: '/assets/drdermer/2025/08/crystalene-scrub.webp',
       alt: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene دکتر درمر',
       standardTag: 'فرمول استاندارد UK',
     };
   }
   if (s.includes('healene')) {
     return {
-      src: '/assets/drdermer/2025/08/16healene.webp',
+      src: '/assets/drdermer/2025/08/healene-gel.webp',
       alt: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene دکتر درمر',
       standardTag: 'فرمول استاندارد UK',
     };
   }
   if (s.includes('silicalene')) {
     return {
-      src: '/assets/drdermer/2025/08/14silicalene.webp',
-      alt: 'اسکراب دتوکس سیلیکالین Silicalene دکتر درمر',
+      src: '/assets/drdermer/2025/08/silicalene-scrub.webp',
+      alt: 'اسکراب دتوکس منافذ سیلیکالین Silicalene دکتر درمر',
       standardTag: 'فرمول استاندارد UK',
     };
   }
-  // Default to authentic CarboxyGel
   return {
-    src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
-    alt: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel دکتر درمر انگلستان',
-    standardTag: 'فرمول استاندارد UK',
+    src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel-600x600.png',
+    alt: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel دکتر درمر',
+    standardTag: 'فرمول دارویی ترنس‌درمال',
   };
 }
 
 export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowcaseProps) {
-  const [activeTab, setActiveTab] = useState<'all' | 'carboxy' | 'homecare' | 'hardware'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'carboxy' | 'homecare'>('all');
 
   // Enrich curated catalog with live backend variant data
   const enrichedItems = CURATED_CLINICAL_PRODUCTS.map((curated) => {
@@ -265,13 +216,13 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
           <div className="bch-titles">
             <div className="bch-eyebrow">
               <span className="bch-eyebrow-dot" />
-              <span>PHARMACEUTICAL FORMULATIONS & MEDICAL CONSOLES</span>
+              <span>PHARMACEUTICAL FORMULATIONS & CLINICAL PROTOCOLS</span>
             </div>
             <h2 id="featured-title" className="bch-headline">
-              کاتالوگ رسمی محصولات و تجهیزات دکتر درمر انگلستان
+              کاتالوگ رسمی فرمولاسیون‌های بالینی و مراقبت پوست دکتر درمر
             </h2>
             <p className="bch-subtext">
-              فرمولاسیون‌های درموسوتیکال ترابافتی ReeSkin و ایستگاه‌های جراحی و کربوکسی‌تراپی ReeMed دارای گواهینامه‌های رسمی CE و ISO 13485
+              فرمولاسیون‌های درموسوتیکال ترابافتی ReeSkin و کیت‌های فعال‌ساز اثر بوهر CarboxyPod دارای استانداردهای رسمی فارماکوپه انگلستان و ISO 22716
             </p>
           </div>
 
@@ -284,7 +235,7 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
               className={`cat-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
               onClick={() => setActiveTab('all')}
             >
-              همه اقلام ({enrichedItems.length})
+              همه فرمولاسیون‌ها ({enrichedItems.length})
             </button>
             <button
               type="button"
@@ -302,16 +253,7 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
               className={`cat-tab-btn ${activeTab === 'homecare' ? 'active' : ''}`}
               onClick={() => setActiveTab('homecare')}
             >
-              مراقبت خانگی ReeSkin™
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'hardware'}
-              className={`cat-tab-btn ${activeTab === 'hardware' ? 'active' : ''}`}
-              onClick={() => setActiveTab('hardware')}
-            >
-              دستگاه‌های پزشکی ReeMed™
+              مراقبت روزمره و سد دفاعی
             </button>
           </div>
         </div>
@@ -346,7 +288,7 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
                 <Link
                   href={`/products/${encodeURIComponent(product.slug)}`}
                   className="bpc-image-stage"
-                  aria-label={`مشاهده پرونده تخصصی ${product.title}`}
+                  aria-label={`مشاهده پرونده تخصصی ${product.title} - ${photo.standardTag}`}
                 >
                   <div className="bpc-glow-halo" aria-hidden="true" />
                   <img
@@ -355,7 +297,7 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
                     className="bpc-real-img"
                     loading="lazy"
                   />
-                  <span className="bpc-formula-chip">{photo.standardTag}</span>
+                  <span className="bpc-formula-chip" aria-hidden="true">{photo.standardTag}</span>
                 </Link>
 
                 {/* Product Body Information */}
@@ -369,6 +311,11 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
                       {product.title}
                     </Link>
                   </h3>
+                  {product.englishTitle && (
+                    <span className="bpc-english-title" dir="ltr">
+                      {product.englishTitle}
+                    </span>
+                  )}
 
                   <p className="bpc-description">
                     {product.description}

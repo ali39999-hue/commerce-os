@@ -60,7 +60,7 @@ export default function IngredientsPage() {
       <nav className="breadcrumbs-nav" style={{ marginBottom: "24px" }}>
         <Link href="/">صفحه اصلی</Link>
         <span>/</span>
-        <Link href="/academy">آکادمی علوم پوست</Link>
+        <Link href="/blog">دانش درماتولوژی</Link>
         <span>/</span>
         <span>دانشنامه ترکیبات فعال و INCI</span>
       </nav>
@@ -78,7 +78,7 @@ export default function IngredientsPage() {
           </div>
           <div style={{ display: "flex", gap: "10px" }}>
             <Link
-              href="/academy"
+              href="/blog"
               style={{
                 background: "var(--surface)",
                 color: "var(--brand-deep)",
@@ -90,10 +90,10 @@ export default function IngredientsPage() {
                 textDecoration: "none",
               }}
             >
-              🎓 بازگشت به آکادمی
+              مقالات و ژورنال علمی
             </Link>
             <Link
-              href="/b2b"
+              href="/carboxygel"
               style={{
                 background: "var(--brand-deep)",
                 color: "#ffffff",
@@ -104,7 +104,7 @@ export default function IngredientsPage() {
                 textDecoration: "none",
               }}
             >
-              پورتال همکاران B2B →
+              فرمولاسیون‌های CarboxyGel
             </Link>
           </div>
         </div>

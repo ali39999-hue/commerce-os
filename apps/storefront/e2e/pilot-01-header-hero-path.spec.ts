@@ -16,6 +16,8 @@ test.describe('Pilot 01: Header, Hero Banner & Audience Path Selector', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
+    // Ensure client hydration is complete before interacting
+    await page.locator('section.clinical-hero-v2, #hero-main-title').first().waitFor({ state: 'visible' });
   });
 
   test('1. Global Header renders glassmorphism, brand identity, and navigation', async ({ page }) => {
@@ -49,19 +51,13 @@ test.describe('Pilot 01: Header, Hero Banner & Audience Path Selector', () => {
     const mainHeading = heroSection.locator('h1#hero-main-title, h1.hero-heading').first();
     await expect(mainHeading).toBeVisible();
 
-    // Verify Primary CTA (home regimen mode is the initial state)
+    // Verify Primary CTA
     const primaryCta = heroSection.locator('a[href*="featured-products"], a.btn-clinical-primary').first();
     await expect(primaryCta).toBeVisible();
 
-    // Verify secondary CTA in home mode
+    // Verify secondary CTA
     const scienceCta = heroSection.locator('a[href="#bohr-simulator"]').first();
     await expect(scienceCta).toBeVisible();
-
-    // Switch to Clinic equipment mode and verify the B2B commercial CTA appears
-    const clinicTab = heroSection.locator('.hero-mode-switcher .mode-btn').last();
-    await clinicTab.click();
-    const b2bCta = heroSection.locator('a[href="/b2b"], a.btn-clinical-secondary').first();
-    await expect(b2bCta).toBeVisible();
 
     // Verify Telemetry Cards with Tabular Numerals
     const statCards = heroSection.locator('.telemetry-card');
@@ -86,15 +82,15 @@ test.describe('Pilot 01: Header, Hero Banner & Audience Path Selector', () => {
     await expect(homeCard).toBeVisible();
     await expect(homeCard.locator('a[href*="/reeskin"]')).toBeVisible();
 
-    // Verify Clinic Consumables Card
-    const proCard = pathCards.filter({ hasText: 'کابین' }).first();
-    await expect(proCard).toBeVisible();
-    await expect(proCard.locator('a[href*="/reemed"]')).toBeVisible();
+    // Verify Carboxy Protocols Card
+    const carboxyCard = pathCards.filter({ hasText: 'کربوکسی' }).first();
+    await expect(carboxyCard).toBeVisible();
+    await expect(carboxyCard.locator('a[href*="/carboxygel"]')).toBeVisible();
 
-    // Verify Medical Hardware Card
-    const equipCard = pathCards.filter({ hasText: 'تجهیزات' }).first();
-    await expect(equipCard).toBeVisible();
-    await expect(equipCard.locator('a[href*="/reemed"]')).toBeVisible();
+    // Verify Activator Sheets & Pads Card
+    const padsCard = pathCards.filter({ hasText: 'پد' }).first();
+    await expect(padsCard).toBeVisible();
+    await expect(padsCard.locator('a[href*="/carboxypad"]')).toBeVisible();
   });
 
   test('4. Zero horizontal overflow on viewport reflow', async ({ page }) => {

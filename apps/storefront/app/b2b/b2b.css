@@ -51,13 +51,13 @@
 }
 
 .b2b-btn-primary {
-  background: var(--accent);
-  color: #18221d;
+  background: var(--color-brand-forest);
+  color: #ffffff;
   padding: 12px 24px;
-  border-radius: 12px;
-  font-weight: 800;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
   font-size: 0.95rem;
-  border: none;
+  border: 1px solid var(--color-brand-dark);
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
@@ -67,7 +67,8 @@
 }
 
 .b2b-btn-primary:hover {
-  background: var(--accent-hover);
+  background: var(--color-brand-dark);
+  color: #ffffff;
   transform: translateY(-2px);
 }
 

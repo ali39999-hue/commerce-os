@@ -481,10 +481,6 @@ export function CarboxypodInteractiveLanding() {
               <a href="#stage-breakdown" className="cpod-btn-sub">
                 <span>آناتومی ۳ لایه CarboxyPod</span>
               </a>
-
-              <Link href="/carbox" className="cpod-btn-sub" style={{ borderColor: 'rgba(56, 189, 248, 0.3)', color: '#38bdf8' }}>
-                <span>بررسی هندپیس در دستگاه CarboX ←</span>
-              </Link>
             </div>
           </div>
 
@@ -581,7 +577,7 @@ export function CarboxypodInteractiveLanding() {
               <div className="cpod-stage-info-header">
                 <span className="cpod-stage-tag">{currentStage.tag}</span>
                 <h3 className="cpod-stage-title">{currentStage.titleFa}</h3>
-                <span style={{ fontSize: '0.76rem', color: '#64748b', fontFamily: 'monospace', display: 'block', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.76rem', color: '#94a3b8', fontFamily: 'monospace', display: 'block', marginBottom: '8px' }}>
                   {currentStage.titleEn}
                 </span>
                 <p className="cpod-stage-desc">{currentStage.desc}</p>
@@ -776,15 +772,8 @@ export function CarboxypodInteractiveLanding() {
                 </div>
                 <div className="cpod-perk-item">
                   <span className="check">✓</span>
-                  <span>امکان پرداخت آنلاین شتابی یا فاکتور رسمی B2B</span>
+                  <span>امکان پرداخت آنلاین شتابی و تحویل اکسپرس دارویی</span>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-800 pt-4">
-                <span>نیاز به خرید عمده یا قرارداد سالیانه دارید؟</span>
-                <Link href="/b2b?kit=carboxypod" className="text-emerald-400 hover:text-emerald-300 font-bold underline">
-                  ورود به پنل تأمین کلینیک B2B ←
-                </Link>
               </div>
             </div>
 

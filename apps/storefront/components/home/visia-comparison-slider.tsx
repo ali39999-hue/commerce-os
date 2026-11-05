@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 interface ClinicalCase {
@@ -17,7 +17,79 @@ interface ClinicalCase {
   afterImg: string;
   visiaScoreBefore: string;
   visiaScoreAfter: string;
+  protocolSlug: string;
 }
+
+const CLINICAL_CASES: ClinicalCase[] = [
+  {
+    id: "melasma_pigmentation",
+    category: "ملاسما و هایپرپیگمانتاسیون",
+    title: "درمان لک‌های هورمونی مقاوم و تیرگی یکنواخت گونه و پیشانی",
+    patientMeta: "بیمار ۳۸ ساله · فنوتیپ پوستی فیتزپاتریک III · ملاسما اپیدرمال-درمال",
+    indication: "مقاوم به هیدروکینون ۴٪ و لایه‌برداری‌های شیمیایی تهاجمی سنتی",
+    regimen: "پروتکل ۴ هفته‌ای: کربوکسی‌ژل اسید آزالائیک ۱۵٪ + پاد ترابافتی Hydra-Pod (هفته‌ای ۲ بار)",
+    statImprovement: "-۴۸٪",
+    statMetric: "کاهش تراکم ملانین در طیف‌سنجی فلورسانس Visia (Grade A+)",
+    scientificNotes:
+      "افزایش نفوذپذیری فعال آزالائیک با تحریک اثر بوهر موجب مهار رقابتی آنزیم تیروزیناز در ملانوسیت‌ها بدون ایجاد هیپوپیگمانتاسیون راجعه گردید.",
+    beforeImg: "/assets/drdermer/trial-melasma-before.png",
+    afterImg: "/assets/drdermer/trial-melasma-after.png",
+    visiaScoreBefore: "Visia Melanin Score: 42%",
+    visiaScoreAfter: "Visia Melanin Score: 89%",
+    protocolSlug: "/carboxygel",
+  },
+  {
+    id: "rhytids_crowfeet",
+    category: "شیارهای پری‌اوربیتال و پنجه‌کلاغی",
+    title: "ترمیم عمق خطوط دور چشم و تحریک کلاژن‌سازی نوع ۱ درمیس",
+    patientMeta: "بیمار ۴۶ ساله · فنوتیپ فیتزپاتریک II · خطوط دینامیک پنجه‌کلاغی و افت الاستیسیته",
+    indication: "تحلیل ماتریکس برون‌سلولی فیبروبلاست ناشی از افت خون‌رسانی مویرگی",
+    regimen: "پروتکل ۳ جلسه‌ای: کربوکسی‌ژل اسید گلیکولیک ۱۰٪ + پاد ترابافتی Carbo-Pod",
+    statImprovement: "-۵۴٪",
+    statMetric: "کاهش عمق شیارهای پری‌اوربیتال و افزایش ۴۲٪ ضخامت درمیس در اولتراسوند",
+    scientificNotes:
+      "سیلاب اکسیژن بافتی ناشی از اثر بوهر و اتساع مویرگی پایدار، تولید فاکتور رشد کلاژنی TGF-β را تحریک نموده و شبکه الاستین را نوسازی کرد.",
+    beforeImg: "/assets/drdermer/trial-wrinkle-before.png",
+    afterImg: "/assets/drdermer/trial-wrinkle-after.png",
+    visiaScoreBefore: "Visia Wrinkle Depth: 51%",
+    visiaScoreAfter: "Visia Wrinkle Depth: 94%",
+    protocolSlug: "/carboxygel",
+  },
+  {
+    id: "eyelid_blepharoplasty",
+    category: "بلفاروپلاستی غیرتهاجمی و افتادگی پلک",
+    title: "سفت‌سازی بافت سست پلک و بهبود قوام فیبروبلاستی بدون جراحی",
+    patientMeta: "بیمار ۵۲ ساله · فنوتیپ فیتزپاتریک II · پتوز خفیف پوستی و سستی کلاژن پلک فوقانی",
+    indication: "افت الاستین بافتی بدون اندیکاسیون جراحی تهاجمی بلفاروپلاستی",
+    regimen: "پروتکل ترکیبی: پدهای آناتومیک CarboxyPad + سرم پپتیدی هیلین (Healene)",
+    statImprovement: "+۶۲٪",
+    statMetric: "افزایش استحکام کشسانی پوست پلک و رفع سایه‌های تیره احتقانی",
+    scientificNotes:
+      "اتساع مویرگ‌های موضعی و خروج ادم لنفاوی همراه با نئوکلاژنز عمقی، قوام پوستی کانتور چشم را بدون تروما، اسکار یا زمان نقاهت ترمیم نمود.",
+    beforeImg: "/assets/drdermer/trial-blepharo-before.png",
+    afterImg: "/assets/drdermer/trial-blepharo-after.png",
+    visiaScoreBefore: "Visia Firmness: 38%",
+    visiaScoreAfter: "Visia Firmness: 92%",
+    protocolSlug: "/carboxypad",
+  },
+  {
+    id: "inflammatory_acne",
+    category: "آکنه التهابی و بافت ناهموار",
+    title: "پاکسازی کمدون‌های عمقی، کنترل سبوم و رفع قرمزی پس از التهاب (PIE)",
+    patientMeta: "بیمار ۲۹ ساله · فنوتیپ فیتزپاتریک III · آکنه ولگاریس و التهاب اریتماتوز",
+    indication: "کلونیزاسیون باکتری بی‌هوازی C. acnes و ترشح بیش از حد چربی سباسه",
+    regimen: "پروتکل ۴ جلسه‌ای: کربوکسی‌ژل مولتی‌اکتیو + اسکراب دتوکس سیلیکالین (Silicalene)",
+    statImprovement: "-۷۱٪",
+    statMetric: "کاهش بار میکروبی بی‌هوازی و فروکش کامل کانون‌های التهابی آکنه",
+    scientificNotes:
+      "اشباع اکسیژن موضعی پدیده بوهر محیط بی‌هوازی مورد نیاز باکتری‌های آکنه را تخریب کرده و تکثیر کراتینوسیت‌های دهانه فولیکول را منظم می‌سازد.",
+    beforeImg: "/assets/drdermer/trial-acne-before.png",
+    afterImg: "/assets/drdermer/trial-acne-after.png",
+    visiaScoreBefore: "Visia Porphyrins: 68%",
+    visiaScoreAfter: "Visia Porphyrins: 14%",
+    protocolSlug: "/silicalene",
+  },
+];
 
 export function VisiaTrialComparisonSlider() {
   const [activeCaseIndex, setActiveCaseIndex] = useState(0);
@@ -25,109 +97,58 @@ export function VisiaTrialComparisonSlider() {
   const isDragging = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const cases: ClinicalCase[] = [
-    {
-      id: "melasma_hyperpigmentation",
-      category: "ملاسما و هایپرپیگمانتاسیون",
-      title: "درمان لک‌های هورمونی مقاوم و تیرگی یکنواخت پیشانی و گونه",
-      patientMeta: "بیمار ۳۸ ساله · فنوتیپ پوستی فیتزپاتریک III · ملاسما اپیدرمال-درمال",
-      indication: "مقاوم به هیدروکینون و لایه‌برداری‌های اسیدی سنتی",
-      regimen: "پروتکل ۴ هفته‌ای: کربوکسی‌ژل اسید آزالائیک ۱۵٪ + پاد ترابافتی Hydra-Pod (هفته‌ای ۲ بار)",
-      statImprovement: "-۴۸٪",
-      statMetric: "کاهش تراکم ملانین در ارزیابی طیف‌سنجی Visia (Grade A+)",
-      scientificNotes:
-        "افزایش نفوذپذیری فعال آزالائیک با اثر بوهر موجب مهار رقابتی آنزیم تیروزیناز در ملانوسیت‌ها بدون ایجاد هیپوپیگمانتاسیون راجعه گردید.",
-      beforeImg: "/assets/drdermer/2025/07/skin-copy-2_0001_Frame-18-600x600.png",
-      afterImg: "/assets/drdermer/2025/07/skin-copy-2_0002_Frame-17-600x600.png",
-      visiaScoreBefore: "Visia Score: 41%",
-      visiaScoreAfter: "Visia Score: 89%",
-    },
-    {
-      id: "rhytids_collagen_loss",
-      category: "شیارهای پنجه‌کلاغی و افت قوام",
-      title: "نوسازی بافت الاستین و تحریک کلاژن‌سازی نوع ۱ درمیس میانی",
-      patientMeta: "بیمار ۴۶ ساله · فنوتیپ فیتزپاتریک II · خطوط پنجه‌کلاغی و منافذ اتساع‌یافته",
-      indication: "کاهش ضخامت درمیس و تحلیل ماتریکس برون‌سلولی بر اثر استرس اکسیداتیو",
-      regimen: "پروتکل ۳ جلسه‌ای: کربوکسی‌ژل اسید گلیکولیک ۱۰٪ + پاد ترابافتی Carbo-Pod",
-      statImprovement: "-۴۲٪",
-      statMetric: "کاهش عمق شیارهای پری‌اوربیتال و افزایش ۳۸٪ تراکم کلاژن در اولتراسوند",
-      scientificNotes:
-        "سیلاب اکسیژن بافتی و اتساع موضعی میکرووسکولار، سنتز فاکتور TGF-β را تحریک نموده و قوام ماتریکس درمیس را به شکل چشمگیری ترمیم کرد.",
-      beforeImg: "/assets/drdermer/2025/07/skin-copy-2_0006_Frame-13-600x600.png",
-      afterImg: "/assets/drdermer/2025/07/skin-copy-2_0007_Frame-12-600x600.png",
-      visiaScoreBefore: "Visia Score: 52%",
-      visiaScoreAfter: "Visia Score: 94%",
-    },
-    {
-      id: "rosacea_erythema",
-      category: "روزاسه، اریتم و تخریب سد دفاعی",
-      title: "التیام فوری عروق مویرگی سطحی و بازسازی ساختار لایه شاخی",
-      patientMeta: "بیمار ۳۱ ساله · فنوتیپ فیتزپاتریک I · اریتماتوتلانژکتازیک (Subtype 1 Rosacea)",
-      indication: "حساسیت بالا، گرگرفتگی، سوزش با محصولات آرایشی و افزایش شاخص TEWL",
-      regimen: "پروتکل ۲ هفته‌ای: کربوکسی‌ژل مولتی‌اکتیو + پاد ترابافتی Vita-Pod (هفته‌ای یک جلسه)",
-      statImprovement: "-۶۱٪",
-      statMetric: "کاهش نقشه اریتم هموگلوبین (Redness Index) در تصویربرداری Visia",
-      scientificNotes:
-        "ترکیب پپتیدهای مس و اکتوئین ۲٪ به همراه پایداری pH اسیدی لایه شاخی، ریزگردش خون مویرگی را تعدیل و نفوذپذیری عروق التهابی را مهار ساخت.",
-      beforeImg: "/assets/drdermer/2025/07/skin-copy-2_0011_Frame-8-1-600x600.png",
-      afterImg: "/assets/drdermer/2025/07/skin-copy-2_0013_Frame-6-600x600.png",
-      visiaScoreBefore: "Visia Score: 36%",
-      visiaScoreAfter: "Visia Score: 91%",
-    },
-  ];
+  const currentCase = CLINICAL_CASES[activeCaseIndex];
 
-  const currentCase = cases[activeCaseIndex];
-
-  const handleMove = useCallback((clientX: number) => {
+  const updatePosition = useCallback((clientX: number) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = clientX - rect.left;
-    const pos = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPos(pos);
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPos(percentage);
   }, []);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length > 0) {
-      handleMove(e.touches[0].clientX);
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging.current) {
-      handleMove(e.clientX);
-    }
-  };
-
-  const startDrag = () => {
+  const handlePointerDown = (e: React.PointerEvent) => {
     isDragging.current = true;
+    if (containerRef.current) {
+      containerRef.current.setPointerCapture(e.pointerId);
+    }
+    updatePosition(e.clientX);
   };
 
-  const stopDrag = () => {
-    isDragging.current = false;
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    updatePosition(e.clientX);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isDragging.current) {
+      isDragging.current = false;
+      if (containerRef.current && containerRef.current.hasPointerCapture(e.pointerId)) {
+        containerRef.current.releasePointerCapture(e.pointerId);
+      }
+    }
   };
 
   return (
     <section className="visia-slider-section" aria-labelledby="visia-title">
       <div className="visia-slider-wrapper">
-        {/* Section Header */}
+        {/* Section Header with Clinical Hierarchy */}
         <div className="visia-slider-header">
           <div className="visia-chip-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-            CLINICAL VISIA® 3D DERMATOLOGICAL AUDIT
+            <span className="visia-chip-pulse" aria-hidden="true" />
+            CLINICAL VISIA® 7TH GEN DERMATOLOGICAL AUDIT
           </div>
           <h2 id="visia-title" className="visia-main-title">
             ارزیابی مقایسه‌ای پیش و پس از درمان با آنالیزور تصویری Visia
           </h2>
           <p className="visia-lead-text">
-            اسلایدر تعاملی را به چپ و راست بکشید تا تغییرات عینی بافت پوست، عمق خطوط و توزیع ملانین را در کیس‌های بالینی مستندشده مرکز تحقیقات درماتولوژی مشاهده نمایید.
+            اهرم مقایسه را به چپ و راست بکشید تا تغییرات عینی بافت پوست، عمق شیارها و توزیع ملانین را در کیس‌های بالینی واقعی مستندشده در آزمایشگاه‌های درماتولوژی مشاهده فرمایید.
           </p>
         </div>
 
         {/* Case Switcher Tabs */}
-        <div className="visia-case-tabs" role="tablist">
-          {cases.map((c, i) => (
+        <div className="visia-case-tabs" role="tablist" aria-label="انتخاب کیس بالینی">
+          {CLINICAL_CASES.map((c, i) => (
             <button
               key={c.id}
               type="button"
@@ -146,77 +167,10 @@ export function VisiaTrialComparisonSlider() {
 
         {/* Comparison Stage + Clinical Metadata Panel */}
         <div className="visia-interactive-container">
-          {/* Comparison Slider Box */}
-          <div
-            className="visia-compare-stage"
-            ref={containerRef}
-            onMouseDown={startDrag}
-            onMouseUp={stopDrag}
-            onMouseLeave={stopDrag}
-            onMouseMove={handleMouseMove}
-            onTouchMove={handleTouchMove}
-            onTouchStart={startDrag}
-            onTouchEnd={stopDrag}
-            onClick={(e) => handleMove(e.clientX)}
-          >
-            {/* Background Layer: AFTER treatment */}
-            <div className="visia-image-layer visia-before-layer">
-              <img src={currentCase.afterImg} alt={`نتیجه پس از درمان - ${currentCase.title}`} />
-              <div className="visia-label-tag after">
-                <span>پس از مداخله بالینی ({currentCase.visiaScoreAfter})</span>
-              </div>
-            </div>
-
-            {/* Foreground Clipped Layer: BEFORE treatment */}
-            <div
-              className="visia-after-layer"
-              style={{
-                width: `${sliderPos}%`,
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: containerRef.current ? `${containerRef.current.clientWidth}px` : "100%",
-                  height: "100%",
-                }}
-              >
-                <img src={currentCase.beforeImg} alt={`قبل از درمان - ${currentCase.title}`} />
-              </div>
-              <div className="visia-label-tag before">
-                <span>قبل از درمان (Baseline Day 0)</span>
-              </div>
-            </div>
-
-            {/* Draggable Divider Handle */}
-            <div
-              className="visia-divider-handle"
-              style={{
-                left: `${sliderPos}%`,
-              }}
-            >
-              <div
-                className="visia-handle-knob"
-                role="slider"
-                aria-label="اهرم کششی مقایسه تصاویر قبل و بعد"
-                aria-valuenow={Math.round(sliderPos)}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                tabIndex={0}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="15 18 9 12 15 6" />
-                  <polyline points="9 18 3 12 9 6" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Clinical Case Details Side Panel */}
+          {/* Right Column in RTL: Clinical Case Details Side Panel */}
           <div className="visia-case-details-panel">
             <div className="vcd-badge-strip">
-              <span className="vcd-pill dark">کیس بالینی تاییدشده</span>
+              <span className="vcd-pill dark">کیس بالینی مستندشده</span>
               <span className="vcd-pill teal">{currentCase.category}</span>
             </div>
 
@@ -229,26 +183,112 @@ export function VisiaTrialComparisonSlider() {
                 <span className="vcd-stat-label">بهبود سنجیده‌شده با Visia:</span>
                 <span className="vcd-stat-val">{currentCase.statImprovement}</span>
               </div>
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0f766e" strokeWidth="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-              </svg>
+              <div className="vcd-stat-icon-wrap" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              </div>
             </div>
 
             <p className="vcd-desc">{currentCase.statMetric}</p>
 
             <div className="vcd-protocol-box">
-              <strong>پروتکل درمانی اعمال‌شده:</strong>
-              <span>{currentCase.regimen}</span>
+              <strong className="protocol-title">پروتکل درمانی اعمال‌شده:</strong>
+              <span className="protocol-content">{currentCase.regimen}</span>
             </div>
 
-            <p className="vcd-notes" style={{ fontSize: "0.8rem", color: "var(--muted)", margin: 0, lineHeight: 1.6 }}>
-              <strong>ملاحظه پاتوفیزیولوژی:</strong> {currentCase.scientificNotes}
-            </p>
+            <div className="vcd-notes-box">
+              <strong className="notes-heading">ملاحظه پاتوفیزیولوژی:</strong>
+              <p className="notes-body">{currentCase.scientificNotes}</p>
+            </div>
 
-            <Link href="/#featured-products" className="bsf-cta-btn" style={{ textAlign: "center", marginTop: 4 }}>
+            <Link href={currentCase.protocolSlug} className="vcd-cta-btn">
               مشاهده محصولات مرتبط با این پروتکل ←
             </Link>
+          </div>
+
+          {/* Left Column in RTL: Interactive Comparison Slider Stage (Strict LTR Coordinate Isolation) */}
+          <div className="visia-stage-outer">
+            <div
+              className="visia-compare-stage"
+              ref={containerRef}
+              dir="ltr"
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+              style={{ touchAction: "none" }}
+            >
+              {/* Layer 1: AFTER image (full-size background) */}
+              <div className="visia-image-layer visia-after-layer">
+                <img
+                  src={currentCase.afterImg}
+                  alt={`نتیجه پس از درمان - ${currentCase.title}`}
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
+
+              {/* Layer 2: BEFORE image (clipped with clip-path strictly matching sliderPos) */}
+              <div
+                className="visia-image-layer visia-before-layer"
+                style={{
+                  clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)`,
+                }}
+              >
+                <img
+                  src={currentCase.beforeImg}
+                  alt={`قبل از درمان - ${currentCase.title}`}
+                  loading="lazy"
+                  draggable={false}
+                />
+              </div>
+
+              {/* Persistent Header Tags Outside Clipping Boundary */}
+              <div className="visia-label-tag before">
+                <span>قبل از درمان (Baseline Day 0)</span>
+              </div>
+              <div className="visia-label-tag after">
+                <span>پس از درمان ({currentCase.visiaScoreAfter})</span>
+              </div>
+
+              {/* Draggable Divider Handle Line */}
+              <div
+                className="visia-divider-handle"
+                style={{
+                  left: `${sliderPos}%`,
+                }}
+              >
+                <div
+                  className="visia-handle-knob"
+                  role="slider"
+                  aria-label="اهرم کششی مقایسه تصاویر قبل و بعد"
+                  aria-valuenow={Math.round(sliderPos)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowLeft") setSliderPos((p) => Math.max(0, p - 5));
+                    if (e.key === "ArrowRight") setSliderPos((p) => Math.min(100, p + 5));
+                  }}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                    <polyline points="7 8 3 12 7 16" />
+                    <polyline points="17 8 21 12 17 16" />
+                    <line x1="12" y1="5" x2="12" y2="19" strokeWidth="1.5" opacity="0.6" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Stage Footer Bar with Clinical Telemetry Info */}
+            <div className="visia-stage-caption">
+              <span className="caption-text">
+                تصویربرداری اپیدرمال با نور پلاریزه متقاطع (Cross-Polarized Light) جهت حذف بازتاب سطحی
+              </span>
+              <span className="caption-standard">ISO 13485 CERTIFIED CLINICAL AUDIT</span>
+            </div>
           </div>
         </div>
       </div>

@@ -58,7 +58,7 @@ export default function BlogIndexPage() {
           </div>
           <div style={{ display: "flex", gap: "10px" }}>
             <Link
-              href="/academy"
+              href="/ingredients"
               style={{
                 background: "var(--brand-deep)",
                 color: "#ffffff",
@@ -69,22 +69,7 @@ export default function BlogIndexPage() {
                 textDecoration: "none",
               }}
             >
-              🎓 ورود به آکادمی تخصصی
-            </Link>
-            <Link
-              href="/ingredients"
-              style={{
-                background: "var(--surface)",
-                color: "var(--brand-deep)",
-                border: "1px solid var(--line)",
-                padding: "8px 18px",
-                borderRadius: "999px",
-                fontSize: "0.88rem",
-                fontWeight: 700,
-                textDecoration: "none",
-              }}
-            >
-              🔬 دانشنامه ترکیبات (INCI)
+              دانشنامه ترکیبات فعال (INCI)
             </Link>
           </div>
         </div>

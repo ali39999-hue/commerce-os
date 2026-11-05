@@ -1,21 +1,23 @@
-/* ── Audience Path Triage V3 (Warm Editorial Clinical Luxury) ──
-   Reference: Dr Dermer Concept Board 01 — three ivory editorial triage cards */
+/* ── Dr Dermer Physiology Atlas — Folio Triage (3 Specimen Pathways) ──
+   Aesthetic: Technical Folios · Ruled Margin Notes · Specimen Plate Architecture
+   Typeface: Markazi Text + Vazirmatn + JetBrains Mono
+*/
 
 .path-triage-section {
-  max-width: 1440px;
-  margin: 64px auto 0;
-  padding: 0 24px;
+  max-width: 1400px;
+  margin: 72px auto 0;
+  padding: 0 28px;
 }
 
 .path-triage-container {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 40px;
 }
 
 .path-triage-header {
   text-align: center;
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
 }
 
@@ -23,125 +25,107 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(30, 58, 47, 0.06);
-  border: 1px solid rgba(30, 58, 47, 0.15);
+  background: #FFFFFF;
+  border: 1px solid var(--line);
   color: var(--color-brand-forest);
-  font-size: 0.74rem;
-  font-weight: 800;
-  padding: 5px 16px;
-  border-radius: var(--radius-pill);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: var(--radius-sm);
   margin-bottom: 14px;
   letter-spacing: 0.05em;
+  box-shadow: var(--shadow-sm);
 }
 
 .triage-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--color-brand-forest);
+  background: var(--color-bohr-red);
 }
 
 .triage-headline {
-  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
   font-weight: 700;
-  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-  color: var(--color-brand-forest);
-  line-height: 1.35;
+  color: var(--ink);
+  line-height: 1.25;
   letter-spacing: -0.01em;
   margin: 0 0 14px;
 }
 
 .triage-lead {
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   color: var(--color-text-secondary);
-  line-height: 1.8;
+  line-height: 1.85;
   margin: 0;
 }
 
-/* 3-Column Editorial Cards */
+/* 3-Column Folio Grid */
 .path-triage-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 24px;
 }
 
 .triage-card {
   background: #FFFFFF;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-xl);
-  padding: 34px 28px;
+  padding: 26px 24px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-card);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .triage-card-aura {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 180px;
-  pointer-events: none;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
-
-.theme-homecare .triage-card-aura {
-  background: radial-gradient(circle at 50% 0%, rgba(200, 214, 204, 0.5) 0%, transparent 70%);
-}
-
-.theme-pro .triage-card-aura {
-  background: radial-gradient(circle at 50% 0%, rgba(237, 229, 218, 0.6) 0%, transparent 70%);
-}
-
-.theme-equipment .triage-card-aura {
-  background: radial-gradient(circle at 50% 0%, rgba(198, 156, 112, 0.25) 0%, transparent 70%);
+  display: none;
 }
 
 .triage-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-elevated);
-}
-
-.triage-card:hover .triage-card-aura {
-  opacity: 0.75;
+  border-color: var(--ink);
 }
 
 .theme-homecare:hover {
-  border-color: rgba(30, 58, 47, 0.3);
+  border-color: var(--color-brand-forest);
 }
 
 .theme-pro:hover {
-  border-color: rgba(198, 156, 112, 0.35);
+  border-color: #4D6B58;
 }
 
 .theme-equipment:hover {
-  border-color: rgba(198, 156, 112, 0.4);
+  border-color: #755A38;
 }
 
-/* Card Header & Badges */
+/* Folio Plate Header */
 .triage-card-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
 }
 
 .triage-badge-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .triage-tag {
   font-size: 0.68rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  font-family: "SF Mono", ui-monospace, monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .theme-homecare .triage-tag {
@@ -163,63 +147,150 @@
 }
 
 .triage-icon-wrap {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #FAF8F5;
+  background: var(--surface-soft);
   border: 1px solid var(--line);
   flex-shrink: 0;
 }
 
 .theme-homecare .triage-icon-wrap {
   color: var(--color-brand-forest);
-  border-color: rgba(30, 58, 47, 0.2);
 }
 
 .theme-pro .triage-icon-wrap {
   color: #4D6B58;
-  border-color: rgba(77, 107, 88, 0.25);
 }
 
 .theme-equipment .triage-icon-wrap {
   color: #755A38;
-  border-color: rgba(198, 156, 112, 0.35);
+}
+
+/* Visual Showcase Stage Inside Triage Card */
+.triage-visual-stage {
+  margin: 0 0 18px;
+  padding: 16px;
+  background: radial-gradient(circle at center, #FFFFFF 0%, #FAF8F5 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.triage-img-frame {
+  width: 100%;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.triage-stage-img {
+  max-width: 100%;
+  max-height: 125px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(25, 35, 29, 0.1));
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.triage-card:hover .triage-stage-img {
+  transform: scale(1.08) translateY(-2px);
+}
+
+.triage-stage-caption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  font-size: 0.72rem;
+}
+
+.tsc-badge {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.theme-homecare .tsc-badge {
+  color: var(--color-brand-forest);
+  background: rgba(30, 58, 47, 0.08);
+  border: 1px solid rgba(30, 58, 47, 0.2);
+}
+
+.theme-pro .tsc-badge {
+  color: #3E5C4B;
+  background: rgba(62, 92, 75, 0.08);
+  border: 1px solid rgba(62, 92, 75, 0.2);
+}
+
+.theme-equipment .tsc-badge {
+  color: #755A38;
+  background: rgba(117, 90, 56, 0.08);
+  border: 1px solid rgba(117, 90, 56, 0.2);
+}
+
+.tsc-sub {
+  color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
 .triage-category-kicker {
-  font-size: 0.74rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--color-brand-forest);
   margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+
+.theme-pro .triage-category-kicker {
+  color: #3E5C4B;
+}
+
+.theme-equipment .triage-category-kicker {
+  color: #755A38;
 }
 
 .triage-card-title {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--color-brand-forest);
-  margin: 0 0 12px;
-  line-height: 1.35;
+  font-family: "Markazi Text", "Playfair Display", serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.25;
 }
 
 .triage-card-lead {
   font-size: 0.88rem;
   color: var(--color-text-secondary);
-  line-height: 1.75;
-  margin: 0 0 22px;
-  min-height: 80px;
+  line-height: 1.85;
+  margin: 0 0 18px;
+  min-height: 78px;
 }
 
-/* Metrics Row */
+/* Metrics Row (Specimen Technical Box) */
 .triage-metrics-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-bottom: 22px;
-  padding: 12px;
-  background: #FAF8F5;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: var(--surface-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
 }
@@ -230,13 +301,15 @@
 }
 
 .tmb-label {
-  font-size: 0.68rem;
-  color: var(--muted);
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
   margin-bottom: 2px;
 }
 
 .tmb-val {
-  font-size: 1.05rem;
+  font-family: "JetBrains Mono", Vazirmatn, monospace;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
@@ -257,11 +330,11 @@
 /* Features List */
 .triage-features-list {
   list-style: none;
-  padding: 18px 0 0;
-  margin: 0 0 28px;
+  padding: 14px 0 0;
+  margin: 0 0 22px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
   border-top: 1px solid var(--line);
   flex-grow: 1;
 }
@@ -272,6 +345,7 @@
   gap: 10px;
   font-size: 0.82rem;
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 .theme-homecare .triage-features-list svg {
@@ -296,12 +370,13 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 14px 20px;
+  padding: 12px 18px;
   border-radius: var(--radius-sm);
-  background: #FAF8F5;
+  background: #FFFFFF;
   border: 1px solid var(--line-strong);
   text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cta-txt-wrap {
@@ -311,57 +386,59 @@
 
 .cta-main-txt {
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
+  transition: color 0.15s ease;
 }
 
 .cta-sub-txt {
-  font-size: 0.7rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
   color: var(--muted);
   margin-top: 2px;
+  transition: color 0.15s ease;
 }
 
 .cta-arrow-circle {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: rgba(30, 58, 47, 0.06);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-brand-forest);
+  color: var(--ink);
   transition: all 0.2s ease;
 }
 
 .theme-homecare .triage-cta-button:hover {
   background: var(--color-brand-forest);
   border-color: var(--color-brand-dark);
-  box-shadow: 0 8px 20px rgba(30, 58, 47, 0.25);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.22);
 }
 
 .theme-pro .triage-cta-button:hover {
-  background: #4D6B58;
-  border-color: #3E5A4A;
-  box-shadow: 0 8px 20px rgba(77, 107, 88, 0.28);
-  transform: translateY(-2px);
+  background: #3E5C4B;
+  border-color: #2A4436;
+  box-shadow: 0 4px 14px rgba(62, 92, 75, 0.22);
 }
 
 .theme-equipment .triage-cta-button:hover {
   background: #755A38;
-  border-color: #7A5A36;
-  box-shadow: 0 8px 20px rgba(140, 106, 66, 0.28);
-  transform: translateY(-2px);
+  border-color: #5C4428;
+  box-shadow: 0 4px 14px rgba(117, 90, 56, 0.22);
 }
 
 .triage-cta-button:hover .cta-main-txt,
 .triage-cta-button:hover .cta-sub-txt {
-  color: #ffffff;
+  color: #FFFFFF;
 }
 
 .triage-cta-button:hover .cta-arrow-circle {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+  border-color: transparent;
+  color: #FFFFFF;
   transform: translateX(-4px);
 }
 

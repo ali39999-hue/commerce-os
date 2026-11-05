@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 50" fill="none">
+  <!-- D Monogram with Botanical Leaf -->
+  <g transform="translate(4, 3)">
+    <!-- Serif D Backbone -->
+    <path d="M 6 6 L 6 38 M 3 6 L 14 6 M 3 38 L 14 38" stroke="#161A18" stroke-width="2.6" stroke-linecap="square"/>
+    <!-- Outer Arc -->
+    <path d="M 12 6 C 26 6, 36 14, 36 22 C 36 30, 26 38, 12 38" stroke="#161A18" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    <!-- Inner Botanical Leaf Silhouette in Clinical Forest Green -->
+    <path d="M 14 26 C 18 20, 24 16, 30 15 C 27 22, 22 28, 16 31 Z" fill="#1E3A2F"/>
+  </g>
+  <!-- Brand Name "Dr Dermer" in Classical Luxury Serif -->
+  <text x="50" y="27" font-family="'Playfair Display', 'Markazi Text', Georgia, serif" font-size="24" font-weight="600" fill="#161A18" letter-spacing="0.01em">Dr Dermer</text>
+  <!-- Subtitle Tagline "Science. Skincare. Confidence." -->
+  <text x="51" y="41" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="7.8" font-weight="600" fill="#5E6B64" letter-spacing="0.08em">Science. Skincare. Confidence.</text>
+</svg>

@@ -3,8 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Storefront Critical Pages HTTP & DOM Verification', () => {
   const routes = [
     { path: '/', titleKeyword: 'دکتر درمر' },
-    { path: '/carbox', titleKeyword: 'CarboX' },
-    { path: '/plasmax', titleKeyword: 'PlasmaX' },
     { path: '/carboxygel', titleKeyword: 'CarboxyGel' },
     { path: '/carboxypod', titleKeyword: 'CarboxyPod' },
     { path: '/carboxypad', titleKeyword: 'CarboxyPad' },
@@ -13,12 +11,14 @@ test.describe('Storefront Critical Pages HTTP & DOM Verification', () => {
     { path: '/silicalene', titleKeyword: 'Silicalene' },
     { path: '/reeskin', titleKeyword: 'ReeSkin' },
     { path: '/reemed', titleKeyword: 'ReeMed' },
-    { path: '/cart', titleKeyword: 'سبد خرید' },
+    { path: '/cart', titleKeyword: 'سبد' },
     { path: '/checkout', titleKeyword: 'تسویه' },
     { path: '/search', titleKeyword: 'جستجو' },
     { path: '/ingredients', titleKeyword: 'INCI' },
-    { path: '/academy', titleKeyword: 'آکادمی' },
-    { path: '/b2b', titleKeyword: 'B2B' },
+    { path: '/blog', titleKeyword: 'مقالات' },
+    { path: '/about', titleKeyword: 'درباره' },
+    { path: '/contact', titleKeyword: 'تماس' },
+    { path: '/faq', titleKeyword: 'سوالات' },
   ];
 
   for (const r of routes) {

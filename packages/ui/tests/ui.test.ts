@@ -13,18 +13,18 @@ describe("@commerce-os/ui Primitives & Design Tokens", () => {
   });
 
   it("exports Warm Clinical Minimalism palette tokens", () => {
-    expect(designTokens.color.canvas).toBe("#FAF8F5");
+    expect(designTokens.color.canvas).toBe("#F7F4EE");
     expect(designTokens.color.surface).toBe("#FFFFFF");
-    expect(designTokens.color["surface-soft"]).toBe("#F2EFE9");
-    expect(designTokens.color.ink).toBe("#19231D");
-    expect(designTokens.color.muted).toBe("#5E6B64");
+    expect(designTokens.color["surface-soft"]).toBe("#EFECE4");
+    expect(designTokens.color.ink).toBe("#161A18");
+    expect(designTokens.color.muted).toBe("#5A615D");
     expect(designTokens.color.brand).toBe("#1E3A2F");
-    expect(designTokens.color["brand-strong"]).toBe("#142820");
+    expect(designTokens.color["brand-strong"]).toBe("#13261F");
     expect(designTokens.color.sage).toBe("#C8D6CC");
     expect(designTokens.color.sand).toBe("#EDE5DA");
-    expect(designTokens.color.accent).toBe("#C69C70");
-    expect(designTokens.color.border).toBe("#E7E4DC");
-    expect(designTokens.color.danger).toBe("#B84D4D");
+    expect(designTokens.color.accent).toBe("#B83A2E");
+    expect(designTokens.color.border).toBe("#E2DDD2");
+    expect(designTokens.color.danger).toBe("#B83A2E");
   });
 
   it("exports 4px baseline spacing scale", () => {

@@ -13,6 +13,7 @@ import OpsSystemHealth from "../components/OpsSystemHealth";
 import SubscriptionsManager from "../components/SubscriptionsManager";
 import VendorsManager from "../components/VendorsManager";
 import DigitalLicensesManager from "../components/DigitalLicensesManager";
+import StorefrontSectionsManager from "../components/StorefrontSectionsManager";
 import AdminLoginGate from "../components/AdminLoginGate";
 import {
   ADMIN_ROLES,
@@ -30,6 +31,7 @@ export type AdminTab =
   | "coupons"
   | "b2b"
   | "clinical"
+  | "cms"
   | "finance"
   | "ops"
   | "subscriptions"
@@ -105,7 +107,12 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
   clinical: {
     breadcrumb: ["خانه ERP", "کلینیکال و محتوا", "ادعاهای بالینی، INCI و مقالات"],
     title: "شورای نظارت علمی، ادعاهای بالینی و استاندارد INCI",
-    description: "اعتبارسنجی آزمایشگاهی کارآزمایی‌های بالینی، کدینگ ترکیبات فرمولاسیون و آکادمی",
+    description: "اعتبارسنجی آزمایشگاهی کارآزمایی‌های بالینی و کدینگ ترکیبات فرمولاسیون",
+  },
+  cms: {
+    breadcrumb: ["خانه ERP", "کلینیکال و محتوا", "مدیریت بخش‌های ویترین و CMS"],
+    title: "مدیریت ویترین و فعال/غیرفعال‌سازی بخش‌های صفحه اصلی",
+    description: "کنترل سوییچ برخط سکشن‌های ویترین، تریاژ، کاتالوگ، شبیه‌سازها و خبرنامه",
   },
   b2b: {
     breadcrumb: ["خانه ERP", "همکاری تجاری", "استعلام‌های عمده کلینیک‌ها (B2B)"],
@@ -417,6 +424,12 @@ export default function AdminDashboardPage() {
           >
             ادعاهای بالینی، INCI و مقالات
           </button>
+          <button
+            onClick={() => setActiveTab("cms")}
+            className={`nav-btn ${activeTab === "cms" ? "active" : ""}`}
+          >
+            مدیریت ویترین و بخش‌ها (CMS)
+          </button>
 
           {/* 4. B2B Commercial (همکاری تجاری و B2B) */}
           <div className="nav-category-header">
@@ -593,6 +606,10 @@ export default function AdminDashboardPage() {
 
         {activeTab === "clinical" && (
           <ClinicalContentManager userRole={userRole} />
+        )}
+
+        {activeTab === "cms" && (
+          <StorefrontSectionsManager userRole={userRole} />
         )}
 
         {activeTab === "finance" && (

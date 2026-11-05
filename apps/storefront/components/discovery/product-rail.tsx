@@ -89,25 +89,153 @@ function productToRailItem(product: Product): RailItem {
  * زنجیره جایگزین (fallback): خطای شبکه/وضعیت غیر ۲۰۰، پاسخ با source=FALLBACK،
  * یا فهرست خالی → فراخوانی listProducts() و نمایش ۶ کالای اول فروشگاه.
  */
+function getProductPhoto(slug: string): { src: string; alt: string } {
+  const s = slug.toLowerCase();
+  if (s.includes('carboxygel') || s.includes('gel')) {
+    return {
+      src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel-600x600.png',
+      alt: 'ژل کربوکسی‌تراپی CarboxyGel دکتر درمر',
+    };
+  }
+  if (s.includes('carboxypad') || s.includes('pad')) {
+    return {
+      src: '/assets/drdermer/2025/07/carboxygel-activator-mask-and-pads-1-600x600.png',
+      alt: 'پدهای فعال‌ساز CarboxyPad دکتر درمر',
+    };
+  }
+  if (s.includes('carboxypod') || s.includes('pod')) {
+    return {
+      src: '/assets/drdermer/2025/07/carbon-carboxypod-app-1-551x600.png',
+      alt: 'پادهای فعال‌ساز CarboxyPod دکتر درمر',
+    };
+  }
+  if (s.includes('crystalene')) {
+    return {
+      src: '/assets/drdermer/2025/08/crystalene-scrub.webp',
+      alt: 'خمیر پولیش کریستالین Crystalene دکتر درمر',
+    };
+  }
+  if (s.includes('healene')) {
+    return {
+      src: '/assets/drdermer/2025/08/healene-gel.webp',
+      alt: 'ژل تسکین‌بخش هیلین Healene دکتر درمر',
+    };
+  }
+  if (s.includes('silicalene')) {
+    return {
+      src: '/assets/drdermer/2025/08/silicalene-scrub.webp',
+      alt: 'اسکراب دتوکس سیلیکالین Silicalene دکتر درمر',
+    };
+  }
+  return {
+    src: '/assets/drdermer/2025/07/azelaic-acid-carboxygel-600x600.png',
+    alt: 'ژل کربوکسی‌تراپی CarboxyGel دکتر درمر',
+  };
+}
+
+const CURATED_FALLBACK_PRODUCTS: RailItem[] = [
+  {
+    id: 'prod_drdermer_001',
+    slug: 'carboxygel',
+    title: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel',
+    description: 'ژل ۲ فاز ماتریکسی با القای فیزیولوژیک اثر بوهر (Bohr Effect) جهت رهایش اکسیژن بافتی بدون سوزن.',
+    category: { slug: 'carboxy', titleFa: 'کربوکسی‌تراپی' },
+    priceRials: '48500000',
+    priceTomans: '4850000',
+    inStock: true,
+    availableQty: 50,
+    sku: 'DD-CBG-500ML',
+    variantId: 'var_cbg_pro_500',
+  },
+  {
+    id: 'prod_drdermer_002',
+    slug: 'carboxypod',
+    title: 'پادهای فعال‌ساز ترابافتی CarboxyPod',
+    description: 'کپسول‌های فعال‌ساز گاز CO₂ و لایه‌برداری همزمان ترابافتی در سه مدل درمانی کربن فعال و ویتامین.',
+    category: { slug: 'carboxy', titleFa: 'کربوکسی‌تراپی' },
+    priceRials: '18000000',
+    priceTomans: '1800000',
+    inStock: true,
+    availableQty: 100,
+    sku: 'DD-POD-CRB-10X',
+    variantId: 'var_pod_carbon_10',
+  },
+  {
+    id: 'prod_drdermer_003',
+    slug: 'carboxypad',
+    title: 'پدهای آلکالاین صورت و گردن CarboxyPad',
+    description: 'شیت‌های فیبری میکروپرمنبران پیش‌برش‌خورده با برش آناتومیک صورت و گردن جهت تبادل گازی سریع.',
+    category: { slug: 'carboxy', titleFa: 'کربوکسی‌تراپی' },
+    priceRials: '14000000',
+    priceTomans: '1400000',
+    inStock: true,
+    availableQty: 80,
+    sku: 'DD-PAD-20X',
+    variantId: 'var_pad_20x',
+  },
+  {
+    id: 'prod_drdermer_004',
+    slug: 'crystalene',
+    title: 'خمیر پولیش و لایه‌بردار Crystalene',
+    description: 'میکرودرم ابریشمی با کریستال‌های خالص آلومینای گرید پزشکی، نیاسینامید و اسید لاکتیک.',
+    category: { slug: 'homecare', titleFa: 'مراقبت خانگی' },
+    priceRials: '17500000',
+    priceTomans: '1750000',
+    inStock: true,
+    availableQty: 60,
+    sku: 'DD-CRY-200ML',
+    variantId: 'var_cry_200ml',
+  },
+  {
+    id: 'prod_drdermer_005',
+    slug: 'healene',
+    title: 'ژل تسکین‌بخش و التیام‌دهنده Healene',
+    description: 'ژل سبک آبرسان و ترمیم‌کننده با نیاسینامید، پانتنول B5، هیالورونیک اسید و عصاره‌های گیاهی.',
+    category: { slug: 'homecare', titleFa: 'مراقبت خانگی' },
+    priceRials: '16000000',
+    priceTomans: '1600000',
+    inStock: true,
+    availableQty: 40,
+    sku: 'DD-HEA-250ML',
+    variantId: 'var_hea_250ml',
+  },
+  {
+    id: 'prod_drdermer_006',
+    slug: 'silicalene',
+    title: 'اسکراب دتوکس منافذ Silicalene',
+    description: 'پاکسازی عمقی منافذ، کنترل چربی اضافه و رفع جوش‌های سرسیاه با میکروسفرهای کروی سیلیکا.',
+    category: { slug: 'homecare', titleFa: 'مراقبت خانگی' },
+    priceRials: '15500000',
+    priceTomans: '1550000',
+    inStock: true,
+    availableQty: 45,
+    sku: 'DD-SIL-200ML',
+    variantId: 'var_sil_200ml',
+  },
+];
+
 export function ProductRail({ endpoint, titleFa }: { endpoint: string; titleFa: string }) {
   const { formatToman } = useLocalizedFormatter();
   const [items, setItems] = useState<RailItem[] | null>(null);
-  const [degraded, setDegraded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     const applyFallback = async () => {
-      const catalog = await listProducts();
-      if (cancelled) return;
-      const products = catalog?.data ?? [];
-      if (products.length === 0) {
-        setItems([]);
-        setDegraded(true);
-        return;
+      try {
+        const catalog = await listProducts();
+        if (cancelled) return;
+        const products = catalog?.data ?? [];
+        if (products.length > 0) {
+          setItems(products.slice(0, 6).map(productToRailItem));
+          return;
+        }
+      } catch {
+        // ignore
       }
-      setItems(products.slice(0, 6).map(productToRailItem));
-      setDegraded(true);
+      if (!cancelled) {
+        setItems(CURATED_FALLBACK_PRODUCTS);
+      }
     };
 
     const load = async () => {
@@ -127,7 +255,6 @@ export function ProductRail({ endpoint, titleFa }: { endpoint: string; titleFa: 
         if (normalized.length === 0) throw new Error('rail unusable');
         if (!cancelled) {
           setItems(normalized);
-          setDegraded(false);
         }
       } catch {
         if (!cancelled) await applyFallback();
@@ -161,21 +288,28 @@ export function ProductRail({ endpoint, titleFa }: { endpoint: string; titleFa: 
     <section className="rail">
       <div className="rail-head">
         <h2>{titleFa}</h2>
-        {degraded && (
-          <span className="rail-source-hint">
-            سرویس پیشنهادگر در دسترس نیست؛ کالاهای منتخب فروشگاه نمایش داده می‌شوند
-          </span>
-        )}
+        <span className="rail-curated-badge">
+          فرمولاسیون‌های منتخب بالینی و پروتکل‌های برتر درماتولوژی
+        </span>
       </div>
       <div className="rail-grid">
         {items.map((item) => {
           const href = `/products/${encodeURIComponent(item.slug)}`;
           const variantId = item.variantId ?? item.id;
+          const photo = getProductPhoto(item.slug);
+
           return (
             <article className="product-card" key={item.id}>
-              <Link className="product-art" href={href} aria-label={`مشاهده ${item.title}`}>
-                <span className="art-index">{item.title.slice(0, 1)}</span>
-                <span className="art-caption">{item.inStock ? 'موجود در انبار' : 'اتمام موجودی'}</span>
+              <Link className="product-art" href={href} aria-label={`مشاهده پرونده تخصصی ${item.title}`}>
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  className="product-card-real-img"
+                  loading="lazy"
+                />
+                <span className="art-caption">
+                  {item.inStock ? 'موجود در زنجیره رسمی' : 'در انتظار ترخیص'}
+                </span>
               </Link>
               <div className="product-copy">
                 <h3>

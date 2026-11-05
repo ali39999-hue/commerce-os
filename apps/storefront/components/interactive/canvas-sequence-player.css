@@ -1,12 +1,12 @@
-/* ── Canvas Sequence Player (360° Clinical Hardware & Product Engine) ── */
+/* ── Canvas Sequence Player (360° Clinical Hardware & Product Engine — Warm Editorial) ── */
 
 .canvas-sequence-container {
   position: relative;
   width: 100%;
   border-radius: var(--radius-md, 16px);
-  background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.12) 0%, rgba(15, 23, 42, 0.75) 75%, rgba(2, 6, 23, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle at 50% 50%, rgba(30, 58, 47, 0.28) 0%, #10211A 60%, #07100D 100%);
+  border: 1px solid rgba(198, 156, 112, 0.25);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
@@ -17,7 +17,7 @@
 .canvas-sequence-container:fullscreen {
   border-radius: 0;
   border: none;
-  background: #020617;
+  background: #07100D;
   padding: 24px;
   display: flex;
   align-items: center;
@@ -56,17 +56,17 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(16, 33, 26, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(45, 212, 191, 0.35);
-  color: #2dd4bf;
+  border: 1px solid rgba(198, 156, 112, 0.45);
+  color: #E4C9A8;
   padding: 6px 14px;
   border-radius: var(--radius-pill, 9999px);
   font-size: 0.76rem;
-  font-weight: 800;
+  font-weight: 850;
   letter-spacing: 0.05em;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
   pointer-events: none;
   z-index: 10;
   direction: ltr;
@@ -379,7 +379,7 @@
 }
 
 .canvas-frame-counter span.active-frame {
-  color: #38bdf8;
+  color: #E4C9A8;
   font-size: 0.84rem;
 }
 
@@ -388,7 +388,7 @@
   height: 6px;
   border-radius: var(--radius-pill, 9999px);
   outline: none;
-  background: linear-gradient(to right, rgba(45, 212, 191, 0.3) 0%, rgba(56, 189, 248, 0.6) 50%, rgba(45, 212, 191, 0.3) 100%);
+  background: linear-gradient(to right, #1E3A2F 0%, #10B981 50%, #C69C70 100%);
   cursor: ew-resize;
   -webkit-appearance: none;
   appearance: none;
@@ -400,15 +400,15 @@
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2.5px solid #0f766e;
-  box-shadow: 0 0 10px rgba(45, 212, 191, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
+  border: 2.5px solid #C69C70;
+  box-shadow: 0 0 10px rgba(198, 156, 112, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
   cursor: ew-resize;
   transition: transform 0.12s ease, border-color 0.12s ease;
 }
 
 .canvas-scrub-slider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  border-color: #38bdf8;
+  border-color: #E4C9A8;
 }
 
 .canvas-scrub-slider::-moz-range-thumb {
@@ -416,17 +416,17 @@
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  border: 2.5px solid #0f766e;
-  box-shadow: 0 0 10px rgba(45, 212, 191, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
+  border: 2.5px solid #C69C70;
+  box-shadow: 0 0 10px rgba(198, 156, 112, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
   cursor: ew-resize;
 }
 
 .canvas-angle-indicator {
   font-size: 0.74rem;
   font-weight: 800;
-  color: #2dd4bf;
-  background: rgba(45, 212, 191, 0.15);
-  border: 1px solid rgba(45, 212, 191, 0.3);
+  color: #E4C9A8;
+  background: rgba(198, 156, 112, 0.15);
+  border: 1px solid rgba(198, 156, 112, 0.35);
   padding: 3px 10px;
   border-radius: var(--radius-pill, 9999px);
   white-space: nowrap;
@@ -466,15 +466,15 @@
 
 .canvas-ctrl-btn:hover {
   background: rgba(255, 255, 255, 0.16);
-  border-color: #38bdf8;
+  border-color: #E4C9A8;
   color: #ffffff;
 }
 
 .canvas-ctrl-btn.is-active {
-  background: var(--brand, #0f766e);
-  border-color: #2dd4bf;
+  background: var(--color-brand-forest, #1E3A2F);
+  border-color: #C69C70;
   color: #ffffff;
-  box-shadow: 0 0 12px rgba(45, 212, 191, 0.35);
+  box-shadow: 0 0 12px rgba(198, 156, 112, 0.35);
 }
 
 .canvas-ctrl-btn svg {

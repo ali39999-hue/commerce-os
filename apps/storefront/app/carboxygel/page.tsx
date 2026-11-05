@@ -1095,13 +1095,6 @@ export default function CarboxygelLandingPage() {
                   >
                     {addedPro ? '✓ به سبد خرید افزوده شد' : 'افزودن پک حرفه‌ای ۵۰۰ml به سبد خرید'}
                   </button>
-                  <Link
-                    href="/b2b?kit=carboxygel"
-                    className="cbg-btn-secondary"
-                    style={{ textAlign: 'center', fontSize: '0.84rem' }}
-                  >
-                    استعلام خرید عمده بالای ۵ پک برای کلینیک ←
-                  </Link>
                 </div>
               </div>
 
@@ -1220,14 +1213,14 @@ export default function CarboxygelLandingPage() {
 
         {/* ── FOOTER CALLOUT LINKS ── */}
         <div style={{ marginTop: '48px', textAlign: 'center', display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <Link href="/carbox" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
-            بررسی ایستگاه پزشکی CarboX Pro ←
+          <Link href="/carboxypad" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
+            پدهای فعال‌ساز CarboxyPad ←
           </Link>
           <Link href="/carboxypod" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
             پادهای فعال‌ساز CarboxyPod ←
           </Link>
-          <Link href="/academy" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
-            مقالات علمی اثر بوهر در آکادمی دکتر درمر ←
+          <Link href="/ingredients" className="cbg-btn-secondary" style={{ fontSize: '0.86rem' }}>
+            دانشنامه ترکیبات فعال (INCI) ←
           </Link>
         </div>
       </div>

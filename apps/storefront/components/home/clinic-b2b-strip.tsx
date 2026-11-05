@@ -6,49 +6,82 @@ export function ClinicB2BStrip() {
       <div className="b2b-strip-container">
         <div className="b2b-content-side">
           <div className="b2b-eyebrow">
-            <span className="b2b-pulse-dot" aria-hidden="true"></span>
-            <span>ویژه پزشکان، متخصصین پوست و مدیران کلینیک‌های زیبایی</span>
+            <span className="b2b-pulse-dot" aria-hidden="true" />
+            <span>پورتال اختصاصی متخصصین پوست، جراحان و مدیران کلینیک‌های زیبایی</span>
           </div>
 
           <h2 id="b2b-strip-title" className="b2b-title">
-            تأمین مستقیم تجهیزات CarboxyPod و ژل‌های کلینیکال ReeMed
+            تأمین مستقیم تجهیزات پزشکی ReeMed و کیت‌های کلینیکال CarboxyPod
           </h2>
 
           <p className="b2b-text">
-            با عضویت در شبکه کلینیک‌های معتبر دکتر درمر، از تخفیف‌های پلکانی سازمانی، صدور رسمی فاکتور دارای شناسه رهگیری
-            مالیاتی، کارگاه‌های آموزشی حضوری برای کادر درمان و پشتیبانی علمی ۲۴/۷ بهره‌مند شوید.
+            با پیوستن به شبکه کلینیک‌های طرف قرارداد Dr. Dermer UK در سراسر کشور، از قیمت‌گذاری پلکانی همکار، صدور رسمی پیش‌فاکتور شرکتی، کارگاه‌های عملی حضوری برای کادر درمان و خدمات پس از فروش کمپانی انگلستان بهره‌مند شوید.
           </p>
 
           <div className="b2b-perks">
             <div className="perk-item">
-              <span className="perk-icon" aria-hidden="true">📑</span>
-              <span>فاکتور رسمی شرکتی با کد اقتصادی معتبر</span>
+              <div className="perk-icon-wrap" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <polyline points="10 9 9 9 8 9" />
+                </svg>
+              </div>
+              <div className="perk-copy">
+                <strong>فاکتور رسمی شرکتی و شناسه اقتصادی:</strong>
+                <span>صدور آنی فاکتور رسمی معتبر در سامانه مودیان و دارایی.</span>
+              </div>
             </div>
+
             <div className="perk-item">
-              <span className="perk-icon" aria-hidden="true">🎓</span>
-              <span>اعطای سرتیفیکیت رسمی دوره اپراتوری CarboxyPod</span>
+              <div className="perk-icon-wrap" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+              </div>
+              <div className="perk-copy">
+                <strong>سرتیفیکیت رسمی آکادمی دکتر درمر:</strong>
+                <span>اعطای گواهی معتبر اپراتوری و کاربری بالینی دستگاه‌های CarboX و PlasmaX.</span>
+              </div>
             </div>
+
             <div className="perk-item">
-              <span className="perk-icon" aria-hidden="true">🚚</span>
-              <span>تأمین منظم ماهانه با شرایط پرداخت اعتباری</span>
+              <div className="perk-icon-wrap" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+              </div>
+              <div className="perk-copy">
+                <strong>زنجیره تأمین اختصاصی و پرداخت اعتباری:</strong>
+                <span>ارسال منظم ماهانه ژل‌ها و پادها با شرایط پرداخت منعطف برای مراکز درمانی.</span>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="b2b-action-side">
           <div className="b2b-cta-card">
-            <h3>ثبت استعلام و پورتال همکاران</h3>
-            <p>درخواست خود را برای دریافت پیش‌فاکتور قیمت همکاری و کاتالوگ پزشکان ارسال کنید.</p>
+            <span className="cta-card-badge">B2B PARTNERSHIP PORTAL</span>
+            <h3 className="cta-card-title">ثبت استعلام و پورتال همکاران</h3>
+            <p className="cta-card-desc">
+              درخواست خود را برای دریافت پیش‌فاکتور قیمت همکاری، جدول اقساط و کاتالوگ جامع ارتوپدی و پوست ارسال فرمایید.
+            </p>
             <Link href="/b2b" className="btn-b2b-primary">
-              <span>ورود به پورتال B2B و درخواست خرید عمده</span>
+              <span>ورود به پورتال B2B و درخواست همکاری</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
               </svg>
             </Link>
             <div className="b2b-support-phone">
-              <span>خط ویژه واحد روابط بالینی: </span>
-              <a href="tel:02188880002" dir="ltr">۰۲۱-۸۸۸۸۰۰۰۲</a>
+              <span>خط مستقیم مدیریت امور بالینی: </span>
+              <a href="tel:02188880002" dir="ltr" className="phone-num">۰۲۱-۸۸۸۸۰۰۰۲</a>
             </div>
           </div>
         </div>

@@ -18,11 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/faq`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE_URL}/legal`, lastModified, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE_URL}/search`, lastModified, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${BASE_URL}/vendors`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE_URL}/reeskin`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/reemed`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/carbox`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
-    { url: `${BASE_URL}/plasmax`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
     { url: `${BASE_URL}/carboxygel`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
     { url: `${BASE_URL}/carboxypod`, lastModified, changeFrequency: 'weekly', priority: 0.95 },
     { url: `${BASE_URL}/carboxypad`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
@@ -31,25 +28,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/silicalene`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
   ];
 
-  // 2. B2B & Clinical Professional Protocols
-  const b2bEntries: MetadataRoute.Sitemap = [
-    { url: `${BASE_URL}/b2b`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE_URL}/b2b/protocols`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE_URL}/b2b/workshops`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
-  ];
-
-  // 3. Educational & Editorial (Academy & Blog Articles)
-  const academyEntries: MetadataRoute.Sitemap = [
-    { url: `${BASE_URL}/academy`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
+  // 2. Educational & Editorial (Blog Articles)
+  const blogEntries: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/blog`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
+    ...BLOG_POSTS.map((post) => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.publishedAt || lastModified),
+      changeFrequency: 'monthly' as const,
+      priority: post.isPeerReviewed ? 0.85 : 0.7,
+    })),
   ];
-
-  const blogEntries: MetadataRoute.Sitemap = BLOG_POSTS.map((post) => ({
-    url: `${BASE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.publishedAt || lastModified),
-    changeFrequency: 'monthly',
-    priority: post.isPeerReviewed ? 0.85 : 0.7,
-  }));
 
   // 4. Active Ingredients Encyclopedia & Standards (INCI)
   const ingredientBaseEntry: MetadataRoute.Sitemap = [
@@ -73,8 +61,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...institutionalEntries,
-    ...b2bEntries,
-    ...academyEntries,
     ...blogEntries,
     ...ingredientBaseEntry,
     ...ingredientEntries,

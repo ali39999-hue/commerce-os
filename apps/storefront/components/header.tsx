@@ -18,22 +18,53 @@ export function SiteHeader() {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [compareCount, setCompareCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
-  const [concernsDropdownOpen, setConcernsDropdownOpen] = useState(false);
-  const [equipmentDropdownOpen, setEquipmentDropdownOpen] = useState(false);
-  const [proDropdownOpen, setProDropdownOpen] = useState(false);
-  const [academyDropdownOpen, setAcademyDropdownOpen] = useState(false);
-  const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileAccordion, setMobileAccordion] = useState<Record<string, boolean>>({
+    reeskin: true,
+    concerns: false,
+    reemed: false,
+    science: false,
+    about: false,
+  });
   const [diagnosticDrawerOpen, setDiagnosticDrawerOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
 
-  const productsMenuRef = useRef<HTMLDivElement>(null);
-  const concernsMenuRef = useRef<HTMLDivElement>(null);
-  const equipmentMenuRef = useRef<HTMLDivElement>(null);
-  const proMenuRef = useRef<HTMLDivElement>(null);
-  const academyMenuRef = useRef<HTMLDivElement>(null);
-  const aboutMenuRef = useRef<HTMLDivElement>(null);
+  const subnavRef = useRef<HTMLDivElement>(null);
+  const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const toggleMobileAccordion = (section: string) => {
+    setMobileAccordion((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const handleDropdownEnter = (name: string) => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
+    setOpenDropdown(name);
+  };
+
+  const handleDropdownLeave = () => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+    }
+    leaveTimerRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 200);
+  };
+
+  const handleDropdownToggle = (name: string) => {
+    if (leaveTimerRef.current) {
+      clearTimeout(leaveTimerRef.current);
+      leaveTimerRef.current = null;
+    }
+    // If user explicitly clicks the trigger, ensure it opens (or toggles if already opened via click)
+    setOpenDropdown(name);
+  };
 
   useEffect(() => {
     const syncWishlist = () => setWishlistCount(getWishlist().length);
@@ -80,12 +111,7 @@ export function SiteHeader() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMobileMenuOpen(false);
-        setProductsDropdownOpen(false);
-        setConcernsDropdownOpen(false);
-        setEquipmentDropdownOpen(false);
-        setProDropdownOpen(false);
-        setAcademyDropdownOpen(false);
-        setAboutDropdownOpen(false);
+        setOpenDropdown(null);
         setDiagnosticDrawerOpen(false);
       }
     };
@@ -96,23 +122,8 @@ export function SiteHeader() {
   // Close dropdowns on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (productsMenuRef.current && !productsMenuRef.current.contains(e.target as Node)) {
-        setProductsDropdownOpen(false);
-      }
-      if (concernsMenuRef.current && !concernsMenuRef.current.contains(e.target as Node)) {
-        setConcernsDropdownOpen(false);
-      }
-      if (equipmentMenuRef.current && !equipmentMenuRef.current.contains(e.target as Node)) {
-        setEquipmentDropdownOpen(false);
-      }
-      if (proMenuRef.current && !proMenuRef.current.contains(e.target as Node)) {
-        setProDropdownOpen(false);
-      }
-      if (academyMenuRef.current && !academyMenuRef.current.contains(e.target as Node)) {
-        setAcademyDropdownOpen(false);
-      }
-      if (aboutMenuRef.current && !aboutMenuRef.current.contains(e.target as Node)) {
-        setAboutDropdownOpen(false);
+      if (subnavRef.current && !subnavRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
       }
     };
     document.addEventListener("mousedown", handleOutsideClick);
@@ -169,11 +180,6 @@ export function SiteHeader() {
           </div>
 
           <div className="promo-actions">
-            <Link href="/b2b" className="promo-clinic-link">
-              <span className="promo-dot pulse" aria-hidden="true"></span>
-              <span>پورتال همکاران و کلینیک‌ها (B2B)</span>
-            </Link>
-            <span className="promo-sep" aria-hidden="true">|</span>
             <LocaleCurrencySelector compact className="promo-locale-selector" />
             <span className="promo-sep" aria-hidden="true">|</span>
             <a href="tel:02188880000" className="promo-hotline" dir="ltr" aria-label="تلفن مشاوره بالینی ۰۲۱-۸۸۸۸۰۰۰۰">
@@ -203,21 +209,15 @@ export function SiteHeader() {
               </svg>
             </button>
 
-            <Link className="brand" href="/">
+            <Link className="brand" href="/" aria-label="دکتر درمر - صفحه اصلی">
               <img
                 src="/dr-dermer-logo.png"
-                alt="Dr. Dermer UK"
+                alt="Dr. Dermer - Science. Skincare. Confidence."
                 className="brand-logo-img"
-                width={48}
-                height={48}
+                width={190}
+                height={38}
+                fetchPriority="high"
               />
-              <div className="brand-text-col">
-                <div className="brand-title-wrap">
-                  <span className="brand-primary">DR. DERMER</span>
-                  <span className="brand-lab-badge">UK CLINICAL LABS</span>
-                </div>
-                <span className="brand-sub">TRANSDERMAL CO₂ & BIOMIMETIC PEPTIDES</span>
-              </div>
             </Link>
           </div>
 
@@ -306,20 +306,19 @@ export function SiteHeader() {
         </div>
 
         {/* ── 3. Six-Tier Clean Clinical Navigation (Blueprint 4.1 Architecture) ── */}
-        <nav className="header-subnav" aria-label="دسته‌بندی‌های تخصصی و علمی">
+        <nav className="header-subnav" ref={subnavRef} aria-label="دسته‌بندی‌های تخصصی و علمی">
           <div className="subnav-inner">
             {/* Tier 1: Products & Home Care (ReeSkin) */}
             <div
-              className={`subnav-dropdown-trigger ${productsDropdownOpen ? "active" : ""}`}
-              ref={productsMenuRef}
-              onMouseEnter={() => setProductsDropdownOpen(true)}
-              onMouseLeave={() => setProductsDropdownOpen(false)}
+              className={`subnav-dropdown-trigger ${openDropdown === "products" ? "active" : ""}`}
+              onMouseEnter={() => handleDropdownEnter("products")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
-                className="subnav-link highlight"
-                onClick={() => setProductsDropdownOpen(!productsDropdownOpen)}
-                aria-expanded={productsDropdownOpen}
+                className="subnav-link"
+                onClick={() => handleDropdownToggle("products")}
+                aria-expanded={openDropdown === "products"}
               >
                 <span>محصولات (ReeSkin™)</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -333,27 +332,27 @@ export function SiteHeader() {
                   <div className="mega-col">
                     <div className="mega-col-heading">فرمولاسیون‌های مراقبت خانگی ReeSkin™</div>
                     <div className="mega-links-list">
-                      <Link href="/carboxygel" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/carboxygel" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>ژل کربوکسی‌تراپی CarboxyGel™</strong>
                         <span>تحریک اثر بوهر با ۳ فرمولاسیون گلیکولیک، آزالائیک و مولتی‌اکتیو</span>
                       </Link>
-                      <Link href="/carboxypod" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/carboxypod" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>پادهای فعال‌ساز CarboxyPod™</strong>
                         <span>کپسول‌های فعال‌ساز گاز CO₂ در انواع Vitamin، Carbon و Hydra</span>
                       </Link>
-                      <Link href="/carboxypad" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/carboxypad" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>پدهای آلکالاین صورت و گردن CarboxyPad™</strong>
                         <span>ماسک‌های ارگونومیک رهایش یکدست دی‌اکسید کربن</span>
                       </Link>
-                      <Link href="/crystalene" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/crystalene" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>خمیر لایه‌بردار کریستالین Crystalene™</strong>
                         <span>میکرودرم ابریشمی با کریستال‌های فوق‌ریز آلومینا و نیاسینامید</span>
                       </Link>
-                      <Link href="/healene" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/healene" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>ژل تسکین‌بخش هیلین Healene™</strong>
                         <span>التیام فوری قرمزی، پانتنول، نیاسینامید و عصاره‌های آرام‌بخش</span>
                       </Link>
-                      <Link href="/silicalene" className="mega-link-item" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/silicalene" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>اسکراب دتوکس سیلیکالین Silicalene™</strong>
                         <span>تخلیه عمقی منافذ با کره‌های سیلیکا و کربن فعال</span>
                       </Link>
@@ -375,7 +374,7 @@ export function SiteHeader() {
                       <p className="mpc-desc">
                         تحریک رهاسازی اکسیژن با اثر بوهر در کنار مهار اختصاصی آنزیم تیروزیناز برای درمان قطعی لک‌های مقاوم
                       </p>
-                      <Link href="/reeskin" className="mpc-cta-link" onClick={() => setProductsDropdownOpen(false)}>
+                      <Link href="/reeskin" className="mpc-cta-link" onClick={() => setOpenDropdown(null)}>
                         کاتالوگ کامل و شوکیس ReeSkin ←
                       </Link>
                     </div>
@@ -414,16 +413,15 @@ export function SiteHeader() {
 
             {/* Tier 2: Skin Concerns (راهکارهای پوستی) */}
             <div
-              className={`subnav-dropdown-trigger ${concernsDropdownOpen ? "active" : ""}`}
-              ref={concernsMenuRef}
-              onMouseEnter={() => setConcernsDropdownOpen(true)}
-              onMouseLeave={() => setConcernsDropdownOpen(false)}
+              className={`subnav-dropdown-trigger ${openDropdown === "concerns" ? "active" : ""}`}
+              onMouseEnter={() => handleDropdownEnter("concerns")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
                 className="subnav-link"
-                onClick={() => setConcernsDropdownOpen(!concernsDropdownOpen)}
-                aria-expanded={concernsDropdownOpen}
+                onClick={() => handleDropdownToggle("concerns")}
+                aria-expanded={openDropdown === "concerns"}
               >
                 <span>راهکارهای پوستی</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -433,42 +431,42 @@ export function SiteHeader() {
 
               <div className="subnav-dropdown-menu categories-menu">
                 <div className="categories-grid-dropdown">
-                  <Link href="/search?q=کربوکسی" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/search?q=کربوکسی" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#14B8A6" }}></span>
                     <div>
                       <strong>کربوکسی‌تراپی و اکسیژناسیون</strong>
                       <small>انفوزیون ترابافتی CO₂ و تحریک اثر بوهر</small>
                     </div>
                   </Link>
-                  <Link href="/search?q=پپتید" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/search?q=پپتید" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#10B981" }}></span>
                     <div>
                       <strong>جوانسازی و پپتیدهای ضدپیری</strong>
                       <small>ماتریکسیل، آرژیرلین، پپتید مس و EGF</small>
                     </div>
                   </Link>
-                  <Link href="/search?q=سرامید" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/search?q=سرامید" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#F59E0B" }}></span>
                     <div>
                       <strong>ترمیم سد دفاعی اپیدرم</strong>
                       <small>سرامید NP کمپلکس، اکتوئین و بپانتن</small>
                     </div>
                   </Link>
-                  <Link href="/search?q=روشن+کننده" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/search?q=روشن+کننده" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#8B5CF6" }}></span>
                     <div>
                       <strong>درمان لک و تیرگی ملاسما</strong>
                       <small>ترانگزامیک اسید، آربوتین و ویتامین C پایدار</small>
                     </div>
                   </Link>
-                  <Link href="/search?q=آکنه" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/search?q=آکنه" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#0EA5E9" }}></span>
                     <div>
                       <strong>کنترل آکنه و تنظیم سبوم</strong>
                       <small>سالیسیلیک اسید BHA و زینک PCA دارویی</small>
                     </div>
                   </Link>
-                  <Link href="/subscriptions" className="cat-drop-link" onClick={() => setConcernsDropdownOpen(false)}>
+                  <Link href="/subscriptions" className="cat-drop-link" onClick={() => setOpenDropdown(null)}>
                     <span className="cat-drop-dot" style={{ background: "#EC4899" }}></span>
                     <div>
                       <strong>اشتراک دوره‌ای نسخه</strong>
@@ -479,178 +477,19 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Tier 3: Medical Equipment (تجهیزات حرفه‌ای ReeMed) */}
+            {/* Tier 3: Skincare Science & Clinical Knowledge (دانش و پژوهش پوست) */}
             <div
-              className={`subnav-dropdown-trigger ${equipmentDropdownOpen ? "active" : ""}`}
-              ref={equipmentMenuRef}
-              onMouseEnter={() => setEquipmentDropdownOpen(true)}
-              onMouseLeave={() => setEquipmentDropdownOpen(false)}
+              className={`subnav-dropdown-trigger ${openDropdown === "science" ? "active" : ""}`}
+              onMouseEnter={() => handleDropdownEnter("science")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
                 className="subnav-link"
-                onClick={() => setEquipmentDropdownOpen(!equipmentDropdownOpen)}
-                aria-expanded={equipmentDropdownOpen}
+                onClick={() => handleDropdownToggle("science")}
+                aria-expanded={openDropdown === "science"}
               >
-                <span>تجهیزات حرفه‌ای (ReeMed™)</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-
-              <div className="subnav-mega-menu">
-                <div className="mega-grid-layout">
-                  {/* Col 1: Links */}
-                  <div className="mega-col">
-                    <div className="mega-col-heading">دستگاه‌ها و ملزومات کلینیکال ReeMed™</div>
-                    <div className="mega-links-list">
-                      <Link href="/carbox" className="mega-link-item" onClick={() => setEquipmentDropdownOpen(false)}>
-                        <strong>دستگاه ترابافتی CarboX™</strong>
-                        <span>انفوزیون دیجیتال CO₂ با دقت ۱cc/min و ارتعاش سینوسی ۱۲۰Hz</span>
-                      </Link>
-                      <Link href="/plasmax" className="mega-link-item" onClick={() => setEquipmentDropdownOpen(false)}>
-                        <strong>سامانه پلاسمای سرد PlasmaX™</strong>
-                        <span>استریلیزاسیون عمیق و الکتروپوریشن غشای سلول با میکروجت</span>
-                      </Link>
-                      <Link href="/reemed" className="mega-link-item" onClick={() => setEquipmentDropdownOpen(false)}>
-                        <strong>کارتریج‌های کلینیکال CarboxyPod</strong>
-                        <span>پادهای تک‌دوز استریل ویژه کابین در انواع Carbon، Vitamin، Hydra</span>
-                      </Link>
-                      <Link href="/b2b" className="mega-link-item" onClick={() => setEquipmentDropdownOpen(false)}>
-                        <strong>ژل‌های ۵۰۰ml و ۱۵۰۰ml کابین مطب</strong>
-                        <span>مخازن بزرگ اقتصادی با ۲۰ الی ۵۰ ماسک ارگونومیک صورت</span>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Col 2: Feature Preview Card */}
-                  <div className="mega-col">
-                    <div className="mega-preview-card reemed-theme">
-                      <span className="mpc-badge blue">MDR CLASS IIB MEDICAL</span>
-                      <div className="mpc-image-wrap">
-                        <img
-                          src="/assets/drdermer/2025/07/1-plasma22-136x300.png"
-                          alt="PlasmaX Medical Device"
-                          className="mpc-thumb-img"
-                        />
-                      </div>
-                      <h4 className="mpc-title">سامانه پلاسما سرد PlasmaX</h4>
-                      <p className="mpc-desc">
-                        پلاسمای اتمسفری سرد با فناوری میکروجت، نابودی ۹۹.۹٪ باکتری‌های آکنه و افزایش ۵ برابری نفوذ پپتیدها
-                      </p>
-                      <Link href="/plasmax" className="mpc-cta-link" onClick={() => setEquipmentDropdownOpen(false)}>
-                        بررسی تعاملی و ۳۶۰ درجه PlasmaX ←
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Col 3: Clinical Specs */}
-                  <div className="mega-col">
-                    <div className="mega-spec-col">
-                      <div className="mega-col-heading">استانداردهای مهندسی پزشکی</div>
-                      <div className="spec-bullet-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>دارای نشان CE 0123 و ISO 13485</span>
-                      </div>
-                      <div className="spec-bullet-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>اتصال هرمتیک Cleanroom ISO 5</span>
-                      </div>
-                      <div className="spec-bullet-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>گارانتی ۲۴ ماهه تعویض قطعات</span>
-                      </div>
-                      <div className="spec-bottom-note">
-                        <Link href="/reemed" style={{ color: "var(--brand)", fontWeight: 700 }}>
-                          مشاهده کاتالوگ تجهیزات ReeMed™ ←
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Tier 4: Professionals & Clinics (متخصصان و کلینیک‌ها) */}
-            <div
-              className={`subnav-dropdown-trigger ${proDropdownOpen ? "active" : ""}`}
-              ref={proMenuRef}
-              onMouseEnter={() => setProDropdownOpen(true)}
-              onMouseLeave={() => setProDropdownOpen(false)}
-            >
-              <button
-                type="button"
-                className="subnav-link b2b-nav-badge"
-                onClick={() => setProDropdownOpen(!proDropdownOpen)}
-                aria-expanded={proDropdownOpen}
-              >
-                <span className="pulse-mini-dot" aria-hidden="true"></span>
-                <span>متخصصان و کلینیک‌ها</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-
-              <div className="subnav-dropdown-menu luxury-menu">
-                <Link
-                  href="/b2b"
-                  className="dropdown-item brand-item reemed"
-                  onClick={() => setProDropdownOpen(false)}
-                >
-                  <div className="item-icon-tag reemed-tag">WHOLESALE</div>
-                  <div className="item-content">
-                    <strong>پورتال تأمین عمده مطب‌ها (ReeMed B2B)</strong>
-                    <p>خرید مستقیم اقلام کابین با فاکتور رسمی دارویی و تخفیف تیراژ کلینیک</p>
-                    <span className="item-action-hint">ورود به پورتال سازمانی ←</span>
-                  </div>
-                </Link>
-
-                <div className="dropdown-divider" aria-hidden="true"></div>
-
-                <Link
-                  href="/b2b/protocols"
-                  className="dropdown-item brand-item"
-                  onClick={() => setProDropdownOpen(false)}
-                >
-                  <div className="item-icon-tag" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981" }}>CLINICAL GUIDES</div>
-                  <div className="item-content">
-                    <strong>پروتکل‌های بالینی کلینیک</strong>
-                    <p>راهنماهای دقیق پیش و پس از لیزر، ترکیب مدالیته‌ها و رژیم‌های درمانی</p>
-                    <span className="item-action-hint">مشاهده پروتکل‌های درمانی ←</span>
-                  </div>
-                </Link>
-
-                <div className="dropdown-divider" aria-hidden="true"></div>
-
-                <Link
-                  href="/b2b/workshops"
-                  className="dropdown-item brand-item"
-                  onClick={() => setProDropdownOpen(false)}
-                >
-                  <div className="item-icon-tag" style={{ background: "rgba(245, 158, 11, 0.15)", color: "#f59e0b" }}>HANDS-ON</div>
-                  <div className="item-content">
-                    <strong>کارگاه‌های عملی و ورکشاپ‌ها</strong>
-                    <p>آموزش کار با هندپیس‌های CarboX و پلاسما سرد همراه با سرتیفیکیت</p>
-                    <span className="item-action-hint">تقویم و ثبت‌نام کارگاه‌ها ←</span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
-            {/* Tier 5: Science & Academy (دانش و آکادمی) */}
-            <div
-              className={`subnav-dropdown-trigger ${academyDropdownOpen ? "active" : ""}`}
-              ref={academyMenuRef}
-              onMouseEnter={() => setAcademyDropdownOpen(true)}
-              onMouseLeave={() => setAcademyDropdownOpen(false)}
-            >
-              <button
-                type="button"
-                className="subnav-link"
-                onClick={() => setAcademyDropdownOpen(!academyDropdownOpen)}
-                aria-expanded={academyDropdownOpen}
-              >
-                <span>دانش و آکادمی</span>
+                <span>دانش و پژوهش بالینی</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -660,27 +499,23 @@ export function SiteHeader() {
                 <div className="mega-grid-academy">
                   {/* Col 1: Links */}
                   <div className="mega-col">
-                    <div className="mega-col-heading">پایگاه دانش بالینی و آموزش</div>
+                    <div className="mega-col-heading">پایگاه دانش بالینی و درماتولوژی</div>
                     <div className="mega-links-list">
-                      <Link href="/#science" className="mega-link-item" onClick={() => setAcademyDropdownOpen(false)}>
+                      <Link href="/#science" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>علم و مکانیسم فیزیولوژیک اثر بوهر (Bohr Effect)</strong>
-                        <span>مبانی بیوشیمیایی نوسازی هموگلوبین و اکسیژناسیون سلولی</span>
+                        <span>مبانی بیوشیمیایی نوسازی هموگلوبین و اکسیژناسیون سلولی بدون سوزن</span>
                       </Link>
-                      <Link href="/academy" className="mega-link-item" onClick={() => setAcademyDropdownOpen(false)}>
-                        <strong>آکادمی بین‌المللی Dr Dermer UK</strong>
-                        <span>دوره‌های معتبر CME با امتیاز بازآموزی درماتولوژی</span>
-                      </Link>
-                      <Link href="/ingredients" className="mega-link-item" onClick={() => setAcademyDropdownOpen(false)}>
+                      <Link href="/ingredients" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>دانشنامه ترکیبات فعال (INCI Explorer)</strong>
-                        <span>تحلیل فارماکولوژی، گرید دارویی و شاخص ایمنی ترکیبات</span>
+                        <span>تحلیل فارماکولوژی، گرید دارویی و شاخص ایمنی ترکیبات فعال</span>
                       </Link>
-                      <Link href="/#clinical-results" className="mega-link-item" onClick={() => setAcademyDropdownOpen(false)}>
-                        <strong>شواهد بالینی و ارزیابی پزشکان</strong>
+                      <Link href="/#clinical-results" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
+                        <strong>شواهد بالینی و ارزیابی درماتولوژی</strong>
                         <span>تصویربرداری Visia و نتایج آزمون‌های دوسوکور کلینیکال</span>
                       </Link>
-                      <Link href="/blog" className="mega-link-item" onClick={() => setAcademyDropdownOpen(false)}>
+                      <Link href="/blog" className="mega-link-item" onClick={() => setOpenDropdown(null)}>
                         <strong>ژورنال علمی درماتولوژی</strong>
-                        <span>مجموعه مقالات پژوهشی و تازه‌های پژوهش پوست و مو</span>
+                        <span>مجموعه مقالات پژوهشی، راهنماهای روتین و تازه‌های سلامت پوست</span>
                       </Link>
                     </div>
                   </div>
@@ -688,42 +523,42 @@ export function SiteHeader() {
                   {/* Col 2: Feature Preview Card */}
                   <div className="mega-col">
                     <div className="mega-preview-card academy-theme">
-                      <span className="mpc-badge gold">CME ACCREDITED</span>
+                      <span className="mpc-badge gold">CLINICAL MONOGRAPH</span>
                       <div className="mpc-image-wrap">
                         <img
-                          src="/assets/drdermer/2025/08/certificates-300x31.png"
-                          alt="Doctor Certification"
+                          src="/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png"
+                          alt="CarboxyGel Clinical Monograph"
                           className="mpc-thumb-img"
                         />
                       </div>
-                      <h4 className="mpc-title">سرتیفیکیت بین‌المللی Dr. Dermer UK</h4>
+                      <h4 className="mpc-title">پرونده زیست‌شیمیایی CarboxyGel</h4>
                       <p className="mpc-desc">
-                        اعطای گواهینامه معتبر مربیگری و اپراتوری کلینیک با هولوگرام اختصاصی لندن و امکان استعلام آنلاین
+                        آشنایی با فرمولاسیون‌های ۲ فاز ترابافتی و نحوه فعال‌سازی رهایش اکسیژن بافتی بدون هیچ‌گونه تهاجم
                       </p>
-                      <Link href="/academy" className="mpc-cta-link" onClick={() => setAcademyDropdownOpen(false)}>
-                        ثبت‌نام در دوره آموزشی آکادمی ←
+                      <Link href="/carboxygel" className="mpc-cta-link" onClick={() => setOpenDropdown(null)}>
+                        مطالعه پرونده کامل CarboxyGel ←
                       </Link>
                     </div>
                   </div>
 
-                  {/* Col 3: Academic Specs */}
+                  {/* Col 3: Standards Specs */}
                   <div className="mega-col">
                     <div className="mega-spec-col">
-                      <div className="mega-col-heading">امتیازات آکادمی کمبریج</div>
+                      <div className="mega-col-heading">استانداردهای علمی و پژوهشی</div>
                       <div className="spec-bullet-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>دارای امتیاز بازآموزی پزشکی مداوم (CME)</span>
+                        <span>استاندارد فارماکوپه انگلستان (BP)</span>
                       </div>
                       <div className="spec-bullet-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>ویدیوهای پروتکل گام‌به‌گام با کیفیت 4K</span>
+                        <span>گواهینامه تولید پاکیزه ISO 22716 GMP</span>
                       </div>
                       <div className="spec-bullet-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        <span>پشتیبانی علمی مستقیم توسط منتورهای درماتولوژیست</span>
+                        <span>پشتیبانی و پاسخگویی دپارتمان علمی</span>
                       </div>
                       <div className="spec-bottom-note">
-                        توسط اساتید دانشگاه و اعضای انجمن پوست EADV
+                        مطابق با پروتکل‌های انجمن درماتولوژی اروپا EADV
                       </div>
                     </div>
                   </div>
@@ -731,18 +566,17 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Tier 6: About Us (درباره ما) */}
+            {/* Tier 4: About Us (درباره ما) */}
             <div
-              className={`subnav-dropdown-trigger ${aboutDropdownOpen ? "active" : ""}`}
-              ref={aboutMenuRef}
-              onMouseEnter={() => setAboutDropdownOpen(true)}
-              onMouseLeave={() => setAboutDropdownOpen(false)}
+              className={`subnav-dropdown-trigger ${openDropdown === "about" ? "active" : ""}`}
+              onMouseEnter={() => handleDropdownEnter("about")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
                 className="subnav-link"
-                onClick={() => setAboutDropdownOpen(!aboutDropdownOpen)}
-                aria-expanded={aboutDropdownOpen}
+                onClick={() => handleDropdownToggle("about")}
+                aria-expanded={openDropdown === "about"}
               >
                 <span>درباره ما</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -751,21 +585,21 @@ export function SiteHeader() {
               </button>
 
               <div className="subnav-dropdown-menu luxury-menu" style={{ minWidth: "300px" }}>
-                <Link href="/about" className="dropdown-item brand-item" onClick={() => setAboutDropdownOpen(false)}>
+                <Link href="/about" className="dropdown-item brand-item" onClick={() => setOpenDropdown(null)}>
                   <div className="item-content">
                     <strong>درباره کمپانی Dr Dermer UK</strong>
                     <p>تاریخچه، آزمایشگاه‌های انگلستان، فلسفه فرمولاسیون و استانداردها</p>
                   </div>
                 </Link>
                 <div className="dropdown-divider" aria-hidden="true"></div>
-                <Link href="/contact" className="dropdown-item brand-item" onClick={() => setAboutDropdownOpen(false)}>
+                <Link href="/contact" className="dropdown-item brand-item" onClick={() => setOpenDropdown(null)}>
                   <div className="item-content">
                     <strong>تماس و پشتیبانی مشتریان</strong>
                     <p>مشاوره دارویی، ثبت عوارض ناخواسته و آدرس دفتر مرکزی</p>
                   </div>
                 </Link>
                 <div className="dropdown-divider" aria-hidden="true"></div>
-                <Link href="/faq" className="dropdown-item brand-item" onClick={() => setAboutDropdownOpen(false)}>
+                <Link href="/faq" className="dropdown-item brand-item" onClick={() => setOpenDropdown(null)}>
                   <div className="item-content">
                     <strong>پرسش‌های متداول (FAQ)</strong>
                     <p>پاسخ‌های تخصصی پیرامون اثربخشی، نحوه مصرف و عوارض احتمالی</p>
@@ -830,27 +664,36 @@ export function SiteHeader() {
             </div>
 
             {/* Mobile Diagnostic CTA Banner */}
-            <div className="drawer-section" style={{ paddingBottom: 0 }}>
+            <div className="drawer-section" style={{ padding: "16px 20px 0" }}>
               <button
                 type="button"
-                className="drawer-b2b-banner"
                 style={{
-                  background: "linear-gradient(135deg, rgba(15, 118, 110, 0.15) 0%, rgba(20, 184, 166, 0.25) 100%)",
-                  border: "1.5px solid rgba(45, 212, 191, 0.5)",
+                  background: "var(--surface-soft)",
+                  border: "1px solid var(--line-strong)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "16px",
                   width: "100%",
                   textAlign: "right",
-                  cursor: "pointer"
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  boxShadow: "var(--shadow-sm)"
                 }}
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setDiagnosticDrawerOpen(true);
                 }}
               >
-                <div className="b2b-banner-title" style={{ color: "var(--brand-deep)" }}>
+                <div style={{ color: "var(--color-brand-forest)", fontWeight: 800, fontSize: "0.95rem" }}>
                   مشاوره آنلاین هوشمند پوست (تشخیص ۳ مرحله‌ای)
                 </div>
-                <p>تعیین پروتکل بهینه CarboxyGel و پاد فعال‌ساز همگام با نوع پوست شما</p>
-                <span className="b2b-banner-cta" style={{ color: "var(--brand)" }}>شروع مشاوره تخصصی ←</span>
+                <p style={{ color: "var(--color-text-secondary)", fontSize: "0.82rem", margin: 0, lineHeight: 1.6 }}>
+                  تعیین پروتکل بهینه CarboxyGel و پاد فعال‌ساز همگام با نوع پوست شما
+                </p>
+                <span style={{ color: "var(--color-brand-forest)", fontWeight: 700, fontSize: "0.82rem", marginTop: "4px" }}>
+                  شروع مشاوره تخصصی ←
+                </span>
               </button>
             </div>
 
@@ -858,148 +701,192 @@ export function SiteHeader() {
             <div className="mobile-drawer-content">
               {/* 1. Products & Home Care */}
               <div className="drawer-section">
-                <div className="drawer-section-title">۱. محصولات مراقبت خانگی (ReeSkin™)</div>
-                <div className="drawer-brand-cards" style={{ marginBottom: "12px" }}>
-                  <Link
-                    href="/reeskin"
-                    className="drawer-brand-card reeskin"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <div className="dbc-tag">HOME REGIMEN</div>
-                    <strong>ReeSkin™ Clinical</strong>
-                    <small>کیت‌های خانگی، ترمیم سد دفاعی و پپتیدها</small>
-                  </Link>
-                </div>
-                <nav className="drawer-nav-list">
-                  <Link href="/carboxygel" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>ژل کربوکسی‌تراپی CarboxyGel™</span>
-                  </Link>
-                  <Link href="/carboxypod" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پادهای فعال‌ساز CarboxyPod™</span>
-                  </Link>
-                  <Link href="/carboxypad" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پدهای آلکالاین CarboxyPad™</span>
-                  </Link>
-                  <Link href="/crystalene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>خمیر لایه‌بردار کریستالین Crystalene™</span>
-                  </Link>
-                  <Link href="/healene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>ژل تسکین‌بخش هیلین Healene™</span>
-                  </Link>
-                  <Link href="/silicalene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>اسکراب دتوکس سیلیکالین Silicalene™</span>
-                  </Link>
-                </nav>
+                <button
+                  type="button"
+                  className={`drawer-section-btn ${mobileAccordion.reeskin ? "open" : ""}`}
+                  onClick={() => toggleMobileAccordion("reeskin")}
+                >
+                  <div className="drawer-section-title">
+                    <span>۱. محصولات مراقبت خانگی (ReeSkin™)</span>
+                    <span className="drawer-section-toggle-icon">▼</span>
+                  </div>
+                </button>
+                {mobileAccordion.reeskin && (
+                  <div className="drawer-section-body">
+                    <div className="drawer-brand-cards" style={{ marginBottom: "12px" }}>
+                      <Link
+                        href="/reeskin"
+                        className="drawer-brand-card reeskin"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <div className="dbc-tag">HOME REGIMEN</div>
+                        <strong>ReeSkin™ Clinical</strong>
+                        <small>کیت‌های خانگی، ترمیم سد دفاعی و پپتیدها</small>
+                      </Link>
+                    </div>
+                    <nav className="drawer-nav-list">
+                      <Link href="/carboxygel" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ژل کربوکسی‌تراپی CarboxyGel™</span>
+                      </Link>
+                      <Link href="/carboxypod" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>پادهای فعال‌ساز CarboxyPod™</span>
+                      </Link>
+                      <Link href="/carboxypad" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>پدهای آلکالاین CarboxyPad™</span>
+                      </Link>
+                      <Link href="/crystalene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>خمیر لایه‌بردار کریستالین Crystalene™</span>
+                      </Link>
+                      <Link href="/healene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ژل تسکین‌بخش هیلین Healene™</span>
+                      </Link>
+                      <Link href="/silicalene" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>اسکراب دتوکس سیلیکالین Silicalene™</span>
+                      </Link>
+                    </nav>
+                  </div>
+                )}
               </div>
 
               {/* 2. Skin Concerns */}
               <div className="drawer-section">
-                <div className="drawer-section-title">۲. راهکارهای پوستی (بر پایه نیاز)</div>
-                <nav className="drawer-nav-list">
-                  <Link href="/search?q=کربوکسی" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>کربوکسی‌تراپی CO2 و اثر بوهر</span>
-                    <span className="dnl-tag">فناوری انحصاری</span>
-                  </Link>
-                  <Link href="/search?q=پپتید" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پپتیدها و جوانسازی سلولی</span>
-                  </Link>
-                  <Link href="/search?q=سرامید" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>ترمیم سد دفاعی و بازسازی اپیدرم</span>
-                  </Link>
-                  <Link href="/search?q=روشن+کننده" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>درمان لک و تیرگی ملاسما</span>
-                  </Link>
-                  <Link href="/search?q=آکنه" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>کنترل آکنه و تنظیم سبوم</span>
-                  </Link>
-                  <Link href="/subscriptions" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>اشتراک دوره‌ای نسخه</span>
-                    <span className="dnl-tag discount">تخفیف دائمی</span>
-                  </Link>
-                </nav>
+                <button
+                  type="button"
+                  className={`drawer-section-btn ${mobileAccordion.concerns ? "open" : ""}`}
+                  onClick={() => toggleMobileAccordion("concerns")}
+                >
+                  <div className="drawer-section-title">
+                    <span>۲. راهکارهای پوستی (بر پایه نیاز)</span>
+                    <span className="drawer-section-toggle-icon">▼</span>
+                  </div>
+                </button>
+                {mobileAccordion.concerns && (
+                  <div className="drawer-section-body">
+                    <nav className="drawer-nav-list">
+                      <Link href="/search?q=کربوکسی" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>کربوکسی‌تراپی CO2 و اثر بوهر</span>
+                        <span className="dnl-tag">فناوری انحصاری</span>
+                      </Link>
+                      <Link href="/search?q=پپتید" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>پپتیدها و جوانسازی سلولی</span>
+                      </Link>
+                      <Link href="/search?q=سرامید" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ترمیم سد دفاعی و بازسازی اپیدرم</span>
+                      </Link>
+                      <Link href="/search?q=روشن+کننده" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>درمان لک و تیرگی ملاسما</span>
+                      </Link>
+                      <Link href="/search?q=آکنه" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>کنترل آکنه و تنظیم سبوم</span>
+                      </Link>
+                      <Link href="/subscriptions" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>اشتراک دوره‌ای نسخه</span>
+                        <span className="dnl-tag discount">تخفیف دائمی</span>
+                      </Link>
+                    </nav>
+                  </div>
+                )}
               </div>
 
-              {/* 3. Medical Equipment (ReeMed) */}
+              {/* 3. Professional Formulations (ReeMed) */}
               <div className="drawer-section">
-                <div className="drawer-section-title">۳. تجهیزات پزشکی (ReeMed™)</div>
-                <div className="drawer-brand-cards" style={{ marginBottom: "12px" }}>
-                  <Link
-                    href="/reemed"
-                    className="drawer-brand-card reemed"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <div className="dbc-tag medical">CLINIC PRO</div>
-                    <strong>ReeMed™ Medical Pro</strong>
-                    <small>دستگاه‌های CarboX & PlasmaX و اقلام مصرفی</small>
-                  </Link>
-                </div>
-                <nav className="drawer-nav-list">
-                  <Link href="/carbox" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>دستگاه ترابافتی CarboX™</span>
-                  </Link>
-                  <Link href="/plasmax" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>سامانه پلاسمای سرد PlasmaX™</span>
-                  </Link>
-                  <Link href="/reemed" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پادهای ۱۷۰ml و ژل‌های کابین مطب</span>
-                  </Link>
-                </nav>
+                <button
+                  type="button"
+                  className={`drawer-section-btn ${mobileAccordion.reemed ? "open" : ""}`}
+                  onClick={() => toggleMobileAccordion("reemed")}
+                >
+                  <div className="drawer-section-title">
+                    <span>۳. کیت‌های تخصصی (ReeMed™)</span>
+                    <span className="drawer-section-toggle-icon">▼</span>
+                  </div>
+                </button>
+                {mobileAccordion.reemed && (
+                  <div className="drawer-section-body">
+                    <div className="drawer-brand-cards" style={{ marginBottom: "12px" }}>
+                      <Link
+                        href="/reemed"
+                        className="drawer-brand-card reemed"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <div className="dbc-tag medical">CLINICAL KITS</div>
+                        <strong>ReeMed™ Clinical Solutions</strong>
+                        <small>شیت‌های آناتومیک CarboxyPad و پادهای ترابافتی</small>
+                      </Link>
+                    </div>
+                    <nav className="drawer-nav-list">
+                      <Link href="/carboxypad" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ماسک‌ها و شیت‌های صورت و گردن CarboxyPad™</span>
+                      </Link>
+                      <Link href="/carboxypod" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>کپسول‌های فعال‌ساز ترابافتی CarboxyPod™</span>
+                      </Link>
+                      <Link href="/carboxygel" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ژل‌های تخصصی کربوکسی‌تراپی ۲ فاز</span>
+                      </Link>
+                    </nav>
+                  </div>
+                )}
               </div>
 
-              {/* 4. Professionals & B2B Clinic */}
+              {/* 4. Science & Clinical Knowledge */}
               <div className="drawer-section">
-                <div className="drawer-section-title">۴. ویژه همکاران درمانی و پزشکان</div>
-                <Link href="/b2b" className="drawer-b2b-banner" onClick={() => setMobileMenuOpen(false)}>
-                  <div className="b2b-banner-title">پورتال اختصاصی کلینیک‌ها (ReeMed B2B)</div>
-                  <p>تأمین عمده کارتریج‌ها و ژل‌های کلینیک با فاکتور رسمی دارویی و ارسال فوری</p>
-                  <span className="b2b-banner-cta">ورود به پورتال پزشکان ←</span>
-                </Link>
-                <nav className="drawer-nav-list" style={{ marginTop: "10px" }}>
-                  <Link href="/b2b/protocols" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پروتکل‌های بالینی کلینیک</span>
-                  </Link>
-                  <Link href="/b2b/workshops" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>کارگاه‌های عملی و ورکشاپ‌ها</span>
-                  </Link>
-                </nav>
+                <button
+                  type="button"
+                  className={`drawer-section-btn ${mobileAccordion.science ? "open" : ""}`}
+                  onClick={() => toggleMobileAccordion("science")}
+                >
+                  <div className="drawer-section-title">
+                    <span>۴. دانش و پژوهش بالینی</span>
+                    <span className="drawer-section-toggle-icon">▼</span>
+                  </div>
+                </button>
+                {mobileAccordion.science && (
+                  <div className="drawer-section-body">
+                    <nav className="drawer-nav-list">
+                      <Link href="/#science" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>علم و مکانیسم اثر بوهر (Bohr Effect)</span>
+                      </Link>
+                      <Link href="/ingredients" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>دانشنامه ترکیبات فعال (INCI)</span>
+                      </Link>
+                      <Link href="/#clinical-results" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>شواهد بالینی و سنجش Visia</span>
+                      </Link>
+                      <Link href="/blog" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>ژورنال علمی درماتولوژی</span>
+                      </Link>
+                    </nav>
+                  </div>
+                )}
               </div>
 
-              {/* 5. Science & Academy */}
+              {/* 5. About & Support */}
               <div className="drawer-section">
-                <div className="drawer-section-title">۵. دانش، آکادمی و مستندات</div>
-                <nav className="drawer-nav-list">
-                  <Link href="/#science" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>علم و اثر بوهر (Bohr Effect)</span>
-                  </Link>
-                  <Link href="/academy" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>آکادمی و پروتکل‌های گام‌به‌گام</span>
-                  </Link>
-                  <Link href="/ingredients" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>دانشنامه ترکیبات فعال (INCI)</span>
-                  </Link>
-                  <Link href="/#clinical-results" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>شواهد بالینی و تأییدیه پزشکان</span>
-                  </Link>
-                  <Link href="/blog" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>ژورنال علمی درماتولوژی</span>
-                  </Link>
-                </nav>
-              </div>
-
-              {/* 6. About & Support */}
-              <div className="drawer-section">
-                <div className="drawer-section-title">۶. درباره ما و پشتیبانی</div>
-                <nav className="drawer-nav-list">
-                  <Link href="/about" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>درباره کمپانی Dr Dermer UK</span>
-                  </Link>
-                  <Link href="/contact" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>تماس و پشتیبانی مشتریان</span>
-                  </Link>
-                  <Link href="/faq" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    <span>پرسش‌های متداول (FAQ)</span>
-                  </Link>
-                </nav>
+                <button
+                  type="button"
+                  className={`drawer-section-btn ${mobileAccordion.about ? "open" : ""}`}
+                  onClick={() => toggleMobileAccordion("about")}
+                >
+                  <div className="drawer-section-title">
+                    <span>۶. درباره ما و پشتیبانی</span>
+                    <span className="drawer-section-toggle-icon">▼</span>
+                  </div>
+                </button>
+                {mobileAccordion.about && (
+                  <div className="drawer-section-body">
+                    <nav className="drawer-nav-list">
+                      <Link href="/about" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>درباره کمپانی Dr Dermer UK</span>
+                      </Link>
+                      <Link href="/contact" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>تماس و پشتیبانی مشتریان</span>
+                      </Link>
+                      <Link href="/faq" className="drawer-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                        <span>پرسش‌های متداول (FAQ)</span>
+                      </Link>
+                    </nav>
+                  </div>
+                )}
               </div>
 
               {/* Account Quick Shortcuts */}

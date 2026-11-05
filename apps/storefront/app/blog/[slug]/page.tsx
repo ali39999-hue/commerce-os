@@ -97,9 +97,7 @@ export default async function BlogPostPage({ params }: Props) {
       <nav className="breadcrumbs-nav">
         <Link href="/">صفحه اصلی</Link>
         <span>/</span>
-        <Link href="/academy">آکادمی علوم پوست</Link>
-        <span>/</span>
-        <Link href="/blog">وبلاگ و مقالات</Link>
+        <Link href="/blog">ژورنال علمی و مقالات</Link>
         <span>/</span>
         <span>{post.title}</span>
       </nav>
@@ -476,8 +474,8 @@ export default async function BlogPostPage({ params }: Props) {
           ))}
         </div>
         <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
-          <Link href="/academy" className="text-link">
-            ← بازگشت به آکادمی
+          <Link href="/" className="text-link">
+            ← بازگشت به صفحه اصلی
           </Link>
           <Link href="/blog" className="text-link">
             همه مقالات

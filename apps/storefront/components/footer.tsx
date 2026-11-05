@@ -31,7 +31,7 @@ export function SiteFooter() {
             </div>
             
             <p className="footer-bio">
-              آزمایشگاه‌های پژوهشی دکتر درمر بریتانیا (کمبریج و لندن)، مرجع پیشگام درمان‌های ترابافتی بدون تهاجم و توسعه سیستم‌های کربوکسی‌تراپی بر پایه اثر بوهر (Bohr Effect). ارائه‌دهنده رژیم‌های درمانی درجه دارویی برای متخصصین پوست، کلینیک‌های زیبایی و مراقبت خانگی.
+              آزمایشگاه‌های پژوهشی دکتر درمر بریتانیا (کمبریج و لندن)، مرجع پیشگام درمان‌های ترابافتی بدون تهاجم و توسعه فرمولاسیون‌های کربوکسی‌تراپی بر پایه اثر بوهر (Bohr Effect). ارائه‌دهنده رژیم‌های درمانی درجه دارویی برای سلامت و زیبایی پایدار پوست.
             </p>
 
             {/* Certifications Badge Row */}
@@ -77,29 +77,31 @@ export function SiteFooter() {
               <li>
                 <Link href="/reeskin">
                   <strong>ReeSkin™ Clinical</strong>
-                  <span className="link-sub">کیت‌های مراقبت خانگی ترابافتی و رژیم‌ها</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/reemed">
-                  <strong>ReeMed™ Medical Pro</strong>
-                  <span className="link-sub">تجهیزات پزشکی CarboX و PlasmaX و اقلام مصرفی</span>
+                  <span className="link-sub">کیت‌های مراقبت پوستی ترابافتی و رژیم‌ها</span>
                 </Link>
               </li>
               <li>
                 <Link href="/carboxygel">
-                  <strong>ReeSkin CarboxyGel™</strong>
+                  <strong>ژل کربوکسی‌تراپی CarboxyGel™</strong>
                   <span className="link-sub">کربوکسی‌تراپی غیرتهاجمی و اثر بوهر</span>
                 </Link>
               </li>
               <li>
-                <Link href="/search?q=پپتید">
-                  سرم‌های پپتیدی بیومیمتیک و EGF
+                <Link href="/carboxypod">
+                  <strong>کپسول‌های فعال‌ساز CarboxyPod™</strong>
+                  <span className="link-sub">پادهای فعال‌ساز نانوحباب‌های CO₂</span>
                 </Link>
               </li>
               <li>
-                <Link href="/search?q=سرامید">
-                  بازسازی سد دفاعی (کمپلکس سرامید NP)
+                <Link href="/carboxypad">
+                  <strong>پدهای آلکالاین CarboxyPad™</strong>
+                  <span className="link-sub">شیت‌های آناتومیک صورت و گردن</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/crystalene">
+                  <strong>خمیر پولیش ابریشمی Crystalene™</strong>
+                  <span className="link-sub">میکرودرم آلومینا و نوسازی اپیدرم</span>
                 </Link>
               </li>
               <li>
@@ -110,7 +112,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Column 3: Science & Clinical Academy */}
+          {/* Column 3: Science & Clinical Knowledge */}
           <div className="footer-col">
             <h4 className="footer-heading">دانش بالینی و پژوهش</h4>
             <ul className="footer-links">
@@ -125,11 +127,6 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/academy">
-                  آکادمی و پروتکل طلایی ۷ روزه بازسازی
-                </Link>
-              </li>
-              <li>
                 <Link href="/ingredients">
                   دانشنامه مواد مؤثره و فرمولاسیون (INCI)
                 </Link>
@@ -140,13 +137,13 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/b2b">
-                  دوره‌های بازآموزی پزشکان و بیوتی‌تراپیست‌ها
+                <Link href="/faq">
+                  پرسش‌های متداول درماتولوژی و منع مصرف
                 </Link>
               </li>
               <li>
-                <Link href="/faq">
-                  پرسش‌های متداول درماتولوژی و منع مصرف
+                <Link href="/about">
+                  درباره آزمایشگاه‌های دکتر درمر کمبریج
                 </Link>
               </li>
             </ul>
@@ -225,12 +222,6 @@ export function SiteFooter() {
                 <span className="badge-initial">TTAC</span>
                 <span className="badge-meta">رهگیری اصالت دارو</span>
               </div>
-            </div>
-
-            <div className="footer-b2b-link-wrap">
-              <Link href="/b2b" className="footer-b2b-cta">
-                <span>پورتال خرید عمده کلینیک‌ها (فاکتور رسمی و گواهی) ←</span>
-              </Link>
             </div>
           </div>
         </div>

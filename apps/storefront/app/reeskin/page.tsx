@@ -892,8 +892,8 @@ export default function ReeSkinBrandPage() {
               <span>شروع فوری سنتز کلاژن و الاستین و تسریع دفع متابولیت‌ها و سموم بین‌سلولی</span>
             </div>
           </div>
-          <Link href="/academy" className="btn-card-pdp" style={{ display: "inline-block" }}>
-            مطالعه مستندات علمی در آکادمی بالینی ←
+          <Link href="/blog" className="btn-card-pdp" style={{ display: "inline-block" }}>
+            مطالعه مقالات علمی اثر بوهر در ژورنال تخصصی ←
           </Link>
         </div>
 
