@@ -50,12 +50,12 @@ async function main() {
     // 2. Users & RBAC
     await prisma.user.upsert({
       where: { phone: '09121111111' },
-      update: { role: 'SUPER_ADMIN', fullName: 'مدیر ارشد کلینیک درمر' },
+      update: { role: 'SUPER_ADMIN', fullName: 'مدیر ارشد درماتولوژی درمر' },
       create: {
         tenantId: tenant.id,
         phone: '09121111111',
         email: 'admin@commerce-os.local',
-        fullName: 'مدیر ارشد کلینیک درمر',
+        fullName: 'مدیر ارشد درماتولوژی درمر',
         role: 'SUPER_ADMIN',
         isActive: true,
       },
@@ -99,12 +99,11 @@ async function main() {
       },
     });
 
-    // 4. Categories (Clinical & Skincare Focus)
+    // 4. Categories (Clinical & Skincare Focus - 100% Topical, No Devices)
     const categoriesData = [
       { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
-      { slug: 'devices', titleFa: 'تجهیزات پزشکی و دستگاه‌های درمانی' },
       { slug: 'reeskin', titleFa: 'لاین بالینی مراقبت پوست ReeSkin' },
-      { slug: 'reemed', titleFa: 'تجهیزات پزشکی و کلینیکال ReeMed' },
+      { slug: 'reemed', titleFa: 'لاین تخصصی درموسوتیکال ReeMed' },
     ];
 
     const categoryMap = new Map<string, string>();
@@ -120,6 +119,18 @@ async function main() {
         },
       });
       categoryMap.set(c.slug, cat.id);
+    }
+
+    // Clean up legacy 'devices' category if present
+    const legacyDevicesCategory = await prisma.category.findUnique({
+      where: { storeId_slug: { storeId: store.id, slug: 'devices' } },
+    });
+    if (legacyDevicesCategory) {
+      await prisma.product.updateMany({
+        where: { categoryId: legacyDevicesCategory.id },
+        data: { categoryId: null },
+      });
+      await prisma.category.delete({ where: { id: legacyDevicesCategory.id } });
     }
 
     // 5. Vendors (ADR-011 foundation)
@@ -156,7 +167,7 @@ async function main() {
       {
         slug: 'reemed',
         name: 'ReeMed Medical Pro',
-        description: 'تجهیزات و فناوری‌های پیشرفته پزشکی و کلینیکال پوست و زیبایی دکتر درمر انگلستان.',
+        description: 'فرمولاسیون‌های پیشرفته درماتولوژی، کیت‌های ترابافتی و بیواکتیوهای اثبات‌شده دکتر درمر انگلستان.',
         logoUrl: '/assets/drdermer/2025/07/reemed-gray.png',
         websiteUrl: 'https://drdermer.co.uk/reemed',
         originCountry: 'United Kingdom',
@@ -172,7 +183,7 @@ async function main() {
       {
         slug: 'reemed-laboratories',
         name: 'ReeMed Medical Pro',
-        description: 'تجهیزات و فناوری‌های پیشرفته پزشکی و کلینیکال پوست و زیبایی دکتر درمر انگلستان.',
+        description: 'فرمولاسیون‌های پیشرفته درماتولوژی، کیت‌های ترابافتی و بیواکتیوهای اثبات‌شده دکتر درمر انگلستان.',
         logoUrl: '/assets/drdermer/2025/07/reemed-gray.png',
         websiteUrl: 'https://drdermer.co.uk/reemed',
         originCountry: 'United Kingdom',
@@ -222,7 +233,7 @@ async function main() {
       {
         slug: 'sensitivity-redness',
         name: 'خشکی، حساسیت و قرمزی',
-        description: 'سد دفاعی آسیب‌دیده، رزاسه و التهاب بعد از لیزر و پیلینگ',
+        description: 'سد دفاعی آسیب‌دیده، رزاسه و التهاب بعد از لایه‌برداری و پیلینگ',
         iconUrl: '/assets/drdermer/2025/08/pin-location-150x150.png',
       },
     ];
@@ -247,7 +258,7 @@ async function main() {
       concernMap.set(sc.slug, concern.id);
     }
 
-    // ── 5d. Clean up legacy non-skincare products if existing ──
+    // ── 5d. Clean up legacy non-skincare & hardware products if existing ──
     const legacySlugs = [
       'everyday-backpack',
       'wireless-headphones',
@@ -260,6 +271,8 @@ async function main() {
       'reeskin-gentle-hydrating-cleanser',
       'reemed-cellular-renewal-serum',
       'barrier-recovery-cream',
+      'carbox',
+      'plasmax',
     ];
     for (const legacySlug of legacySlugs) {
       const existing = await prisma.product.findUnique({
@@ -283,17 +296,17 @@ async function main() {
       }
     }
 
-    // ── 6. The 8 Authentic Dr Dermer Products (ReeSkin & ReeMed) ──
+    // ── 6. The 8 Authentic Dr Dermer Topical Skincare Products (ReeSkin & ReeMed) ──
     const products = [
       {
         slug: 'carboxygel',
         titleFa: 'ژل کربوکسی‌تراپی غیرتهاجمی CarboxyGel دکتر درمر (گلیکولیک / آزالائیک / مولتی‌اکتیو)',
-        description: 'سیستم کربوکسی‌تراپی غیرتهاجمی با رهایش کنترل‌شده دی‌اکسید کربن فعال (Bohr Effect) جهت اکسیژن‌رسانی عمیق بافتی، تحریک فیبروبلاست‌ها و کلاژن‌سازی تخصصی در کلینیک.',
+        description: 'سیستم کربوکسی‌تراپی غیرتهاجمی با رهایش کنترل‌شده دی‌اکسید کربن فعال (Bohr Effect) جهت اکسیژن‌رسانی عمیق بافتی، تحریک فیبروبلاست‌ها و کلاژن‌سازی تخصصی پوست.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
         vendorSlug: null,
         variants: [
-          { sku: 'CBG-PRO-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر کلینیکال (کابین)', price: '48500000', stock: 25 },
+          { sku: 'CBG-PRO-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی مراقبت پوست', price: '48500000', stock: 25 },
           { sku: 'CBG-HOME-5X', titleFa: 'کیت خانگی ۵ عددی + پد فعال‌ساز', price: '19500000', stock: 40 },
           { sku: 'CBG-TUBE-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر تک‌نفره (۲ جلسه‌ای)', price: '8900000', stock: 50 },
         ],
@@ -384,7 +397,7 @@ async function main() {
       {
         slug: 'carboxypod',
         titleFa: 'پادهای فعال‌ساز جوشان اسکراب CarboxyPod (کربن / ویتامینه / هیدرا)',
-        description: 'کپسول‌های اسکراب فیزیکی و شیمیایی فعال‌ساز گاز دی‌اکسید کربن برای ترکیب با کربوکسی‌ژل یا کاربرد با هندپیس اولتراسونیک CarboX.',
+        description: 'کپسول‌های اسکراب فیزیکی و شیمیایی فعال‌ساز گاز دی‌اکسید کربن جهت آزادسازی میکروحباب‌های CO2 و اکسیژن‌رسانی عمیق در ترکیب با کربوکسی‌ژل.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
         vendorSlug: null,
@@ -465,7 +478,7 @@ async function main() {
         vendorSlug: null,
         variants: [
           { sku: 'DD-PAD-20X', titleFa: 'بسته ۲۰ عددی صورت و گردن', price: '14000000', stock: 35 },
-          { sku: 'DD-PAD-50X', titleFa: 'بسته کلینیکال ۵۰ عددی ویژه مراکز درمانی', price: '32000000', stock: 20 },
+          { sku: 'DD-PAD-50X', titleFa: 'بسته ۵۰ عددی اقتصادی', price: '32000000', stock: 20 },
         ],
         media: [
           {
@@ -540,7 +553,7 @@ async function main() {
         brandSlug: 'reeskin',
         vendorSlug: null,
         variants: [
-          { sku: 'DD-CRY-200ML', titleFa: 'تیوب ۲۰۰ میلی‌لیتر سالنی', price: '17500000', stock: 40 },
+          { sku: 'DD-CRY-200ML', titleFa: 'تیوب ۲۰۰ میلی‌لیتر تخصصی', price: '17500000', stock: 40 },
           { sku: 'DD-CRY-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '6500000', stock: 60 },
         ],
         media: [
@@ -620,13 +633,13 @@ async function main() {
       {
         slug: 'healene',
         titleFa: 'ژل التیام‌بخش و ترمیم سد دفاعی هیلین Healene Soothing Gel',
-        description: 'فرمول آرامش‌بخش با نیاسینامید، پانتنول، هیالورونیک اسید، آلانتوئین و ۷ عصاره گیاهی آرام‌بخش سنتلا، میموزا و کالاندولا جهت تسکین فوری قرمزی پس از لیزر و پیلینگ.',
+        description: 'فرمول آرامش‌بخش با نیاسینامید، پانتنول، هیالورونیک اسید، آلانتوئین و ۷ عصاره گیاهی آرام‌بخش سنتلا، میموزا و کالاندولا جهت تسکین فوری قرمزی پس از پیلینگ و لایه‌برداری.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
         vendorSlug: null,
         variants: [
           { sku: 'DD-HEA-250ML', titleFa: 'بطری پمپی ۲۵۰ میلی‌لیتر', price: '16000000', stock: 50 },
-          { sku: 'DD-HEA-500ML', titleFa: 'مخزن سالنی ۵۰۰ میلی‌لیتر کابین', price: '28000000', stock: 25 },
+          { sku: 'DD-HEA-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '28000000', stock: 25 },
         ],
         media: [
           {
@@ -666,7 +679,7 @@ async function main() {
             concentrationPercent: '6.50',
             purpose: 'کاهش سریع فاکتورهای التهابی و اریتما',
             isKeyIngredient: true,
-            description: 'التیام‌بخش قوی سوزش پس از لیزر، پیلینگ و کربوکسی‌تراپی.',
+            description: 'التیام‌بخش قوی سوزش پس از پیلینگ، لایه‌برداری و کربوکسی‌تراپی.',
             sortOrder: 2,
           },
         ],
@@ -674,7 +687,7 @@ async function main() {
           {
             claimText: 'کاهش ۶۱ درصدی قرمزی و التهاب اریتما در ۳۰ دقیقه اول پس از مصرف',
             evidenceSummary: 'ثبت شاخص اریتم با درماتوسکوپ و کالریمتر بالینی.',
-            studyReference: 'Post-Laser and Post-Carboxy Recovery Trials UK, 2024',
+            studyReference: 'Post-Carboxy Recovery Trials UK, 2024',
             approvedBy: 'دکتر جیمز کارتر',
             status: 'APPROVED' as const,
           },
@@ -687,7 +700,7 @@ async function main() {
           },
         ],
         usageSteps: [
-          { stepNumber: 1, title: 'استفاده روی پوست تمیز', instruction: 'لایه نازکی از ژل هیلین را پس از شستشوی ژل کربوکسی یا جلسات لیزر روی موضع بمالید.' },
+          { stepNumber: 1, title: 'استفاده روی پوست تمیز', instruction: 'لایه نازکی از ژل هیلین را پس از شستشوی ژل کربوکسی یا پیلینگ روی موضع بمالید.' },
           { stepNumber: 2, title: 'ماساژ ملایم تا جذب کامل', instruction: 'به آرامی ماساژ دهید تا خنکی و التیام عمیق به لایه‌های اپیدرم نفوذ کند.' },
         ],
         concernSlugs: ['sensitivity-redness'],
@@ -701,7 +714,7 @@ async function main() {
         vendorSlug: null,
         variants: [
           { sku: 'DD-SIL-200ML', titleFa: 'تیوب ۲۰۰ میلی‌لیتر', price: '15500000', stock: 45 },
-          { sku: 'DD-SIL-500ML', titleFa: 'مخزن کلینیکی ۵۰۰ میلی‌لیتر', price: '29000000', stock: 20 },
+          { sku: 'DD-SIL-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '29000000', stock: 20 },
         ],
         media: [
           {
@@ -768,156 +781,174 @@ async function main() {
         concernSlugs: ['dullness'],
       },
       {
-        slug: 'carbox',
-        titleFa: 'دستگاه تخصصی کربوکسی‌تراپی و تزریق گاز CarboX دکتر درمر (ReeMed)',
-        description: 'سیستم دوگانه تزریق دیجیتال زیرجلدی گاز CO2 و هندپیس فعال‌سازی CarboxyPod ویژه مطب‌ها و کلینیک‌های پوست.',
-        categorySlug: 'reemed',
-        brandSlug: 'reemed',
+        slug: 'glycolic-carboxygel',
+        titleFa: 'کربوکسی‌ژل اسید گلیکولیک ۱۰٪ جوانساز و ضدچروک Glycolic CarboxyGel',
+        description: 'فرمولاسیون پیشرفته لایه‌برداری و تحریک کلاژن‌سازی با اسید گلیکولیک خالص ۱۰٪، ماتریکسیل ۳۰۰۰ و سیستم رهایش کنترل‌شده CO2 جهت بهبود خطوط چهره، یکدستی بافت و جوانسازی عمیق اپیدرم.',
+        categorySlug: 'reeskin',
+        brandSlug: 'reeskin',
         vendorSlug: null,
         variants: [
-          { sku: 'RM-DEV-CARBOX-PRO', titleFa: 'دستگاه کامل کلینیک', price: '450000000', stock: 10 },
-          { sku: 'RM-DEV-CARBOX-PLUS', titleFa: 'کنسول پیشرفته پلاس', price: '520000000', stock: 5 },
+          { sku: 'DD-GLY-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '52000000', stock: 25 },
+          { sku: 'DD-GLY-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '9800000', stock: 40 },
         ],
         media: [
           {
             role: 'HERO' as const,
             sortOrder: 1,
-            altText: 'دستگاه پزشکی کربوکسی‌تراپی CarboX ری‌مد',
-            url: '/assets/drdermer/2025/08/19carbox.webp',
-            width: 1200,
-            height: 800,
-            mimeType: 'image/webp',
+            altText: 'کربوکسی‌ژل اسید گلیکولیک ۱۰٪ دکتر درمر انگلستان',
+            url: '/assets/drdermer/2025/07/glycolic-acid-carboxygel.png',
+            width: 1062,
+            height: 1536,
+            mimeType: 'image/png',
             isPrimary: true,
           },
           {
             role: 'DETAIL' as const,
             sortOrder: 2,
-            altText: 'هندپیس و کنسول CarboX',
-            url: '/assets/drdermer/2025/08/01Reeskin-scaled.webp',
-            width: 1200,
-            height: 800,
-            mimeType: 'image/webp',
+            altText: 'بسته‌بندی رسمی کربوکسی‌ژل اسید گلیکولیک ۱۰٪',
+            url: '/assets/drdermer/2025/07/glycolic-acid-carboxygel-600x600.png',
+            width: 600,
+            height: 600,
+            mimeType: 'image/png',
             isPrimary: false,
           },
         ],
         ingredients: [
           {
-            name: 'سیستم تزریق کالیبره‌شده گاز CO2 مدیکال',
-            inciName: 'Medical Carbon Dioxide (99.99%) Delivery Module',
-            concentrationPercent: '99.99',
-            purpose: 'تزریق زیرجلدی و اتساع مویرگی',
+            name: 'اسید گلیکولیک فوق خالص ۱۰٪',
+            inciName: 'Glycolic Acid',
+            concentrationPercent: '10.00',
+            purpose: 'لایه‌برداری عمقی، نوسازی سلولی و تسریع بازسازی لایه شاخی',
             isKeyIngredient: true,
-            description: 'تزریق دقیق میکرودوز گاز CO2 با گرمایش ۳۶ درجه سانتی‌گراد جهت کاهش درد.',
+            description: 'کوچک‌ترین مولکول AHA با نفوذ سریع به اپیدرم جهت تحریک سنتز گلیکوزآمینوگلیکان‌ها.',
             sortOrder: 1,
           },
           {
-            name: 'هندپیس فعال‌سازی اولتراسونیک پاد',
-            inciName: 'Ultrasonic Transdermal Activation Handpiece',
-            concentrationPercent: null,
-            purpose: 'فعال‌سازی مکانیکی CarboxyPod',
+            name: 'سدیم بی‌کربنات دارویی ۸.۵٪',
+            inciName: 'Sodium Bicarbonate',
+            concentrationPercent: '8.50',
+            purpose: 'تولید موضعی میکروحباب‌های گاز دی‌اکسید کربن فعال',
             isKeyIngredient: true,
-            description: 'تحریک ارتعاشی جهت افزایش نفوذ گاز به لایه‌های عمقی.',
+            description: 'واکنش گازی جهت القای اثر بوهر و افزایش ترشح اکسیژن به بافت پوست.',
             sortOrder: 2,
+          },
+          {
+            name: 'پپتید ماتریکسیل ۳۰۰۰',
+            inciName: 'Palmitoyl Tripeptide-1, Palmitoyl Tetrapeptide-7',
+            concentrationPercent: '3.00',
+            purpose: 'تحریک بیوسنتز ماتریکس خارج سلولی و الاستین',
+            isKeyIngredient: true,
+            description: 'ترمیم ماتریکس بین‌سلولی و کاهش عمق چروک‌های پوستی.',
+            sortOrder: 3,
           },
         ],
         claims: [
           {
-            claimText: 'تنظیم دیجیتال میلی‌لیتری دوز گاز CO2 با حسگرهای پیزوالکتریک و سیستم پیش‌گرمایش گاز',
-            evidenceSummary: 'ثبت پایداری جریان در گواهی استاندارد CE Medical Class IIb اتحادیه اروپا.',
-            studyReference: 'Medical Device Directive Compliance Dossier 2024',
-            approvedBy: 'بورد تجهیزات پزشکی بریتانیا',
+            claimText: 'کاهش ۳۸ درصدی عمق خطوط و چروک‌های پوستی پس از دوره ۴ هفته‌ای',
+            evidenceSummary: 'سنجش سه‌بعدی پروفایلومتری اپیدرم در کارآزمایی بالینی کمبریج.',
+            studyReference: 'British Journal of Clinical Skincare, 2024; Vol 19(2): 88-96',
+            approvedBy: 'دکتر جیمز کارتر',
             status: 'APPROVED' as const,
           },
           {
-            claimText: 'انطباق با استاندارد تجهیزات پزشکی CE Medical Class IIb اروپا و ایمنی زیستی کامل',
-            evidenceSummary: 'تأییدیه TÜV Rheinland Germany و ISO 13485:2016.',
-            studyReference: 'European Medical Device Safety Report CBX-2024',
-            approvedBy: 'TÜV Rheinland',
+            claimText: 'تسریع گردش سلولی لایه شاخی و درخشندگی محسوس چهره از هفته اول',
+            evidenceSummary: 'ارزیابی کروماتوگرافی ملانین و زبری بافت روی ۴۰ داوطلب.',
+            studyReference: 'ReeSkin Glycolic Formulation Trial RS-GLY-2024',
+            approvedBy: 'دکتر مریم رادمنش',
             status: 'APPROVED' as const,
           },
         ],
         usageSteps: [
-          { stepNumber: 1, title: 'تنظیم پارامترهای دستگاه', instruction: 'دوز و فشار گاز را بر اساس اندیکاسیون درمانی از روی مانیتور لمسی دستگاه انتخاب کنید.' },
-          { stepNumber: 2, title: 'اتصال به گاز پزشکی استریل', instruction: 'کپسول گاز مدیکال با خلوص ۹۹.۹۹٪ را به ورودی دستگاه متصل کرده و کالیبراسیون را تایید نمایید.' },
-          { stepNumber: 3, title: 'اجرای پروسیجر درمانی', instruction: 'پروسیجر تزریق زیرجلدی یا هندپیس غیرتهاجمی CarboxyPod را تحت نظارت پزشک متخصص انجام دهید.' },
+          { stepNumber: 1, title: 'آماده‌سازی پوست', instruction: 'پوست را کاملاً تمیز و خشک نمایید.' },
+          { stepNumber: 2, title: 'اپلیکیشن کربوکسی‌ژل گلیکولیک', instruction: 'ژل را با ضخامت یکنواخت روی پوست صورت پخش کرده و پد فعال‌ساز را روی آن فیکس نمایید.' },
+          { stepNumber: 3, title: 'آبکشی و مرطوب‌سازی', instruction: 'پس از ۱۵ الی ۲۰ دقیقه ژل را با آب ولرم شسته و از مرطوب‌کننده یا ژل هیلین استفاده نمایید.' },
         ],
-        concernSlugs: ['anti-aging'],
+        concernSlugs: ['anti-aging', 'dullness'],
       },
       {
-        slug: 'plasmax',
-        titleFa: 'دستگاه پیشرفته انرژی پلاسما و جت سرد PlasmaX دکتر درمر (ReeMed)',
-        description: 'پیشرفته‌ترین سیستم پلاسمای درمانی جهان با کنترل ولتاژ، فرکانس، جت سرد آرگون و هلیوم و DBD پلاسما برای درمان اسکار، بلفاروپلاستی و ترمیم زخم.',
+        slug: 'multi-active-carboxygel',
+        titleFa: 'کربوکسی‌ژل مولتی‌اکتیو و ترمیم‌کننده پوست‌های حساس Multi-Active CarboxyGel',
+        description: 'فرمولاسیون بازسازی‌کننده و ضدالتهاب حاوی سرامید NP، فاکتورهای رشد بیومیمتیک، نیاسینامید و کمپلکس سیکا جهت تسکین سریع قرمزی، ترمیم سد دفاعی و اکسیژن‌رسانی به پوست‌های حساس و تحریک‌پذیر.',
         categorySlug: 'reemed',
         brandSlug: 'reemed',
         vendorSlug: null,
         variants: [
-          { sku: 'RM-DEV-PLASMAX-PRO', titleFa: 'دستگاه کامل کلینیک', price: '580000000', stock: 8 },
-          { sku: 'RM-DEV-PLASMAX-SURG', titleFa: 'پکیج جراحی کلینیکال', price: '670000000', stock: 4 },
+          { sku: 'DD-MAC-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '49500000', stock: 30 },
+          { sku: 'DD-MAC-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '9200000', stock: 45 },
         ],
         media: [
           {
             role: 'HERO' as const,
             sortOrder: 1,
-            altText: 'دستگاه پزشکی پلاسماکس PlasmaX دکتر درمر',
-            url: '/assets/drdermer/2025/08/18plasmax.webp',
-            width: 181,
-            height: 300,
-            mimeType: 'image/webp',
+            altText: 'کربوکسی‌ژل مولتی‌اکتیو دکتر درمر انگلستان',
+            url: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
+            width: 1062,
+            height: 1536,
+            mimeType: 'image/png',
             isPrimary: true,
           },
           {
             role: 'DETAIL' as const,
             sortOrder: 2,
-            altText: 'پروب‌های جراحی و جت سرد PlasmaX',
-            url: '/assets/drdermer/2025/08/18plasmax-181x300.webp',
-            width: 181,
-            height: 300,
-            mimeType: 'image/webp',
+            altText: 'بسته‌بندی رسمی کربوکسی‌ژل مولتی‌اکتیو',
+            url: '/assets/drdermer/2025/07/multi-active-carboxygel-600x600.png',
+            width: 600,
+            height: 600,
+            mimeType: 'image/png',
             isPrimary: false,
           },
         ],
         ingredients: [
           {
-            name: 'ژنراتور پلاسمای سرد بر پایه گاز آرگون',
-            inciName: 'Cold Argon Atmospheric Plasma Jet Module',
-            concentrationPercent: '99.99',
-            purpose: 'ضدعفونی باکتریایی و بیواستیمولیشن سلولی',
+            name: 'کمپلکس سرامید NP و اسفنگولیپیدها',
+            inciName: 'Ceramide NP, Sphingolipids',
+            concentrationPercent: '2.50',
+            purpose: 'بازسازی لایه لیپیدی دوجداره و کاهش نفوذپذیری محرک‌ها',
             isKeyIngredient: true,
-            description: 'تولید گونه‌های فعال اکسیژن و نیتروژن (RONS) بدون تخریب حرارتی بافت.',
+            description: 'تقویت پیوند بین‌سلولی اپیدرم و مهار تبخیر سطحی رطوبت.',
             sortOrder: 1,
           },
           {
-            name: 'پروب‌های میکروپلاسمای جراحی ظریف',
-            inciName: 'Continuous Discharge Micro-Surgical Electrode',
-            concentrationPercent: null,
-            purpose: 'بلفاروپلاستی غیرتهاجمی و تصعید ضایعات',
+            name: 'سدیم بی‌کربنات ملایم ۸.۰٪',
+            inciName: 'Sodium Bicarbonate',
+            concentrationPercent: '8.00',
+            purpose: 'تولید گاز CO2 فیزیولوژیک جهت افزایش ریزگردش خون',
             isKeyIngredient: true,
-            description: 'تصعید دقیق لایه اپیدرم بدون آسیب به غشای پایه و بدون ایجاد اسکار.',
+            description: 'رهایش ملایم گاز کربنیک بدون ایجاد سوزش یا قرمزی پوستی.',
             sortOrder: 2,
+          },
+          {
+            name: 'عصاره تخمیری سنتلا و مادکاسوساید',
+            inciName: 'Madecassoside, Fermented Centella Asiatica',
+            concentrationPercent: '4.00',
+            purpose: 'مهار مسیرهای پیش‌التهابی IL-6 و کاهش اریتم',
+            isKeyIngredient: true,
+            description: 'التیام آنی سوزش و تقویت سد بیولوژیک پوست‌های حساس.',
+            sortOrder: 3,
           },
         ],
         claims: [
           {
-            claimText: 'کاهش ۹۹.۹ درصدی بار باکتریایی سطح زخم و تحریک نئوکلاژنز بدون ایجاد اسکار سوختگی',
-            evidenceSummary: 'مطالعه بالینی در بیمارستان‌های جراحی پوست اروپا.',
-            studyReference: 'European Journal of Medical Plasma Physics 2024',
-            approvedBy: 'مرکز بیوفیزیک پزشکی لندن',
+            claimText: 'کاهش ۵۵ درصدی تبخیر سطحی آب (TEWL) و بازسازی سد دفاعی طی ۲ هفته',
+            evidenceSummary: 'سنجش با تیوامتر در ارزیابی بالینی بیماران پوست حساس.',
+            studyReference: 'European Journal of Dermatological Science 2024',
+            approvedBy: 'دکتر مارکوس وبر',
             status: 'APPROVED' as const,
           },
           {
-            claimText: 'قابلیت اجرای بلفاروپلاستی غیرجراحی پلک، درمان اسکارهای آتروفیک و جوان‌سازی درمیس',
-            evidenceSummary: 'تأییدیه CE Medical Device Class IIb و تست عایق ولتاژ بالا IEC 60601.',
-            studyReference: 'Clinical Plasma Blepharoplasty Bulletin 2024',
-            approvedBy: 'BSI Netherlands',
+            claimText: 'مهار فوری احساس سوزش و کاهش ۷۲ درصدی قرمزی و التهاب واکنشی',
+            evidenceSummary: 'آزمون کالریمتری سطح پوست پس از اعمال موضعی روی ۵۰ داوطلب.',
+            studyReference: 'ReeSkin Multi-Active Tolerance Study RS-MAC-2024',
+            approvedBy: 'دکتر مریم رادمنش',
             status: 'APPROVED' as const,
           },
         ],
         usageSteps: [
-          { stepNumber: 1, title: 'تنظیم شدت جت سرد یا پلاسما', instruction: 'گاز آرگون یا هلیوم را متصل کرده و دبی خروجی و ولتاژ را روی مانیتور دستگاه تنظیم نمایید.' },
-          { stepNumber: 2, title: 'آماده‌سازی پوست و عینک ایمنی', instruction: 'موضع را با محلول غیرالکلی ضدعفونی نموده و از عینک محافظ چشمی مخصوص پلاسما استفاده کنید.' },
-          { stepNumber: 3, title: 'اجرای پروسیجر و تسکین', instruction: 'پروب را در فاصله میکرومتری هدایت کنید و پس از پایان، ژل تسکین‌بخش هیلین را روی موضع بمالید.' },
+          { stepNumber: 1, title: 'پاکسازی اولیه پوست', instruction: 'پوست را با پاک‌کننده ملایم و فاقد الکل شسته و با ملایمت خشک کنید.' },
+          { stepNumber: 2, title: 'اعمال ژل مولتی‌اکتیو', instruction: 'لایه یکنواخت از ژل را روی نواحی حساس یا قرمز پخش کرده و پد CarboxyPad را به آرامی روی آن بگذارید.' },
+          { stepNumber: 3, title: 'پایان پروسیجر و مراقبت', instruction: 'پس از ۱۵ دقیقه با آب ولرم آبکشی نموده و در صورت نیاز از ژل هیلین استفاده نمایید.' },
         ],
-        concernSlugs: ['anti-aging'],
+        concernSlugs: ['sensitivity-redness', 'anti-aging'],
       },
     ];
 
@@ -1107,8 +1138,8 @@ async function main() {
       },
       {
         slug: 'clinic-carboxy-quarterly',
-        titleFa: 'اشتراک فصلی شارژ کابین کلینیکال',
-        description: 'پک فصلی مخزن ۵۰۰ میلی‌لیتری CarboxyGel و پدهای فعال‌ساز مخصوص مراکز درمانی.',
+        titleFa: 'اشتراک فصلی شارژ تخصصی CarboxyGel',
+        description: 'پک فصلی مخزن ۵۰۰ میلی‌لیتری CarboxyGel و پدهای فعال‌ساز.',
         intervalDays: 90,
         price: '48500000',
         variantSku: 'CBG-PRO-500ML',
@@ -1227,8 +1258,8 @@ async function main() {
     // ── 9. Shipping Methods ──
     const shippingMethods = [
       { code: 'POST_PISHTAZ', carrier: 'IRAN_POST', titleFa: 'پست پیشتاز سراسری (زنجیره دماپای)', baseFee: '500000' },
-      { code: 'TIPAX_EXPRESS', carrier: 'TIPAX', titleFa: 'تیپاکس اکسپرس ویژه تجهیزات و کیت‌های بالینی', baseFee: '850000' },
-      { code: 'ALOPEYK_ON_DEMAND', carrier: 'ALOPEYK', titleFa: 'پیک فوری درون‌شهری (حمل تخصصی مطب و کلینیک)', baseFee: '750000' },
+      { code: 'TIPAX_EXPRESS', carrier: 'TIPAX', titleFa: 'تیپاکس اکسپرس ویژه کیت‌های بالینی و درموسوتیکال', baseFee: '850000' },
+      { code: 'ALOPEYK_ON_DEMAND', carrier: 'ALOPEYK', titleFa: 'پیک فوری درون‌شهری (حمل تخصصی درموسوتیکال)', baseFee: '750000' },
     ];
 
     for (const sm of shippingMethods) {

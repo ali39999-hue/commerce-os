@@ -75,7 +75,7 @@ export function BohrOxygenationSimulator() {
           <div className="sim-header-grid">
             <div className="sim-header-copy">
               <h2 id="bohr-sim-title" className="bohr-sim-title">
-                کنسول شبیه‌ساز اثر بوهر: دوزیمتری غلظت CO₂ و رهاسازی اکسیژن درون‌سلولی
+                شبیه‌ساز اثر بوهر: دوزیمتری غلظت CO₂ و رهاسازی اکسیژن درون‌سلولی
               </h2>
               <p className="bohr-sim-lead">
                 اسلایدر غلظت دی‌اکسید کربن ترابافتی را تغییر دهید تا مشاهده فرمایید چگونه فناوری انحصاری CarboxyGel دکتر درمر با افت کالیبره‌شده اسیدیته، منحنی گسست هموگلوبین را جابه‌جا نموده و بدون هیچ‌گونه سوزن، سلول‌ها را از اعماق بستر مویرگی اکسیژن‌باران می‌کند.

@@ -53,13 +53,13 @@ export function AcademyGuides() {
   ];
 
   return (
-    <section id="guides" className="academy-section" aria-labelledby="academy-title">
+    <section id="guides" className="academy-section" aria-labelledby="clinical-guides-title">
       <div className="section-header-compact">
         <div className="section-eyebrow">
           <span className="eyebrow-pulse" aria-hidden="true" />
           دانش درماتولوژی و راهنماهای بالینی مصرف
         </div>
-        <h2 id="academy-title" className="section-title">
+        <h2 id="clinical-guides-title" className="section-title">
           دانش کاربردی مصرف: پروتکل‌های گام‌به‌گام و راهنمای ترکیبات فعال
         </h2>
         <p className="section-subtext">

@@ -18,8 +18,8 @@ export function ClinicalResultsTestimonials() {
     },
     {
       percentage: '۹۶٪',
-      title: 'ترمیم فوری التهاب و قرمزی پس از لیزر و پیلینگ',
-      sample: 'ارزیابی تریکولوژی، بیوپسی اپیدرمال و سنجش TEWL در کلینیک‌های پوست همکار',
+      title: 'ترمیم فوری التهاب و قرمزی پس از لایه‌برداری و پیلینگ',
+      sample: 'ارزیابی بیومتریک، بیوپسی اپیدرمال و سنجش TEWL در کارآزمایی‌های دوسوکور بالینی',
       metricCode: 'TEWL TEWAMETER TM 300',
       cohort: 'سنجش هدررفت آب ترنس‌اپیدرمال',
       deltaLabel: 'پایداری سد دفاعی ظرف کمتر از ۲۴ ساعت',
@@ -57,35 +57,12 @@ export function ClinicalResultsTestimonials() {
       label: 'شاخص قرمزی و عروق مویرگی سطحی',
       improvement: '-۶۱٪ اریتم پوستی',
       status: 'Hemoglobin Mapping',
-      desc: 'بهبود میکروسیرکولاسیون عروقی و تسریع بازجذب التهابات پس از تروماهای لیزری و پیلینگ.',
+      desc: 'بهبود میکروسیرکولاسیون عروقی و تسریع بازجذب التهابات پس از لایه‌برداری عمیق و پیلینگ‌های اسیدی.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
         </svg>
       ),
-    },
-  ];
-
-  const testimonials = [
-    {
-      quote:
-        'به عنوان درماتولوژیست، پایداری کربوکسی‌ژل دکتر درمر و اثربخشی سریع CarboxyPod در مطب را تحسین می‌کنم. مراجعین پس از همان جلسه نخست احساس شادابی و انقباض منافذ دارند، بدون اینکه کوچک‌ترین قرمزی، پوسته‌ریزی یا دوره نقاهتی را تجربه نمایند.',
-      doctor: 'دکتر مریم سهرابی',
-      role: 'متخصص پوست، مو و زیبایی · عضو انجمن درماتولوژی اروپا (EADV)',
-      badge: 'پزشک همکار پروتکل ReeMed™',
-      clinic: 'کلینیک پوست و لیزر سپهر · تهران',
-      regNumber: 'نظام پزشکی: ۹۸۳۴۲',
-      avatarInitial: 'س',
-    },
-    {
-      quote:
-        'ترکیب پپتیدهای کمپلکس مس و سرامید NP در خانواده ReeSkin به همراه ژل دی‌اکسید کربن ترابافتی، تحول عمده‌ای در مدیریت اسکارهای آکنه و جوان‌سازی بافت است. اکسیژن‌رسانی درون‌سلولی با اثر بوهر، چرخه متابولیک ترمیم بافت را تا چندین برابر تسریع می‌کند.',
-      doctor: 'دکتر کامران شمس',
-      role: 'فوق تخصص جراحی پوست و لیزر · مدیر بخش زیبایی مجتمع بین‌المللی ونک',
-      badge: 'مدرس رسمی آکادمی دکتر درمر بریتانیا',
-      clinic: 'مرکز تحقیقات بیماری‌های پوست و پیوند · لندن/تهران',
-      regNumber: 'نظام پزشکی: ۷۶۱۲۱',
-      avatarInitial: 'ش',
     },
   ];
 
@@ -100,7 +77,7 @@ export function ClinicalResultsTestimonials() {
           نتایج مستند و تأییدشده در آزمایشگاه‌های درماتولوژی
         </h2>
         <p className="section-subtext">
-          تمامی ادعاها بر پایه سنجش‌های بیومدیکال، آنالیزهای کامپیوتری Visia و ارزیابی مستقیم متخصصین پوست در قالب کارآزمایی‌های دوسوکور به ثبت رسیده‌اند.
+          تمامی ادعاها بر پایه سنجش‌های بیومدیکال، آنالیزهای کامپیوتری Visia و پروتکل‌های دوسوکور آزمایشگاهی به ثبت رسیده‌اند.
         </p>
       </div>
 
@@ -145,41 +122,6 @@ export function ClinicalResultsTestimonials() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Doctor Testimonials with Medical Credentials */}
-      <div className="testimonials-grid">
-        {testimonials.map((t, idx) => (
-          <article className="clinical-testimonial-card" key={idx}>
-            <div className="testimonial-header">
-              <span className="doctor-badge">{t.badge}</span>
-              <div className="verified-seal">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
-                <span>تأییدیه نظام پزشکی</span>
-              </div>
-            </div>
-
-            <blockquote className="doctor-quote">«{t.quote}»</blockquote>
-
-            <div className="doctor-meta">
-              <div className="doctor-avatar-row">
-                <div className="doctor-avatar-circle" aria-hidden="true">{t.avatarInitial}</div>
-                <div className="doctor-avatar-info">
-                  <div className="doctor-name">{t.doctor}</div>
-                  <div className="doctor-role">{t.role}</div>
-                </div>
-              </div>
-              <div className="doctor-clinic-row">
-                <span>{t.clinic}</span>
-                <span className="reg-sep">•</span>
-                <span className="doctor-reg" dir="ltr">{t.regNumber}</span>
-              </div>
-            </div>
-          </article>
-        ))}
       </div>
     </section>
   );

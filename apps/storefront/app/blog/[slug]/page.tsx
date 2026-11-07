@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPost(slug);
   if (!post) return { title: "مقاله یافت نشد" };
   return {
-    title: `${post.title} | آکادمی تخصصی علوم پوست و درماتولوژی`,
+    title: `${post.title} | دانشنامه تخصصی علوم پوست و درماتولوژی`,
     description: post.excerpt,
     alternates: {
       canonical: `/blog/${encodeURIComponent(post.slug)}`,
@@ -72,11 +72,10 @@ export default async function BlogPostPage({ params }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "صفحه اصلی", item: `${SITE_URL}/` },
-      { "@type": "ListItem", position: 2, name: "آکادمی علوم پوست", item: `${SITE_URL}/academy` },
-      { "@type": "ListItem", position: 3, name: "وبلاگ و مقالات", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 2, name: "وبلاگ و مقالات بالینی", item: `${SITE_URL}/blog` },
       {
         "@type": "ListItem",
-        position: 4,
+        position: 3,
         name: post.title,
         item: `${SITE_URL}/blog/${encodeURIComponent(post.slug)}`,
       },
@@ -387,10 +386,10 @@ export default async function BlogPostPage({ params }: Props) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", marginBottom: "18px" }}>
             <div>
               <h3 style={{ margin: "0 0 4px", fontSize: "1.1rem", color: "var(--brand-deep)" }}>
-                🛍️ فرآورده‌ها و تجهیزات کلینیکال مرتبط با این پروتکل
+                🛍️ فرآورده‌ها و فرمولاسیون‌های بالینی مرتبط با این پروتکل
               </h3>
               <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--muted)" }}>
-                فرمولاسیون‌ها و دستگاه‌های استانداردسازی‌شده توسط لابراتوارهای تخصصی دکتر درمر
+                فرمولاسیون‌های استانداردسازی‌شده توسط لابراتوارهای تخصصی دکتر درمر
               </p>
             </div>
             <Link href="/products" className="text-link" style={{ fontSize: "0.84rem", fontWeight: 700 }}>

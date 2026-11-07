@@ -62,17 +62,17 @@ const DEFAULT_SLIDES: RupakSlide[] = [
     secondaryCtaLink: '#science',
   },
   {
-    id: 'plasmax-device',
-    badge: 'تکنولوژی انحصاری انرژی میکروپلاسما',
-    titlePrefix: 'ایستگاه درمانی سه‌گانه ',
-    titleAccent: 'PlasmaX Tri-Modality،',
-    titleSuffix: 'بلفاروپلاستی غیرجراحی و لیفت پیشرفته',
+    id: 'crystalene-scrub',
+    badge: 'فرمولاسیون پیشرفته لایه‌برداری ابریشمی',
+    titlePrefix: 'خمیر میکرودرم بلورین ',
+    titleAccent: 'Crystalene Silk Polish،',
+    titleSuffix: 'نوسازی فوری بافت و شفافیت عمیق پوست',
     description:
-      'تلفیق نوآورانه ۳ مدالیته آرک پیوسته جراحی، جت پلاسمای سرد اتمسفری (CAP) و تخلیه سد دی‌الکتریک (DBD) برای جوانسازی کامل بدون بیهوشی و بدون اسکار.',
-    primaryCtaText: 'مشخصات دستگاه PlasmaX',
-    primaryCtaLink: '/plasmax',
-    secondaryCtaText: 'درخواست دمو حضوری',
-    secondaryCtaLink: '/b2b',
+      'ترکیب پودر میکروکریستال خالص آلومینا و روغن‌های زیست‌سازگار برای جداسازی بدون تروما سلول‌های مرده اپیدرم و افزایش ۵ برابری جذب ترابافتی فرمولاسیون‌های بالینی.',
+    primaryCtaText: 'مشاهده مشخصات Crystalene',
+    primaryCtaLink: '/crystalene',
+    secondaryCtaText: 'دانشنامه ترکیبات فعال',
+    secondaryCtaLink: '/ingredients',
   },
 ];
 

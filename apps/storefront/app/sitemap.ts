@@ -51,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  // 5. Products & Medical Equipment Catalog
+  // 5. Topical Skincare Formulations & Protocols Catalog
   const productEntries: MetadataRoute.Sitemap = DEMO_PRODUCT_SLUGS.map((slug) => ({
     url: `${BASE_URL}/products/${slug}`,
     lastModified,

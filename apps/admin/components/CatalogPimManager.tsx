@@ -580,24 +580,22 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     <td className="tabular-nums">
                       <span style={{ fontSize: "0.82rem" }}>{faNumber(p.ingredientsCount)} ترکیب دارویی</span>
                     </td>
-                    <td>
-                      <button
-                        type="button"
-                        disabled={!canEditPim}
-                        onClick={() => handleToggleStatus(p.id)}
-                        className={`status-pill ${p.status === "PUBLISHED" ? "approved pulse" : "pending_review"}`}
-                        style={{
-                          cursor: canEditPim ? "pointer" : "default",
-                          border: "none",
-                          width: "100%",
-                          textAlign: "center",
-                          padding: "6px 10px",
-                          fontWeight: 800,
-                        }}
-                        title="کلیک برای فعال یا غیرفعال کردن نمایش این کالا در فروشگاه"
-                      >
-                        {p.status === "PUBLISHED" ? "✓ فعال در سایت" : "✕ غیرفعال"}
-                      </button>
+                    <td style={{ textAlign: "center" }}>
+                      <label className="toggle-switch-wrapper" title={p.status === "PUBLISHED" ? "کلیک برای غیرفعال‌سازی (DRAFT)" : "کلیک برای فعال‌سازی در سایت (PUBLISHED)"}>
+                        <input
+                          type="checkbox"
+                          className="toggle-switch-input"
+                          checked={p.status === "PUBLISHED"}
+                          disabled={!canEditPim}
+                          onChange={() => handleToggleStatus(p.id)}
+                        />
+                        <span className="toggle-switch-track">
+                          <span className="toggle-switch-thumb" />
+                        </span>
+                        <span className="toggle-switch-label-text" style={{ color: p.status === "PUBLISHED" ? "#059669" : "var(--muted)" }}>
+                          {p.status === "PUBLISHED" ? "فعال" : "پیش‌نویس"}
+                        </span>
+                      </label>
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: "6px" }}>
@@ -731,13 +729,34 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.82rem", fontWeight: 800, display: "block", marginBottom: "4px" }}>مسیر فایل تصویر شاخص:</label>
+                  <label style={{ fontSize: "0.82rem", fontWeight: 800, display: "block", marginBottom: "4px" }}>انتخاب یا درج تصویر شاخص:</label>
                   <input
                     className="admin-input"
                     dir="ltr"
                     value={newImage}
                     onChange={(e) => setNewImage(e.target.value)}
                   />
+                  <div className="image-presets-grid">
+                    {[
+                      "/assets/drdermer/2025/07/azelaic-acid-carboxygel-600x600.png",
+                      "/assets/drdermer/2025/07/glycolic-acid-carboxygel-600x600.png",
+                      "/assets/drdermer/2025/07/multi-active-carboxygel-600x600.png",
+                      "/assets/drdermer/2025/07/carbon-carboxypod-app-1-551x600.png",
+                      "/assets/drdermer/2025/07/carboxygel-activator-mask-and-pads-1-600x600.png",
+                      "/assets/drdermer/2025/08/crystalene-scrub.webp",
+                      "/assets/drdermer/2025/08/healene-gel.webp",
+                      "/assets/drdermer/2025/08/silicalene-scrub.webp",
+                    ].map((imgUrl) => (
+                      <div
+                        key={imgUrl}
+                        className={`image-preset-item ${newImage === imgUrl ? "selected" : ""}`}
+                        onClick={() => setNewImage(imgUrl)}
+                        title={imgUrl.split("/").pop()}
+                      >
+                        <img src={imgUrl} alt="" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div>

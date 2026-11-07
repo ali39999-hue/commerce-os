@@ -360,9 +360,9 @@ export function CrystaleneInteractiveSection() {
             {/* Diamond Suction Microderm */}
             <div className="cp-compare-card">
               <span className="cp-compare-badge" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', borderColor: 'rgba(56, 189, 248, 0.3)' }}>
-                میکرودرم ابریژن دستگاهی
+                روش‌های سنتی سایش مکانیکی
               </span>
-              <h3 className="cp-compare-title">دستگاه‌های مکش پودری / الماسی</h3>
+              <h3 className="cp-compare-title">سامانه‌های مکش پودری و الماسی</h3>
               <ul className="cp-compare-list">
                 <li>⚠️ ایجاد کشش مکانیکی و خطر پارگی مویرگ‌های تلانژکتازی</li>
                 <li>⚠️ هزینه بالا به ازای هر جلسه در کلینیک</li>

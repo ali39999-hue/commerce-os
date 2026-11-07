@@ -33,6 +33,16 @@ const nextConfig: NextConfig = {
         destination: '/#products',
         permanent: true,
       },
+      {
+        source: '/vendors/:path*',
+        destination: '/#products',
+        permanent: true,
+      },
+      {
+        source: '/vendors',
+        destination: '/#products',
+        permanent: true,
+      },
     ];
   },
 };

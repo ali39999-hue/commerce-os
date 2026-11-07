@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'دکتر درمر | سیستم جامع سلامت و مراقبت بالینی پوست',
     short_name: 'دکتر درمر',
     description:
-      'فروشگاه رسمی و آکادمی تخصصی برندهای درمانی ReeSkin و ReeMed انگلستان؛ کربوکسی‌تراپی پیشرفته (CarboxyGel)، نوسازی سلولی با اثر بوهر (Bohr Effect) و پورتال ملزومات کلینیکال.',
+      'فروشگاه رسمی و مرکز تخصصی علوم درماتولوژی برندهای درمانی ReeSkin و ReeMed انگلستان؛ کربوکسی‌تراپی پیشرفته (CarboxyGel)، نوسازی سلولی با اثر بوهر (Bohr Effect) و ملزومات مراقبت بالینی پوست.',
     start_url: '/',
     display: 'standalone',
     dir: 'rtl',

@@ -90,13 +90,11 @@ const FORMULATION_FACETS = [
   { slug: 'polish-paste', label: 'خمیر پولیش' },
   { slug: 'soothing-gel', label: 'ژل تسکین‌بخش' },
   { slug: 'detox-scrub', label: 'اسکراب دتوکس' },
-  { slug: 'clinical-equipment', label: 'تجهیزات کلینیکال' },
 ];
 
 const CATEGORY_FACETS = [
   { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
   { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' },
-  { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' },
 ];
 
 const PRODUCT_TYPE_FACETS = [
@@ -119,10 +117,6 @@ const SYNONYMS_MAP: Record<string, string[]> = {
   crystalene: ['کریستالین', 'پولیش', 'paste', 'لایه‌بردار'],
   سیلیکالین: ['silicalene', 'دتوکس', 'اسکراب', 'سیلیکا', 'منافذ'],
   silicalene: ['سیلیکالین', 'اسکراب', 'scrub', 'detox'],
-  کربوکس: ['carbox', 'تجهیزات', 'دستگاه', 'دستگاه کربوکسی'],
-  carbox: ['کربوکس', 'دستگاه', 'station', 'co2 injection'],
-  پلاسماکس: ['plasmax', 'پلاسما', 'جت پلاسما', 'دستگاه پلاسما'],
-  plasmax: ['پلاسماکس', 'پلاسما', 'cold jet', 'plasma'],
   ری‌اسکین: ['reeskin', 'درمر', 'dermer'],
   reeskin: ['ری‌اسکین', 'درمر', 'dermer'],
   ری‌مد: ['reemed', 'درمر', 'dermer'],
@@ -137,10 +131,10 @@ const SYNONYMS_MAP: Record<string, string[]> = {
 const SUGGESTED_QUICK_SEARCHES = [
   'کربوکسی ژل CarboxyGel',
   'پدهای فعال‌ساز CarboxyPod',
+  'پدهای آناتومیک CarboxyPad',
   'ژل تسکین‌بخش هیلین Healene',
   'خمیر پولیش کریستالین Crystalene',
   'اسکراب دتوکس سیلیکالین Silicalene',
-  'دستگاه مدیکال CarboX و PlasmaX',
 ];
 
 const EMPTY_FACETS: SearchFacets = {
@@ -260,22 +254,12 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     const catSlug = typeof categoryRaw.slug === 'string' ? categoryRaw.slug : '';
     if (catSlug === 'consumables' || catSlug === 'پد' || catSlug === 'ملزومات') {
       categoryObj = { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' };
-    } else if (catSlug === 'clinical-equipment' || catSlug === 'دستگاه' || catSlug === 'تجهیزات') {
-      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
     } else if (catSlug === 'skincare') {
       categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
     }
   }
   if (!categoryObj) {
     if (
-      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
-      slug.includes('plasmax') ||
-      title.includes('دستگاه') ||
-      title.includes('ایستگاه') ||
-      title.includes('تجهیزات پزشکی')
-    ) {
-      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
-    } else if (
       slug.includes('pod') ||
       slug.includes('pad') ||
       title.includes('پد') ||
@@ -288,7 +272,7 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   }
 
   // Formulation mapping
-  // Formulations: ژل کربوکسی، پادهای فعال‌ساز، پد آلکالاین، خمیر پولیش، ژل تسکین‌بخش، اسکراب دتوکس، تجهیزات کلینیکال
+  // Formulations: ژل کربوکسی، پادهای فعال‌ساز، پد آلکالاین، خمیر پولیش، ژل تسکین‌بخش، اسکراب دتوکس
   let formulation: string | null = null;
   if (slug.includes('carboxypod') || (slug.includes('pod') && !slug.includes('carbox')) || title.includes('پاد')) {
     formulation = 'activation-pods';
@@ -300,15 +284,6 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     formulation = 'soothing-gel';
   } else if (slug.includes('silicalene') || slug.includes('scrub') || title.includes('سیلیکالین') || title.includes('اسکراب')) {
     formulation = 'detox-scrub';
-  } else if (
-    (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
-    slug.includes('plasmax') ||
-    title.includes('دستگاه') ||
-    title.includes('پلاسما')
-  ) {
-    formulation = 'clinical-equipment';
-  } else if (slug.includes('carboxy') || title.includes('کربوکسی') || slug.includes('gel') || title.includes('ژل')) {
-    formulation = 'carboxy-gel';
   } else {
     formulation = 'carboxy-gel';
   }
@@ -333,9 +308,6 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   }
   if (slug.includes('silicalene') || title.includes('سیلیکالین') || title.includes('اسکراب')) {
     concernsList.push('acne-blemish');
-  }
-  if (slug.includes('carbox') || slug.includes('plasmax') || title.includes('دستگاه') || title.includes('پلاسما')) {
-    concernsList.push('scar-recovery', 'anti-aging-lifting');
   }
   if (title.includes('لک') || title.includes('آکنه') || title.includes('جوش') || title.includes('منافذ')) {
     if (!concernsList.includes('acne-blemish')) concernsList.push('acne-blemish');

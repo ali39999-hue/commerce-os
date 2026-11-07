@@ -148,7 +148,7 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
     {
       id: "clinical_in_office",
       title: "پروتکل کلینیکال و ارجاع به پزشک (ReeMed Clinic Suite)",
-      desc: "درمان ترکیبی با دستگاه‌های مطبی CarboX و پلاسما سرد، نیازمند اپراتور مجرب",
+      desc: "درمان تخصصی کابین با ژل‌های غلیظ CarboxyGel و پادهای ترابافتی ویژه کلینیک",
       iconSvg: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M22 12h-4l-3 9L9 3l-3 9H2" />

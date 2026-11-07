@@ -263,7 +263,7 @@ export default function ClinicalContentManager({
           }}
           className={`b2b-chip ${tab === "academy" ? "active" : ""}`}
         >
-          📚 آکادمی مقالات و پروتکل‌های بالینی ({faNumber(articles.length)})
+          📚 پایگاه مقالات و پروتکل‌های بالینی ({faNumber(articles.length)})
         </button>
       </div>
 
@@ -473,7 +473,7 @@ export default function ClinicalContentManager({
         <section className="admin-section-box">
           <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <h2>مدیریت مقالات آکادمی پوست و راهنماهای بالینی</h2>
+              <h2>مدیریت مقالات علمی پوست و راهنماهای بالینی</h2>
               <small>تولید محتوای آموزشی علمی بر اساس گایدلاین‌های درماتولوژی جهانی</small>
             </div>
             <span className="badge-live">PEER-REVIEW WORKFLOW</span>

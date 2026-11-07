@@ -2,64 +2,57 @@ import Link from 'next/link';
 
 export function ClinicB2BStrip() {
   return (
-    <section className="clinic-b2b-strip" aria-labelledby="b2b-strip-title">
+    <section className="clinic-b2b-strip" aria-labelledby="formulation-strip-title">
       <div className="b2b-strip-container">
         <div className="b2b-content-side">
           <div className="b2b-eyebrow">
             <span className="b2b-pulse-dot" aria-hidden="true" />
-            <span>پورتال اختصاصی متخصصین پوست، جراحان و مدیران کلینیک‌های زیبایی</span>
+            <span>فرمولاسیون‌های پیشرفته ۲ فاز با فعال‌سازی بیومتریک</span>
           </div>
 
-          <h2 id="b2b-strip-title" className="b2b-title">
-            تأمین مستقیم تجهیزات پزشکی ReeMed و کیت‌های کلینیکال CarboxyPod
+          <h2 id="formulation-strip-title" className="b2b-title">
+            هم‌افزایی علمی ژل CarboxyGel و پدهای فعال‌ساز واکنش بوهر
           </h2>
 
           <p className="b2b-text">
-            با پیوستن به شبکه کلینیک‌های طرف قرارداد Dr. Dermer UK در سراسر کشور، از قیمت‌گذاری پلکانی همکار، صدور رسمی پیش‌فاکتور شرکتی، کارگاه‌های عملی حضوری برای کادر درمان و خدمات پس از فروش کمپانی انگلستان بهره‌مند شوید.
+            سیستم رهایش ترنس‌درمال دی‌اکسید کربن فعال با تحریک طبیعی اثر بوهر، آزادسازی فوری اکسیژن در بافت و نوسازی عمیق فیبروبلاست‌ها را بدون نیاز به اقدامات تهاجمی به ارمغان می‌آورد.
           </p>
 
           <div className="b2b-perks">
             <div className="perk-item">
               <div className="perk-icon-wrap" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
               </div>
               <div className="perk-copy">
-                <strong>فاکتور رسمی شرکتی و شناسه اقتصادی:</strong>
-                <span>صدور آنی فاکتور رسمی معتبر در سامانه مودیان و دارایی.</span>
+                <strong>تحریک فیزیولوژیک اثر بوهر:</strong>
+                <span>آزادسازی اکسیژن درون‌بافتی بر پایه شیب غلظت مولکولی دی‌اکسید کربن و هموگلوبین.</span>
               </div>
             </div>
 
             <div className="perk-item">
               <div className="perk-icon-wrap" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
               </div>
               <div className="perk-copy">
-                <strong>سرتیفیکیت رسمی آکادمی دکتر درمر:</strong>
-                <span>اعطای گواهی معتبر اپراتوری و کاربری بالینی دستگاه‌های CarboX و PlasmaX.</span>
+                <strong>پایداری ماتریکس لاملار و سد دفاعی:</strong>
+                <span>تثبیت رطوبت ترنس‌اپیدرمال با بهره‌گیری از سرامید NP و اسیدهای هیالورونیک چندوزنی.</span>
               </div>
             </div>
 
             <div className="perk-item">
               <div className="perk-icon-wrap" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                  <rect x="1" y="3" width="15" height="13" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m9 12 2 2 4-4" />
                 </svg>
               </div>
               <div className="perk-copy">
-                <strong>زنجیره تأمین اختصاصی و پرداخت اعتباری:</strong>
-                <span>ارسال منظم ماهانه ژل‌ها و پادها با شرایط پرداخت منعطف برای مراکز درمانی.</span>
+                <strong>استانداردهای خلوص فارماکوپه اروپایی:</strong>
+                <span>تولید و کنترل کیفیت بر اساس استانداردهای ایزو و آزمون‌های غیرکومدوژنیک.</span>
               </div>
             </div>
           </div>
@@ -67,20 +60,20 @@ export function ClinicB2BStrip() {
 
         <div className="b2b-action-side">
           <div className="b2b-cta-card">
-            <span className="cta-card-badge">B2B PARTNERSHIP PORTAL</span>
-            <h3 className="cta-card-title">ثبت استعلام و پورتال همکاران</h3>
+            <span className="cta-card-badge">ADVANCED CARBOXYGEL FORMULATION</span>
+            <h3 className="cta-card-title">مشاهده کیت‌های ۲ فاز CarboxyGel</h3>
             <p className="cta-card-desc">
-              درخواست خود را برای دریافت پیش‌فاکتور قیمت همکاری، جدول اقساط و کاتالوگ جامع ارتوپدی و پوست ارسال فرمایید.
+              کاتالوگ جامع فرمولاسیون‌های موضعی، پدهای فعال‌ساز و سرم‌های ترمیم‌کننده پوست را بررسی فرمایید.
             </p>
-            <Link href="/b2b" className="btn-b2b-primary">
-              <span>ورود به پورتال B2B و درخواست همکاری</span>
+            <Link href="/#products" className="btn-b2b-primary">
+              <span>مشاهده کاتالوگ فرمولاسیون‌ها</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
             </Link>
             <div className="b2b-support-phone">
-              <span>خط مستقیم مدیریت امور بالینی: </span>
+              <span>پاسخگویی به سوالات علمی فرمولاسیون: </span>
               <a href="tel:02188880002" dir="ltr" className="phone-num">۰۲۱-۸۸۸۸۰۰۰۲</a>
             </div>
           </div>

@@ -69,7 +69,7 @@ export function CanvasSequencePlayer({
   aspectRatio = 1.33,
   overlayHotspots = [],
   className = '',
-  label = 'نمایش سه‌بعدی ۳۶۰ درجه دستگاه',
+  label = 'نمایش سه‌بعدی ۳۶۰ درجه فرمولاسیون بالینی',
   onFrameChange,
   onHotspotSelect,
   selectedHotspotId: externalSelectedHotspotId,
@@ -750,7 +750,7 @@ export function CanvasSequencePlayer({
             <div className="canvas-loading-spinner" />
             <h4 className="canvas-loading-title">در حال بارگذاری فریم‌های ۳۶۰ درجه</h4>
             <p className="canvas-loading-subtitle">
-              کنسول سخت‌افزاری دکتر درمر • رزولوشن بالا و دابل‌بافر
+              فرمولاسیون بالینی دکتر درمر • رزولوشن بالا و دابل‌بافر
             </p>
 
             <div className="canvas-progress-track">

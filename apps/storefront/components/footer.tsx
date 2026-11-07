@@ -36,16 +36,16 @@ export function SiteFooter() {
 
             {/* Certifications Badge Row */}
             <div className="footer-cert-badges" aria-label="گواهینامه‌های پزشکی و استانداردهای دارویی">
-              <div className="cert-pill" title="استاندارد مدیریت کیفیت تجهیزات پزشکی">
-                <span className="cert-code">ISO 13485</span>
-                <span className="cert-desc">تجهیزات پزشکی</span>
-              </div>
               <div className="cert-pill" title="استاندارد شرایط خوب تولید مواد آرایشی و درموسوتیکال">
                 <span className="cert-code">GMP / ISO 22716</span>
                 <span className="cert-desc">گرید دارویی</span>
               </div>
+              <div className="cert-pill" title="استاندارد سیستم مدیریت کیفیت بین‌المللی">
+                <span className="cert-code">ISO 9001</span>
+                <span className="cert-desc">کیفیت بالینی</span>
+              </div>
               <div className="cert-pill" title="انطباق با استانداردهای بهداشت و سلامت اتحادیه اروپا">
-                <span className="cert-code">CE MEDICAL</span>
+                <span className="cert-code">CE CLINICAL</span>
                 <span className="cert-desc">نشان رسمی اروپا</span>
               </div>
             </div>

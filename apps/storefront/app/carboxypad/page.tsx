@@ -576,7 +576,7 @@ export default function CarboxypadPage() {
                   </div>
                   <div className="cpad-feature-line">
                     <span className="cpad-check-icon">✓</span>
-                    <span>تخفیف ویژه برای خرید باکس‌های کلینیکال ۵۰ عددی مطب‌ها</span>
+                    <span>تخفیف ویژه برای خرید باکس‌های کلینیکال ۵۰ عددی مراکز درمانی</span>
                   </div>
                 </div>
 

@@ -83,31 +83,31 @@ const FEATURED_PRODUCTS = [
   },
   {
     id: 'prod-5',
-    slug: 'plasmax',
-    title: 'کنسول جراحی و درمانی میکروپلاسما PlasmaX™',
-    category: 'دستگاه‌های پزشکی',
-    badge: 'استاندارد CE IIb',
-    badgeColor: 'bg-purple-100 text-purple-800',
-    image: '/assets/drdermer/2025/08/18plasmax.webp',
-    priceTomans: '۵۸,۰۰۰,۰۰۰',
-    oldPriceTomans: '۶۵,۰۰۰,۰۰۰',
-    rating: '۵.۰',
-    reviewsCount: '۴۲',
-    indication: '۳ مدالیته پلاسما: آرک پیوسته جراحی، جت سرد اتمسفری و تخلیه سد DBD',
+    slug: 'crystalene',
+    title: 'خمیر پولیش ابریشمی Crystalene™ Silk Microderm',
+    category: 'لایه‌برداری بالینی',
+    badge: 'گرید دارویی',
+    badgeColor: 'bg-emerald-100 text-emerald-800',
+    image: '/assets/drdermer/2025/07/site-combo-carboxy-1.png',
+    priceTomans: '۱,۹۵۰,۰۰۰',
+    oldPriceTomans: '۲,۲۰۰,۰۰۰',
+    rating: '۴.۸',
+    reviewsCount: '۶۴',
+    indication: 'میکروکریستال‌های آلومینا با خلوص ۹۹.۶٪ و اسیدهای چرب تسکین‌بخش',
   },
   {
     id: 'prod-6',
-    slug: 'carbox',
-    title: 'ایستگاه بالینی کربوکسی‌تراپی CarboX™ Pro',
-    category: 'دستگاه‌های پزشکی',
-    badge: 'پلتفرم کلینیکال',
-    badgeColor: 'bg-indigo-100 text-indigo-800',
-    image: '/assets/drdermer/2025/08/19carbox.webp',
-    priceTomans: '۸۴,۰۰۰,۰۰۰',
+    slug: 'healene',
+    title: 'امولسیون ترمیم سد دفاعی Healene™ Barrier Repair',
+    category: 'ترمیم و بازسازی',
+    badge: 'ضد التهاب',
+    badgeColor: 'bg-teal-100 text-teal-800',
+    image: '/assets/drdermer/2025/07/site-combo-carboxy-1.png',
+    priceTomans: '۲,۳۵۰,۰۰۰',
     oldPriceTomans: '',
     rating: '۴.۹',
-    reviewsCount: '۳۱',
-    indication: 'مدالیته تزریق ساب‌کیوتنیوس و سونوفورز ترنس‌درمال با سنسور فشار دقیق',
+    reviewsCount: '۵۸',
+    indication: 'کمپلکس سرامید NP و اسید مادکاسیک جهت ترمیم سریع بافت ملتهب',
   },
 ];
 
@@ -228,7 +228,7 @@ export default function RupakShowcasePage() {
               type="button"
               className="bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium px-4 py-2 rounded-xl border border-slate-200 whitespace-nowrap transition"
             >
-              دستگاه‌های پزشکی
+              کیت‌های بالینی و تخصصی
             </button>
           </div>
         </div>
@@ -361,13 +361,13 @@ export default function RupakShowcasePage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/plasmax" className="hover:text-white transition">
-                    دستگاه جراحی و درمانی PlasmaX
+                  <Link href="/crystalene" className="hover:text-white transition">
+                    خمیر پولیش ابریشمی Crystalene
                   </Link>
                 </li>
                 <li>
-                  <Link href="/b2b" className="hover:text-white transition">
-                    پرتال کلینیک‌ها و مراکز درمانی (B2B)
+                  <Link href="/ingredients" className="hover:text-white transition">
+                    دانشنامه ترکیبات فعال (INCI)
                   </Link>
                 </li>
               </ul>

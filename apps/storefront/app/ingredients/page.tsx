@@ -27,8 +27,7 @@ export default function IngredientsPage() {
           "@type": "BreadcrumbList",
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "صفحه اصلی", item: `${SITE_URL}/` },
-            { "@type": "ListItem", position: 2, name: "آکادمی علوم پوست", item: `${SITE_URL}/academy` },
-            { "@type": "ListItem", position: 3, name: "دانشنامه ترکیبات فعال", item: `${SITE_URL}/ingredients` },
+            { "@type": "ListItem", position: 2, name: "دانشنامه ترکیبات فعال", item: `${SITE_URL}/ingredients` },
           ],
         },
       },
