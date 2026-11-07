@@ -334,9 +334,15 @@ async function main() {
         body: JSON.stringify({ status: "PUBLISHED" }),
       });
       const publishedAt = publish.json?.data?.publishedAt ?? publish.json?.publishedAt;
+      // پاکسازی: محصول آزمون بایگانی می‌شود تا ویترین فروشگاه تمیز بماند
+      await api(`/v1/stores/admin/products/${productId}`, {
+        method: "PATCH",
+        headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+        body: JSON.stringify({ status: "ARCHIVED" }),
+      });
       const ok = publish.ok && !!publishedAt;
-      step("18. نویسندگی محصول در ERP (DRAFT → PUBLISHED)", ok ? "PASS" : "FAIL",
-        `id=${productId.slice(0, 8)}… · slug=${testSlug} · publishedAt=${publishedAt ? "ثبت شد ✓" : "—"}`);
+      step("18. نویسندگی محصول در ERP (DRAFT → PUBLISHED → بایگانی)", ok ? "PASS" : "FAIL",
+        `id=${productId.slice(0, 8)}… · slug=${testSlug} · publishedAt=${publishedAt ? "ثبت شد ✓" : "—"} · پاکسازی=${"انجام شد ✓"}`);
     } else {
       step("18. نویسندگی محصول در ERP", "FAIL", `HTTP ${create.status}: ${create.json?.message ?? ""}`);
     }

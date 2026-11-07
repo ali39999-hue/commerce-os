@@ -370,9 +370,17 @@ export function calculateCartTotals(
  */
 export async function verifyCartWithServer(
   items: CartItem[]
-): Promise<{ verifiedItems: CartItem[]; priceChanges: string[]; stockIssues: string[] }> {
+): Promise<{
+  verifiedItems: CartItem[];
+  priceChanges: string[];
+  stockIssues: string[];
+  removedNotices: string[];
+  changed: boolean;
+}> {
   const priceChanges: string[] = [];
   const stockIssues: string[] = [];
+  const removedNotices: string[] = [];
+  let changed = false;
   const verifiedItems: CartItem[] = [];
 
   try {
@@ -384,20 +392,33 @@ export async function verifyCartWithServer(
 
     if (!res.ok) {
       // In offline/demo mode, retain existing items
-      return { verifiedItems: items, priceChanges, stockIssues };
+      return { verifiedItems: items, priceChanges, stockIssues, removedNotices, changed };
     }
 
     const payload = await res.json();
     const products: any[] = payload?.data || [];
 
-    const variantCatalog = new Map<string, { priceAmount: string; inStock: boolean; title: string }>();
+    interface CatalogEntry {
+      variantId: string;
+      productId: string;
+      priceAmount: string;
+      inStock: boolean;
+      title: string;
+    }
+    const variantCatalog = new Map<string, CatalogEntry>();
+    const skuCatalog = new Map<string, CatalogEntry>();
     for (const p of products) {
       for (const v of p.variants || []) {
-        variantCatalog.set(v.id, {
+        const entry: CatalogEntry = {
+          variantId: v.id,
+          productId: p.id,
           priceAmount: v.priceAmount,
           inStock: v.inStock !== false,
           title: `${p.title} - ${v.title}`,
-        });
+        };
+        variantCatalog.set(v.id, entry);
+        const skuKey = String(v.sku ?? "").trim().toUpperCase();
+        if (skuKey) skuCatalog.set(skuKey, entry);
       }
     }
 
@@ -411,19 +432,39 @@ export async function verifyCartWithServer(
           priceChanges.push(
             `قیمت «${it.title}» در سیستم به‌روزرسانی شد (${formatToman(serverVariant.priceAmount)})`
           );
+          changed = true;
         }
         verifiedItems.push({
           ...it,
+          productId: serverVariant.productId,
           priceAmount: serverVariant.priceAmount,
         });
       } else {
-        verifiedItems.push(it);
+        // شناسهٔ واریانت در کاتالوگ زنده نیست — مثلاً دیتابیس دوباره seed شده یا
+        // قلم از دورهٔ کاتالوگ نمونه مانده است. ابتدا با SKU ترمیم می‌شود؛
+        // در غیر این صورت قلم حذف و به کاربر اطلاع داده می‌شود تا سبد مسموم
+        // نشود و پرداخت شکست نخورد.
+        const skuKey = String(it.sku ?? "").trim().toUpperCase();
+        const healed = skuKey ? skuCatalog.get(skuKey) : undefined;
+        if (healed) {
+          verifiedItems.push({
+            ...it,
+            variantId: healed.variantId,
+            productId: healed.productId,
+            priceAmount: healed.priceAmount,
+          });
+          priceChanges.push(`اقلام «${it.title}» با شناسهٔ جدید انبار همگام‌سازی شد`);
+          changed = true;
+        } else {
+          removedNotices.push(`«${it.title}» از سبد حذف شد — دیگر در انبار موجود نیست`);
+          changed = true;
+        }
       }
     }
 
-    return { verifiedItems, priceChanges, stockIssues };
+    return { verifiedItems, priceChanges, stockIssues, removedNotices, changed };
   } catch {
     // Network or timeout fallback: trust local cart
-    return { verifiedItems: items, priceChanges, stockIssues };
+    return { verifiedItems: items, priceChanges, stockIssues, removedNotices, changed };
   }
 }

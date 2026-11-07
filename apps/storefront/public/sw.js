@@ -1,5 +1,7 @@
-/* Service Worker بازارک — Commerce OS */
-const CACHE_NAME = 'commerce-os-v1';
+/* Service Worker دکتر درمر — Commerce OS Storefront */
+// نکتهٔ نسخهٔ کش: با هر تغییر ساختاری صفحه‌ها این نام باید bump شود تا
+// کلاینت‌های قدیمی به‌جای HTML کهنهٔ کش‌شده، نسخهٔ تازه را ببینند.
+const CACHE_NAME = 'drdermer-storefront-v2';
 const PRECACHE_URLS = ['/', '/offline.html'];
 
 self.addEventListener('install', (event) => {

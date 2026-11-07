@@ -120,7 +120,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [shippingMethod, isReady]);
 
-  // Periodic and on-mount server inventory check
+  // Periodic and on-mount server inventory check — also heals stale variant ids
+  // (e.g. after a database re-seed) by SKU or removes them with a notice, so a
+  // poisoned localStorage cart can never break checkout.
   useEffect(() => {
     if (!isReady || items.length === 0) return;
 
@@ -128,14 +130,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsSyncing(true);
 
     verifyCartWithServer(items)
-      .then(({ verifiedItems, priceChanges, stockIssues }) => {
+      .then(({ verifiedItems, priceChanges, stockIssues, removedNotices, changed }) => {
         if (!active) return;
-        const allNotes = [...priceChanges, ...stockIssues];
+        const allNotes = [...priceChanges, ...stockIssues, ...removedNotices];
         if (allNotes.length > 0) {
           setSyncWarnings(allNotes);
         }
-        // Update price in cart if server updated price
-        if (priceChanges.length > 0) {
+        // Apply server reconciliation: price updates, healed ids, removals
+        if (changed) {
           setItems(verifiedItems);
         }
       })

@@ -545,6 +545,15 @@ async function runVerification() {
       }),
     });
     const productCreated = productRes.status === 201 && productRes.json?.data?.slug === vclSlug;
+    // پاکسازی: محصول آزمون بایگانی می‌شود تا کاتالوگ زنده تمیز بماند
+    const createdTestId = productRes.json?.data?.id;
+    if (createdTestId) {
+      await fetchApi(`/v1/stores/admin/products/${createdTestId}`, {
+        method: "PATCH",
+        headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+        body: JSON.stringify({ status: "ARCHIVED" }),
+      });
+    }
 
     // (b) Storefront section control: newsletter=false -> GET persisted -> reset via DELETE (reset = delete row)
     const sectionPut = await fetchApi("/v1/settings/storefront/home-sections", {
