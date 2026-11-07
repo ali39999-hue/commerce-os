@@ -20,6 +20,87 @@ import { CatalogService } from './catalog.service';
 export class CatalogController {
   constructor(private readonly catalog: CatalogService) {}
 
+  // ── Admin Endpoints (Tenant-Isolated) ──
+  // هشدار ترتیب مسیرها: این بلاک باید «قبل از» مسیرهای وایلدکارت عمومی
+  // (:storeSlug/products …) تعریف شود — در غیر این صورت Nextجِی‌اس (Nest)
+  // «admin» را به‌عنوان :storeSlug تفسیر می‌کند و مسیرهای ادمین هرگز به
+  // هندلر خودشان نمی‌رسند (پاسخ: fallback داده نمونه به‌صورت بی‌صدا).
+  @Get('admin/products')
+  async adminListProducts(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+    @Query('limit') limitStr?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const limit = limitStr ? parseInt(limitStr, 10) : 50;
+    const items = await this.catalog.adminListProducts(tenant, storeSlug, limit);
+    return { data: items, meta: { count: items.length } };
+  }
+
+  @Post('admin/products/bulk-update')
+  @UseGuards(AdminGuard)
+  async adminBulkUpdateProducts(
+    @Body() body: BulkUpdateProductsDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const result = await this.catalog.adminBulkUpdateProducts(tenant, body as BulkUpdateProductsDto);
+    return { data: result };
+  }
+
+  @Post('admin/products')
+  @UseGuards(AdminGuard)
+  async adminCreateProduct(
+    @Body() body: CreateProductDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminCreateProduct(tenant, body as CreateProductDto);
+    return { data: item };
+  }
+
+  @Get('admin/products/:id')
+  async adminGetProduct(
+    @Param('id') id: string,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminGetProduct(tenant, id);
+    return { data: item };
+  }
+
+  @Patch('admin/products/:id')
+  @UseGuards(AdminGuard)
+  async adminUpdateProduct(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminUpdateProduct(tenant, id, body as UpdateProductDto);
+    return { data: item };
+  }
+
+  @Get('admin/brands')
+  async adminListBrands(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const items = await this.catalog.adminListBrands(tenant, storeSlug);
+    return { data: items };
+  }
+
+  @Get('admin/concerns')
+  async adminListSkinConcerns(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const items = await this.catalog.adminListSkinConcerns(tenant, storeSlug);
+    return { data: items };
+  }
+
   @Get('resolve')
   async resolve(@Query('slug') slug?: string) {
     return this.catalog.resolveStore(slug ?? '');
@@ -98,85 +179,6 @@ export class CatalogController {
   async listSkinConcerns(@Param('storeSlug') storeSlug: string) {
     const concerns = await this.catalog.listSkinConcerns(storeSlug);
     return { data: concerns };
-  }
-
-  // ── Admin Endpoints (Tenant-Isolated) ──
-
-  @Get('admin/products')
-  async adminListProducts(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-    @Query('limit') limitStr?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const limit = limitStr ? parseInt(limitStr, 10) : 50;
-    const items = await this.catalog.adminListProducts(tenant, storeSlug, limit);
-    return { data: items, meta: { count: items.length } };
-  }
-
-  // POST admin/products/bulk-update — قبل از مسیر پارامتری :id تعریف می‌شود
-  @Post('admin/products/bulk-update')
-  @UseGuards(AdminGuard)
-  async adminBulkUpdateProducts(
-    @Body() body: BulkUpdateProductsDto,
-    @Headers('x-tenant-id') tenantId?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const result = await this.catalog.adminBulkUpdateProducts(tenant, body as BulkUpdateProductsDto);
-    return { data: result };
-  }
-
-  @Post('admin/products')
-  @UseGuards(AdminGuard)
-  async adminCreateProduct(
-    @Body() body: CreateProductDto,
-    @Headers('x-tenant-id') tenantId?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const item = await this.catalog.adminCreateProduct(tenant, body as CreateProductDto);
-    return { data: item };
-  }
-
-  @Get('admin/products/:id')
-  async adminGetProduct(
-    @Param('id') id: string,
-    @Headers('x-tenant-id') tenantId?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const item = await this.catalog.adminGetProduct(tenant, id);
-    return { data: item };
-  }
-
-  @Patch('admin/products/:id')
-  @UseGuards(AdminGuard)
-  async adminUpdateProduct(
-    @Param('id') id: string,
-    @Body() body: UpdateProductDto,
-    @Headers('x-tenant-id') tenantId?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const item = await this.catalog.adminUpdateProduct(tenant, id, body as UpdateProductDto);
-    return { data: item };
-  }
-
-  @Get('admin/brands')
-  async adminListBrands(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const items = await this.catalog.adminListBrands(tenant, storeSlug);
-    return { data: items };
-  }
-
-  @Get('admin/concerns')
-  async adminListSkinConcerns(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const items = await this.catalog.adminListSkinConcerns(tenant, storeSlug);
-    return { data: items };
   }
 
   private requireTenant(tenantId?: string): string {

@@ -273,9 +273,10 @@ export class UpdateProductDto {
   @Min(0)
   stock?: number;
 
+  // ARCHIVED = حذف نرم از ویترین (بایگانی) — همان چرخه‌ای که bulk-update می‌پذیرد
   @IsOptional()
-  @IsIn(["DRAFT", "PUBLISHED"])
-  status?: "DRAFT" | "PUBLISHED";
+  @IsIn(["DRAFT", "PUBLISHED", "ARCHIVED"])
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
   @IsOptional()
   @IsBoolean()

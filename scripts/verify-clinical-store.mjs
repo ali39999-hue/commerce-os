@@ -283,8 +283,7 @@ async function runVerification() {
     const homeVariant = carboxyVariantsList.find((v) => v.sku === "CBG-HOME-5X") || carboxyVariant;
 
     // 5a. Resolve a real variant UUID dynamically from the live catalog
-    // (seed grants Healene 250ml 50 units on hand — enough for the 30/30 lease race below;
-    // a hardcoded UUID would break on every fresh database seed).
+    // (a hardcoded UUID would break on every fresh database seed).
     let testVariantId = null;
     try {
       const heaRes = await fetchApi("/v1/stores/demo/products/healene");
@@ -298,6 +297,23 @@ async function runVerification() {
         null;
     } catch {
       testVariantId = null;
+    }
+
+    // 5b. Race quantity adapts to real AVAILABLE stock read via the admin catalog,
+    // so 2 × raceQty > available guarantees exactly one lease winner even when
+    // earlier runs left active leases (lease TTL keeps them reserved 15 min).
+    let raceQty = 30;
+    try {
+      const adminListRes = await fetchApi("/v1/stores/admin/products?store=demo&limit=50", {
+        headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+      });
+      const hea = (adminListRes.json?.data ?? []).find((p) => p.slug === "healene");
+      const available = Number(hea?.defaultVariant?.available ?? hea?.defaultVariant?.stock);
+      if (Number.isFinite(available) && available >= 2) {
+        raceQty = Math.max(1, Math.ceil((available + 1) / 2));
+      }
+    } catch {
+      // keep 30/30 default when the admin catalog is unavailable
     }
     const csRes = await fetchApi("/v1/checkout/session", {
       method: "POST",
@@ -318,14 +334,14 @@ async function runVerification() {
       }),
     });
 
-    // 5b. Concurrent lease competition test:
-    // With available stock around 48 units, two concurrent requests each ask for 30 units (total 60 > 48).
-    // Atomic row-level locking (FOR UPDATE) guarantees exactly one lease succeeds and one is rejected.
+    // 5c. Concurrent lease competition test:
+    // two concurrent leases each ask for raceQty where 2 × raceQty > on-hand stock,
+    // so atomic row-level locking (FOR UPDATE) must let exactly one succeed.
     const concurrent1 = fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: testVariantId, qty: 30 }],
+        items: [{ variantId: testVariantId, qty: raceQty }],
         customerPhone: "09121111111",
         customerName: "رزرو هم‌زمان کلینیک آلفا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک آلفا", receiverName: "دکتر الف", receiverPhone: "09121111111" },
@@ -335,7 +351,7 @@ async function runVerification() {
       method: "POST",
       body: JSON.stringify({
         storeSlug: "demo",
-        items: [{ variantId: testVariantId, qty: 30 }],
+        items: [{ variantId: testVariantId, qty: raceQty }],
         customerPhone: "09122222222",
         customerName: "رزرو هم‌زمان کلینیک بتا",
         address: { province: "تهران", city: "تهران", postalCode: "1458963214", postalAddress: "کلینیک بتا", receiverName: "دکتر ب", receiverPhone: "09122222222" },

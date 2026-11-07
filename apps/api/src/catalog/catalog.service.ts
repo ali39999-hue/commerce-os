@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
@@ -14,6 +15,8 @@ import type { Prisma, ProductStatus } from '../generated/prisma/client';
 
 @Injectable()
 export class CatalogService {
+  private readonly logger = new Logger(CatalogService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async resolveStore(slug: string) {
@@ -387,18 +390,24 @@ export class CatalogService {
 
   async adminListProducts(tenantId: string, storeSlug?: string, limit = 50) {
     try {
+      // اسلاگ فروشگاه سراسری یکتاست: مستأجر مؤثر از خود فروشگاه مشتق می‌شود؛
+      // هدر پیش‌فرض تک‌مستأجری (nil) هرگز محدوده‌سازی نمی‌کند — وگرنه این
+      // مسیر به‌جای دیتابیس، داده نمونه بازگشتی را نشان می‌داد.
       let storeId: string | undefined;
       if (storeSlug) {
         const store = await this.prisma.store.findFirst({
-          where: { tenantId, slug: storeSlug },
-          select: { id: true },
+          where: { slug: storeSlug, ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}) },
+          select: { id: true, tenantId: true },
         });
-        if (store) storeId = store.id;
+        if (store) {
+          storeId = store.id;
+          tenantId = store.tenantId;
+        }
       }
 
       const products = await this.prisma.product.findMany({
         where: {
-          tenantId,
+          ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}),
           ...(storeId ? { storeId } : {}),
         },
         orderBy: { updatedAt: 'desc' },
@@ -415,9 +424,13 @@ export class CatalogService {
         },
       });
 
+      console.error(`[adminListProducts] db rows: ${products.length}; mapping to public shape`);
       return products.map((p) => this.toPublicProduct(p));
-    } catch {
-      // Resilient fallback for admin
+    } catch (err: any) {
+      // Resilient fallback for admin — but never silently: a swallowed error here
+      // would mask real DB failures as a healthy-looking demo catalog.
+      console.error(`[adminListProducts] fell back to demo data: ${err?.message ?? err}`);
+      this.logger.warn(`adminListProducts fell back to demo data: ${err?.message ?? err}`);
       return DEMO_FALLBACK_PRODUCTS.slice(0, limit).map((p) => this.toPublicProduct(p));
     }
   }
@@ -797,18 +810,22 @@ export class CatalogService {
 
   async adminListBrands(tenantId: string, storeSlug?: string) {
     try {
+      // هم‌سو با adminListProducts: مستأجر مؤثر از خود فروشگاه مشتق می‌شود
       let storeId: string | undefined;
       if (storeSlug) {
         const store = await this.prisma.store.findFirst({
-          where: { tenantId, slug: storeSlug },
-          select: { id: true },
+          where: { slug: storeSlug, ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}) },
+          select: { id: true, tenantId: true },
         });
-        if (store) storeId = store.id;
+        if (store) {
+          storeId = store.id;
+          tenantId = store.tenantId;
+        }
       }
 
       return await this.prisma.brand.findMany({
         where: {
-          tenantId,
+          ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}),
           ...(storeId ? { storeId } : {}),
         },
         orderBy: { name: 'asc' },
@@ -820,18 +837,22 @@ export class CatalogService {
 
   async adminListSkinConcerns(tenantId: string, storeSlug?: string) {
     try {
+      // هم‌سو با adminListProducts: مستأجر مؤثر از خود فروشگاه مشتق می‌شود
       let storeId: string | undefined;
       if (storeSlug) {
         const store = await this.prisma.store.findFirst({
-          where: { tenantId, slug: storeSlug },
-          select: { id: true },
+          where: { slug: storeSlug, ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}) },
+          select: { id: true, tenantId: true },
         });
-        if (store) storeId = store.id;
+        if (store) {
+          storeId = store.id;
+          tenantId = store.tenantId;
+        }
       }
 
       return await this.prisma.skinConcern.findMany({
         where: {
-          tenantId,
+          ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}),
           ...(storeId ? { storeId } : {}),
         },
         orderBy: { name: 'asc' },
@@ -972,9 +993,11 @@ export class CatalogService {
 
   // اولین واریانت (بر اساس مرتب‌سازی اسکیو) به‌عنوان واریانت پیش‌فرض ادمین
   private toDefaultVariant(variant: any) {
-    const onHand = Array.isArray(variant.inventoryLevels) && variant.inventoryLevels.length > 0
-      ? variant.inventoryLevels[0].onHandQty
-      : 0;
+    const level = Array.isArray(variant.inventoryLevels) && variant.inventoryLevels.length > 0
+      ? variant.inventoryLevels[0]
+      : null;
+    const onHand = Number(level?.onHandQty ?? 0);
+    const reserved = Number(level?.reservedQty ?? 0);
 
     const priceStr =
       typeof variant.priceAmount === 'string'
@@ -986,6 +1009,9 @@ export class CatalogService {
       sku: variant.sku,
       priceRials: Number.parseInt(priceStr, 10) || 0,
       stock: onHand,
+      reserved,
+      // موجودی واقعاً قابل فروش = onHand − رزرو شده (قراردادهای فعال)
+      available: Math.max(0, onHand - reserved),
     };
   }
 }

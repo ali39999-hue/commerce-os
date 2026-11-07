@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { BulkUpdateProductsDto } from '../common/dto/resource-writes.dto';
+import { DEFAULT_TENANT_ID } from '../common/guards/current-tenant.decorator';
 import { CatalogService } from './catalog.service';
 import { PrismaService } from '../database/prisma.service';
 
@@ -147,18 +148,43 @@ describe('CatalogService', () => {
   });
 
   describe('admin tenant isolation', () => {
-    it('queries products strictly scoped by tenantId', async () => {
-      prisma.store.findFirst.mockResolvedValue({ id: 'store-10' });
+    it('queries products scoped by the store-derived tenantId', async () => {
+      // مستأجر مؤثر از ردیف فروشگاه مشتق می‌شود (فروشگاه مرز مستأجری است)
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
       prisma.product.findMany.mockResolvedValue([]);
 
       await service.adminListProducts('tenant-xyz', 'demo-store', 25);
 
+      expect(prisma.store.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { slug: 'demo-store', tenantId: 'tenant-xyz' },
+        }),
+      );
       expect(prisma.product.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: {
             tenantId: 'tenant-xyz',
             storeId: 'store-10',
           },
+        }),
+      );
+    });
+
+    it('drops tenant scoping for the single-tenant default (nil) header', async () => {
+      // هدر پیش‌فرض (nil) هرگز نباید کوئری خالی/داده نمونه تولید کند
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-real' });
+      prisma.product.findMany.mockResolvedValue([]);
+
+      await service.adminListProducts(DEFAULT_TENANT_ID, 'demo-store', 25);
+
+      expect(prisma.store.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { slug: 'demo-store' },
+        }),
+      );
+      expect(prisma.product.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { tenantId: 'tenant-real', storeId: 'store-10' },
         }),
       );
     });
@@ -201,7 +227,7 @@ describe('CatalogService', () => {
     });
 
     it('adminListBrands filters by tenantId', async () => {
-      prisma.store.findFirst.mockResolvedValue({ id: 'store-10' });
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
       prisma.brand.findMany.mockResolvedValue([]);
 
       await service.adminListBrands('tenant-xyz', 'demo');
@@ -216,7 +242,7 @@ describe('CatalogService', () => {
     });
 
     it('adminListSkinConcerns filters by tenantId', async () => {
-      prisma.store.findFirst.mockResolvedValue({ id: 'store-10' });
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
       prisma.skinConcern.findMany.mockResolvedValue([]);
 
       await service.adminListSkinConcerns('tenant-xyz', 'demo');
