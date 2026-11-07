@@ -9,10 +9,9 @@
 
 ## 1. Journey Overview & Archetype Mapping
 
-Dr Dermer UK serves three distinct personas across 43 web routes:
-1. **Patient / Home Care Consumer**: Seeking professional dermatological regimens (ReeSkin, CarboxyGel, Healene) for post-procedure or home maintenance, requiring diagnostic validation and skin-type verification.
-2. **Clinic / B2B Purchasing Manager**: Dermatological clinics and med-spas purchasing capital medical devices (Carbox, PlasmaX) and bulk consumable packs (CarboxyPod, Crystalene, Silicalene) via formal proforma quotes and tax invoicing.
-3. **Doctor / Practitioner CME Candidate**: Certified dermatologists acquiring accredited Continuing Medical Education (CME), surgical protocols, and medical device operating certifications via digital grant mechanics.
+Dr Dermer UK serves retail consumers across 31 page routes (B2B/clinic, vendor and academy journeys were retired with the 2026-11-07 business pivot):
+1. **Patient / Home-Care Consumer**: Seeking professional dermatological regimens (ReeSkin مصرفی خانگی — CarboxyGel, CarboxyPod, CarboxyPad, Healene) for post-procedure or home maintenance, requiring diagnostic validation and skin-type verification.
+2. **Advanced Regimen / Clinical Solutions Consumer**: Purchasing ReeMed محلول‌های کلینیکی and multi-unit consumable supplies with tiered volume discounts, optional auto-replenishment subscriptions, and formal tax invoicing backed by the double-entry ledger.
 
 ```
 +----------------------------------------------------------------------------------------------------+
@@ -20,13 +19,13 @@ Dr Dermer UK serves three distinct personas across 43 web routes:
 +----------------------------------------------------------------------------------------------------+
                                                   |
          +----------------------------------------+---------------------------------------+
-         |                                        |                                       |
-         v                                        v                                       v
-[ 1. PATIENT HOME CARE ]               [ 2. CLINIC B2B HARDWARE ]             [ 3. DOCTOR CME GRANTS ]
-- Diagnostic Regimen Finder            - 360 Hardware Stage (Carbox/PlasmaX)  - Academy Certification Route
-- INCI Dossier & Bohr Simulator        - Tiered Consumable Volume Matrix      - Medical License Modulo-11
-- Cart Drawer -> Checkout Flow         - Proforma Quote Request Flow          - LMS & Digital Entitlement
-- Shetab Gateway / Card-to-Card        - Double-Entry Proforma Approval       - Clinical Protocol Engine
+         |                                        |
+         v                                        v
+[ 1. PATIENT HOME CARE ]               [ 2. CLINICAL SOLUTIONS & KNOWLEDGE ]
+- Diagnostic Regimen Finder            - ReeMed محلول‌های کلینیکی rails (/reemed)
+- INCI Dossier & Bohr Simulator        - Tiered multi-unit volume discounts
+- Cart Drawer -> Checkout Flow         - Auto-Replenishment Subscriptions
+- Shetab Gateway / Card-to-Card        - Knowledge & Research Guides (Blog) + INCI Encyclopedia
 ```
 
 ---
@@ -62,7 +61,7 @@ Dr Dermer UK serves three distinct personas across 43 web routes:
 
 | Step | User Action | System Reaction | Error / Edge State | Recovery Mechanism |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Concern Discovery** | Clicks "Barrier Repair & Erythema" in `CategoryConcernNav` | Smooth scroll, URL query filter `/c/reeskin?concern=barrier`, cards filter with zero layout shift | Network drop while fetching product cards | Stale-while-revalidate cached cards rendered with warning badge |
+| **1. Concern Discovery** | Clicks "Barrier Repair & Erythema" in `CategoryConcernNav` | Smooth scroll, URL query filter `/search?concern=barrier`, cards filter with zero layout shift | Network drop while fetching product cards | Stale-while-revalidate cached cards rendered with warning badge |
 | **2. Physiological PDP** | Interacts with `BohrSimulator` on `/products/reeskin-kit` to observe O2 release curve | Canvas re-renders transcutaneous tissue diffusion graph; active ingredients update | Slider dragged past maximum | Clamped to physiological limits (pH 5.2 - 5.8) |
 | **3. INCI Inspection** | Expands `InciExplorer` accordion for Centella Asiatica & Sodium Bicarbonate | Modal renders chemical CAS numbers, biological concentration, and UK cosmetic safety dossier | Rapid double tap on mobile | Touch throttled at 250ms; modal backdrop prevents multiple instances |
 | **4. Add to Cart** | Selects 150ml clinical dispenser and taps `station-btn-primary` | Outbox event created; drawer slides from right (RTL left) displaying updated Subtotal in Rials | Out of stock during session | Dynamic badge switches to "Pre-order with 48h Cold-Chain" |
@@ -72,87 +71,48 @@ Dr Dermer UK serves three distinct personas across 43 web routes:
 
 ---
 
-## 3. User Flow 2: Clinic B2B Capital Purchasing Journey
+## 3. User Flow 2: Clinical Solutions & Replenishment Journey
 
 ### 3.1 Persona & Context
-- **User**: Dr. Kaveh (Clinic Director, Tehran Aesthetic Medical Center).
-- **Goal**: Evaluate the **Carbox System** and **PlasmaX Surgical Station**, inspect 360-degree internal hardware architecture, request an official Proforma Invoice with Sepidar ERP tax breakdown, and secure lease terms.
+- **User**: Sahar (41), long-term Bohr-therapy consumer building an advanced home routine with ReeMed محلول‌های کلینیکی and bulk CarboxyPod refills.
+- **Goal**: Purchase a multi-unit supply with the tiered volume discount, set up auto-replenishment, and receive a formal tax invoice settled through the double-entry ledger.
 
 ### 3.2 Step-by-Step State Flow
 
 ```
 +---------------------------+     +---------------------------+     +---------------------------+
-| B2B Landing & Hardware    | --> | 360 Canvas Hardware Stage | --> | Consumables Volume Matrix |
-| /b2b or /carbox           |     | Double-buffered scrub     |     | Tiered discount algorithm |
+| Line Landing (/reemed)    | --> | Multi-Unit Cart Builder   | --> | Subscription Plan Select  |
+| Clinical Solutions rails  |     | Tiered discount preview   |     | /subscriptions (optional) |
 +---------------------------+     +---------------------------+     +---------------------------+
-              |                                                                   |
-              v                                                                   v
+              |                                                        |
+              v                                                        v
 +---------------------------+     +---------------------------+     +---------------------------+
-| Double-Entry Proforma Gen | <-- | Iranian Legal Entity Form | <-- | Request Quote / Cart      |
-| Official Sepidar VAT sync |     | National Tax ID & Sheba   |     | /b2b/quote                |
+| Iranian Checkout          | --> | Payment Gateway           | --> | Order Success & Invoice   |
+| Modulo-11 / 09xx SMS      |     | Zarinpal / Card-to-Card   |     | VAT invoice + ledger entry|
 +---------------------------+     +---------------------------+     +---------------------------+
-              |
-              v
-+---------------------------+     +---------------------------+
-| Clinical Rep Consultation | --> | Scheduled White-Glove     |
-| Video briefing booking    |     | Installation & Training   |
-+---------------------------+     +---------------------------+
 ```
 
-### 3.3 B2B Quote & Pricing Logic Invariants
-- **Volume Tiers**:
-  - 1–4 Units: Base Price (List Price).
-  - 5–19 Units: 12% Volume Discount (`1200 bps`).
-  - 20+ Units: 22% Clinic Partner Rate (`2200 bps`).
-- **Tax & Proforma Protocol**:
-  - 10% Iranian Official VAT (`Value Added Tax`) dynamically added to taxable items.
-  - Generates downloadable PDF proforma formatted to Sepidar / Moadian legal standard.
-  - Quote valid for 72 hours with fixed Rial-to-FX hedging window.
+### 3.3 Pricing & Replenishment Invariants
+- **Volume Tiers**: tiered volume discounts are computed server-side in the pricing quote (e.g. 5% for 3+ identical items) — never client-side; the quote is immutable with a fingerprint and 15-minute TTL.
+- **Tax Protocol**: 10% Iranian Official VAT applied to the taxable base; every paid order writes a balanced double-entry journal (`SUM(DEBIT) === SUM(CREDIT)`).
+- **Subscriptions**: auto-replenishment binds a plan to the phone number with `nextRunAt` scheduling; pause/resume/cancel are guarded state-machine transitions (`ACTIVE → PAUSED → CANCELLED`).
 
 ---
 
-## 4. User Flow 3: Doctor CME Certification & Digital Protocol Journey
+## 4. Global Navigation & Cross-Device Transitions
 
-### 4.1 Persona & Context
-- **User**: Dr. Sanaz (Board-Certified Dermatologist, License # 148920).
-- **Goal**: Complete the "Advanced Microplasma Dermal Resurfacing & Transcutaneous CO2" Masterclass, verify medical credentials, stream high-bitrate surgical videos, and receive verifiable CME certification.
-
-### 4.2 Step-by-Step State Flow
-
-```
-+---------------------------+     +---------------------------+     +---------------------------+
-| Academy Catalog           | --> | Medical Credential Gate   | --> | Digital Grant Checkout    |
-| /academy                  |     | Iranian Medical Council   |     | Zero-price or Paid Token  |
-+---------------------------+     +---------------------------+     +---------------------------+
-                                                |                                 |
-                                                v                                 v
-+---------------------------+     +---------------------------+     +---------------------------+
-| Verifiable CME PDF Cert   | <-- | Knowledge Assessment      | <-- | Surgical Video Stream     |
-| Cryptographic Hash & QR   |     | Passing grade >= 85%      |     | Protocol Step Simulation  |
-+---------------------------+     +---------------------------+     +---------------------------+
-```
-
-### 4.3 Credential Verification Rules
-- **Medical Council ID Validation**: Checked against national registry format (1 to 6 numerical digits with prefix specialization).
-- **Grant Token Entitlement**: Stored in `DigitalGrant` record with SHA-256 fingerprint; stream URLs generated with time-limited signed tokens (TTL: 120 minutes) preventing direct URL leakage.
-- **Certificate Cryptography**: Output PDF contains embedded digital signature and URL QR code pointing to `/academy/verify/[certId]`.
-
----
-
-## 5. Global Navigation & Cross-Device Transitions
-
-### 5.1 Responsive Transitions (Breakpoints: 375px, 768px, 1280px, 1440px)
+### 4.1 Responsive Transitions (Breakpoints: 375px, 768px, 1280px, 1440px)
 - **Mobile (< 640px)**:
   - Header collapses to sticky glassmorphic navigation bar with hamburger drawer trigger and bag counter.
   - Active sticky bottom bar on PDP (`StickyCartBar`) with price, quantity adjuster, and single-tap checkout.
   - Touch gestures on `CanvasSequencePlayer`: 1:1 finger swipe translation with 0.92 friction deceleration factor.
 - **Desktop (>= 1024px)**:
-  - Mega-menu with clinical brand families (`ReeSkin`, `CarboxyGel`, `PlasmaX`, `Academy`, `B2B`).
-  - Side-by-side sticky layout on PDP: left column hardware 360 viewer, right column clinical indications, INCI breakdown, and purchase controls.
+  - Mega-menu with the 6-product retail catalog (CarboxyGel, CarboxyPod, CarboxyPad, Crystalene, Healene, Silicalene), line pages (`/reeskin`, `/reemed`) and knowledge links (Blog, INCI encyclopedia).
+  - Side-by-side sticky layout on PDP: left column media gallery with interactive simulators (protocol timer, INCI explorer), right column clinical indications, INCI breakdown, and purchase controls.
 
 ---
 
-## 6. Verification & Accessibility Acceptance Criteria
+## 5. Verification & Accessibility Acceptance Criteria
 1. **RTL Directional Fidelity**: All chevron icons, drawer entrances, progress bars, and tab navigation must flip logically (`transform: scaleX(-1)` or native logical CSS properties).
 2. **Keyboard Navigation**: Entire journey operable via `Tab`, `Shift+Tab`, `Space`, and `Enter`. Trap focus in modal sheets and drawers.
 3. **Screen Reader Landmarks**: Every journey step announces state changes via `aria-live="polite"` (e.g., "محصول به سبد خرید اضافه شد").

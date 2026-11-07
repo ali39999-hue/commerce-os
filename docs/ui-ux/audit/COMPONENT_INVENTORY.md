@@ -34,9 +34,9 @@ These reusable, headless-compatible atomic primitives provide the foundational b
 
 ---
 
-## 2. Interactive Clinical Hardware & Physics Components (`apps/storefront/components/`)
+## 2. Interactive Clinical Physics & Simulation Components (`apps/storefront/components/`)
 
-Engineered specifically for clinical accuracy, physiological simulations, and 360-degree medical hardware inspection.
+Engineered specifically for clinical accuracy, physiological simulations, and interactive education (Bohr-effect oxygenation, VISIA comparison).
 
 | Component Name | File Path | Rendering Mode | Purpose & Interactive Behavior | Key Dependencies |
 | :--- | :--- | :--- | :--- | :--- |
@@ -70,19 +70,27 @@ Engineered specifically for clinical accuracy, physiological simulations, and 36
 
 | Component Name | File Path | Rendering Mode | Purpose & States |
 | :--- | :--- | :--- | :--- |
-| **`HeroBanner`** | `components/home/hero-banner.tsx` | Client / Server | High-impact clinical editorial hero banner with direct CTAs to CarboxyGel and Carbox consoles. |
-| **`PathSelector`** | `components/home/path-selector.tsx` | Client / Server | Blueprint §5 item 4 customer journey path selector: Home Care (ReeSkin) vs Cabin Consumables vs Medical Hardware. |
+| **`StorefrontSectionsWrapper`**| `components/home/StorefrontSectionsWrapper.tsx` | Server (`async`) | Server-backed orchestrator: fetches homepage section overrides from `GET /v1/settings/storefront` (ADR-013) and toggles each home section's visibility server-side; defaults render when no override exists. |
+| **`HeroBanner`** | `components/home/hero-banner.tsx` | Client / Server | High-impact clinical editorial hero banner with direct CTAs to CarboxyGel and the product catalog. |
+| **`PathSelector`** | `components/home/path-selector.tsx` | Client / Server | Blueprint §5 item 4 customer journey path selector: Home Care (ReeSkin مصرفی خانگی) vs Clinical Solutions (ReeMed محلول‌های کلینیکی). |
 | **`TrustBar`** | `components/home/trust-bar.tsx` | Server | 4 clinical trust badges: Cambridge Research, CE Medical Class IIb, 2–8°C Cold Chain, 100% TTAC. |
 | **`CategoryConcernNav`** | `components/home/category-concern-nav.tsx` | Client | 5 clinical skin concern cards linking to filtered search results. |
-| **`BrandFamilyRail`** | `components/home/brand-family-rail.tsx` | Client | Architectural comparison and showcase of ReeSkin Clinical vs. ReeMed Medical Pro. |
-| **`FeaturedShowcase`** | `components/home/featured-showcase.tsx` | Client | Responsive grid of all 8 official products with badges, stock indicators, and direct cart actions. |
-| **`MedicalDevicesShowcase`**| `components/home/medical-devices-showcase.tsx` | Client | In-depth preview of Carbox and PlasmaX consoles with telemetry specs and video hooks. |
-| **`ScienceSpotlight`** | `components/home/science-spotlight.tsx` | Server | Editorial breakdown of transdermal gas exchange, microplasma, and biomimetic peptides. |
+| **`BrandFamilyRail`** | `components/home/brand-family-rail.tsx` | Client | Architectural comparison and showcase of ReeSkin (مصرفی خانگی) vs. ReeMed (محلول‌های کلینیکی). |
+| **`FeaturedShowcase`** | `components/home/featured-showcase.tsx` | Client | Responsive grid of the 6 official retail products with badges, stock indicators, and direct cart actions. |
+| **`ScienceSpotlight`** | `components/home/science-spotlight.tsx` | Server | Editorial breakdown of transdermal gas exchange (Bohr Effect) and biomimetic peptide formulation science. |
 | **`ClinicalResults`** | `components/home/clinical-results.tsx` | Server | Statistical trial results: TEWL reduction, tissue pO2 surge, erythema clearance. |
-| **`AcademyGuides`** | `components/home/academy-guides.tsx` | Server | Training modules, video tutorials, and physician certification teasers. |
-| **`ClinicB2bStrip`** | `components/home/clinic-b2b-strip.tsx` | Server | B2B clinic wholesale teaser with quick quote request CTA. |
+| **`AcademyGuides`** | `components/home/academy-guides.tsx` | Server | Dermatology knowledge-base teasers: step-by-step protocols and active-ingredient guides linking to the Blog (دانش و پژوهش). |
 | **`NewsletterVip`** | `components/home/newsletter-vip.tsx` | Client | Clinical newsletter registration with email/mobile validation. |
 | **`SkinRegimenFinder`** | `components/home/skin-regimen-finder.tsx` | Client | Interactive quiz card triggering the diagnostic regimen triage drawer. |
+
+---
+
+## 4b. Admin ERP Manager Components (`apps/admin/components/`)
+
+| Component Name | File Path | Rendering Mode | Purpose & States |
+| :--- | :--- | :--- | :--- |
+| **`StorefrontSectionsManager`**| `apps/admin/components/StorefrontSectionsManager.tsx` | Client | Section visibility control panel: persists per-section show/hide overrides server-side via `PUT /v1/settings/storefront/home-sections` (AdminGuard) with reset-to-defaults — replaces the retired broken localStorage cross-origin sync (ADR-013). |
+| **`CatalogPimManager`** | `apps/admin/components/CatalogPimManager.tsx` | Client | API-backed product authoring: list, create, publish, feature and bulk-flag retail consumables through `/v1/stores/admin/products` (AdminGuard) with live variant price/stock display (ADR-013). |
 
 ---
 

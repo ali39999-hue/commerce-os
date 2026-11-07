@@ -1,4 +1,18 @@
-import { IsIn, IsNumber, IsOptional, IsString, Max, Min, MinLength } from "class-validator";
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+  MinLength,
+} from "class-validator";
 
 /**
  * AUTH-004 DTOs for admin/customer resource writes. Every field a service
@@ -148,38 +162,152 @@ export class ReviewCreateDto {
   body!: string;
 }
 
-export class B2bQuoteRequestDto {
-  @IsString()
-  @MinLength(2)
-  companyName!: string;
+// ── Admin ERP product authoring (canonical money = RIALS, integer) ──
+// Money/stock live on the default ProductVariant (+ InventoryLevel), not on Product.
 
+export class CreateProductDto {
   @IsString()
-  @MinLength(2)
-  contactName!: string;
-
-  @IsString()
-  phone!: string;
+  @MinLength(1)
+  storeSlug!: string;
 
   @IsOptional()
   @IsString()
-  email?: string;
+  slug?: string;
 
   @IsString()
-  @MinLength(3)
-  itemsSummary!: string;
+  @MinLength(2)
+  titleFa!: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsString()
+  titleEn?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  categoryFa?: string;
+
+  @IsOptional()
+  @IsUUID()
+  brandId?: string;
+
+  @IsInt()
   @Min(1)
-  desiredQty?: number;
+  priceRials!: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  compareAtPriceRials?: number;
+
+  @IsInt()
+  @Min(0)
+  stock!: number;
+
+  @IsOptional()
+  @IsIn(["DRAFT", "PUBLISHED"])
+  status?: "DRAFT" | "PUBLISHED";
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  coldChain?: boolean;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsIn(["PHYSICAL", "DIGITAL"])
+  kind?: "PHYSICAL" | "DIGITAL";
 }
 
-export class B2bQuoteStatusDto {
+export class UpdateProductDto {
   @IsOptional()
   @IsString()
-  status?: string;
+  storeSlug?: string;
 
   @IsOptional()
   @IsString()
-  adminNote?: string;
+  slug?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  titleFa?: string;
+
+  @IsOptional()
+  @IsString()
+  titleEn?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  categoryFa?: string;
+
+  @IsOptional()
+  @IsUUID()
+  brandId?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  priceRials?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  compareAtPriceRials?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  stock?: number;
+
+  @IsOptional()
+  @IsIn(["DRAFT", "PUBLISHED"])
+  status?: "DRAFT" | "PUBLISHED";
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  coldChain?: boolean;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsIn(["PHYSICAL", "DIGITAL"])
+  kind?: "PHYSICAL" | "DIGITAL";
+}
+
+// Flag-only bulk edit: price/stock are deliberately NOT whitelisted here — the
+// global forbidNonWhitelisted pipe rejects them before the service runs.
+export class BulkUpdateProductsDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(100)
+  @IsUUID(undefined, { each: true })
+  ids!: string[];
+
+  @IsOptional()
+  @IsIn(["DRAFT", "PUBLISHED", "ARCHIVED"])
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
 }

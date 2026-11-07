@@ -22,8 +22,7 @@ import { OpsModule } from './ops/ops.module';
 import { RecommendationsModule } from './recommendations/recommendations.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
-import { B2bModule } from './b2b/b2b.module';
-import { VendorsModule } from './vendors/vendors.module';
+import { SettingsModule } from './settings/settings.module';
 import { DigitalModule } from './digital/digital.module';
 
 @Module({
@@ -51,8 +50,7 @@ import { DigitalModule } from './digital/digital.module';
     RecommendationsModule,
     LoyaltyModule,
     SubscriptionsModule,
-    B2bModule,
-    VendorsModule,
+    SettingsModule,
     DigitalModule,
   ],
 })

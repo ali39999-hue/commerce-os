@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
  * Verifies (updated for Warm Editorial Clinical Luxury redesign):
  * 1. Global Header: Warm editorial glassmorphism, brand identity, cart drawer trigger.
  * 2. Homepage Hero Banner: Clinical copy, Cambridge chip, dual-mode CTAs.
- * 3. Audience Path Selector: 3 triage cards (Homecare, Pro Cabin, Medical Hardware), links, and touch targets.
+ * 3. Audience Path Selector: 3 triage cards (Homecare Regimen, Carboxy Protocols, Activator Pads), links, and touch targets.
  * 4. Responsive reflow across Mobile (360px, 390px), Tablet (768px), and Desktop (1280px, 1440px).
  * 5. Tabular typography and zero horizontal layout overflow.
  */

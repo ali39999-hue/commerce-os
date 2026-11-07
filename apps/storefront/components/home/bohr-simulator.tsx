@@ -119,7 +119,7 @@ export function BohrOxygenationSimulator() {
               <span>۰٪ (هوای آزاد / عدم القای اثر بوهر)</span>
               <span>۳۰٪ (ژل پایه بدون فعال‌ساز)</span>
               <span>۶۵٪ (پروتکل خانگی استاندارد ReeSkin)</span>
-              <span>۱۰۰٪ (پروتکل کلینیکال مافوق بحرانی CarboX)</span>
+              <span>۱۰۰٪ (پروتکل کلینیکال مافوق بحرانی)</span>
             </div>
           </div>
 
@@ -146,7 +146,7 @@ export function BohrOxygenationSimulator() {
                 className={`preset-btn ${co2Concentration === 100 ? "active" : ""}`}
                 onClick={() => setCo2Concentration(100)}
               >
-                پروتکل کلینیکال CarboX™ (۱۰۰٪ - Clinical Pro)
+                پروتکل کلینیکال حرفه‌ای (۱۰۰٪ - Clinical Pro)
               </button>
             </div>
           </div>

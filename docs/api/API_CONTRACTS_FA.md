@@ -23,6 +23,7 @@ http://localhost:4000/v1
 | `x-tenant-id` | **الزامی** روی endpointهای مالی/ادمین (کیف پول، دفترکل، وب‌هک dispatch، رویداد تحلیلی) | شناسه مستأجر برای ایزولاسیون داده‌ها. غیبت آن روی این مسیرها خطای `401 Unauthorized` با پیام «شناسه مستأجر (x-tenant-id) الزامی است» می‌دهد. |
 | `x-correlation-id` | اختیاری | شناسه پیگیری سمت کلاینت (UUID). سرور آن را در پاسخ و در بدنه خطا بازتاب می‌دهد؛ اگر ارسال نشود، سرور خودش UUID تولید می‌کند. |
 | `Authorization: Bearer <token>` | مسیرهای احراز هویت‌شده (مثل `GET /auth/me`) | توکن نشست حاصل از `POST /auth/otp/verify`. |
+| `x-admin-api-key` | مسیرهای مدیریتی پشت **AdminGuard** (AUTH-003): تنظیمات ویترین (PUT/DELETE)، نویسندگی محصول ERP (POST/PATCH/bulk)، تأیید فیش، کوپن و تنظیم باشگاه مشتریان | کلید سرور-به-سرور برابر `ADMIN_API_KEY` (مقایسه ثابت‌زمان). جایگزین مجازِ Bearer برای نشست نقش ادمین (`SUPER_ADMIN`/`OPERATOR`/`ACCOUNTANT`)؛ نبود هر دو روی این مسیرها: `401`. |
 
 ### ۱.۳ قالب خطای استاندارد
 
@@ -223,29 +224,7 @@ http://localhost:4000/v1
 
 ساختار `SubscriptionView`: `{"id","status","quantity","phone","nextRunAt","lastRunAt","cyclesRun","cancelReason","createdAt","plan":{"id","slug","titleFa","intervalDays"}}`.
 
-### ۲.۱۹ B2B — استعلام قیمت عمده (ADR-010)
-
-سیاست صیانت از سرنخ: ثبت سرنخ روی DB-down **پذیرفته و در حافظه لاگ (سطح warn)** ذخیره می‌شود — با PII ماسک‌شده (موبایل `0912****67`، ایمیل `a***@…`) تا بعداً بازپخش شود — و پاسخ صادقانه `{accepted: true, persisted: false}` می‌دهد: سرنخ هرگز از دست نمی‌رود و هرگز «ذخیره‌شده» جعل نمی‌شود. ماشین وضعیت فقط رو به جلو است: `NEW → IN_REVIEW → QUOTED → CLOSED`.
-
-| متد | مسیر | هدر الزامی | بدنه درخواست | پاسخ موفق |
-|---|---|---|---|---|
-| POST | `/b2b/quote-requests` | — (`x-tenant-id` اختیاری؛ غیبت آن → مستأجر فروشگاه دمو، وگرنه UUID صفر) | `{"companyName", "contactName", "phone", "email?", "itemsSummary", "desiredQty?"}` | `201` → DB-up: `{"accepted":true,"persisted":true,"id","dbAvailable":true}` (وضعیت اولیه `NEW`). DB-down: `{"accepted":true,"persisted":false,"dbAvailable":false,"message":"درخواست شما ثبت شد؛ به‌محض اتصال سیستم ذخیره دائمی می‌شود"}`. اعتبارسنجی: نام شرکت ۲..۲۰۰، نام رابط ۲..۱۵۰، موبایل ایرانی (`09…`)، ایمیل معتبر (در صورت ارسال)، خلاصه اقلام ۵..۲۰۰۰، `desiredQty` عدد صحیح ۱..۱۰۰٬۰۰۰ (پیش‌فرض ۱) — تخلف هرکدام: `400`. |
-| GET | `/b2b/quote-requests?status=` | **`x-tenant-id`** | — | `200` → `{"items":[QuoteRequestView],"dbAvailable":true}` — استعلام‌های مستأجر، جدیدترین اول؛ `status` اختیاری از `NEW` \| `IN_REVIEW` \| `QUOTED` \| `CLOSED` (خارج از این: `400`). DB-down: `{"items":[],"dbAvailable":false}`. |
-| POST | `/b2b/quote-requests/:id/status` | **`x-tenant-id`** | `{"status", "adminNote?"}` | `201` → QuoteRequestView به‌روزشده — فقط انتقال دقیقاً به مرحله بعدی مجاز است؛ پس‌رفت، پرش یا تکرار وضعیت: `400` با پیام «انتقال وضعیت معتبر نیست». رسیدن به `QUOTED` زمان `quotedAt` را ثبت می‌کند و `adminNote` غیرخالی ذخیره می‌شود. ناموجود: `404`؛ DB-down: `503`. |
-
-ساختار `QuoteRequestView`: `{"id","status","companyName","contactName","phone","email","itemsSummary","desiredQty","adminNote","quotedAt","createdAt"}`.
-
-### ۲.۲۰ Vendors — بنیان فروشندگان (ADR-011 — موج W18)
-
-فاز ۰ مارکت‌پلیس: فقط نمایش عمومی و ساخت حداقلی ادمین؛ سبد و چک‌اوت تک‌فروشنده باقی می‌ماند (تفکیک سبد چندفروشنده مستلزم ADR و درگاه تسهیم آینده است). الگوی تاب‌آوری مطابق کاتالوگ: DB-down → دیتاست دمو با `source: FALLBACK`.
-
-| متد | مسیر | هدر الزامی | بدنه درخواست | پاسخ موفق |
-|---|---|---|---|---|
-| GET | `/vendors?storeSlug=` | — | — | `200` → `{"source":"DB" \| "FALLBACK","items":[{"id","slug","titleFa","description","logoColor","productCount"}]}` — فروشندگان فعال فروشگاهِ فعال با شمارش محصولات. غیبت storeSlug: `400`؛ فروشگاه ناموجود/غیرفعال: `404`. DB-down: دو فروشنده نمونه با `source:"FALLBACK"`. |
-| GET | `/vendors/:slug?storeSlug=` | — | — | `200` → `{"source","vendor":{…خلاصه فروشنده…},"products":[{"id","slug","title","priceRials","priceTomans","kind"}]}` — فقط محصولات منتشرشده فروشنده؛ `storeSlug` اختیاری محدودکننده مستأجر است. فروشنده ناموجود: `404` (اعم از DB و دمو). |
-| POST | `/vendors` | **`x-tenant-id`** | `{"slug", "titleFa", "description?", "logoColor?", "commissionBps?"}` | `201` → `{"id","slug","titleFa","description","logoColor","commissionBps","isActive":true}` — قواعد: `slug` الگوی `^[a-z0-9-]{3,60}$`، عنوان ۲..۲۰۰ کاراکتر، `logoColor` با قالب `#rrggbb`، `commissionBps` عدد صحیح ۰..۵۰۰۰ (basis points سهم پلتفرم، برای تسویه آینده). slug تکراری در همان مستأجر: `409 Conflict`؛ DB-down: `503` (فروشنده ساختگی ثبت نمی‌شود). |
-
-### ۲.۲۱ Digital — لایسنس‌های کالای دیجیتال (ADR-012 — موج W18)
+### ۲.۱۹ Digital — لایسنس‌های کالای دیجیتال (ADR-012 — موج W18)
 
 `DigitalGrant` پس از کپچر پرداخت، توسط Worker روی رویداد `ORDER_PAID` برای هر خط سفارش دیجیتال ساخته می‌شود و آیدمپوتنت است (یکتایی `orderLineId` — اجرای تکراری یا رقابت دو Worker چیزی نمی‌سازد). سقف دانلود پیش‌فرض ۵ و انقضای ۳۰ روز. خطوط دیجیتال از رزرو انبار و ارسال معاف‌اند.
 
@@ -257,12 +236,33 @@ http://localhost:4000/v1
 
 ساختار `DigitalGrantView`: `{"id","orderId","token","productTitle","downloadCount","maxDownloads","remainingDownloads","revokedAt","expiresAt","createdAt"}` — توکن ۶۴ کاراکتر hex است و در پاسخ دانلود هرگز فایل مستقیماً از سرور جاری سرو نمی‌شود (انتقال به URL فایل واریانت).
 
+### ۲.۲۰ Settings — کنترل سکشن‌های صفحه اصلی فروشگاه (ADR-013)
+
+دید سکشن‌های ویترین (نمایش/پنهان‌سازی هر بخش صفحه اصلی) به‌صورت **سرورساید** در جدول `StorefrontSetting` نگه‌داری می‌شود — سطر یکتای `home_sections` با payload حاوی map بولی `sectionId → boolean` — و جانشین طراحی قدیمیِ همگام‌سازی cross-origin `localStorage` بین ادمین (پورت ۳۰۰۱) و استورفرانت (پورت ۳۰۰۰) است که به‌دلیل محدودیت مرورگرها در خواندن حافظه دامنه دیگر، عملاً شکسته بود. مقادیر پیش‌فرض در کد هستند؛ ردیف DB فقط override است و «بازنشانی» یعنی حذف سطر.
+
+| متد | مسیر | هدر الزامی | بدنه درخواست | پاسخ موفق |
+|---|---|---|---|---|
+| GET | `/settings/storefront` | — | — | `200` → `{"overrides":{"<sectionId>":true\|false},"source":"DB" \| "DEFAULT"}` — عمومی؛ استورفرانت هنگام رندر صفحه اصلی می‌خواند. DB-down: همیشه `200` با `{"overrides":{},"source":"DEFAULT"}` (هرگز ۵۰۰ نمی‌دهد تا رندر ویترین نشکند). |
+| PUT | `/settings/storefront/home-sections` | **AdminGuard** | `{"overrides":{"<sectionId>": boolean}}` (بین ۱ تا ۵۰ کلید متنی با مقدار بولی) | `200` → `{"saved":true,"overrides":<ادغام‌شده>}` — upsert سطر یکتا؛ کلیدهای جدید بر مقادیر قبلی اولویت دارند و `updatedBy` (شناسه ادمین نشست) ثبت می‌شود. نقض اعتبارسنجی (۰ یا بیش از ۵۰ کلید، مقدار غیربولی): `400` با پیام «تنظیمات بخش‌های صفحه اصلی نامعتبر است: بین ۱ تا ۵۰ کلید متنی با مقدار بولی الزامی است». DB-down: `503` با پیام «ذخیره تنظیمات ویترین موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید» (وضعیت دید سکشن‌ها هرگز ساختگی قبول نمی‌شود). |
+| DELETE | `/settings/storefront/home-sections` | **AdminGuard** | — | `200` → `{"saved":true,"overrides":{}}` — حذف سطر override؛ ویترین به پیش‌فرضِ کد برمی‌گردد (idempotent). DB-down: `503` با پیام «بازنشانی تنظیمات ویترین موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید». |
+
+### ۲.۲۱ Stores Admin — نویسندگی محصول در کاتالوگ (ERP — ADR-013)
+
+همان کنترلر `stores` میزبان مسیرهای مدیریتی نویسندگی محصول است (پیشوند `/stores/admin/...`، نه `/catalog/admin/...`). پول و موجودی روی **واریانت پیش‌فرض** (`sku: <slug>-STD`) و `InventoryLevel` انبار `MAIN` ذخیره می‌شوند، نه روی خود Product. همه مسیرها ایزولاسیون مستأجر با `x-tenant-id` دارند (غیبت: `401` با پیام «شناسه مستأجر (x-tenant-id) الزامی است»)؛ مسیرهای نوشتن (POST/PATCH/bulk) به‌علاوه پشت AdminGuard (AUTH-003) هستند.
+
+| متد | مسیر | هدر الزامی | بدنه درخواست | پاسخ موفق |
+|---|---|---|---|---|
+| GET | `/stores/admin/products?store=<slug>&limit=` | **`x-tenant-id`** | — | `200` → `{"data":[Product],"meta":{"count":<n>}}` — فهرست کامل محصولات فروشگاه در همه وضعیت‌ها (`DRAFT`/`PUBLISHED`/`ARCHIVED`)، مرتب بر `updatedAt` نزولی؛ `limit` پیش‌فرض ۵۰ (بازه ۱..۱۰۰). هر آیتم شامل برند، دسته، مدیا، مواد مؤثره، کلیم‌ها و `defaultVariant` (sku/قیمت ریالی/موجودی). `store` غایب → همه محصولات مستأجر. DB-down: فهرست نمونه دمو (حالت رزیلنت مطابق کاتالوگ عمومی). |
+| POST | `/stores/admin/products` | **`x-tenant-id`** + **AdminGuard** | `{"storeSlug", "titleFa", "slug?", "titleEn?", "description?", "categoryFa?", "brandId?", "priceRials", "compareAtPriceRials?", "stock", "status?": "DRAFT" \| "PUBLISHED", "isFeatured?", "coldChain?", "imageUrl?", "kind?": "PHYSICAL" \| "DIGITAL"}` | `201` → `{"data":Product}` — در یک تراکنش: محصول + واریانت پیش‌فرض با `sku: ${slug}-STD` + سطح موجودی انبار `MAIN` (+ مدیای HERO در صورت ارسال `imageUrl`). `slug` غایب از `titleEn`/`titleFa` تولید می‌شود (پایه لاتین؛ در برخورد پسوند `-2`، `-3` و…)؛ `priceRials` عدد صحیح مثبت (الزامی)، `stock` ≥ ۰ (الزامی)، `status` پیش‌فرض `DRAFT` و در حالت `PUBLISHED` زمان `publishedAt` همان لحظه ثبت می‌شود. فروشگاه ناموجود: `404`؛ slug تکراری: `409 Conflict` («محصولی با این اسلاگ از قبل در این فروشگاه موجود است»)؛ برند ناموجود در فروشگاه: `400`؛ DB-down: `503` با پیام «ثبت محصول موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید» (محصول ساختگی ثبت نمی‌شود). |
+| PATCH | `/stores/admin/products/:id` | **`x-tenant-id`** + **AdminGuard** | همان فیلدهای ساخت، همه اختیاری (ویرایش جزئی) | `200` → `{"data":Product}` — گذار `PUBLISHED` فقط بار اول `publishedAt` را می‌نویسد و هرگز بازنویسی نمی‌شود. ناموجود در مستأجر: `404` («محصول یافت نشد یا دسترسی مجاز نیست»)؛ slug تکراری: `409`؛ DB-down: `503`. |
+| POST | `/stores/admin/products/bulk-update` | **`x-tenant-id`** + **AdminGuard** | `{"ids": [UUID × ۱..۱۰۰], "status?": "DRAFT" \| "PUBLISHED" \| "ARCHIVED", "isFeatured?"}` | `201` → `{"data":{"updated":<n>}}` — ویرایش گروهی **فقط پرچمی** (وضعیت/ویترین): قیمت و موجودی عمداً در whitelist نیستند و پایپ `forbidNonWhitelisted` قبل از سرویس رد می‌کند (`400`). DB-down: `503` با پیام «به‌روزرسانی گروهی محصولات موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید». |
+
 ---
 
 ## ۳. قراردادهای عرضی (Cross-cutting)
 
-- **وضعیت‌های مرجع:** `OrderStatus` (`DRAFT`, `PENDING_PAYMENT`, `PAID`, `PROCESSING`, `SHIPPED`, `DELIVERED`, `CANCELLED`, `REFUNDED`, `COMPLETED`)، `PaymentIntentStatus` (`CREATED`, `PENDING_PROVIDER`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `CANCELLED`, `EXPIRED`, `UNKNOWN`, `REFUNDED`, `PARTIALLY_REFUNDED`)، `ReservationStatus` (`ACTIVE`, `COMMITTED`, `EXPIRED`, `CANCELLED`)، `OutboxStatus` (`PENDING`, `PROCESSING`, `PROCESSED`, `FAILED`, `DEAD_LETTER`)، `SubscriptionStatus` (`ACTIVE`, `PAUSED`, `CANCELLED`, `EXPIRED`)، `QuoteRequestStatus` (`NEW`, `IN_REVIEW`, `QUOTED`, `CLOSED`).
+- **وضعیت‌های مرجع:** `OrderStatus` (`DRAFT`, `PENDING_PAYMENT`, `PAID`, `PROCESSING`, `SHIPPED`, `DELIVERED`, `CANCELLED`, `REFUNDED`, `COMPLETED`)، `PaymentIntentStatus` (`CREATED`, `PENDING_PROVIDER`, `AUTHORIZED`, `CAPTURED`, `FAILED`, `CANCELLED`, `EXPIRED`, `UNKNOWN`, `REFUNDED`, `PARTIALLY_REFUNDED`)، `ReservationStatus` (`ACTIVE`, `COMMITTED`, `EXPIRED`, `CANCELLED`)، `OutboxStatus` (`PENDING`, `PROCESSING`, `PROCESSED`, `FAILED`, `DEAD_LETTER`)، `SubscriptionStatus` (`ACTIVE`, `PAUSED`, `CANCELLED`, `EXPIRED`)، `ProductStatus` (`DRAFT`, `PUBLISHED`, `ARCHIVED`).
 - **آیدمپوتنسی:** فقط دستورات مالی الزام هدر دارند؛ هر scope (مثل `ORDER_PLACE`) کلید مستقل نگه می‌دارد و رکوردهای منقضی‌شده پاک‌سازی می‌شوند.
 - **ایزولاسیون مستأجر:** endpointهای با `x-tenant-id` در لایه Prisma هم scope می‌شوند؛ مقدار هدر فقط انتخاب‌گر است، نه مجوز دور زدن (دفاع BOLA/IDOR).
 - **قاعده PII:** هیچ body درخواست/پاسخ در لاگ‌ها نوشته نمی‌شود (§۷.۱ سند معماری)؛ کد پیگیری مشکل فقط `correlationId` است.
-- **مصرف‌کننده مرجع:** اسکریپت `scripts/e2e-golden-path.mjs` مسیر طلایی (سلامت → کاتالوگ → جست‌وجو → قیمت‌گذاری → ارسال → چک‌اوت) را با همین قراردادها اجرا می‌کند و معیار سبز انتشار است.
+- **مصرف‌کننده مرجع:** اسکریپت `scripts/e2e-golden-path.mjs` مسیر طلایی (سلامت → کاتالوگ → جست‌وجو → قیمت‌گذاری → ارسال → چک‌اوت → کنترل سکشن‌های صفحه اصلی → نویسندگی محصول ERP) را با همین قراردادها اجرا می‌کند و معیار سبز انتشار است.

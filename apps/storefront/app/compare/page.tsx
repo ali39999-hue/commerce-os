@@ -37,7 +37,7 @@ export const DEFAULT_CLINICAL_COMPARE_ITEMS: CompareItem[] = [
     sku: 'RMD-CPD-005',
     priceAmount: '12500000',
     inStock: true,
-    categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
+    categoryTitleFa: 'محصولات کلینیکی مراقبت پوست',
   },
   {
     variantId: 'prod_skin_healene',

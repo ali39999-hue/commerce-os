@@ -29,7 +29,7 @@
 - [ ] Are all active ingredient claims backed by real CAS registries or UK cosmetic dossiers?
 - [ ] Does the `BohrSimulator` adhere to physiological blood pH boundaries (pH 5.2 - 5.8)?
 - [ ] Are contraindications clearly visible for chemical peels and retinoid regimens?
-- [ ] Are medical device technical specifications (e.g. PlasmaX voltage, Carbox flow rate) medically authentic?
+- [ ] Are interactive educational simulator outputs (Bohr effect curve, O2 burst telemetry, VISIA comparison) physiologically authentic?
 
 ### Pillar 2: Anti-Slop & Visual Aesthetics
 - [ ] Are there any generic placeholder images, gray rectangles, or `Lorem Ipsum` paragraphs? (Must be ZERO).

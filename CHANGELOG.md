@@ -6,6 +6,27 @@
 
 ---
 
+## [1.3.0] — 2026-11-07
+
+### Changed
+- **چرخش استراتژی کسب‌وکار — فروش خرده‌فروشی صرف فرآورده‌های مراقبت پوست:** حذف کامل دامنه دستگاه‌های پزشکی (CarboX/PlasmaX)، پورتال B2B/متخصصان و کلینیک‌ها، فروشندگان (Vendors) و آکادمی از استورفرانت و پنل ادمین؛ مسیرهای قدیمی با ریدایرکت دائمی هدایت می‌شوند (`/carbox`→`/carboxygel`، `/plasmax`→`/carboxygel`، `/academy`→`/blog`، `/b2b/:path*`→`/#products`، `/vendors`→`/#products`). لاین‌های محصول اکنون ReeSkin (مصرفی خانگی) و ReeMed (محلول‌های کلینیکی) است و جایگاه آکادمی به پایگاه دانش «دانش و پژوهش» (Blog) سپرده شد. [ADR-010](docs/architecture/adr/ADR-010-b2b-quote-requests.md) بازنشسته و [ADR-011](docs/architecture/adr/ADR-011-vendor-foundation.md) با حذف دامنه مربوطه از رده خارج شد؛ تصمیم جانشین در [ADR-013](docs/architecture/adr/ADR-013-storefront-sections-and-product-authoring.md) ثبت است.
+
+### Added
+- **CMS سرورساید سکشن‌های صفحه اصلی ([ADR-013](docs/architecture/adr/ADR-013-storefront-sections-and-product-authoring.md)):** مدل `StorefrontSetting` با سطر یکتای `home_sections`؛ `GET /v1/settings/storefront` عمومی و DB-down رزیلنت (همیشه `200` با `source:"DEFAULT"`) و `PUT`/`DELETE /v1/settings/storefront/home-sections` پشت AdminGuard با ادغام ۱ تا ۵۰ کلید بولی و بازنشانی با حذف سطر — جانشین همگام‌سازی شکسته cross-origin `localStorage` بین ادمین (پورت ۳۰۰۱) و استورفرانت (پورت ۳۰۰۰). پیاده‌سازی: `StorefrontSectionsWrapper` در استورفرانت و `StorefrontSectionsManager` در پنل ادمین.
+- **API نویسندگی محصول در ERP ([ADR-013](docs/architecture/adr/ADR-013-storefront-sections-and-product-authoring.md)):** `GET/POST /v1/stores/admin/products`، `PATCH /v1/stores/admin/products/:id` و ویرایش گروهی فقط-پرچمی `POST /v1/stores/admin/products/bulk-update` با چرخه حیات `DRAFT/PUBLISHED/ARCHIVED`، واریانت پیش‌فرض `<slug>-STD` + `InventoryLevel`، اسلاگ خودکار یکتا در فروشگاه، پرچم `isFeatured` و ثبت یک‌باره `publishedAt` در نخستین انتشار؛ رابط مدیریتی `CatalogPimManager`.
+
+### Removed
+- ماژول‌های API `b2b` و `vendors`؛ صفحات `/b2b`، `/b2b/protocols`، `/b2b/workshops`، `/vendors`، `/vendors/[slug]`، `/carbox`، `/plasmax` و `/academy`؛ کامپوننت‌های `MedicalDevicesShowcase` و `ClinicB2bStrip`؛ تب‌های ادمین استعلام B2B و فروشندگان.
+
+### Docs
+- به‌روزرسانی قراردادهای API ([API_CONTRACTS_FA.md](docs/api/API_CONTRACTS_FA.md)): حذف بخش‌های B2B و Vendors، مستندسازی ۷ اندپوینت جدید و جایگزینی `QuoteRequestStatus` با `ProductStatus` در وضعیت‌های مرجع.
+- بنر بازنشستگی روی [ADR-010](docs/architecture/adr/ADR-010-b2b-quote-requests.md) و ثبت [ADR-013](docs/architecture/adr/ADR-013-storefront-sections-and-product-authoring.md)؛ همگام‌سازی `README_FA.md`، `DESIGN.md` (خانواده بنفش رزرو شد)، `AGENTS.md` و [SECURITY_BASELINE.md](docs/security/SECURITY_BASELINE.md)؛ به‌روزرسانی مسیرها/کامپوننت‌ها در `docs/ui-ux/` (حذف `MEDICAL_STATIONS.md`، به‌روزرسانی ROUTE_INVENTORY، COMPONENT_INVENTORY، HOME، LISTING، USER_FLOWS و PILOT_01) و پیوست چرخش در رودمپ‌ها.
+
+### Verified
+- به‌روزرسانی اسکریپت‌ها: `scripts/capture-all-pages.mjs` (۴۲ صفحه استورفرانت + ۱۰ تب ادمین)، `scripts/e2e-golden-path.mjs` گام ۱۷ (رفت‌وبرگشت تنظیمات سکشن‌های ویترین) و گام ۱۸ (نویسندگی محصول DRAFT→PUBLISHED)، `scripts/verify-clinical-store.mjs` مرحله ۹ (ERP Product Authoring & Storefront Section Control)؛ فهرست ۳۱ مسیر صفحه استورفرانت با سورس `apps/storefront/app/` تطبیق داده شد.
+
+---
+
 ## [1.2.1] — 2026-11-03
 
 ### Added

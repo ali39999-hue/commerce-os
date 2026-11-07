@@ -48,7 +48,7 @@ export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
     sku: 'DD-POD-10X',
     priceAmount: '12000000',
     inStock: true,
-    categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
+    categoryTitleFa: 'محصولات کلینیکی مراقبت پوست',
     formulation: 'activation-pods',
     concern: 'acne-blemish',
     volume: 'باکس ۱۰ عددی وکیوم',
@@ -231,8 +231,6 @@ export function getCanonicalProductHref(slug?: string | null): string {
     'crystalene',
     'healene',
     'silicalene',
-    'carbox',
-    'plasmax',
   ]);
   if (dedicatedRoutes.has(clean)) {
     return `/${clean}`;

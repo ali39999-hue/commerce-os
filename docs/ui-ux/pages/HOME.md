@@ -3,13 +3,13 @@
 
 > **Route**: `/`  
 > **Component Architecture**: Server Component (`apps/storefront/app/page.tsx`) with modular interactive client islands.  
-> **Primary Purpose**: Establish authoritative British clinical dermatological credibility, showcase core proprietary biotechnologies (ReeSkin & ReeMed), present interactive physiological mechanisms (Bohr Effect simulator, VISIA clinical trials), guide patients through diagnostic regimen finding, and funnel B2B clinic partners and retail consumers into high-conversion workflows.
+> **Primary Purpose**: Establish authoritative British clinical dermatological credibility, showcase core proprietary biotechnologies (ReeSkin & ReeMed), present interactive physiological mechanisms (Bohr Effect simulator, VISIA clinical trials), guide patients through diagnostic regimen finding, and funnel retail consumers into high-conversion purchase workflows for clinical skincare consumables.
 
 ---
 
 ## 1. Page Overview & Architectural Hierarchy
 
-The home page is engineered as a zero-slop clinical portal. Rather than a generic cosmetic landing page with empty slogans, it functions as an interactive scientific dossier. Every section is anchored in verified dermatological chemistry, active ingredient percentages, real-time physiological simulations, or double-blind trial evidence.
+The home page is engineered as a zero-slop clinical portal. Rather than a generic cosmetic landing page with empty slogans, it functions as an interactive scientific dossier. Every section is anchored in verified dermatological chemistry, active ingredient percentages, real-time physiological simulations, or double-blind trial evidence. Sections are composed through the server component `<StorefrontSectionsWrapper />`, which reads section-visibility overrides from the server-backed settings CMS (ADR-013) — each numbered section below can be shown/hidden by the admin without a redeploy.
 
 ```
 +---------------------------------------------------------------------------------------+
@@ -21,7 +21,7 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
 +---------------------------------------------------------------------------------------+
 | 3. Category & Concern Quick-Nav: 6 Clinical Filter Nodes (Acne, Barrier, Pigment, etc)|
 +---------------------------------------------------------------------------------------+
-| 4. Brand Family Architecture: ReeSkin (Transdermal) vs ReeMed (Hardware & Surgery)    |
+| 4. Brand Family Architecture: ReeSkin (مصرفی خانگی) vs ReeMed (محلول‌های کلینیکی)      |
 +---------------------------------------------------------------------------------------+
 | 5. Featured Product Showcase: Server-Hydrated Clinical Product Family Rails           |
 +---------------------------------------------------------------------------------------+
@@ -31,15 +31,11 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
 +---------------------------------------------------------------------------------------+
 | 8. Skin Regimen Diagnostic Finder: 3-Step Interactive Patient Protocol Generator      |
 +---------------------------------------------------------------------------------------+
-| 9. Medical Devices & Console Hardware Strip: CarboX, PlasmaX, CarboxyPod Direct Access|
+| 9. Clinical Results & Peer Review Dossier: Histology, TEWL & Erythema Telemetry       |
 +---------------------------------------------------------------------------------------+
-| 10. Clinical Results & Peer Review Dossier: Histology, TEWL & Erythema Telemetry      |
+| 10. Knowledge & Research Guides: Clinical Protocols & Ingredient Dossiers (Blog)      |
 +---------------------------------------------------------------------------------------+
-| 11. Academy Guides: Peer-Reviewed Clinical Whitepapers & Doctor Training Modules      |
-+---------------------------------------------------------------------------------------+
-| 12. Clinic & B2B Partner Strip: Wholesale Inquiries, CE Markings & Training           |
-+---------------------------------------------------------------------------------------+
-| 13. VIP Newsletter & Protocol Dispatch: Early Clinical Cohort Access                  |
+| 11. VIP Newsletter & Protocol Dispatch: Early Clinical Cohort Access                  |
 +---------------------------------------------------------------------------------------+
 | Footer: Regulatory Certifications, Legal Disclaimers, Ministry License Badges          |
 +---------------------------------------------------------------------------------------+
@@ -58,7 +54,6 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
 - **Action Buttons**:
   - Primary CTA: «مشاهده پروتکل بالینی و خرید» (`/products/carboxygel` or `/carboxygel`) — styled with `station-btn-primary` with hover lift.
   - Secondary CTA: «مشاهده شبیه‌ساز فیزیولوژیک اثر بور» (smooth-scroll anchor `#bohr-simulator`).
-  - Tertiary CTA: «سفارش ایستگاه‌های پزشکی کلینیکال B2B» (`/b2b`).
 - **Telemetry Indicators**:
   - Live clinical counters: `+۴۵% اشباع اکسیژن موضعی (tcpO₂)`, `۷۲ ساعت پایداری سد دفاعی`, `۰٪ ماده نگهدارنده پارابن`.
 
@@ -82,12 +77,12 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
 
 ### 2.4 Brand Family Architecture (`<BrandFamilyRail />`)
 - **Architecture**: Clear visual dichotomy between the two official divisions of Dr Dermer UK:
-  1. **ReeSkin™ Transdermal Cosmeceuticals**:
-     - *Focus*: فرآورده‌های درموسوتیکال ترنس‌درمال، سرم‌های بیومیمتیک، لایه‌بردارهای تخصصی و ماسک‌های هیدروژل.
+  1. **ReeSkin™ Home-Care Consumables (مصرفی خانگی)**:
+     - *Focus*: فرآورده‌های مصرفی مراقبت خانگی: ژل کربوکسی‌تراپی، کپسول‌های فعال‌ساز، پدها و ماسک‌ها، سرم‌ها و ژل‌های ترمیمی.
      - *Key Token*: Deep Medical Cyan (`#06b6d4`), Glass Frosted card, direct link to `/reeskin`.
-  2. **ReeMed™ Clinical Hardware & Medical Systems**:
-     - *Focus*: سیستم‌های پیشرفته کربوکسی‌تراپی (CarboX)، دستگاه‌های پلاسما مدیکال (PlasmaX) و کارتریج‌های یکبار مصرف استریل.
-     - *Key Token*: Plasma Violet (`#8b5cf6`), High-voltage aesthetic, direct link to `/reemed`.
+  2. **ReeMed™ Clinical Solutions (محلول‌های کلینیکی)**:
+     - *Focus*: محلول‌ها و پک‌های تخصصی درموسوتیکال برای روتین‌های پیشرفته مراقبت پوست.
+     - *Key Token*: Glass Frosted card, direct link to `/reemed`.
 
 ### 2.5 Featured Product Showcase (`<FeaturedProductShowcase />`)
 - **Hydration**: Populated from server-side `catalog.listProducts()`. If API is unreachable, falls back seamlessly to `RECOMMENDED_CLINICAL_PRODUCTS`.
@@ -125,25 +120,14 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
   - *Step 3: Clinical Tolerance*: Experienced with AHAs/Retinoids vs Naive/Ultra-Sensitized.
 - **Output**: Generates a tailored 3-step prescription (Cleansing/Polish -> Core Treatment -> Barrier Seal) with 1-click «افزودن تمام رژیم به سبد خرید با ۱۰٪ تخفیف کلینیکال».
 
-### 2.9 Medical Devices & Hardware Showcase (`<MedicalDevicesShowcase />`)
-- **Spotlight Models**:
-  - **CarboX™ High-Precision Transdermal & Subcutaneous Medical Console**: Dual-mode heating chamber, piezoelectric gas regulation, 0.1 bar feedback.
-  - **PlasmaX™ Micro-Plasma Surgical Station**: Sublimation for non-invasive blepharoplasty, cold argon jet antibacterial therapy.
-  - **CarboxyPod™ Active Reactor Tips**: Carbon, Vitamin C, and Hydra matrix pods.
-- **CTA**: Direct links to hardware landing pages (`/carbox`, `/plasmax`, `/carboxypod`) and B2B spec request modal.
+### 2.9 Knowledge & Research Guides (`<AcademyGuides />`)
+- **Content Rail** (links into the Blog / دانش و پژوهش archive):
+  - *Guide 01*: «راهنمای پروتکل بازسازی پوست در ۷ روز با CarboxyGel» — step-by-step home protocol, Bohr-effect emphasis.
+  - *Guide 02*: «ترکیب هوشمندانه رتینول انکپسوله و هیالورونیک اسید» — active-ingredient layering dossier.
+  - *Guide 03*: «مدیریت ریکاوری و التیام پوست پس از لایه‌برداری و پیلینگ» — barrier-recovery protocol.
+- **Positioning**: Educational knowledge base for retail consumers (دانش کاربردی مصرف) — not a training/academy product; legacy CME/academy tiers were retired with the B2B pivot.
 
-### 2.10 Academy Guides & Clinical Research Whitepapers (`<AcademyGuides />`)
-- **Content Rail**:
-  - *Whitepaper 01*: «مکانیسم بیوشیمیایی اثر بور در درماتولوژی ترنس‌درمال: هدایت اکسیژن درون‌زا بدون نیدلینگ» (PDF available).
-  - *Whitepaper 02*: «پروتکل‌های ترکیبی پلاسما اسپارک و کربوکسی‌تراپی در درمان استریا و اسکارهای آتروفیک».
-  - *Whitepaper 03*: «اصول پایداری فرمولاسیون‌های اسید آسکوربیک خالص و تضمین زنجیره سرد».
-
-### 2.11 B2B Clinic Partner Strip (`<ClinicB2BStrip />`)
-- **Target Audience**: Dermatologists, aesthetic plastic surgeons, medical spa directors, and licensed pharmacies.
-- **Value Proposition**: Bulk procurement terms, official UK CPD accreditation certificates, factory warranty for consoles, and on-site clinical operator training.
-- **Form Trigger**: Modal launcher collecting Doctor Full Name, Medical Council Number (شماره نظام پزشکی), Clinic City, and Target Device.
-
-### 2.12 VIP Newsletter & Protocol Dispatch (`<NewsletterVip />`)
+### 2.10 VIP Newsletter & Protocol Dispatch (`<NewsletterVip />`)
 - **Functional Requirements**:
   - Email / SMS input with Iranian phone number validation (`09xxxxxxxxx`).
   - Consent checkbox for clinical study releases.
@@ -171,4 +155,3 @@ The home page is engineered as a zero-slop clinical portal. Rather than a generi
 | Bohr Slider Scrub | `trackEvent('bohr_simulator_interact', { ppm, duration, calculated_o2 })` |
 | VISIA Mode Toggle | `trackEvent('visia_mode_change', { mode: 'uv' \| 'cross_polarized' })` |
 | Regimen Generated | `trackEvent('regimen_generated', { skinType, pathology, bundleId })` |
-| B2B Lead Submitted | `trackEvent('generate_lead', { lead_type: 'b2b_hardware' })` |

@@ -4,7 +4,7 @@ import { CarboxypodInteractiveLanding } from './carboxypod-interactive';
 export const metadata: Metadata = {
   title: 'پادهای فعال‌ساز کربوکسی‌پاد ReeSkin CarboxyPod™ | دکتر درمر انگلستان',
   description:
-    'کپسول‌های فعال‌ساز گاز CO₂ و اسکراب شیمیایی-فیزیکی در ۳ نوع Vitamin، Carbon و Hydra جهت استفاده دستی یا اتصال به هندپیس CarboX.',
+    'کپسول‌های فعال‌ساز گاز CO₂ و اسکراب شیمیایی-فیزیکی در ۳ نوع Vitamin، Carbon و Hydra جهت استفاده دستی روی پوست.',
   keywords: [
     'CarboxyPod',
     'کربوکسی پاد',
@@ -15,7 +15,6 @@ export const metadata: Metadata = {
     'دکتر درمر',
     'ReeSkin CarboxyPod',
     'Bohr Effect',
-    'CarboX Handpiece',
   ],
   openGraph: {
     title: 'ReeSkin CarboxyPod™ | پادهای فعال‌ساز کربوکسی‌پاد و اسکراب فیبریک',

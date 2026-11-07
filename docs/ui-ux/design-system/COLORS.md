@@ -86,9 +86,9 @@ Under **WCAG 2.2 AA**:
 
 ---
 
-## 4. Controlled Medical Lab Stages (Hardware Stations)
-For specialized hardware visualization rooms (`/carbox`, `/plasmax`):
+## 4. Controlled Lab Simulator Stages (Interactive Education)
+For dark interactive educational simulator stages (Bohr-effect canvas, 360° product sequences):
 - Stage Background: `#172421` (top) to `#0D1413` (bottom).
 - Ambient Specular Glow: Radial teal (`rgba(36, 89, 79, 0.25)`).
 - Foreground Text: `#F7F6F2` (Contrast **13.2 : 1** - AAA Pass).
-- Telemetry Values: Tabular numerals with `#2DD4BE` or `#8B5CF6`.
+- Telemetry Values: Tabular numerals with `#2DD4BE` (violet `#8B5CF6` is reserved/رزرو شده since the 2026-11-07 device pivot and must not be used for new surfaces).

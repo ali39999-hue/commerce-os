@@ -25,8 +25,8 @@ const VALUES = [
 ] as const;
 
 const STATS = [
-  { number: 'CE Medical', label: 'انطباق با استانداردهای تجهیزات پزشکی اروپا' },
-  { number: '+۱۵۰', label: 'کلینیک و مرکز پوست همکار' },
+  { number: 'ISO 22716', label: 'انطباق با استاندارد GMP آرایشی-بهداشتی' },
+  { number: 'UK', label: 'توسعه‌یافته در پارک علمی کمبریج، انگلستان' },
   { number: '٪۱۰۰', label: 'پایش زنجیره سرد و اصالت TTAC' },
   { number: 'Bohr Effect', label: 'مکانیزم اثبات‌شده آزادسازی O2 بافتی' },
 ] as const;

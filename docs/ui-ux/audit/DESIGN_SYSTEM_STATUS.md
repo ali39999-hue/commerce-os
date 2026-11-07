@@ -16,7 +16,7 @@
 | **Surface Raised** | `color/bg-surface` | `--color-bg-surface` | `#0c131f` | Medical console panel / card container |
 | **Glassmorphic Surface** | `color/bg-glass` | `--color-bg-glass` | `rgba(15, 23, 42, 0.72)` | Frosted glass backdrop (`blur(16px)`) |
 | **Cyan Accent** | `color/teal-primary` | `--color-teal-primary` | `#06b6d4` | ReeSkin Clinical formulations & Bohr Effect |
-| **Plasma Violet** | `color/plasma-purple` | `--color-plasma-purple` | `#8b5cf6` | PlasmaX surgical microplasma hardware |
+| **Plasma Violet** | `color/plasma-purple` | `--color-plasma-purple` | `#8b5cf6` | Reserved (رزرو شده) — violet family retired with the device pivot (2026-11-07); token kept while still referenced by interactive simulator styles |
 | **Emerald Bio** | `color/emerald-green`| `--color-emerald-green` | `#10b981` | Crystalene microderm & biological inertness |
 | **Amber Gold** | `color/amber-gold` | `--color-amber-gold` | `#f59e0b` | Cold-chain storage warning, active retinoids |
 | **Text Primary** | `color/text-primary` | `--color-text-primary` | `#f8fafc` | Maximum contrast clinical typography |

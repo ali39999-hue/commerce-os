@@ -57,10 +57,9 @@ docs/ui-ux/
 │   ├── CART.md                    # 2-tier milestone progress, cross-sells, coupons, and cart drawer
 │   ├── CHECKOUT.md                # 3-step checkout, National ID Modulo-11, Iranian mobile regex, payment methods
 │   ├── CUSTOMER_DASHBOARD.md      # Account, digital grants, subscriptions, and order tracking timeline
-│   └── MEDICAL_STATIONS.md        # Carbox & PlasmaX 360 hardware consoles
 │
 ├── interactions/                  # Behavioral state machines & user flows
-│   ├── USER_FLOWS.md              # B2C Patient, B2B Clinic, and Physician CME journeys
+│   ├── USER_FLOWS.md              # Retail consumer (ReeSkin home-care & ReeMed clinical solutions) journeys
 │   ├── INTERACTION_MATRIX.md      # Component states (hover, focus, active, disabled, loading)
 │   ├── FORM_STATES.md             # Validation algorithms (Modulo-11, mobile 09xx, postal code)
 │   ├── LOADING_STATES.md          # Skeletons, radial spinners, canvas progress bars

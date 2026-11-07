@@ -16,7 +16,7 @@ export const CHART_OF_ACCOUNTS: Record<string, AccountDefinition> = {
   // 1000 - Assets (دارایی‌ها)
   "1010": { code: "1010", nameFa: "موجودی نزد درگاه‌های پرداخت شتاب", nameEn: "Gateway Cash & Settlements", category: "ASSET" },
   "1020": { code: "1020", nameFa: "حساب‌های بانکی فروشگاه (کارت‌به‌کارت)", nameEn: "Merchant Bank Accounts", category: "ASSET" },
-  "1030": { code: "1030", nameFa: "حساب‌های دریافتنی مشتریان B2B", nameEn: "Accounts Receivable B2B", category: "ASSET" },
+  "1030": { code: "1030", nameFa: "حساب‌های دریافتنی مشتریان عمده", nameEn: "Accounts Receivable Wholesale", category: "ASSET" },
   "1040": { code: "1040", nameFa: "موجودی انبار کالا", nameEn: "Merchandise Inventory", category: "ASSET" },
 
   // 2000 - Liabilities (بدهی‌ها)

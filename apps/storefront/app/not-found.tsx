@@ -19,7 +19,7 @@ export default function NotFound() {
           </Link>
           <Link
             className="secondary-link"
-            href="/b2b/protocols"
+            href="/carboxygel"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -33,7 +33,7 @@ export default function NotFound() {
               textDecoration: 'none',
             }}
           >
-            مشاهده پروتکل‌های درمانی CarboxyGel
+            مشاهده محصول CarboxyGel
           </Link>
           <Link
             className="secondary-link"

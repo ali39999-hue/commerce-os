@@ -38,7 +38,7 @@ Layouts must maintain bounded horizontal widths to prevent excessive line length
 | `--container-form` | `860px` | Checkout payment flow, multi-step diagnostic skin assessment |
 | `--container-standard` | `1200px` | Catalog product grids, customer account dashboard, ERP tables |
 | `--container-wide` | `1360px` | Standard page wrapper, multi-column clinical workstation |
-| `--container-stage` | `1440px` | 360 degree hardware stage (PlasmaX station, high-res canvas scrubbing) |
+| `--container-stage` | `1440px` | Interactive educational simulator stage (Bohr-effect canvas, high-res 360° sequence scrubbing) |
 | `--container-full` | `100%` | Ambient laboratory backgrounds, global navigation bar HUD |
 
 ### CSS Container Implementation

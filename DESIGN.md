@@ -8,7 +8,7 @@
 
 ## 1. Visual Identity & Atmosphere
 
-- **Primary Motif**: Clinical Glassmorphism, Clean Laboratory Obsidian, Deep Molecular Teal, High-Tech Medical Plasma.
+- **Primary Motif**: Clinical Glassmorphism, Clean Laboratory Obsidian, Deep Molecular Teal.
 - **Background Atmosphere**:
   - Base Background: Deep Dark Obsidian (`#070b12` to `#0a111a`).
   - Card & Section Backgrounds: Frosted Glass (`rgba(15, 23, 42, 0.75)` with `backdrop-filter: blur(16px)`).
@@ -27,7 +27,7 @@
 | `--color-border-glow` | `rgba(6, 182, 212, 0.3)` | Focused / active state borders |
 | `--color-teal-primary` | `#06b6d4` | ReeSkin Clinical accent, Bohr effect |
 | `--color-teal-dark` | `#0891b2` | Teal button gradients & active states |
-| `--color-plasma-purple` | `#8b5cf6` | PlasmaX station & surgical energy |
+| `--color-plasma-purple` | `#8b5cf6` | Reserved (رزرو شده) — violet family retired with the device pivot (2026-11-07); token kept because it is still referenced by interactive simulator styles (`interactive-features.css`, `pdp.css`) |
 | `--color-emerald-green` | `#10b981` | Crystalene polish & bio-inert markers |
 | `--color-amber-gold` | `#f59e0b` | Dermal nutrients, warning alerts, VIP |
 | `--color-text-primary` | `#f8fafc` | Main headings & primary body text |
@@ -57,7 +57,7 @@
 - **Container Max-Width**:
   - Default Container: `1280px` (`max-w-7xl` centered with `padding: 0 1.5rem`)
   - Narrow Article / Legal: `860px`
-  - Full-Bleed 360 Hardware Stage: `1440px`
+  - Full-Bleed Interactive Simulator Stage: `1440px`
 - **Breakpoints**:
   - Mobile: `< 640px` (single column, sticky bottom cart bars, touch-friendly 48px tap targets)
   - Tablet: `640px – 1024px` (2-column grids, collapsible drawers)
@@ -72,7 +72,7 @@
    - Minimum tap target: 44px height (48px on mobile).
    - Solid gradient fill with subtle hover lift (`transform: translateY(-2px)`).
    - Clear loading spinner when asynchronous mutation is in flight.
-2. **Interactive 360 Sequences (`CanvasSequencePlayer`)**:
+2. **Interactive Educational Sequences (`CanvasSequencePlayer`)**:
    - Double-buffered HTML5 canvas preventing flickering during frame scrubbing.
    - Pointer capture physics with dampening inertia on release.
    - Frame-bound hotspot popovers that smoothly align to viewing angles.

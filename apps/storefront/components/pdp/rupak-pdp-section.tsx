@@ -26,16 +26,12 @@ import './rupak-pdp.css';
 export interface RupakPdpSectionProps {
   productData: ExtendedProductData;
   isDigital?: boolean;
-  vendorTitleFa?: string;
-  vendorSlug?: string;
   reviewsElement: React.ReactNode;
 }
 
 export function RupakPdpSection({
   productData,
   isDigital,
-  vendorTitleFa,
-  vendorSlug,
   reviewsElement,
 }: RupakPdpSectionProps) {
   const { addItem, openDrawer } = useCart();

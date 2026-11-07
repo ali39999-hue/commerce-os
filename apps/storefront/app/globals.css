@@ -698,14 +698,6 @@ textarea:focus-visible,
   font-size: 0.74rem;
   color: var(--muted);
 }
-.b2b-nav-badge {
-  color: var(--ink);
-  font-weight: 600;
-  padding: 13px 4px;
-}
-.b2b-nav-badge:hover {
-  color: var(--brand);
-}
 .pulse-mini-dot {
   width: 6px;
   height: 6px;
@@ -3441,15 +3433,15 @@ textarea:focus-visible,
   color: var(--muted);
 }
 
-/* Visual Devices Dual Spotlight inside ReeMed Card */
-.family-devices-dual-showcase {
+/* Visual Consumables Dual Spotlight inside ReeMed Card */
+.family-duo-showcase {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin: 18px 0 22px;
 }
 
-.device-modern-card {
+.duo-modern-card {
   display: flex;
   gap: 12px;
   align-items: center;
@@ -3461,7 +3453,7 @@ textarea:focus-visible,
   transition: all 0.2s ease;
 }
 
-.device-modern-card:hover {
+.duo-modern-card:hover {
   background: #FFFFFF;
   border-color: #755A38;
   transform: translateY(-2px);
@@ -4716,170 +4708,6 @@ textarea:focus-visible,
   color: var(--brand-strong, #13261F);
 }
 
-/* ── 10. Clinic B2B Wholesale Strip (Warm Editorial Clinical Luxury) ── */
-.clinic-b2b-strip {
-  max-width: 1400px;
-  margin: 64px auto 0;
-  padding: 0 24px;
-}
-.b2b-strip-container {
-  display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: 40px;
-  align-items: center;
-  background: radial-gradient(circle at 15% 25%, #193328 0%, #10211A 60%, #0A1510 100%);
-  border-radius: var(--radius-xl, 24px);
-  padding: clamp(34px, 4.5vw, 60px);
-  color: #ffffff;
-  border: 1px solid rgba(198, 156, 112, 0.35);
-  box-shadow: 0 25px 60px -15px rgba(10, 21, 16, 0.5);
-  position: relative;
-  overflow: hidden;
-}
-.b2b-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(198, 156, 112, 0.15);
-  color: #E4C9A8;
-  border: 1px solid rgba(198, 156, 112, 0.4);
-  padding: 5px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 0.74rem;
-  font-weight: 850;
-  letter-spacing: 0.05em;
-  margin-bottom: 16px;
-}
-.b2b-pulse-dot {
-  width: 7px;
-  height: 7px;
-  background: #10B981;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
-}
-.b2b-title {
-  font-family: var(--font-markazi, serif), var(--font-vazirmatn), serif;
-  font-size: clamp(1.9rem, 3.2vw, 2.6rem);
-  font-weight: 900;
-  margin: 0 0 16px;
-  line-height: 1.25;
-  color: #FFFFFF;
-}
-.b2b-text {
-  font-size: 0.96rem;
-  line-height: 1.85;
-  color: rgba(245, 242, 235, 0.82);
-  margin: 0 0 28px;
-}
-.b2b-perks {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.perk-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-.perk-icon-wrap {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  background: rgba(198, 156, 112, 0.15);
-  border: 1px solid rgba(198, 156, 112, 0.35);
-  color: #E4C9A8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.perk-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 0.84rem;
-  line-height: 1.6;
-}
-.perk-copy strong {
-  color: #F5F2EB;
-  font-weight: 850;
-}
-.perk-copy span {
-  color: rgba(245, 242, 235, 0.7);
-}
-
-/* CTA Card */
-.b2b-cta-card {
-  background: #FFFFFF;
-  color: var(--ink, #161A18);
-  border-radius: var(--radius-lg, 16px);
-  padding: 32px 28px;
-  border: 1px solid var(--border, #E2DDD2);
-  box-shadow: 0 16px 36px rgba(10, 21, 16, 0.25);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.cta-card-badge {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
-  font-weight: 850;
-  color: #B45309;
-  letter-spacing: 0.06em;
-  direction: ltr;
-}
-.cta-card-title {
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--color-brand-forest, #1E3A2F);
-  margin: 0;
-  line-height: 1.35;
-}
-.cta-card-desc {
-  font-size: 0.86rem;
-  color: var(--muted, #5A615D);
-  line-height: 1.7;
-  margin: 0 0 8px;
-}
-.btn-b2b-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  background: var(--color-brand-forest, #1E3A2F);
-  color: #ffffff;
-  padding: 13px 22px;
-  border-radius: var(--radius-pill, 9999px);
-  font-size: 0.92rem;
-  font-weight: 850;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(30, 58, 47, 0.25);
-  box-sizing: border-box;
-}
-.btn-b2b-primary:hover {
-  background: var(--brand-strong, #13261F);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(30, 58, 47, 0.35);
-}
-.b2b-support-phone {
-  font-size: 0.78rem;
-  color: var(--muted, #5A615D);
-  text-align: center;
-  padding-top: 6px;
-  border-top: 1px solid var(--line, #EFECE4);
-}
-.b2b-support-phone .phone-num {
-  font-family: var(--font-mono, monospace);
-  font-weight: 850;
-  color: var(--color-brand-forest, #1E3A2F);
-  text-decoration: none;
-  margin-right: 4px;
-}
-.b2b-support-phone .phone-num:hover {
-  text-decoration: underline;
-}
-
 /* ── 11. Newsletter & VIP Membership ── */
 .newsletter-vip-section {
   max-width: 1280px;
@@ -5271,20 +5099,6 @@ textarea:focus-visible,
   font-size: 0.64rem;
   color: rgba(245, 242, 235, 0.55);
 }
-.footer-b2b-link-wrap {
-  margin-top: 18px;
-}
-.footer-b2b-cta {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #E4C9A8;
-  transition: color 0.15s ease;
-}
-.footer-b2b-cta:hover {
-  color: #FDFBF7;
-  text-decoration: underline;
-}
 
 /* Pharmacovigilance Disclaimer */
 .footer-disclaimer-band {
@@ -5571,32 +5385,6 @@ textarea:focus-visible,
   background: #fef3c7;
   color: #b45309;
 }
-.drawer-b2b-banner {
-  display: block;
-  background: var(--color-brand-forest);
-  color: #ffffff;
-  border-radius: var(--radius-sm);
-  padding: 16px;
-  border: 1px solid var(--color-brand-dark);
-  box-shadow: 0 4px 12px rgba(30, 58, 47, 0.15);
-}
-.b2b-banner-title {
-  font-size: 0.95rem;
-  font-weight: 850;
-  margin-bottom: 6px;
-  color: #FFFFFF;
-}
-.drawer-b2b-banner p {
-  font-size: 0.78rem;
-  color: #E2E8F0;
-  line-height: 1.5;
-  margin: 0 0 10px;
-}
-.b2b-banner-cta {
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--color-champagne-gold);
-}
 .drawer-quick-actions {
   display: grid;
   grid-template-columns: 1fr;
@@ -5665,7 +5453,6 @@ textarea:focus-visible,
   .science-spotlight-section,
   .clinical-results-section,
   .academy-section,
-  .clinic-b2b-strip,
   .newsletter-vip-section,
   .footer-top,
   .disclaimer-inner,
@@ -5688,7 +5475,6 @@ textarea:focus-visible,
   .science-title-flex { grid-template-columns: 1fr; }
   .science-steps-navigator { grid-template-columns: repeat(2, 1fr); }
   .academy-cards-grid { grid-template-columns: 1fr; }
-  .b2b-strip-container { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {

@@ -43,7 +43,7 @@ On product detail pages (`/products/[slug]`, `/carboxygel`, `/crystalene`, etc.)
 
 ## 3. Interactive 360 Canvas Sequence Physics & Scrubbing
 
-The 360-degree turntable hardware viewer (`CanvasSequencePlayer`) implemented across `/carbox`, `/plasmax`, and `/carboxypod` undergoes strict viewport testing:
+The 360-degree turntable sequence scrubber (`CanvasSequencePlayer`) implemented on `/carboxypod` undergoes strict viewport testing (device-station routes `/carbox` and `/plasmax` were retired 2026-11-07; the physics contract below is unchanged for interactive product sequences):
 
 ```
 [ Touch / Pointer Down ] ──> Acquire Pointer Capture (event.pointerId)
@@ -71,10 +71,8 @@ The 360-degree turntable hardware viewer (`CanvasSequencePlayer`) implemented ac
 | Route Tested | Mobile 375px Test Result | Tablet 768px Test Result | Desktop 1280px Test Result | Large 1440px Test Result |
 | :--- | :--- | :--- | :--- | :--- |
 | **`/` (Storefront Home)** | Single-col cards, smooth slider touch, sticky header | 2-col product grid, compact Visia slider | 3-col grid, wide hero banner, mega-menu | Bounded max-width, sharp 2x assets |
-| **`/carbox` & `/plasmax`** | 100% width canvas, touch scrubbing, stacked specs | 2-col specs, medium canvas | Split stage (viewer left, telemetry right) | Full-bleed 1440px interactive stage |
 | **`/carboxygel`** | Stacked Bohr simulator, sticky cart bar | Side-by-side simulator, interactive tabs | Dual-column clinical dossier | Centered clinical research layout |
 | **`/cart` & `/checkout`** | Full-width single column, sticky bottom CTA | 2-column cart summary and cross-sells | Split-screen checkout wizard | Standard bounded checkout |
-| **`/academy`** | Single column video cards, stacked curriculum | 2-column video grid, tabs | Full CME learning console | Bounded multi-track console |
 | **`/ingredients`** | Responsive card list with horizontal scroll table | Filterable table with sticky headers | Full INCI encyclopedia grid | High-density pharmacological view |
 
 ---

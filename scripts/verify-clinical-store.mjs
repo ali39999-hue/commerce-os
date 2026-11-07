@@ -10,14 +10,14 @@
  *   6. Checkout order placement: idempotency key verification (x-idempotency-key)
  *   7. Payment intent & Card-to-Card receipt upload and review
  *   8. Double-entry ledger audit: SUM(DEBIT) === SUM(CREDIT) invariant
- *   9. B2B Quote Request: clinic wholesale lead with medical license
+ *   9. ERP Product Authoring & Storefront Section Control
  *  10. Admin coupon persistence: retrieval and activation via API
  */
 
 import { readFileSync } from "node:fs";
 import { calculateQuote, Money, VAT_BPS } from "../packages/domain/dist/index.js";
 import { createOrderSaleJournal, validateBalancedJournal, CHART_OF_ACCOUNTS } from "../packages/finance/dist/index.js";
-import { normalizePersianText, validateIranianMobile } from "../packages/localization/dist/index.js";
+import { normalizePersianText } from "../packages/localization/dist/index.js";
 
 // Terminal Color Formatting (ANSI)
 const RESET = "\x1b[0m";
@@ -282,8 +282,23 @@ async function runVerification() {
   if (isLive) {
     const homeVariant = carboxyVariantsList.find((v) => v.sku === "CBG-HOME-5X") || carboxyVariant;
 
-    // 5a. Create session using variant with ample stock (Healene or CarboxyPad)
-    const testVariantId = "5295a9fe-3b42-459b-b089-06ddf8635bf4"; // Healene 250ml (~49 units)
+    // 5a. Resolve a real variant UUID dynamically from the live catalog
+    // (seed grants Healene 250ml 50 units on hand — enough for the 30/30 lease race below;
+    // a hardcoded UUID would break on every fresh database seed).
+    let testVariantId = null;
+    try {
+      const heaRes = await fetchApi("/v1/stores/demo/products/healene");
+      const heaVariants = heaRes.json?.data?.variants ?? [];
+      testVariantId =
+        heaVariants.find((v) => v.sku === "DD-HEA-250ML" && v.inStock !== false)?.id ??
+        heaVariants.find((v) => v.inStock !== false)?.id ??
+        carboxyVariantsList.find((v) => v.sku === "CBG-HOME-5X" && v.inStock !== false)?.id ??
+        homeVariant?.id ??
+        carboxyVariant?.id ??
+        null;
+    } catch {
+      testVariantId = null;
+    }
     const csRes = await fetchApi("/v1/checkout/session", {
       method: "POST",
       body: JSON.stringify({
@@ -495,41 +510,53 @@ async function runVerification() {
   );
 
   // ────────────────────────────────────────────────────────────────
-  // Stage 9: B2B Quote Request: clinic wholesale lead with medical license
+  // Stage 9: ERP Product Authoring & Storefront Section Control
   // ────────────────────────────────────────────────────────────────
   if (isLive) {
-    const b2bPayload = {
-      companyName: "کلینیک تخصصی درماتولوژی دکتر درمر",
-      contactName: "دکتر شیوا رحمانی (پروانه طبابت مدیکال: ۱۲۴۸۵۰-پ)",
-      phone: "09129876543",
-      email: "b2b@drdermer.local",
-      itemsSummary: "استعلام ۵۰ پک کابین ۱۵۰۰ میلی‌لیتر CarboxyGel Professional، ۱۰۰ ساشه پاد فعال‌ساز CarboxyPod و ثبت‌نام ۴ پرسنل در دوره اپراتوری دارای سرتیفیکیت",
-      desiredQty: 50,
-    };
-
-    const b2bRes = await fetchApi("/v1/b2b/quote-requests", {
+    // (a) ERP product authoring: create a DRAFT clinical consumable test product
+    // (admin catalog writes resolve the tenant from the x-tenant-id header, as the ERP does)
+    const vclSlug = `vcl-${Date.now()}`;
+    const productRes = await fetchApi("/v1/stores/admin/products", {
       method: "POST",
-      headers: { "x-tenant-id": resolvedTenantId },
-      body: JSON.stringify(b2bPayload),
+      headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+      body: JSON.stringify({
+        storeSlug: "demo",
+        slug: vclSlug,
+        titleFa: "محصول آزمون اعتبارسنجی کلینیکی",
+        priceRials: 15500000,
+        stock: 5,
+        status: "DRAFT",
+      }),
     });
+    const productCreated = productRes.status === 201 && productRes.json?.data?.slug === vclSlug;
 
-    const pass = b2bRes.ok && b2bRes.json?.accepted === true;
+    // (b) Storefront section control: newsletter=false -> GET persisted -> reset via DELETE (reset = delete row)
+    const sectionPut = await fetchApi("/v1/settings/storefront/home-sections", {
+      method: "PUT",
+      body: JSON.stringify({ overrides: { newsletter: false } }),
+    });
+    const sectionGet = await fetchApi("/v1/settings/storefront");
+    const sectionPersisted = sectionGet.json?.overrides?.newsletter === false;
+    const sectionReset = await fetchApi("/v1/settings/storefront/home-sections", {
+      method: "DELETE",
+    });
+    const sectionsOk = sectionPut.ok && sectionPersisted && sectionReset.ok;
+
+    const pass = productCreated && sectionsOk;
     recordStep(
       9,
-      "B2B Quote Request: clinic wholesale lead with medical license submission",
+      "ERP Product Authoring & Storefront Section Control",
       pass ? "PASS" : "FAIL",
-      `Company: ${b2bPayload.companyName}\n` +
-      `Contact & License: ${b2bPayload.contactName}\n` +
-      `Requested Items: ${b2bPayload.itemsSummary.slice(0, 70)}...\n` +
-      `Lead Protection Policy (ADR-010): accepted=${b2bRes.json?.accepted}, persisted=${b2bRes.json?.persisted}, id=${b2bRes.json?.id ?? "logged-out-of-band"}`
+      `Product Authoring: POST /v1/stores/admin/products -> slug=${productRes.json?.data?.slug ?? "—"} (DRAFT, id: ${productRes.json?.data?.id?.slice(0, 8) ?? "—"}...)\n` +
+      `Section Control: PUT home-sections newsletter=false -> GET source=${sectionGet.json?.source ?? "—"}, persisted=${sectionPersisted ? "بله" : "خیر"}\n` +
+      `Reset: DELETE home-sections -> saved=${sectionReset.json?.saved ?? "—"} (بازگشت به مقادیر پیش‌فرض سکشن‌ها)`
     );
   } else {
-    const phoneValid = validateIranianMobile("09129876543");
     recordStep(
       9,
-      "B2B Quote Request: clinic wholesale lead with medical license (In-Memory)",
-      phoneValid ? "PASS" : "FAIL",
-      "Lead Capture Policy (ADR-010): Form input validated, PII masked, forward-only status machine (NEW -> IN_REVIEW -> QUOTED -> CLOSED)"
+      "ERP Product Authoring & Storefront Section Control (In-Memory)",
+      "SKIP",
+      "هر دو سطح نویسندگی محصول ERP و کنترل سکشن‌های صفحه اصلی سرورساید و وابسته به دیتابیس هستند — در حالت In-Memory اعتبارسنجی نمی‌شوند (docker compose up -d)"
     );
   }
 

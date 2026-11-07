@@ -6,12 +6,10 @@ import OrdersManager, { OrderItem, ReceiptItem } from "../components/OrdersManag
 import CatalogPimManager from "../components/CatalogPimManager";
 import InventoryWarehouseManager from "../components/InventoryWarehouseManager";
 import PromotionsCouponsManager from "../components/PromotionsCouponsManager";
-import B2BQuotesManager from "../components/B2BQuotesManager";
 import ClinicalContentManager from "../components/ClinicalContentManager";
 import FinanceLedgerView from "../components/FinanceLedgerView";
 import OpsSystemHealth from "../components/OpsSystemHealth";
 import SubscriptionsManager from "../components/SubscriptionsManager";
-import VendorsManager from "../components/VendorsManager";
 import DigitalLicensesManager from "../components/DigitalLicensesManager";
 import StorefrontSectionsManager from "../components/StorefrontSectionsManager";
 import AdminLoginGate from "../components/AdminLoginGate";
@@ -29,13 +27,11 @@ export type AdminTab =
   | "catalog"
   | "inventory"
   | "coupons"
-  | "b2b"
   | "clinical"
   | "cms"
   | "finance"
   | "ops"
   | "subscriptions"
-  | "vendors"
   | "digital";
 
 export type AdminUserRole = "SUPER_ADMIN" | "OPERATOR" | "ACCOUNTANT";
@@ -50,7 +46,6 @@ export const DOMAIN_ACCESS_CONFIG: Record<AdminUserRole, Record<string, DomainAc
     sales: { access: "FULL", labelFa: "دسترسی کامل" },
     catalog: { access: "FULL", labelFa: "دسترسی کامل" },
     clinical: { access: "FULL", labelFa: "دسترسی کامل" },
-    b2b: { access: "FULL", labelFa: "دسترسی کامل" },
     finance: { access: "FULL", labelFa: "دسترسی کامل" },
     ops: { access: "FULL", labelFa: "دسترسی کامل" },
   },
@@ -58,7 +53,6 @@ export const DOMAIN_ACCESS_CONFIG: Record<AdminUserRole, Record<string, DomainAc
     sales: { access: "FULL", labelFa: "عملیات سفارشات" },
     catalog: { access: "FULL", labelFa: "انبار و ارسال" },
     clinical: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
-    b2b: { access: "FULL", labelFa: "بررسی استعلام" },
     finance: { access: "RESTRICTED", labelFa: "محدود به مالی" },
     ops: { access: "VIEW_ONLY", labelFa: "پایش صف" },
   },
@@ -66,7 +60,6 @@ export const DOMAIN_ACCESS_CONFIG: Record<AdminUserRole, Record<string, DomainAc
     sales: { access: "FULL", labelFa: "تایید فیش‌ها" },
     catalog: { access: "VIEW_ONLY", labelFa: "ارزش‌گذاری انبار" },
     clinical: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
-    b2b: { access: "VIEW_ONLY", labelFa: "فقط خواندنی" },
     finance: { access: "FULL", labelFa: "دفترکل و تراز" },
     ops: { access: "VIEW_ONLY", labelFa: "پایش صف" },
   },
@@ -114,23 +107,13 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
     title: "مدیریت ویترین و فعال/غیرفعال‌سازی بخش‌های صفحه اصلی",
     description: "کنترل سوییچ برخط سکشن‌های ویترین، تریاژ، کاتالوگ، شبیه‌سازها و خبرنامه",
   },
-  b2b: {
-    breadcrumb: ["خانه ERP", "همکاری تجاری", "استعلام‌های خرید عمده (B2B)"],
-    title: "مدیریت استعلام‌های خرید عمده و بسته‌های تجاری",
-    description: "بررسی استعلام حجم فرمولاسیون، تخفیفات تیراژ و صدور پیش‌فاکتور رسمی شرکتی",
-  },
   subscriptions: {
-    breadcrumb: ["خانه ERP", "همکاری تجاری", "اشتراک‌های دوره‌ای و تکرارشونده"],
+    breadcrumb: ["خانه ERP", "خدمات درمانی و اشتراک", "اشتراک‌های دوره‌ای و تکرارشونده"],
     title: "مدیریت اشتراک‌های درمانی و شارژ دوره‌ای",
     description: "پایش سیکل‌های اجرای خودکار، توقف موقت و تکرار سفارشات بیماران",
   },
-  vendors: {
-    breadcrumb: ["خانه ERP", "همکاری تجاری", "فروشندگان و تأمین‌کنندگان"],
-    title: "مدیریت تأمین‌کنندگان و فروشندگان رسمی مواد اولیه",
-    description: "پایش نرخ کمیسیون پلتفرم، اصالت فرآورده‌ها و قراردادهای تأمین",
-  },
   digital: {
-    breadcrumb: ["خانه ERP", "همکاری تجاری", "اسناد علمی و لایسنس‌های دیجیتال"],
+    breadcrumb: ["خانه ERP", "خدمات درمانی و اشتراک", "اسناد علمی و لایسنس‌های دیجیتال"],
     title: "لایسنس‌های دیجیتال و حق دسترسی مونوگراف‌ها",
     description: "مدیریت سقف دانلود، توکن‌های یکبارمصرف و دسترسی فایل‌های مونوگراف علمی",
   },
@@ -431,30 +414,15 @@ export default function AdminDashboardPage() {
             مدیریت ویترین و بخش‌ها (CMS)
           </button>
 
-          {/* 4. B2B Commercial (همکاری تجاری و B2B) */}
+          {/* 4. Patient Services (خدمات درمانی و اشتراک) */}
           <div className="nav-category-header">
-            <span>همکاری تجاری (B2B)</span>
-            <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].b2b.access.toLowerCase()}`}>
-              {DOMAIN_ACCESS_CONFIG[userRole].b2b.labelFa}
-            </span>
+            <span>خدمات درمانی و اشتراک</span>
           </div>
-          <button
-            onClick={() => setActiveTab("b2b")}
-            className={`nav-btn ${activeTab === "b2b" ? "active" : ""}`}
-          >
-            استعلام‌های عمده B2B
-          </button>
           <button
             onClick={() => setActiveTab("subscriptions")}
             className={`nav-btn ${activeTab === "subscriptions" ? "active" : ""}`}
           >
             اشتراک‌های دوره‌ای
-          </button>
-          <button
-            onClick={() => setActiveTab("vendors")}
-            className={`nav-btn ${activeTab === "vendors" ? "active" : ""}`}
-          >
-            فروشندگان مارکت‌پلیس
           </button>
           <button
             onClick={() => setActiveTab("digital")}
@@ -600,10 +568,6 @@ export default function AdminDashboardPage() {
           <PromotionsCouponsManager userRole={userRole} />
         )}
 
-        {activeTab === "b2b" && (
-          <B2BQuotesManager userRole={userRole} />
-        )}
-
         {activeTab === "clinical" && (
           <ClinicalContentManager userRole={userRole} />
         )}
@@ -622,10 +586,6 @@ export default function AdminDashboardPage() {
 
         {activeTab === "subscriptions" && (
           <SubscriptionsManager userRole={userRole} />
-        )}
-
-        {activeTab === "vendors" && (
-          <VendorsManager userRole={userRole} />
         )}
 
         {activeTab === "digital" && (

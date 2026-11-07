@@ -1,6 +1,7 @@
 /**
  * Commerce OS — E2E Golden Path Verification Script
- * اجرای کامل مسیر خرید: سلامت → کاتالوگ → جست‌وجو → قیمت‌گذاری → ارسال → چک‌اوت
+ * اجرای کامل مسیر خرید: سلامت → کاتالوگ → جست‌وجو → قیمت‌گذاری → ارسال → چک‌اوت →
+ * کنترل سکشن‌های صفحه اصلی (CMS سرورساید) → نویسندگی محصول در ERP (DRAFT → PUBLISHED)
  * گام‌های وابسته به PostgreSQL به‌صورت شفاف SKIP می‌شوند (نیازمند docker compose up -d)
  */
 
@@ -285,34 +286,62 @@ async function main() {
     step("16. پلن‌های اشتراک دوره‌ای", "FAIL", e.message);
   }
 
-  // ── 17. B2B lead capture (persisted:false روی DB-down طبق ADR-010) ──
+  // ── 17. Storefront sections settings (round-trip سرورساید) ──
   try {
-    const bq = await api("/v1/b2b/quote-requests", {
-      method: "POST",
-      body: JSON.stringify({
-        companyName: "کافه تست E2E",
-        contactName: "کارآزمای مسیر",
-        phone: "09120000000",
-        itemsSummary: "۲۰ کیسه قهوه اتیوپی ماهانه برای منوی کافه",
-        desiredQty: 20,
-      }),
+    const putOff = await api("/v1/settings/storefront/home-sections", {
+      method: "PUT",
+      body: JSON.stringify({ overrides: { newsletter: false } }),
     });
-    const ok = bq.ok && bq.json?.accepted === true;
-    step("17. ثبت سرنخ B2B (سیاست صیانت از سرنخ)", ok ? "PASS" : "FAIL",
-      `persisted=${bq.json?.persisted ?? "—"} — ${bq.json?.message ?? ""}`);
+    if (putOff.status === 503) {
+      step("17. کنترل سکشن‌های صفحه اصلی (CMS سرورساید)", "SKIP",
+        "نیازمند PostgreSQL فعال (docker compose up -d)");
+    } else {
+      const getBack = await api("/v1/settings/storefront");
+      const persisted = getBack.json?.overrides?.newsletter === false;
+      const restore = await api("/v1/settings/storefront/home-sections", {
+        method: "DELETE",
+      });
+      const ok = putOff.ok && persisted && restore.ok;
+      step("17. کنترل سکشن‌های صفحه اصلی (CMS سرورساید)", ok ? "PASS" : "FAIL",
+        `PUT newsletter=false → GET source=${getBack.json?.source ?? "—"} · persisted=${persisted ? "بله" : "خیر"} · بازنشانی با DELETE=${restore.ok ? "انجام شد" : "ناموفق"}`);
+    }
   } catch (e) {
-    step("17. ثبت سرنخ B2B", "FAIL", e.message);
+    step("17. کنترل سکشن‌های صفحه اصلی", "FAIL", e.message);
   }
 
-  // ── 18. Vendors (marketplace foundation) ──
+  // ── 18. ERP product authoring (ایجاد DRAFT → انتشار PUBLISHED) ──
   try {
-    const vd = await api("/v1/vendors?storeSlug=demo");
-    const vendors = vd.json?.items ?? [];
-    const ok = vd.ok && vendors.length >= 2 && ["DB", "FALLBACK"].includes(vd.json?.source);
-    step("18. بنیان فروشندگان (W18)", ok ? "PASS" : "FAIL",
-      vendors.map((v) => v.slug).join(" · "));
+    const testSlug = `e2e-test-${Date.now()}`;
+    const create = await api("/v1/stores/admin/products", {
+      method: "POST",
+      headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+      body: JSON.stringify({
+        storeSlug: "demo",
+        slug: testSlug,
+        titleFa: "محصول آزمون E2E",
+        priceRials: 15500000,
+        stock: 5,
+        status: "DRAFT",
+      }),
+    });
+    if (create.status === 503) {
+      step("18. نویسندگی محصول در ERP", "SKIP", "نیازمند PostgreSQL فعال (docker compose up -d)");
+    } else if (create.status === 201 && create.json?.data?.id) {
+      const productId = create.json.data.id;
+      const publish = await api(`/v1/stores/admin/products/${productId}`, {
+        method: "PATCH",
+        headers: { "x-tenant-id": "00000000-0000-0000-0000-000000000000" },
+        body: JSON.stringify({ status: "PUBLISHED" }),
+      });
+      const publishedAt = publish.json?.data?.publishedAt ?? publish.json?.publishedAt;
+      const ok = publish.ok && !!publishedAt;
+      step("18. نویسندگی محصول در ERP (DRAFT → PUBLISHED)", ok ? "PASS" : "FAIL",
+        `id=${productId.slice(0, 8)}… · slug=${testSlug} · publishedAt=${publishedAt ? "ثبت شد ✓" : "—"}`);
+    } else {
+      step("18. نویسندگی محصول در ERP", "FAIL", `HTTP ${create.status}: ${create.json?.message ?? ""}`);
+    }
   } catch (e) {
-    step("18. بنیان فروشندگان", "FAIL", e.message);
+    step("18. نویسندگی محصول در ERP", "FAIL", e.message);
   }
 
   // ── 19. Digital grants shape ──

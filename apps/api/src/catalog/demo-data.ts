@@ -9,7 +9,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "سیستم کربوکسی‌تراپی غیرتهاجمی با رهایش کنترل‌شده دی‌اکسید کربن فعال (Bohr Effect) جهت اکسیژن‌رسانی عمیق بافتی، تحریک فیبروبلاست‌ها و کلاژن‌سازی تخصصی پوست.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -181,7 +180,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "کپسول‌های اسکراب فیزیکی و شیمیایی فعال‌ساز گاز دی‌اکسید کربن جهت آزادسازی میکروحباب‌های CO2 و اکسیژن‌رسانی عمیق در ترکیب با کربوکسی‌ژل.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -309,7 +307,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "شیت‌های پیش‌برش‌خورده استریل با پوشش آناتومیک صورت و ناحیه گردن جهت رهایش پایدار گاز دی‌اکسید کربن.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -451,7 +448,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "پولیش میکرودرم ملایم با کریستال‌های آلومینا، نیاسینامید، لاکتیک اسید، روغن آرگان و شی‌باتر جهت ایجاد شفافیت و یکدستی بافت پوست.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -596,7 +592,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "فرمول آرامش‌بخش با نیاسینامید، پانتنول، هیالورونیک اسید، آلانتوئین و ۷ عصاره گیاهی آرام‌بخش سنتلا، میموزا و کالاندولا جهت تسکین فوری قرمزی پس از پیلینگ و لایه‌برداری.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -724,7 +719,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "پاکسازی عمقی منافذ، کنترل چربی و رفع جوش‌های سرسیاه با میکروسفرهای سیلیکای کاملاً گرد، کربن فعال، اسید گلیکولیک و سالیسیلیک.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -852,7 +846,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "فرمولاسیون پیشرفته لایه‌برداری و تحریک کلاژن‌سازی با اسید گلیکولیک خالص ۱۰٪، ماتریکسیل ۳۰۰۰ و سیستم رهایش کنترل‌شده CO2 جهت بهبود خطوط چهره، یکدستی بافت و جوانسازی عمیق اپیدرم.",
     category: { slug: "reeskin", titleFa: "لاین بالینی مراقبت پوست ReeSkin" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reeskin",
       name: "ReeSkin Clinical",
@@ -1004,7 +997,6 @@ export const DEMO_FALLBACK_PRODUCTS = [
     description: "فرمولاسیون بازسازی‌کننده و ضدالتهاب حاوی سرامید NP، فاکتورهای رشد بیومیمتیک، نیاسینامید و کمپلکس سیکا جهت تسکین سریع قرمزی، ترمیم سد دفاعی و اکسیژن‌رسانی به پوست‌های حساس و تحریک‌پذیر.",
     category: { slug: "reemed", titleFa: "لاین تخصصی درموسوتیکال ReeMed" },
     kind: "PHYSICAL",
-    vendor: null,
     brand: {
       id: "brand_reemed",
       name: "ReeMed Medical Pro",

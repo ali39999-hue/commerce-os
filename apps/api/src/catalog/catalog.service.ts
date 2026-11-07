@@ -1,6 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../database/prisma.service';
 import { DEMO_FALLBACK_PRODUCTS } from './demo-data';
+import { DEFAULT_TENANT_ID } from '../common/guards/current-tenant.decorator';
+import type { BulkUpdateProductsDto, CreateProductDto, UpdateProductDto } from '../common/dto/resource-writes.dto';
+import type { Prisma, ProductStatus } from '../generated/prisma/client';
 
 @Injectable()
 export class CatalogService {
@@ -72,7 +82,6 @@ export class CatalogService {
         orderBy: [{ publishedAt: 'desc' }, { id: 'asc' }],
         take: limit,
         include: {
-          vendor: { select: { slug: true, titleFa: true } },
           brand: {
             select: {
               id: true,
@@ -187,7 +196,6 @@ export class CatalogService {
           publishedAt: { not: null },
         },
         include: {
-          vendor: { select: { slug: true, titleFa: true } },
           brand: {
             select: {
               id: true,
@@ -398,9 +406,8 @@ export class CatalogService {
         include: {
           brand: true,
           category: true,
-          vendor: true,
           media: { orderBy: { sortOrder: 'asc' } },
-          variants: true,
+          variants: { orderBy: { sku: 'asc' }, include: { inventoryLevels: true } },
           claims: true,
           ingredients: true,
           usageSteps: true,
@@ -417,17 +424,17 @@ export class CatalogService {
 
   async adminGetProduct(tenantId: string, productId: string) {
     try {
+      // مستأجر مؤثر از رکورد محصول مشتق می‌شود (هم‌سو با adminUpdateProduct)
       const product = await this.prisma.product.findFirst({
         where: {
           id: productId,
-          tenantId,
+          ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}),
         },
         include: {
           brand: true,
           category: true,
-          vendor: true,
           media: { orderBy: { sortOrder: 'asc' } },
-          variants: { include: { inventoryLevels: true } },
+          variants: { orderBy: { sku: 'asc' }, include: { inventoryLevels: true } },
           claims: true, // Includes DRAFT, REVIEW_REQUIRED, APPROVED
           ingredients: { orderBy: { sortOrder: 'asc' } },
           usageSteps: { orderBy: { stepNumber: 'asc' } },
@@ -445,6 +452,346 @@ export class CatalogService {
       const fallback = DEMO_FALLBACK_PRODUCTS.find((p) => p.id === productId);
       if (fallback) return this.toPublicProduct(fallback);
       throw new NotFoundException('محصول یافت نشد یا دسترسی مجاز نیست.');
+    }
+  }
+
+  // ── Admin Product Authoring (ERP) ──
+  // پول قانونی ریال (عدد صحیح) است؛ قیمت/موجودی روی واریانت پیش‌فرض +
+  // InventoryLevel می‌نشیند (همان شکلی که seed.ts می‌سازد). DB-down → ۵۰۳
+  // صادقانه: قیمت و موجودی تعهد تجاری‌اند و هرگز ساختگی ثبت نمی‌شوند.
+
+  async adminCreateProduct(tenantId: string, input: CreateProductDto) {
+    try {
+      // اسلاگ فروشگاه سراسری یکتاست؛ مستأجر مؤثر همیشه از خود فروشگاه مشتق
+      // می‌شود (هدر x-tenant-id فقط برای هم‌خوانی در استقرار چندمستأجری
+      // بررسی می‌شود — مقدار پیش‌فرض تک‌مستأجری نادیده گرفته می‌شود).
+      const store = await this.prisma.store.findFirst({
+        where: { slug: input.storeSlug },
+        select: { id: true, tenantId: true },
+      });
+      if (!store || (tenantId !== DEFAULT_TENANT_ID && tenantId !== store.tenantId)) {
+        throw new NotFoundException('فروشگاهی با این شناسه یافت نشد');
+      }
+      tenantId = store.tenantId;
+
+      // اسلاگ صریح: تکراری → ۴۰۹ | خودکار: از عنوان (لاتین/فارسی) با تضمین یکتایی
+      let slug: string;
+      if (input.slug !== undefined && input.slug.trim().length > 0) {
+        slug = slugify(input.slug) || input.slug.trim().toLowerCase();
+        const existing = await this.prisma.product.findUnique({
+          where: { storeId_slug: { storeId: store.id, slug } },
+          select: { id: true },
+        });
+        if (existing) {
+          throw new ConflictException('محصولی با این اسلاگ از قبل در این فروشگاه موجود است');
+        }
+      } else {
+        slug = await this.generateUniqueSlug(store.id, input.titleEn ?? input.titleFa);
+      }
+
+      let categoryId: string | null = null;
+      if (input.categoryFa !== undefined && input.categoryFa.trim().length > 0) {
+        const category = await this.prisma.category.findFirst({
+          where: {
+            tenantId,
+            storeId: store.id,
+            titleFa: { equals: input.categoryFa.trim(), mode: 'insensitive' },
+          },
+          select: { id: true },
+        });
+        categoryId = category?.id ?? null;
+      }
+
+      let brandId: string | null = null;
+      if (input.brandId) {
+        const brand = await this.prisma.brand.findFirst({
+          where: { tenantId, storeId: store.id, id: input.brandId },
+          select: { id: true },
+        });
+        if (!brand) {
+          throw new BadRequestException('برند مورد نظر در این فروشگاه یافت نشد');
+        }
+        brandId = input.brandId;
+      }
+
+      const status = input.status ?? 'DRAFT';
+      const productId = randomUUID();
+      const variantId = randomUUID();
+      const now = new Date();
+
+      await this.prisma.$transaction([
+        this.prisma.product.create({
+          data: {
+            id: productId,
+            tenantId,
+            storeId: store.id,
+            categoryId,
+            brandId,
+            kind: input.kind ?? 'PHYSICAL',
+            slug,
+            titleFa: input.titleFa,
+            ...(input.description !== undefined ? { description: input.description } : {}),
+            status,
+            isFeatured: input.isFeatured ?? false,
+            ...(status === 'PUBLISHED' ? { publishedAt: now } : {}),
+          },
+        }),
+        this.prisma.productVariant.create({
+          data: {
+            id: variantId,
+            tenantId,
+            storeId: store.id,
+            productId,
+            sku: `${slug}-STD`,
+            titleFa: input.titleFa,
+            priceAmount: String(input.priceRials),
+            currency: 'IRR',
+            status: 'ACTIVE',
+          },
+        }),
+        this.prisma.inventoryLevel.create({
+          data: {
+            tenantId,
+            storeId: store.id,
+            variantId,
+            warehouseCode: 'MAIN',
+            onHandQty: input.stock,
+            reservedQty: 0,
+          },
+        }),
+        ...(input.imageUrl
+          ? [
+              this.prisma.productMedia.create({
+                data: {
+                  tenantId,
+                  storeId: store.id,
+                  productId,
+                  role: 'HERO',
+                  sortOrder: 1,
+                  url: input.imageUrl,
+                  isPrimary: true,
+                },
+              }),
+            ]
+          : []),
+      ]);
+
+      const created = await this.prisma.product.findFirst({
+        where: { id: productId, tenantId },
+        include: this.adminProductInclude(),
+      });
+      if (!created) {
+        throw new NotFoundException('محصول یافت نشد یا دسترسی مجاز نیست.');
+      }
+      return this.toPublicProduct(created);
+    } catch (err: any) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof BadRequestException
+      ) {
+        throw err;
+      }
+      if (err?.code === 'P2002') {
+        throw new ConflictException('محصولی با این اسلاگ یا اسکیو از قبل موجود است');
+      }
+      throw new ServiceUnavailableException(
+        'ثبت محصول موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید',
+      );
+    }
+  }
+
+  async adminUpdateProduct(tenantId: string, productId: string, input: UpdateProductDto) {
+    try {
+      // مستأجر مؤثر از رکورد محصول مشتق می‌شود (محدوده چندمستأجری واقعی)؛
+      // هدر فقط در استقرار واقعاً چندمستأجری با آن مقایسه می‌شود.
+      const product = await this.prisma.product.findFirst({
+        where: { id: productId },
+        include: { variants: { orderBy: { sku: 'asc' }, include: { inventoryLevels: true } } },
+      });
+      if (!product || (tenantId !== DEFAULT_TENANT_ID && product.tenantId !== tenantId)) {
+        throw new NotFoundException('محصول یافت نشد یا دسترسی مجاز نیست.');
+      }
+      tenantId = product.tenantId;
+
+      const data: Record<string, unknown> = {};
+
+      if (input.slug !== undefined && input.slug.trim().length > 0) {
+        const slug = slugify(input.slug) || input.slug.trim().toLowerCase();
+        if (slug !== product.slug) {
+          const existing = await this.prisma.product.findUnique({
+            where: { storeId_slug: { storeId: product.storeId, slug } },
+            select: { id: true },
+          });
+          if (existing) {
+            throw new ConflictException('محصولی با این اسلاگ از قبل در این فروشگاه موجود است');
+          }
+          data.slug = slug;
+        }
+      }
+
+      if (input.titleFa !== undefined) data.titleFa = input.titleFa;
+      if (input.description !== undefined) data.description = input.description;
+      if (input.kind !== undefined) data.kind = input.kind;
+      if (input.isFeatured !== undefined) data.isFeatured = input.isFeatured;
+
+      if (input.categoryFa !== undefined) {
+        if (input.categoryFa.trim().length > 0) {
+          const category = await this.prisma.category.findFirst({
+            where: {
+              tenantId,
+              storeId: product.storeId,
+              titleFa: { equals: input.categoryFa.trim(), mode: 'insensitive' },
+            },
+            select: { id: true },
+          });
+          data.categoryId = category?.id ?? null;
+        } else {
+          data.categoryId = null;
+        }
+      }
+
+      if (input.brandId !== undefined && input.brandId.length > 0) {
+        const brand = await this.prisma.brand.findFirst({
+          where: { tenantId, storeId: product.storeId, id: input.brandId },
+          select: { id: true },
+        });
+        if (!brand) {
+          throw new BadRequestException('برند مورد نظر در این فروشگاه یافت نشد');
+        }
+        data.brandId = input.brandId;
+      }
+
+      if (input.status !== undefined) {
+        data.status = input.status;
+        // publishedAt فقط بار اول انتشار نوشته می‌شود و هرگز بازنویسی نمی‌شود
+        if (input.status === 'PUBLISHED' && !product.publishedAt) {
+          data.publishedAt = new Date();
+        }
+      }
+
+      const ops: Prisma.PrismaPromise<unknown>[] = [];
+      if (Object.keys(data).length > 0) {
+        ops.push(this.prisma.product.update({ where: { id: productId }, data }));
+      }
+
+      const defaultVariant = product.variants[0];
+      if (defaultVariant) {
+        if (input.priceRials !== undefined) {
+          ops.push(
+            this.prisma.productVariant.update({
+              where: { id: defaultVariant.id },
+              data: { priceAmount: String(input.priceRials) },
+            }),
+          );
+        }
+        if (input.stock !== undefined) {
+          const level = Array.isArray(defaultVariant.inventoryLevels)
+            ? defaultVariant.inventoryLevels[0]
+            : null;
+          if (level) {
+            ops.push(
+              this.prisma.inventoryLevel.update({
+                where: { id: level.id },
+                data: { onHandQty: input.stock },
+              }),
+            );
+          } else {
+            ops.push(
+              this.prisma.inventoryLevel.create({
+                data: {
+                  tenantId,
+                  storeId: product.storeId,
+                  variantId: defaultVariant.id,
+                  warehouseCode: 'MAIN',
+                  onHandQty: input.stock,
+                  reservedQty: 0,
+                },
+              }),
+            );
+          }
+        }
+      }
+
+      if (ops.length > 0) {
+        await this.prisma.$transaction(ops);
+      }
+
+      const updated = await this.prisma.product.findFirst({
+        where: { id: productId, tenantId },
+        include: this.adminProductInclude(),
+      });
+      if (!updated) {
+        throw new NotFoundException('محصول یافت نشد یا دسترسی مجاز نیست.');
+      }
+      return this.toPublicProduct(updated);
+    } catch (err: any) {
+      if (
+        err instanceof NotFoundException ||
+        err instanceof ConflictException ||
+        err instanceof BadRequestException
+      ) {
+        throw err;
+      }
+      if (err?.code === 'P2002') {
+        throw new ConflictException('محصولی با این اسلاگ یا اسکیو از قبل موجود است');
+      }
+      throw new ServiceUnavailableException(
+        'ویرایش محصول موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید',
+      );
+    }
+  }
+
+  async adminBulkUpdateProducts(tenantId: string, input: BulkUpdateProductsDto) {
+    try {
+      const data: { status?: ProductStatus; isFeatured?: boolean } = {};
+      if (input.status !== undefined) data.status = input.status;
+      if (input.isFeatured !== undefined) data.isFeatured = input.isFeatured;
+
+      const result = await this.prisma.product.updateMany({
+        where: {
+          id: { in: input.ids },
+          // هدر پیش‌فرض تک‌مستأجری محدوده‌سازی نمی‌شود؛ در غیر این صورت
+          // مستأجر صریح سرور-به-سرور محترم شمرده می‌شود.
+          ...(tenantId !== DEFAULT_TENANT_ID ? { tenantId } : {}),
+        },
+        data,
+      });
+      return { updated: result.count };
+    } catch {
+      throw new ServiceUnavailableException(
+        'به‌روزرسانی گروهی محصولات موقتاً در دسترس نیست — لطفاً بعداً تلاش کنید',
+      );
+    }
+  }
+
+  private adminProductInclude() {
+    return {
+      brand: true,
+      category: true,
+      media: { orderBy: { sortOrder: 'asc' } },
+      variants: { orderBy: { sku: 'asc' }, include: { inventoryLevels: true } },
+      claims: true,
+      ingredients: { orderBy: { sortOrder: 'asc' } },
+      usageSteps: { orderBy: { stepNumber: 'asc' } },
+      skinConcerns: { include: { concern: true } },
+    } as const;
+  }
+
+  // اسلاگ یکتا در فروشگاه: پایه از عنوان (لاتین) یا «product-» + پسوند تصادفی،
+  // و در برخورد، پسوند -2، -3 و …
+  private async generateUniqueSlug(storeId: string, seed: string): Promise<string> {
+    const base = slugify(seed) || `product-${randomUUID().slice(0, 8)}`;
+    let candidate = base;
+    let suffix = 2;
+    for (;;) {
+      const existing = await this.prisma.product.findUnique({
+        where: { storeId_slug: { storeId, slug: candidate } },
+        select: { id: true },
+      });
+      if (!existing) return candidate;
+      candidate = `${base}-${suffix}`;
+      suffix += 1;
     }
   }
 
@@ -607,7 +954,11 @@ export class CatalogService {
       titleFa: product.titleFa ?? product.title,
       description: product.description ?? null,
       kind: product.kind ?? 'PHYSICAL',
-      vendor: product.vendor ? { slug: product.vendor.slug, titleFa: product.vendor.titleFa } : null,
+      // ردیف‌های واقعی DB همیشه status دارند؛ فقط ردیف‌های دموی تاب‌آور ندارند و
+      // آن‌ها همان کاتالوگ زنده ویترین‌اند → منتشرشده نمایش داده می‌شوند
+      status: product.status ?? 'PUBLISHED',
+      isFeatured: Boolean(product.isFeatured),
+      publishedAt: product.publishedAt ? new Date(product.publishedAt).toISOString() : null,
       brand,
       media,
       ingredients,
@@ -615,6 +966,35 @@ export class CatalogService {
       usageSteps,
       skinConcerns,
       variants,
+      defaultVariant: variants.length > 0 ? this.toDefaultVariant(product.variants[0]) : null,
     };
   }
+
+  // اولین واریانت (بر اساس مرتب‌سازی اسکیو) به‌عنوان واریانت پیش‌فرض ادمین
+  private toDefaultVariant(variant: any) {
+    const onHand = Array.isArray(variant.inventoryLevels) && variant.inventoryLevels.length > 0
+      ? variant.inventoryLevels[0].onHandQty
+      : 0;
+
+    const priceStr =
+      typeof variant.priceAmount === 'string'
+        ? variant.priceAmount
+        : variant.priceAmount?.toFixed?.(0) ?? String(variant.priceAmount ?? '0');
+
+    return {
+      id: variant.id,
+      sku: variant.sku,
+      priceRials: Number.parseInt(priceStr, 10) || 0,
+      stock: onHand,
+    };
+  }
+}
+
+// اسلاگ‌سازی: حروف/ارقام لاتین و خط تیره؛ عنوان فارسی → رشتهٔ خالی (تماس‌گیرنده
+// پسوند تصادفی می‌سازد)
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }

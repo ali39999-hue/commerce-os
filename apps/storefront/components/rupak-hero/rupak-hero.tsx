@@ -495,7 +495,7 @@ export function RupakHero({
                   جستجوهای پرتکرار:
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {['کربوکسی ژل', 'روغن درخت چای', 'سرم ضدلک', 'ماسک CarboxyPad', 'PlasmaX'].map(
+                  {['کربوکسی ژل', 'روغن درخت چای', 'سرم ضدلک', 'ماسک CarboxyPad'].map(
                     (tag) => (
                       <button
                         key={tag}

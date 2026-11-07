@@ -1,9 +1,9 @@
 export function TrustCredibilityBar() {
   const items = [
     {
-      badge: 'CE 0123 / ISO 13485',
-      title: 'نشان رسمی CE Medical اروپا',
-      desc: 'انطباق کامل با استاندارد مدیریت کیفیت تجهیزات پزشکی و استاندارد GMP دارویی بریتانیا',
+      badge: 'ISO 22716 GMP',
+      title: 'استاندارد GMP آرایشی-بهداشتی',
+      desc: 'انطباق کامل فرمولاسیون‌ها با استاندارد مدیریت کیفیت GMP آرایشی-بهداشتی (ISO 22716)',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -12,9 +12,9 @@ export function TrustCredibilityBar() {
       ),
     },
     {
-      badge: 'CAMBRIDGE DERMA',
-      title: 'تأییدیه متخصصین درماتولوژی',
-      desc: 'سنجش عدم سمیت سلولی (Cytotoxicity) و اثربخشی بالینی در کلینیک‌های پوست لندن و کمبریج',
+      badge: 'CAMBRIDGE R&D',
+      title: 'توسعه‌یافته در پارک علمی کمبریج',
+      desc: 'طراحی و پالایش فرمولاسیون‌ها در پارک علمی کمبریج انگلستان به همراه سنجش ایمنی عدم سمیت سلولی (Cytotoxicity)',
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"></circle>

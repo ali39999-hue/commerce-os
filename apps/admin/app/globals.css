@@ -381,23 +381,19 @@ textarea:focus-visible,
 }
 
 /* Pending status (در انتظار بررسی / در حال پردازش / پیش‌نویس / نیاز به تایید) */
-.status-pill.processing, 
+.status-pill.processing,
 .status-pill.pending_review,
 .status-pill.status-pending,
 .status-pill.in_review,
-.status-pill.b2b-new,
-.status-pill.b2b-inreview,
 .status-pill.draft {
   background: #fffbeb;
   color: #92400e;
   border: 1px solid #fde68a;
 }
-.status-pill.processing::before, 
+.status-pill.processing::before,
 .status-pill.pending_review::before,
 .status-pill.status-pending::before,
 .status-pill.in_review::before,
-.status-pill.b2b-new::before,
-.status-pill.b2b-inreview::before,
 .status-pill.draft::before {
   background: #f59e0b;
 }
@@ -449,22 +445,14 @@ textarea:focus-visible,
   background: #3b82f6;
 }
 
-.status-pill.b2b-quoted {
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-}
-.status-pill.b2b-quoted::before {
-  background: #10b981;
-}
-
-.status-pill.b2b-closed,
+/* Archived (بایگانی نرم) + expired digital grants: muted, out of the active catalog */
+.status-pill.archived,
 .status-pill.digital-expired {
   background: var(--paper);
   border: 1px solid var(--line);
   color: var(--muted);
 }
-.status-pill.b2b-closed::before,
+.status-pill.archived::before,
 .status-pill.digital-expired::before {
   background: var(--muted);
 }
@@ -740,7 +728,7 @@ textarea:focus-visible,
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   Subscriptions & B2B (W17)
+   Subscriptions (W17)
    (new rules only; everything above is untouched)
    ════════════════════════════════════════════════════════════════════ */
 
@@ -749,8 +737,7 @@ textarea:focus-visible,
   background: #fffbeb;
   color: #b45309;
 }
-.status-pill.cancelled,
-.status-pill.b2b-closed {
+.status-pill.cancelled {
   background: var(--paper);
   border: 1px solid var(--line);
   color: var(--muted);
@@ -760,148 +747,15 @@ textarea:focus-visible,
   color: #b91c1c;
 }
 
-/* B2B quote status pills */
-.status-pill.b2b-new {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-.status-pill.b2b-inreview {
-  background: #fffbeb;
-  color: #b45309;
-}
-.status-pill.b2b-quoted {
-  background: #ecfdf5;
-  color: #047857;
-}
-
 /* Subscriptions KPI row (grid columns borrowed from .kpi-grid) */
 .subs-kpi-row {
   margin-bottom: 22px;
 }
 
-/* B2B status filter chips */
-.b2b-chips {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-.b2b-chip {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 6px 16px;
-  font-size: .82rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .15s;
-}
-.b2b-chip:hover {
-  border-color: var(--brand);
-  color: var(--brand-deep);
-}
-.b2b-chip.active {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #ffffff;
-}
-.b2b-chip:disabled {
-  opacity: .6;
-  cursor: wait;
-}
-
-/* B2B expandable rows */
-.b2b-row-clickable {
-  cursor: pointer;
-}
-.b2b-row-clickable:hover td {
-  background: #fbfaf6;
-}
-.b2b-expand-row td {
-  background: var(--paper);
-  border-bottom: 1px solid var(--line);
-}
-.b2b-expand {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 6px 10px;
-  font-size: .86rem;
-}
-.b2b-expand strong {
-  font-size: .82rem;
-  color: var(--brand-deep);
-}
-.b2b-expand p {
-  margin: 0;
-  white-space: pre-wrap;
-  color: var(--ink);
-}
-.b2b-expand label {
-  font-size: .78rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-.b2b-expand textarea {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-family: inherit;
-  font-size: .86rem;
-  color: var(--ink);
-  line-height: 1.6;
-  resize: vertical;
-  min-height: 56px;
-  outline: none;
-  transition: border-color .15s;
-}
-.b2b-expand textarea:focus {
-  border-color: var(--brand);
-}
-
 /* ════════════════════════════════════════════════════════════════════
-   Vendors & Digital Grants (W18)
+   Digital Grants (W18)
    (new rules only; everything above is untouched)
    ════════════════════════════════════════════════════════════════════ */
-
-/* Vendors: letter avatar + title/description cell */
-.vendor-avatar-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.vendor-avatar-cell .vendor-avatar-letter {
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  color: #ffffff;
-  font-weight: 900;
-  font-size: .95rem;
-}
-.vendor-avatar-cell > div:last-child {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.4;
-}
-
-/* Vendors: inline create form (grid rhythm borrowed from the coupon form) */
-.vendor-form-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px 18px;
-  margin-bottom: 16px;
-}
-.vendor-form-row .admin-input[type="color"] {
-  padding: 3px;
-  height: 42px;
-  cursor: pointer;
-}
 
 /* Digital grants: phone filter row */
 .grant-filter-row {
@@ -954,15 +808,7 @@ textarea:focus-visible,
 }
 
 /* Responsive behaviour for the new grids */
-@media (max-width: 1200px) {
-  .vendor-form-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 760px) {
-  .vendor-form-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .grant-filter-row .coupon-field {
     min-width: 100%;
   }

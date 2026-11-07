@@ -18,16 +18,12 @@ import { trackViewItem } from '../../lib/analytics';
 interface PdpInteractiveSectionProps {
   productData: ExtendedProductData;
   isDigital?: boolean;
-  vendorTitleFa?: string;
-  vendorSlug?: string;
   reviewsElement: React.ReactNode;
 }
 
 export function PdpInteractiveSection({
   productData,
   isDigital,
-  vendorTitleFa,
-  vendorSlug,
   reviewsElement,
 }: PdpInteractiveSectionProps) {
   const { addItem } = useCart();
@@ -173,19 +169,6 @@ export function PdpInteractiveSection({
 
           <h1 className="pdp-main-title">{productData.title}</h1>
           <p className="pdp-sub-title">{productData.subtitleFa}</p>
-
-          {vendorTitleFa && (
-            <p className="pdp-vendor-note">
-              فروشنده رسمی:{' '}
-              {vendorSlug ? (
-                <Link href={`/vendors/${encodeURIComponent(vendorSlug)}`}>
-                  <strong>{vendorTitleFa}</strong>
-                </Link>
-              ) : (
-                <strong>{vendorTitleFa}</strong>
-              )}
-            </p>
-          )}
 
           {/* Rating Summary Snippet */}
           <div className="pdp-rating-strip" aria-label={`امتیاز ${productData.ratingSummary.ratingValue} از ۵`}>

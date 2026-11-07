@@ -3,7 +3,7 @@
 
 > **Route**: `/cart` (Full Page View) & Global Slide-Over Sheet (`<CartDrawer />`)  
 > **Component Architecture**: Hybrid React Server Component (`apps/storefront/app/cart/page.tsx`) with high-concurrency client state hydration (`CartContext.tsx`, `CartDrawer.tsx`, `MilestoneProgressBar.tsx`, `CartItemRow.tsx`, `CrossSellCarousel.tsx`, `CouponInputSection.tsx`, `CartFinancialSummary.tsx`).  
-> **Primary Purpose**: Provide a friction-free, mathematically deterministic staging ground for clinical orders. Bridge transdermal consumable reorders and B2B clinic restocking with real-time cold-chain tracking incentives, volume-tier pricing breakdowns, dynamic protocol cross-sells, coupon validation, and strict 10% Iranian VAT accounting.
+> **Primary Purpose**: Provide a friction-free, mathematically deterministic staging ground for retail clinical orders. Bridge transdermal consumable reorders and multi-unit home replenishment with real-time cold-chain tracking incentives, volume-tier pricing breakdowns, dynamic protocol cross-sells, coupon validation, and strict 10% Iranian VAT accounting.
 
 ---
 
@@ -133,20 +133,20 @@ export function calculateMilestones(subtotalTomans: number): MilestoneState {
 ### 3.1 Line Item Presentation
 Every item in the cart displays full clinical context to eliminate ambiguity:
 - **Product Thumbnail**: 80x80px rounded-lg container with high-contrast laboratory render.
-- **Brand Identity Badge**: `ReeSkin™` (Transdermal) in Cyan or `ReeMed™` (Hardware/Accessories) in Violet.
+- **Brand Identity Badge**: `ReeSkin™` (مصرفی خانگی) in Cyan or `ReeMed™` (محلول‌های کلینیکی) in Cyan family variants.
 - **Bilingual Nomenclature**: e.g., «ژل کربوکسی‌تراپی حرفه‌ای ۵۰۰ میلی‌لیتر» / *CarboxyGel™ Pro Clinic Dispenser*.
 - **Cold-Chain Pill**: Displayed if `requiresColdChain: true` (`۲°-۸°C یخ درای-آیس`).
 - **Volume Discount Alert Pill**: Notifies user of currently applied tier or units needed for the next pricing tier.
 
-### 3.2 Volume Discount Matrix (Clinic Restocking & Bulk Packs)
+### 3.2 Volume Discount Matrix (Multi-Unit Restocking & Bulk Packs)
 Applicable to consumables (e.g. CarboxyGel 500ml/1500ml, CarboxyPad, Crystalene):
 
 | Tier Level | Quantity Range | Discount Percentage | Applied Badge (FA) | Intended Audience |
 | :--- | :--- | :--- | :--- | :--- |
 | **Tier 1 (Base)** | 1 – 4 Units | 0% | قیمت تک‌کاربره | B2C Home Regimen |
-| **Tier 2 (Pro Regimen)** | 5 – 9 Units | 10% | ۱۰٪ تخفیف دوره کامل | Clinic Estheticians |
-| **Tier 3 (Clinic Bulk)** | 10 – 19 Units | 18% | ۱۸٪ تخفیف کلینیکال عمده | Aesthetic Clinics |
-| **Tier 4 (Institution)** | 20+ Units | 25% | ۲۵٪ تخفیف توزیع سازمانی | Medical Centers & Hospitals |
+| **Tier 2 (Pro Regimen)** | 5 – 9 Units | 10% | ۱۰٪ تخفیف دوره کامل | Multi-Unit Home Regimens |
+| **Tier 3 (Retail Bulk)** | 10 – 19 Units | 18% | ۱۸٪ تخفیف کلینیکال عمده | Extended Family / Shared Supply |
+| **Tier 4 (Institution)** | 20+ Units | 25% | ۲۵٪ تخفیف توزیع سازمانی | Organizational & Bulk Retail Supply |
 
 ### 3.3 Dynamic Line Quantity Updates & Optimistic UI
 ```typescript
@@ -386,7 +386,7 @@ export function computeCartLedger(
 | **Out-of-Stock Item in Cart** | Item row tinted red (`#ef4444`); badge: «اتمام موجودی در انبار سردخانه مرکزی». Checkout CTA disabled. | Button: «حذف فرآورده‌های ناموجود» updates cart state instantly. |
 | **Cold-Chain Alert Warning** | Cart contains biologics requiring 2-8°C storage: Amber banner indicates required refrigerated courier dispatch. | Clarifies delivery requirements; courier options preset in checkout. |
 | **Invalid or Expired Coupon** | Input border flashes red (`#ef4444`); error message: «کد تخفیف وارد شده منقضی شده یا با اقلام سبد همخوانی ندارد.» | User can re-enter code or tap default suggestion pills. |
-| **Max Limit Exceeded** | Counter `+` button disables; tooltip indicates hospital/clinic procurement protocol limits. | User can submit B2B wholesale inquiry at `/b2b` for commercial volumes. |
+| **Max Limit Exceeded** | Counter `+` button disables; tooltip indicates per-order procurement limits. | User can schedule recurring deliveries via an auto-replenishment subscription at `/subscriptions`. |
 
 ---
 

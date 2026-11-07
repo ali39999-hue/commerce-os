@@ -35,11 +35,12 @@
 - `POST /v1/reviews/admin/:id/moderate`
 - `POST /v1/wallet/:userId/credit` و `POST /v1/wallet/:userId/debit`
 - `POST /v1/subscriptions/:id/pause|resume|cancel`
-- `POST /v1/b2b/quote-requests/:id/status`
+- مسیر `POST /v1/b2b/quote-requests/:id/status` با بازنشستگی ماژول b2b (2026-11-07) حذف شد.
+- `PUT|DELETE /v1/settings/storefront/home-sections` و `POST|PATCH /v1/stores/admin/products[...]` (نویسندگی محصول ERP و کنترل سکشن‌های ویترین — ADR-013) به همین فهرست گاردشده‌ها اضافه شدند.
 
-**عمداً عمومی مانده‌اند (جریان فروشگاه):** checkout session/place-order، پرداخت initiate/ثبت فیش مشتری، callback زرین‌پال، ثبت نظر مشتری، ثبت استعلام B2B، ثبت عضویت اشتراک، quote ارسال، analytics events، جست‌وجو/کاتالوگ/پلن‌ها.
+**عمداً عمومی مانده‌اند (جریان فروشگاه):** checkout session/place-order، پرداخت initiate/ثبت فیش مشتری، callback زرین‌پال، ثبت نظر مشتری، ثبت عضویت اشتراک، quote ارسال، analytics events، جست‌وجو/کاتالوگ/پلن‌ها، خواندن عمومی تنظیمات ویترین (`GET /v1/settings/storefront`).
 
-**ماتریس زمان‌اجرا (۱۲ مسیر گاردشده):** بدون اعتبارنامه → همه `401`؛ با کلید سرویس → عبور به هندلر (خطای ۴۰۰/۵۰۰ فقط به‌خاطر ID قلابی تست)؛ مسیرهای عمومی → `200`.
+**ماتریس زمان‌اجرا (۱۲ مسیر گاردشده در زمان اجرای AUTH-003):** بدون اعتبارنامه → همه `401`؛ با کلید سرویس → عبور به هندلر (خطای ۴۰۰/۵۰۰ فقط به‌خاطر ID قلابی تست)؛ مسیرهای عمومی → `200`.
 
 ## ۳-ب. گام اول AUTH-002 — Tenant سرور-محور (Runtime-Verified)
 
@@ -107,7 +108,7 @@
 - قبل: بدنه‌ها با TS interface اعلان می‌شدند → ValidationPipe برای آن‌ها متادیتای ران‌تایم نداشت و `whitelist/forbidNonWhitelisted` عملاً بی‌اثر بود؛ کل شیء درخواست به سرویس می‌رفت.
 - بعد: کلاس‌های DTO با class-validator در `checkout/dto/checkout.dto.ts` و `common/dto/resource-writes.dto.ts`:
   - `CheckoutSessionDto` (nested `QuoteLineDto` + `AddressSnapshotDto`، `ArrayMinSize`)، `PlaceOrderDto` (`IsIn` برای درگاه پرداخت)
-  - `CreateCouponDto`، `WalletOperationDto`، `LoyaltyAdjustDto`، `OrderTransitionDto`، `PaymentInitiateDto`، `ReceiptSubmitDto`، `ReceiptApproveDto`، `SubscriptionCreateDto`، `ReviewCreateDto`، `B2bQuoteRequestDto`، `B2bQuoteStatusDto`
+  - `CreateCouponDto`، `WalletOperationDto`، `LoyaltyAdjustDto`، `OrderTransitionDto`، `PaymentInitiateDto`، `ReceiptSubmitDto`، `ReceiptApproveDto`، `SubscriptionCreateDto`، `ReviewCreateDto` (DTOهای `B2bQuoteRequestDto`/`B2bQuoteStatusDto` با حذف ماژول b2b در 2026-11-07 منسوخ شدند)
 - **تأیید زمان‌اجرا:** کلید ناشناخته روی checkout → `400`؛ `paymentMethod:"HACKED"` → `400`؛ `rating:99` → `400`؛ payload سالم → عبور به هندلر (خطای بعدی، کسب‌وکار)؛ چرخه بالینی ۱۰/۱۰ و مسیر طلایی ۱۹/۱۹ با payloadهای واقعی → سازگاری کامل کلاینت‌ها.
 
 **تست‌ها:** `apps/api/src/common/guards/admin.guard.spec.ts` — ۱۰/۱۰ سبز؛ `verify-clinical-store.mjs` ۱۰/۱۰ و `e2e-golden-path.mjs` ۱۹/۱۹ به‌عنوان کلاینت سرویس‌به‌سرویس با کلید از `.env`.

@@ -260,25 +260,25 @@ export default function OpsSystemHealth({
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
         <button
           onClick={() => setSubTab("exceptions")}
-          className={`b2b-chip ${subTab === "exceptions" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "exceptions" ? "active" : ""}`}
         >
           🚨 مرکز استثناها و صف خروج {totalExceptions > 0 && `(${faNumber(totalExceptions)})`}
         </button>
         <button
           onClick={() => setSubTab("metrics")}
-          className={`b2b-chip ${subTab === "metrics" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "metrics" ? "active" : ""}`}
         >
           📊 معیارهای بلادرنگ صف‌ها و سرور
         </button>
         <button
           onClick={() => setSubTab("leases")}
-          className={`b2b-chip ${subTab === "leases" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "leases" ? "active" : ""}`}
         >
           ⚡ اجاره‌نامه‌های پردازشگر (Redis Leases)
         </button>
         <button
           onClick={() => setSubTab("audit")}
-          className={`b2b-chip ${subTab === "audit" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "audit" ? "active" : ""}`}
         >
           🛡️ لاگ‌های حسابرسی امنیتی ({faNumber(auditLogs.length)})
         </button>

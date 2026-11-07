@@ -1,4 +1,8 @@
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { BulkUpdateProductsDto } from '../common/dto/resource-writes.dto';
 import { CatalogService } from './catalog.service';
 import { PrismaService } from '../database/prisma.service';
 
@@ -166,7 +170,6 @@ describe('CatalogService', () => {
         titleFa: 'محصول سازمانی',
         description: null,
         kind: 'PHYSICAL',
-        vendor: null,
         brand: null,
         media: [],
         ingredients: [],
@@ -227,4 +230,259 @@ describe('CatalogService', () => {
       );
     });
   });
+
+  describe('admin product authoring (ERP)', () => {
+    let txOps: any[];
+
+    beforeEach(() => {
+      txOps = [];
+      prisma.store.findFirst = jest.fn();
+      prisma.category = { findFirst: jest.fn().mockResolvedValue(null) };
+      prisma.brand.findFirst = jest.fn().mockResolvedValue(null);
+      prisma.product = {
+        findUnique: jest.fn().mockResolvedValue(null),
+        findFirst: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        updateMany: jest.fn(),
+      };
+      prisma.productVariant = { create: jest.fn(), update: jest.fn() };
+      prisma.inventoryLevel = { create: jest.fn(), update: jest.fn() };
+      prisma.productMedia = { create: jest.fn() };
+      prisma.$transaction = jest.fn().mockImplementation((ops: any[]) => {
+        txOps.push(...ops);
+        return Promise.resolve(ops);
+      });
+    });
+
+    it('creates product + default variant + inventory with an auto-slug from a Latin title', async () => {
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
+      // re-fetch after transaction (slug probes run through product.findUnique)
+      prisma.product.findFirst.mockResolvedValueOnce(adminRow({ slug: 'hydrating-serum' }));
+
+      const res = await service.adminCreateProduct('tenant-xyz', {
+        storeSlug: 'demo',
+        titleFa: 'سرم آبرسان بالینی',
+        titleEn: 'Hydrating Serum',
+        priceRials: 1250000,
+        stock: 7,
+        status: 'PUBLISHED',
+      } as any);
+
+      const created = prisma.product.create.mock.calls[0][0];
+      expect(created.data.slug).toBe('hydrating-serum');
+      expect(created.data.status).toBe('PUBLISHED');
+      expect(created.data.publishedAt).toBeInstanceOf(Date);
+      expect(created.data.isFeatured).toBe(false);
+
+      const variant = prisma.productVariant.create.mock.calls[0][0];
+      expect(variant.data.sku).toBe('hydrating-serum-STD');
+      expect(variant.data.priceAmount).toBe('1250000');
+
+      const inventory = prisma.inventoryLevel.create.mock.calls[0][0];
+      expect(inventory.data).toMatchObject({
+        variantId: variant.data.id,
+        warehouseCode: 'MAIN',
+        onHandQty: 7,
+        reservedQty: 0,
+      });
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+      expect(txOps.length).toBe(3);
+      expect(res.slug).toBe('hydrating-serum');
+    });
+
+    it('falls back to product-<random> when a Persian title slugifies to nothing and de-conflicts with -2, -3…', async () => {
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
+      // two collisions in generateUniqueSlug, then free; re-fetch returns the row
+      prisma.product.findUnique
+        .mockResolvedValueOnce({ id: 'taken-1' })
+        .mockResolvedValueOnce({ id: 'taken-2' })
+        .mockResolvedValue(null);
+      prisma.product.findFirst.mockResolvedValueOnce(adminRow());
+
+      const res = await service.adminCreateProduct('tenant-xyz', {
+        storeSlug: 'demo',
+        titleFa: 'ژل کربوکسی‌تراپی',
+        priceRials: 100,
+        stock: 1,
+      } as any);
+
+      const created = prisma.product.create.mock.calls[0][0];
+      expect(created.data.slug).toMatch(/^product-[0-9a-f]{8}-3$/);
+      // response is mapped from the post-transaction re-fetch of the created row
+      expect(res.id).toBe('prod-1');
+    });
+
+    it('conflicts with 409 on an explicit duplicate slug', async () => {
+      prisma.store.findFirst.mockResolvedValue({ id: 'store-10', tenantId: 'tenant-xyz' });
+      prisma.product.findUnique.mockResolvedValue({ id: 'existing-1' });
+
+      await expect(
+        service.adminCreateProduct('tenant-xyz', {
+          storeSlug: 'demo',
+          slug: 'carboxygel',
+          titleFa: 'ژل کربوکسی',
+          priceRials: 100,
+          stock: 1,
+        } as any),
+      ).rejects.toThrow(ConflictException);
+      expect(prisma.product.create).not.toHaveBeenCalled();
+    });
+
+    it('refuses with honest 503 when the DB is down (no fake product committed)', async () => {
+      prisma.store.findFirst.mockRejectedValue(new Error('Connection refused'));
+
+      await expect(
+        service.adminCreateProduct('tenant-xyz', {
+          storeSlug: 'demo',
+          titleFa: 'سرم تست',
+          priceRials: 100,
+          stock: 1,
+        } as any),
+      ).rejects.toThrow(ServiceUnavailableException);
+      expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+
+    it('patches: stamps publishedAt only when first published, and flows price/stock to the default variant', async () => {
+      prisma.product.findFirst
+        .mockResolvedValueOnce({
+          id: 'prod-1',
+          tenantId: 'tenant-xyz',
+          storeId: 'store-10',
+          slug: 'hydrating-serum',
+          status: 'DRAFT',
+          publishedAt: null,
+          variants: [
+            {
+              id: 'var-1',
+              sku: 'hydrating-serum-STD',
+              priceAmount: '1250000',
+              inventoryLevels: [{ id: 'lvl-1', onHandQty: 7, reservedQty: 0 }],
+            },
+          ],
+        })
+        .mockResolvedValueOnce(adminRow({ status: 'PUBLISHED' }));
+
+      const res = await service.adminUpdateProduct('tenant-xyz', 'prod-1', {
+        status: 'PUBLISHED',
+        priceRials: 990000,
+        stock: 12,
+      } as any);
+
+      const productUpdate = prisma.product.update.mock.calls[0][0];
+      expect(productUpdate.data.status).toBe('PUBLISHED');
+      expect(productUpdate.data.publishedAt).toBeInstanceOf(Date);
+
+      const variantUpdate = prisma.productVariant.update.mock.calls[0][0];
+      expect(variantUpdate).toEqual({
+        where: { id: 'var-1' },
+        data: { priceAmount: '990000' },
+      });
+
+      const inventoryUpdate = prisma.inventoryLevel.update.mock.calls[0][0];
+      expect(inventoryUpdate).toEqual({
+        where: { id: 'lvl-1' },
+        data: { onHandQty: 12 },
+      });
+      expect(res.status).toBe('PUBLISHED');
+    });
+
+    it('never overwrites publishedAt on an already-published product', async () => {
+      const firstPublishedAt = new Date('2026-01-01T00:00:00.000Z');
+      prisma.product.findFirst
+        .mockResolvedValueOnce({
+          id: 'prod-1',
+          tenantId: 'tenant-xyz',
+          storeId: 'store-10',
+          slug: 'hydrating-serum',
+          status: 'PUBLISHED',
+          publishedAt: firstPublishedAt,
+          variants: [
+            {
+              id: 'var-1',
+              sku: 'hydrating-serum-STD',
+              priceAmount: '1250000',
+              inventoryLevels: [],
+            },
+          ],
+        })
+        .mockResolvedValueOnce(adminRow({ status: 'PUBLISHED' }));
+
+      await service.adminUpdateProduct('tenant-xyz', 'prod-1', { status: 'PUBLISHED' } as any);
+
+      const productUpdate = prisma.product.update.mock.calls[0][0];
+      expect(productUpdate.data.status).toBe('PUBLISHED');
+      expect(productUpdate.data.publishedAt).toBeUndefined();
+    });
+
+    it('returns 404 for an unknown product id', async () => {
+      prisma.product.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.adminUpdateProduct('tenant-xyz', 'missing-id', { isFeatured: true } as any),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('bulk-update runs one tenant-scoped updateMany and reports the count', async () => {
+      prisma.product.updateMany.mockResolvedValue({ count: 2 });
+
+      const res = await service.adminBulkUpdateProducts('tenant-xyz', {
+        ids: ['11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222'],
+        isFeatured: true,
+      } as any);
+
+      expect(prisma.product.updateMany).toHaveBeenCalledWith({
+        where: {
+          tenantId: 'tenant-xyz',
+          id: { in: ['11111111-1111-1111-1111-111111111111', '22222222-2222-2222-2222-222222222222'] },
+        },
+        data: { isFeatured: true },
+      });
+      expect(res).toEqual({ updated: 2 });
+    });
+
+    it('rejects the bulk-update DTO over the 100-id ceiling (whitelist contract)', async () => {
+      const tooMany = plainToInstance(BulkUpdateProductsDto, {
+        ids: Array.from({ length: 101 }, () => randomUUID()),
+      });
+      const errors = await validate(tooMany);
+      expect(errors.length).toBeGreaterThan(0);
+
+      const withinLimit = plainToInstance(BulkUpdateProductsDto, {
+        ids: Array.from({ length: 100 }, () => randomUUID()),
+      });
+      expect(await validate(withinLimit)).toEqual([]);
+    });
+  });
 });
+
+function adminRow(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'prod-1',
+    slug: 'hydrating-serum',
+    titleFa: 'سرم آبرسان بالینی',
+    description: null,
+    kind: 'PHYSICAL',
+    status: 'DRAFT',
+    isFeatured: false,
+    publishedAt: null,
+    brand: null,
+    category: null,
+    media: [],
+    ingredients: [],
+    claims: [],
+    usageSteps: [],
+    skinConcerns: [],
+    variants: [
+      {
+        id: 'var-1',
+        sku: 'hydrating-serum-STD',
+        titleFa: 'سرم آبرسان بالینی',
+        priceAmount: '1250000',
+        currency: 'IRR',
+        inventoryLevels: [{ id: 'lvl-1', onHandQty: 7, reservedQty: 0 }],
+      },
+    ],
+    ...overrides,
+  };
+}

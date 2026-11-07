@@ -108,19 +108,19 @@ export default function FinanceLedgerView({
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           <button
             onClick={() => setSubTab("journals")}
-            className={`b2b-chip ${subTab === "journals" ? "active" : ""}`}
+            className={`filter-chip ${subTab === "journals" ? "active" : ""}`}
           >
             دفتر روزنامه و اسناد حسابداری
           </button>
           <button
             onClick={() => setSubTab("accounts")}
-            className={`b2b-chip ${subTab === "accounts" ? "active" : ""}`}
+            className={`filter-chip ${subTab === "accounts" ? "active" : ""}`}
           >
             جدول کدینگ حساب‌ها (COA)
           </button>
           <button
             onClick={() => setSubTab("reconciliation")}
-            className={`b2b-chip ${subTab === "reconciliation" ? "active" : ""}`}
+            className={`filter-chip ${subTab === "reconciliation" ? "active" : ""}`}
           >
             مغایرت‌گیری و تراز آزمایشی
           </button>

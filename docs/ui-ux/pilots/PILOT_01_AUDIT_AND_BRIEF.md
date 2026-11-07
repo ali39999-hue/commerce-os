@@ -15,9 +15,9 @@
 
 ## 1. Executive Summary & Audit Context
 
-The Dr Dermer UK Clinical & Commerce OS platform bridges two fundamentally distinct user segments:
-1. **End-User Patients (B2C)**: Individuals seeking needle-free transdermal carboxytherapy, barrier restoration, post-procedure TEWL recovery, and biomimetic peptide home regimens.
-2. **Medical Practitioners & Clinic Operators (B2B)**: Dermatologists, plastic surgeons, and aesthetic clinics investing in Class IIb medical consoles (`CarboX`, `PlasmaX`), procuring high-volume cabin consumables (`CarboxyGel 500ml/1500ml`, `CarboxyPod`), and enrolling in Cambridge CME workshops.
+Following the 2026-11-07 business pivot (retirement of medical devices, the B2B/clinics portal, vendors and the Academy — ADR-013), the Dr Dermer UK Clinical & Commerce OS platform serves a single retail commerce segment across two product tiers:
+1. **ReeSkin™ Home-Care Consumers (مصرفی خانگی)**: Individuals seeking needle-free transdermal carboxytherapy consumables (CarboxyGel, CarboxyPod, CarboxyPad), microderm polish, barrier restoration, post-procedure TEWL recovery, and biomimetic peptide home regimens.
+2. **ReeMed™ Clinical Solutions Consumers (محلول‌های کلینیکی)**: Consumers building advanced multi-step routines with professional dermocosmetic solutions and multi-unit supplies with tiered volume discounts.
 
 This document performs a forensic, truth-based audit of the three foundation pilot components that welcome visitors to the platform, followed by the definitive **Gate 1 Clinical UX & Messaging Brief**.
 
@@ -41,15 +41,13 @@ This document performs a forensic, truth-based audit of the three foundation pil
   - Interactive 3-Step Skin Diagnostic Consultation Drawer (`<SkinDiagnosticDrawer />`).
   - Mobile Slide-in Drawer with body scroll-lock and `Escape` key capture.
 
-#### Six-Tier Clinical Navigation (Blueprint 4.1 Architecture)
+#### Four-Tier Clinical Navigation (post-pivot, Blueprint 4.1 Architecture)
 | Tier | Title | Dropdown Type | Target Destinations | Key Features |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tier 1** | محصولات (ReeSkin™) | 3-Column Mega Menu | `/carboxygel`, `/carboxypod`, `/carboxypad`, `/crystalene`, `/healene`, `/silicalene`, `/reeskin` | Link listing, Hero Regimen Preview Card (Azelaic CarboxyGel), Clinical Standards Specification Column |
+| **Tier 1** | محصولات (ReeSkin™) | 3-Column Mega Menu | `/carboxygel`, `/carboxypod`, `/carboxypad`, `/crystalene`, `/healene`, `/silicalene` | Link listing, Hero Regimen Preview Card (Azelaic CarboxyGel), Home-Care Standards Specification Column |
 | **Tier 2** | راهکارهای پوستی | Categories Grid | `/search?q=کربوکسی`, `/search?q=پپتید`, `/search?q=سرامید`, `/search?q=روشن+کننده`, `/search?q=آکنه`, `/subscriptions` | Indication-driven color-coded dot badges, Subscriptions link |
-| **Tier 3** | تجهیزات حرفه‌ای (ReeMed™) | 3-Column Mega Menu | `/carbox`, `/plasmax`, `/reemed`, `/b2b` | Hardware links, PlasmaX Preview Card, Biomedical Engineering Specs (CE 0123, ISO 13485, Cleanroom ISO 5) |
-| **Tier 4** | متخصصان و کلینیک‌ها | Luxury B2B Menu | `/b2b`, `/b2b/protocols`, `/b2b/workshops` | Pulsing mini-beacon, Wholesale supply, Clinical protocols, Hands-on workshop calendar |
-| **Tier 5** | دانش و آکادمی | 3-Column Mega Menu | `/#science`, `/academy`, `/ingredients`, `/#clinical-results`, `/blog` | Bohr effect mechanisms, CME courses, INCI explorer, Doctor certificate preview card |
-| **Tier 6** | درباره ما | Simple Luxury Dropdown | `/about`, `/contact`, `/faq` | British laboratory history, Central office contact, Clinical FAQ |
+| **Tier 3** | دانش و پژوهش پوست | 3-Column Mega Menu | `/#science`, `/ingredients`, `/#clinical-results`, `/blog` | Bohr effect mechanisms, INCI explorer, clinical research articles (دانش و پژوهش — successor of the retired Academy) |
+| **Tier 4** | درباره ما | Simple Luxury Dropdown | `/about`, `/contact`, `/faq` | British laboratory history, Central office contact, Clinical FAQ |
 
 #### Design Tokens & CSS Compliance
 - **CSS Variables Used**: `--brand`, `--brand-deep`, `--brand-dark`, `--brand-light`, `--surface`, `--surface-tint`, `--line`, `--line-strong`, `--muted`, `--ink`, `--paper-warm`, `--radius-pill`, `--radius-sm`, `--radius-md`.
@@ -76,30 +74,26 @@ This document performs a forensic, truth-based audit of the three foundation pil
 - **Background Atmosphere**: Deep Obsidian Laboratory Radial Gradient (`radial-gradient(circle at 10% 20%, #064e4b 0%, #042f2e 50%, #0a1120 100%)`).
 
 #### Content & Clinical Copy Hierarchy
-1. **Eyebrow Chip**:
-   - Origin: `Cambridge Science Park · UK`
-   - Platform Descriptor: `CLINICAL DERMATOLOGY OS`
-2. **Display Headline (H1)**:
-   - Primary: `محصولات و تجهیزات پزشکی نوآورانه`
-   - Accent Gradient: `طراحی‌شده برای بالاترین ضریب ایمنی و اثربخشی`
-3. **English Scientific Motto**:
-   - `“Innovative medical devices & skincare engineered for clinical precision”` (rendered in LTR with clinical teal tint `#5eead4`).
-4. **Physiological Exposition**:
-   - Explains transdermal non-invasive CarboxyGel via the Christian Bohr physiological effect, paired with ReeMed digital injection stations (`CarboX`) and cold atmospheric plasma (`PlasmaX`).
+1. **Institution Chip**:
+   - `CAMBRIDGE SCIENCE PARK · DERMATOLOGY R&D` / `BRITISH PHARMACOPOEIA · ISO 22716 GMP` with British flag glyph and «فرمولاسیون دارویی ثبت‌شده در انگلستان».
+2. **Kicker Tag**:
+   - `پروتکل اکسیژن‌رسانی عمقی بافت بدون سوزن · اثر بوهر (Bohr Effect)`.
+3. **Display Headline (H1)**:
+   - Primary: `مراقبت علمی و پیشرفته پوست`
+   - Accent Gradient (holographic): `با القای فیزیولوژیک اثر بوهر`
+4. **Lead Prose**:
+   - Transdermal non-invasive CarboxyGel explained via the Christian Bohr physiological effect — oxygen release, collagen renewal, zero needles or invasion.
 5. **Dual Call-to-Action Buttons**:
-   - Primary: `مشاهده و سفارش محصولات بالینی` (smooth anchor `#featured-products` with glowing shimmer effect).
-   - Secondary: `پرتال پزشکان و مراکز درمانی (B2B)` (direct route `/b2b` with medical council badge icon).
+   - Primary: `مشاهده فرمولاسیون‌ها و خرید کیت` (smooth anchor `#featured-products` with teal glow).
+   - Secondary: `بررسی شبیه‌ساز بیوفیزیک اثر بوهر` (smooth anchor `#bohr-simulator`).
 6. **Live Telemetry & Clinical Proof Cards**:
-   - `+۴۵٪`: افزایش اکسیژناسیون موضعی با القای اثر بوهر (Bohr Effect)
-   - `۷۸٪`: کاهش تبخیر آب ترنس‌اپیدرمال (TEWL) با ترمیم سد دفاعی
-   - `MDR IIb`: گواهی تجهیزات پزشکی کلاس پیشرفته اتحادیه اروپا
+   - `+۴۵٪`: افزایش اکسیژناسیون موضعی با القای بیوشیمیایی اثر بوهر (BOHR EFFECT)
+   - Further TEWL / barrier-recovery telemetry cards in the same strip (tabular Persian numerals).
 
 #### Visual Showcase Assets & Physical Verification
 All referenced assets have been verified to exist on the local filesystem with exact paths:
-- Main Kit Photo: `/assets/drdermer/2025/07/site-combo-carboxy-1.png` (216 KB WebP/PNG)
-- Bohr Mechanism Thumb: `/assets/drdermer/2025/07/bohr-effect.png` (121 KB)
-- CarboX Station Thumb: `/assets/drdermer/2025/08/19carbox.webp` (105 KB)
-- PlasmaX Station Thumb: `/assets/drdermer/2025/08/18plasmax.webp` (102 KB)
+- Editorial Visual: `/assets/drdermer/hero-editorial-radiant.png`
+- Bohr Mechanism Thumb: `/assets/drdermer/2025/07/bohr-effect.png`
 
 #### Design Tokens & Typography
 - **Heading**: `clamp(2.3rem, 4.4vw, 3.6rem)` with letter-spacing `-0.04em`.
@@ -118,23 +112,21 @@ All referenced assets have been verified to exist on the local filesystem with e
   - H2 Title: `شما در کدام مسیر درمانی همراه دکتر درمر هستید؟`
   - Lead: Concise guide directing users to their appropriate clinical channel.
 
-#### Three-Channel Architecture
+#### Three-Path Product Architecture (post-pivot)
 ```
 +----------------------------------------------------------------------------------------------------+
 |                                    AUDIENCE PATH SELECTOR MATRIX                                   |
 +----------------------------------------------------------------------------------------------------+
-| 1. HOME CLINICAL REGIMEN          | 2. CLINIC CONSUMABLES & PROTOCOLS  | 3. MEDICAL HARDWARE & STATIONS    |
-| (ReeSkin™ B2C)                    | (ReeMed™ B2B Consumables)          | (ReeMed™ Capital Equipment)       |
+| 1. HOME CLINICAL REGIMEN          | 2. TWO-PHASE CARBOXY PROTOCOLS     | 3. TRANSDERMAL ACTIVATORS         |
+| (ReeSkin™ مصرفی خانگی)             | (CarboxyGel™ Kits)                 | (CarboxyPad™ & Masks)             |
 +-----------------------------------+------------------------------------+-----------------------------------+
-| Badge: نسخه بدون سوزن • استفاده فردی| Badge: ویژه مطب و کلینیک           | Badge: MDR Class IIb Certified    |
-| Target: Patients & Home Users     | Target: Aesthetic Practitioners    | Target: Dermatologists & Surgeons |
-| Accent: --brand Teal (#24594f)    | Accent: Emerald Green (#10b981)    | Accent: Medical Blue (#0284c7)    |
+| Badge: مراقبت فردی • نسخه خانگی    | Badge: کربوکسی‌تراپی بدون سوزن      | Badge: شیت‌های میکروپرمنبران       |
+| Title: رژیم مراقبت بالینی خانگی    | Title: پروتکل‌های کربوکسی‌تراپی ۲ فاز| Title: ماسک‌ها و پدهای فعال‌ساز     |
 | Highlights:                       | Highlights:                        | Highlights:                       |
-| • کیت‌های ۵ عددی CarboxyGel        | • پک‌های بزرگ اقتصادی کابین         | • ایستگاه دوگانه مدیکال CarboX    |
-| • خمیر پولیش Crystalene           | • پدهای استریل ۵۰ ستی صورت و گردن    | • سامانه پلاسمای سرد PlasmaX      |
-| • اسکراب دتوکس Silicalene         | • فاکتور رسمی دارویی و ارسال کلدچین | • ۲۴ ماه گارانتی و امتیاز CME     |
-| CTA: «مشاهده محصولات خانگی»        | CTA: «مشاهده اقلام کابین و مطب»    | CTA: «بررسی تجهیزات پزشکی»         |
-| Link: /reeskin                    | Link: /reemed#consumables          | Link: /reemed#devices             |
+| • کیت‌های ۵ و ۱۰ عددی CarboxyGel   | • انفوزیون نانوحباب‌های متراکم CO₂   | • برش آناتومیک صورت، گردن و پلک    |
+| • روتین پایدار سلامت و درخشش پوست   | • بررسی کیت‌های کربوکسی‌تراپی        | • شیت‌ها و پدهای فعال‌ساز           |
+| CTA: «مشاهده و سفارش روتین خانگی»  | CTA: «بررسی کیت‌های کربوکسی‌تراپی»   | CTA: «مشاهده شیت‌ها و پدهای فعال‌ساز»|
+| Link: /reeskin                    | Link: /carboxygel                  | Link: /carboxypad                 |
 +----------------------------------------------------------------------------------------------------+
 ```
 
@@ -163,19 +155,19 @@ All referenced assets have been verified to exist on the local filesystem with e
   - Prominent Cold-Chain Guarantee (isothermal packaging with pharmaceutical ice gel).
   - 3-Step Interactive Diagnostic Consultation Drawer to prescribe the exact pairing.
 
-#### Persona B: The Dermatologist, Aesthetic Physician & Clinic Director (B2B)
+#### Persona B: The Advanced Regimen Consumer (ReeMed محلول‌های کلینیکی)
 - **Clinical Profile**:
-  - Operating high-throughput aesthetic dermatology practices, plastic surgery suites, or medical spas.
-  - Evaluating capital equipment (`CarboX` precision digital infusion, `PlasmaX` cold atmospheric plasma) and bulk cabin formulations (`CarboxyGel 500ml/1500ml`).
-- **Key Commercial & Regulatory Objections**:
-  - "Is this certified under European Medical Device Regulations (MDR 2017/745 Class IIb)?"
-  - "Can I issue official VAT tax invoices (فاکتور رسمی دارویی) for clinic accounting?"
-  - "Are hands-on workshops with CME credits available for my nursing/operator staff?"
+  - Experienced consumer maintaining a multi-step routine (Bohr-therapy cycles, retinoid layering, microderm polish) and purchasing multi-unit supplies.
+  - Values provenance, exact concentrations, and reproducible protocols over marketing claims.
+- **Key Commercial Objections**:
+  - "Is there an authentic, verifiable formulation dossier (INCI percentages, CAS numbers)?"
+  - "Can I get a formal VAT invoice (فاکتور رسمی) for accounting?"
+  - "Will my replenishment arrive on schedule without re-ordering manually?"
 - **Clinical Messaging Solutions**:
-  - Dedicated B2B Portal link with pulsing indicator in header and hero.
-  - Transparent regulatory badges (CE 0123, ISO 13485:2016, Cleanroom ISO 5).
-  - Direct links to clinical protocols (`/b2b/protocols`) and hands-on workshops (`/b2b/workshops`).
-  - Strict gating: wholesale volume pricing requires physician authentication.
+  - Transparent INCI dossiers and clinical protocol content in the Blog (دانش و پژوهش).
+  - Official double-entry-backed tax invoicing with Shaparak-compliant payment trails.
+  - Auto-replenishment subscriptions (`/subscriptions`) with guarded pause/resume/cancel state machine.
+  - Tiered multi-unit volume discounts computed in the server-side pricing quote.
 
 ---
 
@@ -198,18 +190,18 @@ All referenced assets have been verified to exist on the local filesystem with e
                                              │
                        ┌─────────────────────┴─────────────────────┐
                        ▼                                           ▼
-             [B2C Patient Flow]                           [B2B Clinic Flow]
+             [B2C Purchase Flow]                          [Knowledge & Research Flow]
                        │                                           │
          ┌─────────────┴─────────────┐               ┌─────────────┴─────────────┐
          ▼                           ▼               ▼                           ▼
-  [Hero Primary CTA]        [Header Diagnostic CTA] [Hero Secondary CTA] [Header Pro Nav Link]
-"#featured-products"       "مشاوره آنلاین پوست"       "/b2b Portal"        "/b2b/protocols"
+  [Hero Primary CTA]        [Header Diagnostic CTA] [Tier-3 Knowledge Nav]   [Blog / INCI]
+"#featured-products"       "مشاوره آنلاین پوست"       "/#science, /ingredients"  "/blog"
          │                           │               │                           │
          ▼                           ▼               ▼                           ▼
-[Catalog / Product PDP]    [3-Step Regimen Finder] [Wholesale Registration][Clinical Whitepapers]
+[Catalog / Product PDP]    [3-Step Regimen Finder] [Clinical Research Dossiers] [INCI Encyclopedia]
          │                           │               │                           │
          ▼                           ▼               ▼                           ▼
-   [Cart Drawer]              [Add Bundle Rx]      [Official Proforma]   [Workshop Enrollment]
+   [Cart Drawer]              [Add Bundle Rx]      [Informed Purchase CTA]     [Protocol Guides]
 ```
 
 ---
@@ -223,7 +215,7 @@ All referenced assets have been verified to exist on the local filesystem with e
 3. **Wishlist & Compare LocalStorage Fallbacks**:
    - Wrapped in safe window checks with try/catch to maintain full functionality in incognito or restricted storage environments.
 4. **Offline Mobile Telemetry**:
-   - If an Iranian mobile number fails OTP delivery during B2B authentication, clear bilingual error feedback explains whether the issue is network connectivity or invalid 09xx formatting.
+   - If an Iranian mobile number fails OTP delivery during customer account authentication, clear bilingual error feedback explains whether the issue is network connectivity or invalid 09xx formatting.
 
 ---
 
@@ -246,7 +238,7 @@ All referenced assets have been verified to exist on the local filesystem with e
 
 | Component | Target File | CSS File | Route Reality | Assets Verified | Build Status |
 | :--- | :--- | :--- | :-: | :-: | :-: |
-| **SiteHeader** | `apps/storefront/components/header.tsx` | `header-elevated.css` | All 43 routes | 100% verified | Passing (0 errors) |
+| **SiteHeader** | `apps/storefront/components/header.tsx` | `header-elevated.css` | All storefront routes | 100% verified | Passing (0 errors) |
 | **HeroBanner** | `apps/storefront/components/home/hero-banner.tsx` | `globals.css` | `/` (Home) | 100% verified | Passing (0 errors) |
 | **PathSelector** | `apps/storefront/components/home/path-selector.tsx` | `interactive-features.css` | `/` (Home) | 100% verified | Passing (0 errors) |
 

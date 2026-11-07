@@ -106,7 +106,6 @@ interface UserProfile {
   nationalCode: string;
   skinType: "DRY" | "OILY" | "COMBINATION" | "SENSITIVE" | "NORMAL";
   skinConcerns: string[];
-  clinicCustomer: boolean;
 }
 
 interface SkincareRegimen {
@@ -134,7 +133,6 @@ const DEFAULT_PROFILE: UserProfile = {
   nationalCode: "0010312013",
   skinType: "COMBINATION",
   skinConcerns: ["لک و تیرگی", "خشکی فصلی", "خطوط ریز دور چشم"],
-  clinicCustomer: true,
 };
 
 const AVAILABLE_SKIN_CONCERNS = [
@@ -194,7 +192,7 @@ const DEMO_CONSULTATIONS: ConsultationBooking[] = [
   },
   {
     id: "cns_740",
-    specialistName: "دکتر کامران رحیمی (مشاور علمی ReeMed)",
+    specialistName: "دکتر کامران رحیمی (مشاور علمی دکتر درمر)",
     dateJalali: "۱۴۰۵/۰۷/۲۰",
     timeSlot: "ساعت ۱۱:۰۰ الی ۱۱:۳۰",
     concern: "تنظیم روتین پوست مختلط و پیشگیری از هایپرپیگمنتیشن",
@@ -266,7 +264,7 @@ const DEMO_ORDERS: StoredOrder[] = [
         quantity: 1,
         priceTomans: "2400000",
         image: "/2-azel-170-hydrapod.webp",
-        category: "تجهیزات بالینی و درماتولوژی",
+        category: "محصولات مراقبت پوست",
       },
       {
         id: "prod_2",
@@ -425,7 +423,6 @@ export default function AccountPage() {
     nationalCode: "",
     skinType: "COMBINATION",
     skinConcerns: ["لک و تیرگی", "خشکی فصلی"],
-    clinicCustomer: false,
   });
   const [profileSaved, setProfileSaved] = useState(false);
   const [profileError, setProfileError] = useState("");
@@ -539,7 +536,6 @@ export default function AccountPage() {
                   nationalCode: parsed.nationalCode || "",
                   skinType: parsed.skinType || "COMBINATION",
                   skinConcerns: parsed.skinConcerns || ["لک و تیرگی", "خشکی فصلی"],
-                  clinicCustomer: data.user.role === "B2B_CLINIC",
                 });
               } catch {
                 setProfile({
@@ -549,7 +545,6 @@ export default function AccountPage() {
                   nationalCode: "",
                   skinType: "COMBINATION",
                   skinConcerns: ["لک و تیرگی", "خشکی فصلی"],
-                  clinicCustomer: data.user.role === "B2B_CLINIC",
                 });
               }
             } else {
@@ -560,7 +555,6 @@ export default function AccountPage() {
                 nationalCode: "",
                 skinType: "COMBINATION",
                 skinConcerns: ["لک و تیرگی", "خشکی فصلی"],
-                clinicCustomer: data.user.role === "B2B_CLINIC",
               });
             }
 
@@ -939,7 +933,7 @@ export default function AccountPage() {
                   </h1>
                   <span className="account-tier-badge">
                     <BadgeCheck size={14} />
-                    {profile.clinicCustomer ? "مشتری رسمی B2B کلینیکال" : "عضو رسمی باشگاه سلامت"}
+                    عضو رسمی باشگاه سلامت
                   </span>
                 </div>
                 <div className="account-user-contact">
@@ -1521,7 +1515,7 @@ export default function AccountPage() {
                     </div>
                     <h3 className="account-empty-title">هنوز سفارشی ثبت نکرده‌اید</h3>
                     <p className="account-empty-desc">
-                      محصولات بالینی و تجهیزات درماتولوژی دکتر درمر را بررسی کرده و اولین سفارش خود را ثبت نمایید.
+                      محصولات مراقبت پوست تخصصی دکتر درمر را بررسی کرده و اولین سفارش خود را ثبت نمایید.
                     </p>
                     <Link href="/" className="account-btn-primary" style={{ textDecoration: "none" }}>
                       مشاهده کاتالوگ محصولات
@@ -2752,8 +2746,8 @@ export default function AccountPage() {
                       سبد خرید و نسخه شما در حال حاضر خالی است
                     </h3>
                     <p className="account-empty-desc">
-                      شما می‌توانید فرمولاسیون‌های تخصصی ReeSkin، تجهیزات کربوکسی‌پاد و محصولات
-                      درموسوتیکال را به سبد خود اضافه نمایید.
+                      شما می‌توانید فرمولاسیون‌های تخصصی ReeSkin، کربوکسی‌پاد و محصولات
+                      مراقبت پوست را به سبد خود اضافه نمایید.
                     </p>
                     <div
                       style={{

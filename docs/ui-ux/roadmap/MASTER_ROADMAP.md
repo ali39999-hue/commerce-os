@@ -9,11 +9,11 @@
 
 ## 1. Executive Summary & Transformation Vision
 
-The Dr Dermer UK transformation elevates a traditional multi-tenant commerce engine into a luxury clinical-grade digital flagship. Across 43 web routes, the platform unites:
+The Dr Dermer UK transformation elevates a traditional multi-tenant commerce engine into a luxury clinical-grade digital flagship. Across the storefront (31 page routes post-pivot), the platform unites:
 1. **Clinical Physiological Rigor**: Interactive transcutaneous CO2/O2 Bohr effect simulators, high-precision histology visualizers, and validated INCI ingredient dossiers.
-2. **Interactive Medical Hardware Stages**: Double-buffered HTML5 canvas 360-degree rotation scrubbers for Carbox and PlasmaX surgical stations with frame-accurate hotspot telemetry.
-3. **Frictionless Iranian E-Commerce**: Modulo-11 National ID checks, 09xx mobile phone normalization, Sheba validation, Shaparak payment port handoffs, and Sepidar B2B tax compliance.
-4. **Warm Clinical British & Global Aesthetics**: Calming warm stone canvas (`#f7f6f2`), pure white clinical cards (`#ffffff`), signature deep clinical teal (`#24594f`), and typography tailored for Persian Vazirmatn and Latin scientific notation. Controlled luxury dark stages for medical hardware stations.
+2. **Interactive Educational Simulators**: Double-buffered HTML5 canvas sequence scrubbers and the Bohr-effect tissue oxygenation canvas with frame-accurate hotspot telemetry (device-station scopes retired 2026-11-07).
+3. **Frictionless Iranian E-Commerce**: Modulo-11 National ID checks, 09xx mobile phone normalization, Sheba validation, Shaparak payment port handoffs, and Sepidar VAT compliance.
+4. **Warm Clinical British & Global Aesthetics**: Calming warm stone canvas (`#f7f6f2`), pure white clinical cards (`#ffffff`), signature deep clinical teal (`#24594f`), and typography tailored for Persian Vazirmatn and Latin scientific notation.
 
 
 ---
@@ -28,7 +28,7 @@ The Dr Dermer UK transformation elevates a traditional multi-tenant commerce eng
             --> Theme tokens, CSS variables, anti-slop rules, Vazirmatn typography, baseline audit
   [PHASE 2] Atomic Primitives & Form Verification Engine
             --> Button, Input, Modal, Drawer, Tabs, Iranian 09xx, National ID Modulo-11, Sheba
-  [PHASE 3] Interactive Hardware Stages & Clinical Simulators
+  [PHASE 3] Interactive Hardware Stages & Clinical Simulators   [device stages RETIRED 2026-11-07; simulators retained]
             --> 360 CanvasSequencePlayer, Bohr effect tissue oxygenation canvas, kinetic physics
   [PHASE 4] Navigation, Header, Footer & Global Shell
             --> Glassmorphic header, mega-menu brand families, RTL mobile drawer, sticky bars
@@ -36,9 +36,9 @@ The Dr Dermer UK transformation elevates a traditional multi-tenant commerce eng
             --> Concern-based filtering, Fitzpatrick skin type matrix, faceted search, zero CLS
   [PHASE 6] High-Fidelity Product Detail Pages (PDP) & INCI Dossier
             --> Split stage PDP, interactive INCI accordion, clinical indications, volume matrix
-  [PHASE 7] Cart Drawer, Iranian Checkout & B2B Proforma Quote
+  [PHASE 7] Cart Drawer, Iranian Checkout & B2B Proforma Quote  [B2B proforma scope RETIRED 2026-11-07]
             --> Outbox inventory lock, Shaparak gateway handoff, double-entry ledger, Sepidar VAT
-  [PHASE 8] Doctor CME Academy, LMS & Enterprise Digital Grants
+  [PHASE 8] Doctor CME Academy, LMS & Enterprise Digital Grants [RETIRED 2026-11-07; grants engine retained for digital lines]
             --> Medical license check, high-bitrate surgical video player, cryptographic certificate
 ```
 
@@ -68,8 +68,8 @@ Phase 8: Doctor CME Academy ◄────────────────�
 | **Phase 4** | Build responsive, glassmorphic global navigation and layout shell | Global `Header`, `Footer`, `MobileNavDrawer`, `Breadcrumbs` | Keyboard trap in drawer, sticky top/bottom fluidity |
 | **Phase 5** | Create diagnostic, concern-driven product discovery and catalog | `/c/[category]`, `CategoryFilterBar`, `SkinConcernGrid` | Zero layout shift (CLS < 0.05), instant URL query sync |
 | **Phase 6** | Assemble high-converting, clinical PDPs with INCI dossiers | `/products/[handle]`, `InciAccordion`, `StickyCartBar` | 4.5:1 text contrast, verified CAS ingredient specs |
-| **Phase 7** | Execute fault-tolerant cart, Iranian checkout, and B2B proformas | `/cart`, `/checkout`, `/b2b/quote`, Shaparak handoff | BigInt Rial math, Idempotency keys, VAT breakdown |
-| **Phase 8** | Launch accredited Doctor CME portal with verifiable digital grants | `/academy`, `/academy/[course]`, `CertVerifier` | IRIMC license check, signed streaming URLs, QR cert |
+| **Phase 7** | Execute fault-tolerant cart and Iranian checkout *(B2B proforma scope retired 2026-11-07)* | `/cart`, `/checkout`, Shaparak handoff | BigInt Rial math, Idempotency keys, VAT breakdown |
+| **Phase 8** | Launch accredited Doctor CME portal with verifiable digital grants **[RETIRED 2026-11-07 — Academy removed; `DigitalGrant` engine retained for digital product lines]** | `/academy`, `/academy/[course]`, `CertVerifier` | IRIMC license check, signed streaming URLs, QR cert |
 
 ---
 
@@ -79,3 +79,15 @@ Phase 8: Doctor CME Academy ◄────────────────�
 2. **Performance (Core Web Vitals)**: Target LCP < 2.0s, CLS < 0.05, and INP < 150ms across simulated 4G mobile networks.
 3. **Financial Precision**: Rial monetary amounts must remain strictly typed as `bigint`, eliminating floating-point rounding errors.
 4. **RTL First**: All components authored with CSS logical properties, supporting bidirectional layout without horizontal overflow.
+
+---
+
+## 6. Dated Addendum — 2026-11-07: Business Pivot (Retail-Only Clinical Skincare)
+
+The original 8-phase roadmap above is retained as history for the pre-pivot platform. Effective 2026-11-07, following the decision to exit the clinic/B2B, vendor and Academy markets (ADR-013 and the retirement of ADR-010/ADR-011):
+
+- **Purge completed**: medical device stations (CarboX/PlasmaX), the B2B/clinics portal (متخصصان و کلینیک‌ها), vendors and the Academy were removed from routes, home components and admin tabs. Legacy URLs redirect permanently (`/carbox` → `/carboxygel`, `/plasmax` → `/carboxygel`, `/academy` → `/blog`, `/b2b/:path*` → `/#products`, `/vendors` → `/#products`).
+- **Storefront sections CMS server-backed**: section visibility moved from the broken cross-origin `localStorage` sync (admin:3001 ↔ storefront:3000) to `StorefrontSetting` overrides with public `GET /v1/settings/storefront` (DB-down resilient) and AdminGuard `PUT`/`DELETE /v1/settings/storefront/home-sections`.
+- **ERP catalog authoring API**: `GET/POST /v1/stores/admin/products`, `PATCH /:id`, flag-only `bulk-update`; DRAFT/PUBLISHED/ARCHIVED lifecycle with `isFeatured`, default variant `<slug>-STD` and first-publish `publishedAt`.
+- **Product tiers now**: ReeSkin (مصرفی خانگی) + ReeMed (محلول‌های کلینیکی); the Academy became the knowledge base «دانش و پژوهش» served by the Blog.
+- **Scripts/E2E updated**: `capture-all-pages.mjs` (42 storefront pages, 10 admin tabs), `e2e-golden-path.mjs` (settings round-trip + product authoring replace the retired B2B/vendors steps), `verify-clinical-store.mjs` Stage 9 (ERP Product Authoring & Storefront Section Control).

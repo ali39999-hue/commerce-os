@@ -460,8 +460,8 @@ export function CarboxypodInteractiveLanding() {
                 <span className="cpod-stat-label">غلظت ترنس‌درمال گاز دی‌اکسید کربن</span>
               </div>
               <div className="cpod-stat-item">
-                <span className="cpod-stat-num">120 Hz</span>
-                <span className="cpod-stat-label">سازگاری با هندپیس اولتراسونیک CarboX</span>
+                <span className="cpod-stat-num">Single-Use</span>
+                <span className="cpod-stat-label">بسته‌بندی وکیوم پلمپ استریل یک‌بارمصرف</span>
               </div>
               <div className="cpod-stat-item">
                 <span className="cpod-stat-num">3 Variants</span>
@@ -919,10 +919,10 @@ export function CarboxypodInteractiveLanding() {
                   <td>آبرسانی عمیق و انقباض منافذ</td>
                 </tr>
                 <tr>
-                  <td className="font-bold text-white">سازگاری با هندپیس اولتراسونیک</td>
-                  <td>۱۲۰ هرتز سینوسی CarboX</td>
-                  <td>۱۲۰ هرتز سینوسی CarboX</td>
-                  <td>۱۲۰ هرتز سینوسی CarboX</td>
+                  <td className="font-bold text-white">فعال‌سازی واکنش CO₂</td>
+                  <td>آنی با تماس ژل و رطوبت پوست</td>
+                  <td>آنی با تماس ژل و رطوبت پوست</td>
+                  <td>آنی با تماس ژل و رطوبت پوست</td>
                 </tr>
                 <tr>
                   <td className="font-bold text-white">غلظت CO₂ تولیدی</td>

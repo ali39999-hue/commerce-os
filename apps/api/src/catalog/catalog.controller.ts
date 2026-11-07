@@ -1,13 +1,19 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Headers,
   NotFoundException,
   Param,
+  Patch,
+  Post,
   Query,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { AdminGuard } from '../common/guards/admin.guard';
+import { BulkUpdateProductsDto, CreateProductDto, UpdateProductDto } from '../common/dto/resource-writes.dto';
 import { CatalogService } from './catalog.service';
 
 @Controller('stores')
@@ -108,6 +114,29 @@ export class CatalogController {
     return { data: items, meta: { count: items.length } };
   }
 
+  // POST admin/products/bulk-update — قبل از مسیر پارامتری :id تعریف می‌شود
+  @Post('admin/products/bulk-update')
+  @UseGuards(AdminGuard)
+  async adminBulkUpdateProducts(
+    @Body() body: BulkUpdateProductsDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const result = await this.catalog.adminBulkUpdateProducts(tenant, body as BulkUpdateProductsDto);
+    return { data: result };
+  }
+
+  @Post('admin/products')
+  @UseGuards(AdminGuard)
+  async adminCreateProduct(
+    @Body() body: CreateProductDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminCreateProduct(tenant, body as CreateProductDto);
+    return { data: item };
+  }
+
   @Get('admin/products/:id')
   async adminGetProduct(
     @Param('id') id: string,
@@ -115,6 +144,18 @@ export class CatalogController {
   ) {
     const tenant = this.requireTenant(tenantId);
     const item = await this.catalog.adminGetProduct(tenant, id);
+    return { data: item };
+  }
+
+  @Patch('admin/products/:id')
+  @UseGuards(AdminGuard)
+  async adminUpdateProduct(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminUpdateProduct(tenant, id, body as UpdateProductDto);
     return { data: item };
   }
 

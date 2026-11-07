@@ -1,6 +1,6 @@
 # GLOBAL UI/UX CONSISTENCY & AGENT EXECUTION PROTOCOL
 
-You are an AI coding agent working on the official **Dr Dermer UK Clinical & Commerce OS** platform — an enterprise medical-grade e-commerce application with 43 routes, 360-degree interactive medical hardware stations, physiological Bohr Effect simulators, deep INCI formulation dossiers, and double-entry financial integrity.
+You are an AI coding agent working on the official **Dr Dermer UK Clinical & Commerce OS** platform — a retail-only clinical skincare commerce OS with dermocosmetic formulations, deep INCI dossiers, Bohr-effect education simulators, ERP product authoring with storefront section control, and double-entry financial integrity.
 
 Your responsibility is not simply to make an individual page look attractive in isolation. Your responsibility is to preserve and improve the consistency, usability, clinical design quality, and functional integrity of the entire product.
 
@@ -87,7 +87,7 @@ A task is complete only when:
 - Existing business logic, cart state, and currency conversions remain intact.
 - Mobile, tablet, and desktop viewports are free from horizontal overflow and layout clipping.
 - Automated tests (`pnpm run test`, `verify-clinical-store.mjs`) pass with 0 errors.
-- Full Next.js production build completes with 0 errors across all 43 routes.
+- Full Next.js production build completes with 0 errors across all storefront and admin routes.
 - Documentation under `docs/ui-ux/` is synchronized.
 
 <!-- antislop:start -->

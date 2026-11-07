@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ slug: string }> };
 
-type ProductExtras = { kind?: string; vendor?: { slug?: string; titleFa?: string } | null };
+type ProductExtras = { kind?: string };
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
@@ -66,8 +66,6 @@ export default async function ProductPage({ params }: Props) {
 
   const extras = product as typeof product & ProductExtras;
   const isDigital = extras.kind === 'DIGITAL';
-  const vendorTitleFa = typeof extras.vendor?.titleFa === 'string' ? extras.vendor.titleFa : '';
-  const vendorSlug = typeof extras.vendor?.slug === 'string' ? extras.vendor.slug : '';
 
   const extendedData = buildExtendedProductData(product);
   const primaryVariant = extendedData.variants[0];
@@ -174,8 +172,6 @@ export default async function ProductPage({ params }: Props) {
       <RupakPdpSection
         productData={extendedData}
         isDigital={isDigital}
-        vendorTitleFa={vendorTitleFa}
-        vendorSlug={vendorSlug}
         reviewsElement={
           <ProductReviews slug={product.slug} productTitle={extendedData.title} />
         }

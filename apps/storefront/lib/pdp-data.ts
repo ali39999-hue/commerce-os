@@ -57,7 +57,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
         role: 'PACKAGING',
         roleFa: 'بسته‌بندی و پلمپ اصالت',
         altText: 'جعبه اصلی با هولوگرام امنیتی ری‌اسکین، بچ‌کد حک‌شده و سرنگ توزیع‌کننده میلی‌متری',
-        caption: 'بسته‌بندی مقاوم به نفوذ هوا همراه با برچسب اصالت و هولوگرام CE',
+        caption: 'بسته‌بندی مقاوم به نفوذ هوا همراه با برچسب اصالت و پلمپ هولوگرام',
       },
     ],
     variants: [
@@ -262,21 +262,21 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     clinicalOrigin: {
       certifications: [
         {
-          title: 'گواهی استاندارد تجهیزات پزشکی اروپا CE 0123',
+          title: 'انطباق تولید با GMP آرایشی-بهداشتی اروپا (ISO 22716)',
           issuer: 'TÜV SÜD Product Service GmbH',
-          certificateCode: 'CE-MED-2023-88194',
-          description: 'تأیید ایمنی بیولوژیکی و زیست‌سازگاری طبق مقررات MDR اتحادیه اروپا.',
+          certificateCode: 'ISO 22716:2007',
+          description: 'انطباق روند تولید با استاندارد مدیریت کیفیت فرآورده‌های آرایشی-بهداشتی اتحادیه اروپا.',
           verified: true,
         },
         {
-          title: 'استاندارد مدیریت کیفیت ISO 13485:2016',
+          title: 'انطباق با مقررات فرآورده‌های آرایشی-بهداشتی اروپا (EC 1223/2009)',
           issuer: 'BSI Group UK',
-          certificateCode: 'FM 704128',
-          description: 'سیستم جامع مدیریت کیفیت تولید ملزومات درماتولوژی و کلینیکال.',
+          certificateCode: 'EC 1223/2009',
+          description: 'ثبت و عرضه قانونی فرمولاسیون‌های مراقبت پوست در چارچوب مقررات آرایشی-بهداشتی اروپا و بریتانیا.',
           verified: true,
         },
         {
-          title: 'تأییدیه عدم سمیت سلولی ISO 10993-5',
+          title: 'تأییدیه عدم سمیت سلولی (Cytotoxicity Test)',
           issuer: 'NAMSA Clinical Laboratories',
           certificateCode: 'CYTO-PASS-UK-2024',
           description: 'ارزیابی آزمایشگاهی زیست‌پذیری سلولی و عدم اثر سمیت ژنتیکی.',
@@ -286,7 +286,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       batchCodeVerificationInfo: 'هر بسته دارای بچ‌کد حک‌شده لیزری و بارکد دو بعدی قابل استعلام در سامانه اصالت درمر با پیش‌شماره REE-CBG-XXXX می‌باشد.',
       storageConditions: 'در دمای ۱۵ الی ۲۵ درجه سانتی‌گراد، در جای خشک و خنک و دور از تابش مستقیم نور خورشید نگهداری شود. از یخ‌زدگی محافظت گردد.',
       shelfLifeAfterOpening: '۶ ماه پس از باز شدن پلمپ اولیه تیوب (PAO: 6M)',
-      ceIsoStandards: ['CE Medical Class I', 'ISO 13485:2016', 'ISO 22716 GMP', 'CPNP Registered UK/EU'],
+      ceIsoStandards: ['ISO 22716 GMP', 'CPNP Registered UK/EU', 'EC 1223/2009 Compliant'],
     },
     clinicalCaseStudies: [
       {
@@ -478,7 +478,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       name: 'ReeMed Medical Pro',
       slug: 'reemed',
       originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'تجهیزات مصرفی استاندارد کلینیک‌های پوست و زیبایی',
+      tagline: 'محصولات مصرفی مراقبت پوست با استاندارد درموسوتیکال',
     },
     title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
     subtitleFa: 'پد پیشرفته غنی از اسید سیتریک میکروکپسوله برای فعال‌سازی آنی گاز CO2',
@@ -615,17 +615,17 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     clinicalOrigin: {
       certifications: [
         {
-          title: 'CE Certificate Class I Medical Device',
+          title: 'GMP آرایشی-بهداشتی اروپا (ISO 22716)',
           issuer: 'BSI UK',
-          certificateCode: 'CE-99214',
-          description: 'دارای رده تجهیزات پزشکی غیرتهاجمی استریل.',
+          certificateCode: 'ISO 22716:2007',
+          description: 'تولیدشده تحت استاندارد مدیریت کیفیت GMP آرایشی-بهداشتی.',
           verified: true,
         },
       ],
       batchCodeVerificationInfo: 'کد بچ و تاریخ انقضا بر روی لبه هر ساشه درج شده است.',
       storageConditions: 'در محیط خشک و دمای زیر ۳۰ درجه سانتی‌گراد.',
       shelfLifeAfterOpening: 'بلافاصله پس از باز شدن مصرف شود.',
-      ceIsoStandards: ['CE Class I', 'ISO 13485'],
+      ceIsoStandards: ['ISO 22716 GMP', 'CPNP Registered UK/EU'],
     },
     clinicalCaseStudies: [
       {
@@ -823,9 +823,9 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     clinicalOrigin: {
       certifications: [
         {
-          title: 'CE Medical Class I',
+          title: 'GMP آرایشی-بهداشتی اروپا (ISO 22716)',
           issuer: 'BSI Group Netherlands',
-          certificateCode: 'CE-CRY-2024',
+          certificateCode: 'ISO 22716:2007',
           description: 'انطباق کامل با استانداردهای درموسوتیکال اروپا.',
           verified: true,
         },
@@ -833,7 +833,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       batchCodeVerificationInfo: 'کد اصالت لیزری در انتهای تیوب درج شده است.',
       storageConditions: 'در دمای معتدل و دور از تابش مستقیم خورشید.',
       shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب.',
-      ceIsoStandards: ['CE Class I', 'ISO 22716 GMP'],
+      ceIsoStandards: ['ISO 22716 GMP', 'CPNP Registered UK/EU'],
     },
     clinicalCaseStudies: [
       {
@@ -1032,9 +1032,9 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
     clinicalOrigin: {
       certifications: [
         {
-          title: 'CE Medical Class I',
+          title: 'GMP آرایشی-بهداشتی اروپا (ISO 22716)',
           issuer: 'TÜV SÜD Germany',
-          certificateCode: 'CE-HEA-2024',
+          certificateCode: 'ISO 22716:2007',
           description: 'تاییدیه سازگاری با پوست‌های حساس و تحت درمان لیزر.',
           verified: true,
         },
@@ -1042,7 +1042,7 @@ export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
       batchCodeVerificationInfo: 'بچ‌کد اختصاصی بر روی بدنه بطری درج گردیده است.',
       storageConditions: 'در دمای زیر ۲۵ درجه سانتی‌گراد یا یخچال نگهداری شود.',
       shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن.',
-      ceIsoStandards: ['CE Class I', 'ISO 13485:2016'],
+      ceIsoStandards: ['ISO 22716 GMP', 'CPNP Registered UK/EU'],
     },
     clinicalCaseStudies: [
       {

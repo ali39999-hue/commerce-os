@@ -133,27 +133,6 @@ async function main() {
       await prisma.category.delete({ where: { id: legacyDevicesCategory.id } });
     }
 
-    // 5. Vendors (ADR-011 foundation)
-    const vendorsData = [
-      { slug: 'roast-coffee', titleFa: 'روست قهوه', description: 'تأمین‌کننده تجهیزات جانبی.', logoColor: '#6F4E37', commissionBps: 800 },
-      { slug: 'brew-studio', titleFa: 'استودیو دم‌آوری', description: 'آموزش و محتوای تخصصی.', logoColor: '#0B6E66', commissionBps: 1500 },
-    ];
-    for (const v of vendorsData) {
-      await prisma.vendor.upsert({
-        where: { tenantId_slug: { tenantId: tenant.id, slug: v.slug } },
-        update: { titleFa: v.titleFa, description: v.description, logoColor: v.logoColor, commissionBps: v.commissionBps },
-        create: {
-          tenantId: tenant.id,
-          slug: v.slug,
-          titleFa: v.titleFa,
-          description: v.description,
-          logoColor: v.logoColor,
-          commissionBps: v.commissionBps,
-          isActive: true,
-        },
-      });
-    }
-
     // ── 5b. Authentic Brands (ReeSkin & ReeMed) ──
     const brandsData = [
       {
@@ -304,7 +283,6 @@ async function main() {
         description: 'سیستم کربوکسی‌تراپی غیرتهاجمی با رهایش کنترل‌شده دی‌اکسید کربن فعال (Bohr Effect) جهت اکسیژن‌رسانی عمیق بافتی، تحریک فیبروبلاست‌ها و کلاژن‌سازی تخصصی پوست.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'CBG-PRO-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی مراقبت پوست', price: '48500000', stock: 25 },
           { sku: 'CBG-HOME-5X', titleFa: 'کیت خانگی ۵ عددی + پد فعال‌ساز', price: '19500000', stock: 40 },
@@ -400,7 +378,6 @@ async function main() {
         description: 'کپسول‌های اسکراب فیزیکی و شیمیایی فعال‌ساز گاز دی‌اکسید کربن جهت آزادسازی میکروحباب‌های CO2 و اکسیژن‌رسانی عمیق در ترکیب با کربوکسی‌ژل.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-POD-CRB-10X', titleFa: 'بسته ۱۰ عددی کربن فعال (Carbon Pod)', price: '18000000', stock: 30 },
           { sku: 'DD-POD-VIT-10X', titleFa: 'بسته ۱۰ عددی ویتامینه (Vitamin Pod)', price: '19000000', stock: 25 },
@@ -475,7 +452,6 @@ async function main() {
         description: 'شیت‌های پیش‌برش‌خورده استریل با پوشش آناتومیک صورت و ناحیه گردن جهت رهایش پایدار گاز دی‌اکسید کربن.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-PAD-20X', titleFa: 'بسته ۲۰ عددی صورت و گردن', price: '14000000', stock: 35 },
           { sku: 'DD-PAD-50X', titleFa: 'بسته ۵۰ عددی اقتصادی', price: '32000000', stock: 20 },
@@ -551,7 +527,6 @@ async function main() {
         description: 'پولیش میکرودرم ملایم با کریستال‌های آلومینا، نیاسینامید، لاکتیک اسید، روغن آرگان و شی‌باتر جهت ایجاد شفافیت و یکدستی بافت پوست.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-CRY-200ML', titleFa: 'تیوب ۲۰۰ میلی‌لیتر تخصصی', price: '17500000', stock: 40 },
           { sku: 'DD-CRY-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '6500000', stock: 60 },
@@ -636,7 +611,6 @@ async function main() {
         description: 'فرمول آرامش‌بخش با نیاسینامید، پانتنول، هیالورونیک اسید، آلانتوئین و ۷ عصاره گیاهی آرام‌بخش سنتلا، میموزا و کالاندولا جهت تسکین فوری قرمزی پس از پیلینگ و لایه‌برداری.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-HEA-250ML', titleFa: 'بطری پمپی ۲۵۰ میلی‌لیتر', price: '16000000', stock: 50 },
           { sku: 'DD-HEA-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '28000000', stock: 25 },
@@ -711,7 +685,6 @@ async function main() {
         description: 'پاکسازی عمقی منافذ، کنترل چربی و رفع جوش‌های سرسیاه با میکروسفرهای سیلیکای کاملاً گرد، کربن فعال، اسید گلیکولیک و سالیسیلیک.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-SIL-200ML', titleFa: 'تیوب ۲۰۰ میلی‌لیتر', price: '15500000', stock: 45 },
           { sku: 'DD-SIL-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '29000000', stock: 20 },
@@ -786,7 +759,6 @@ async function main() {
         description: 'فرمولاسیون پیشرفته لایه‌برداری و تحریک کلاژن‌سازی با اسید گلیکولیک خالص ۱۰٪، ماتریکسیل ۳۰۰۰ و سیستم رهایش کنترل‌شده CO2 جهت بهبود خطوط چهره، یکدستی بافت و جوانسازی عمیق اپیدرم.',
         categorySlug: 'reeskin',
         brandSlug: 'reeskin',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-GLY-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '52000000', stock: 25 },
           { sku: 'DD-GLY-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '9800000', stock: 40 },
@@ -871,7 +843,6 @@ async function main() {
         description: 'فرمولاسیون بازسازی‌کننده و ضدالتهاب حاوی سرامید NP، فاکتورهای رشد بیومیمتیک، نیاسینامید و کمپلکس سیکا جهت تسکین سریع قرمزی، ترمیم سد دفاعی و اکسیژن‌رسانی به پوست‌های حساس و تحریک‌پذیر.',
         categorySlug: 'reemed',
         brandSlug: 'reemed',
-        vendorSlug: null,
         variants: [
           { sku: 'DD-MAC-500ML', titleFa: 'مخزن ۵۰۰ میلی‌لیتر تخصصی', price: '49500000', stock: 30 },
           { sku: 'DD-MAC-50ML', titleFa: 'تیوب ۵۰ میلی‌لیتر هوم‌کر', price: '9200000', stock: 45 },

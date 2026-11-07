@@ -53,9 +53,6 @@ CREATE TYPE "ReviewStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 CREATE TYPE "SubscriptionStatus" AS ENUM ('ACTIVE', 'PAUSED', 'CANCELLED', 'EXPIRED');
 
 -- CreateEnum
-CREATE TYPE "QuoteRequestStatus" AS ENUM ('NEW', 'IN_REVIEW', 'QUOTED', 'CLOSED');
-
--- CreateEnum
 CREATE TYPE "ProductKind" AS ENUM ('PHYSICAL', 'DIGITAL');
 
 -- CreateEnum
@@ -166,33 +163,17 @@ CREATE TABLE "products" (
     "storeId" UUID NOT NULL,
     "categoryId" UUID,
     "brandId" UUID,
-    "vendorId" UUID,
     "kind" "ProductKind" NOT NULL DEFAULT 'PHYSICAL',
     "slug" VARCHAR(180) NOT NULL,
     "titleFa" VARCHAR(300) NOT NULL,
     "description" TEXT,
     "status" "ProductStatus" NOT NULL DEFAULT 'DRAFT',
+    "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "publishedAt" TIMESTAMPTZ(6),
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "vendors" (
-    "id" UUID NOT NULL,
-    "tenantId" UUID NOT NULL,
-    "slug" VARCHAR(120) NOT NULL,
-    "titleFa" VARCHAR(200) NOT NULL,
-    "description" TEXT,
-    "logoColor" VARCHAR(9) NOT NULL DEFAULT '#0B6E66',
-    "commissionBps" INTEGER NOT NULL DEFAULT 1000,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
-
-    CONSTRAINT "vendors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -856,21 +837,15 @@ CREATE TABLE "digital_grants" (
 );
 
 -- CreateTable
-CREATE TABLE "quote_requests" (
+CREATE TABLE "storefront_settings" (
     "id" UUID NOT NULL,
-    "tenantId" UUID NOT NULL,
-    "companyName" VARCHAR(200) NOT NULL,
-    "contactName" VARCHAR(150) NOT NULL,
-    "phone" VARCHAR(20) NOT NULL,
-    "email" VARCHAR(120),
-    "itemsSummary" TEXT NOT NULL,
-    "desiredQty" INTEGER NOT NULL DEFAULT 1,
-    "status" "QuoteRequestStatus" NOT NULL DEFAULT 'NEW',
-    "adminNote" VARCHAR(500),
-    "quotedAt" TIMESTAMPTZ(6),
+    "key" VARCHAR(120) NOT NULL,
+    "payload" JSONB NOT NULL,
+    "updatedBy" TEXT,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
-    CONSTRAINT "quote_requests_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "storefront_settings_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -919,9 +894,6 @@ CREATE UNIQUE INDEX "categories_storeId_slug_key" ON "categories"("storeId", "sl
 CREATE INDEX "products_tenantId_storeId_status_publishedAt_idx" ON "products"("tenantId", "storeId", "status", "publishedAt");
 
 -- CreateIndex
-CREATE INDEX "products_vendorId_idx" ON "products"("vendorId");
-
--- CreateIndex
 CREATE INDEX "products_brandId_idx" ON "products"("brandId");
 
 -- CreateIndex
@@ -929,12 +901,6 @@ CREATE UNIQUE INDEX "products_storeId_slug_key" ON "products"("storeId", "slug")
 
 -- CreateIndex
 CREATE UNIQUE INDEX "products_tenantId_storeId_id_key" ON "products"("tenantId", "storeId", "id");
-
--- CreateIndex
-CREATE INDEX "vendors_tenantId_isActive_idx" ON "vendors"("tenantId", "isActive");
-
--- CreateIndex
-CREATE UNIQUE INDEX "vendors_tenantId_slug_key" ON "vendors"("tenantId", "slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_variants_sku_key" ON "product_variants"("sku");
@@ -1141,7 +1107,7 @@ CREATE INDEX "digital_grants_tenantId_createdAt_idx" ON "digital_grants"("tenant
 CREATE UNIQUE INDEX "digital_grants_orderLineId_key" ON "digital_grants"("orderLineId");
 
 -- CreateIndex
-CREATE INDEX "quote_requests_tenantId_status_createdAt_idx" ON "quote_requests"("tenantId", "status", "createdAt");
+CREATE UNIQUE INDEX "storefront_settings_key_key" ON "storefront_settings"("key");
 
 -- AddForeignKey
 ALTER TABLE "organizations" ADD CONSTRAINT "organizations_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -1169,9 +1135,6 @@ ALTER TABLE "products" ADD CONSTRAINT "products_categoryId_fkey" FOREIGN KEY ("c
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "brands"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_vendorId_fkey" FOREIGN KEY ("vendorId") REFERENCES "vendors"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "product_variants" ADD CONSTRAINT "product_variants_tenantId_storeId_productId_fkey" FOREIGN KEY ("tenantId", "storeId", "productId") REFERENCES "products"("tenantId", "storeId", "id") ON DELETE RESTRICT ON UPDATE CASCADE;

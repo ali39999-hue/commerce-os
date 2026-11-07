@@ -14,7 +14,6 @@ export interface CustomerContext {
   phone: string;
   name?: string;
   nationalId?: string;
-  isB2B?: boolean;
 }
 
 export interface QuoteLineInput {

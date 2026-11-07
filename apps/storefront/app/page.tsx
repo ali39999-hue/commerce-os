@@ -66,7 +66,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
 
-      {/* Dynamic Client-Managed Sections Stream */}
+      {/* Server-Managed Sections Stream — toggled via ERP storefront settings */}
       <StorefrontSectionsWrapper products={products} totalCount={catalog?.meta?.count} />
     </>
   );

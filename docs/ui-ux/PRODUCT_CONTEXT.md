@@ -10,7 +10,7 @@
 
 ## 1. Company Heritage & Mission
 
-**Dr Dermer UK Clinical Laboratories** is an advanced dermatological research and medical device engineering enterprise founded at **Cambridge Science Park** (Milton Road, Cambridge CB4 0GF, United Kingdom). The laboratory specializes in transdermal gas-exchange therapies, cold atmospheric plasma biophysics, biomimetic peptide signaling, and non-ablative epidermal restoration.
+**Dr Dermer UK Clinical Laboratories** is an advanced dermatological research and dermocosmetic formulation enterprise founded at **Cambridge Science Park** (Milton Road, Cambridge CB4 0GF, United Kingdom). The laboratory specializes in transdermal gas-exchange therapies (needle-free CO2 carboxytherapy), biomimetic peptide signaling, microderm polish formulation, and non-ablative epidermal barrier restoration.
 
 Regional operations, manufacturing oversight, and professional training academies are coordinated across:
 - **Global HQ & R&D**: Cambridge Science Park, Cambridge, United Kingdom.
@@ -39,16 +39,16 @@ The product ecosystem is strictly partitioned into two operational divisions, ta
                  ▼                                                                   ▼
 ┌─────────────────────────────────┐                                 ┌─────────────────────────────────┐
 │            ReeSkin™             │                                 │            ReeMed™              │
-│  Clinical Formulations & Kits   │                                 │ Medical Consoles & Hardware Pro │
+│   Home-Care Consumables         │                                 │   Clinical Solutions (محلول‌ها)   │
 └────────────────┬────────────────┘                                 └────────────────┬────────────────┘
                  │                                                                   │
-    [B2C & B2B Consumables]                                             [Clinical Hardware Stations]
-    • CarboxyGel™ Professional Therapy                                  • Carbox™ Clinical Medical Station
-    • CarboxyPod™ Activator Scrub Pods                                  • PlasmaX™ Tri-Modality Station
-    • CarboxyPad™ Pre-Cut Activator Masks                               • Ultrasound Sonophoresis Handpieces
-    • Crystalene™ Microderm Polish Paste                                • High-Frequency Dermal Transducers
-    • Healene™ Epidermal Barrier Gel                                    • Subcutaneous CO2 Regulators
-    • Silicalene™ Mild Silica Detox Scrub                               • CE Class IIb Medical Certification
+      [Retail Home-Care Consumables]                                [Advanced Clinical Solutions & Packs]
+    • CarboxyGel™ Professional Therapy                                  • Advanced multi-step routine solutions
+    • CarboxyPod™ Activator Scrub Pods                                  • Professional pack configurations
+    • CarboxyPad™ Pre-Cut Activator Masks                               • Multi-unit replenishment supplies
+    • Crystalene™ Microderm Polish Paste
+    • Healene™ Epidermal Barrier Gel
+    • Silicalene™ Mild Silica Detox Scrub
 ```
 
 ---
@@ -96,13 +96,7 @@ Dr Dermer UK transforms this modality into a topical, painless procedure:
 - **Phase B (Solid Phase Matrix)**: Either a micro-porous non-woven mask (`CarboxyPad`) impregnated with dehydrated citric acid crystals or a pressed effervescent pod (`CarboxyPod`).
 - **Gaseous Confinement**: The dense polymer network traps the generated carbon dioxide directly against the stratum corneum, creating a forced concentration gradient that drives gaseous molecules through intracellular lipid channels.
 
-### 3.3 Microplasma Biophysics & Epidermal Sublimation
-Integrated into the `ReeMed PlasmaX™` medical console, atmospheric microplasma utilizes controlled electrical discharge to ionize ambient atmospheric gases (Nitrogen and Oxygen) into a highly reactive plasma plume:
-1. **Continuous Surgical Arc (Sublimation)**: Direct electrical arc discharge vaporizes keratinocytes instantly via sublimation (solid to gas phase transition) without thermal transfer to the deep reticular dermis, preventing hypertrophic scarring.
-2. **Cold Atmospheric Plasma (CAP Jet)**: An ionized gas stream at human body temperature ($32^\circ\text{C}$ to $37^\circ\text{C}$) loaded with Reactive Oxygen and Nitrogen Species (RONS: $\text{NO}^\bullet$, $\text{O}_2^{\bullet-}$, $\text{OH}^\bullet$). Destroys bacterial cell walls (*Cutibacterium acnes*, *Staphylococcus aureus*) within 30 seconds of contact while stimulating endothelial nitric oxide synthase (eNOS).
-3. **Dielectric Barrier Discharge (DBD Porcelain Head)**: Uniform micro-current ionization that opens transient micropores in the lipid bilayer, dramatically enhancing macromolecular transdermal absorption (needle-free mesotherapy).
-
-### 3.4 Dexpanthenol + Centella Barrier Restoration
+### 3.3 Dexpanthenol + Centella Barrier Restoration
 A healthy skin barrier requires an intact stratum corneum consisting of corneocytes embedded in a multi-lamellar lipid matrix (ceramides, cholesterol, free fatty acids). Post-procedure skin (chemical peels, laser resurfacing, carboxytherapy) exhibits elevated Transepidermal Water Loss (TEWL) and barrier breakdown.
 
 The `Healene™` clinical formulation utilizes a synergistic dual-pathway:
@@ -125,33 +119,28 @@ The `Healene™` clinical formulation utilizes a synergistic dual-pathway:
 | **Healene™ Barrier Gel** | `HLN-GEL-150ML`<br>`HLN-CLIN-500ML` | Dexpanthenol (5.0%), Madecassoside (40% purity, 3%), Hyaluronic Acid, Zinc PCA | Acute post-procedure erythema, compromised lipid barrier | 78% TEWL reduction in 48h, 92% soothing score |
 | **Silicalene™ Detox Scrub** | `SLC-SCR-200ML` | Spherical Amorphous Silica, Salicylic Acid (1.2%), Glycolic Acid (2%), Charcoal | Sebum hypersecretion, open comedones, pollution stress | 54% reduction in oxidized blackheads; 8h matte finish |
 
-### 4.2 ReeMed™ Medical Hardware Consoles
-
-| Hardware Console | Model Identifier | Operational Modalities | Target Operators | Regulatory Class |
-| :--- | :--- | :--- | :--- | :--- |
-| **Carbox™ Clinical Medical Station** | `RMD-CBX-4000` | • Micro-injection Subcutaneous $\text{CO}_2$<br>• Transdermal Sonophoresis ($1\text{ MHz} / 3\text{ MHz}$)<br>• Vacuum Cavitation Pulsing | Certified Dermatologists, Plastic Surgeons, Med-Spas | CE Medical Class IIb<br>IEC 60601-1-2 |
-| **PlasmaX™ Tri-Modality Station** | `RMD-PLX-7000` | • High-Frequency Surgical Micro-Arc ($100\text{ kHz}$)<br>• Cold Atmospheric Plasma Jet (Ar/He Stream)<br>• Dielectric Barrier Discharge (DBD Ceramic Head) | Plastic Surgeons, Dermatological Surgeons | CE Medical Class IIb<br>ISO 13485 |
+> **Note (2026-11-07)**: the ReeMed™ Medical Hardware Consoles dossier (Carbox™ / PlasmaX™ stations) was retired with the business pivot (ADR-013); ReeMed™ now denotes the clinical solutions line (محلول‌های کلینیکی) of the same 6-product retail catalog.
 
 ---
 
-## 5. Dual Target Audience Architecture & Business Rules
+## 5. Retail Audience Architecture & Business Rules
 
-The Commerce OS architecture recognizes two distinct customer classes with divergent UX journeys, catalog visibility, tax invoicing, and ordering rules:
+Following the 2026-11-07 business pivot (retirement of the B2B/clinic domain — ADR-013), the Commerce OS serves retail consumers across two product tiers with divergent journeys and ordering depth:
 
 ```
 +───────────────────────────────────────+───────────────────────────────────────+
-|      B2C CLINICAL HOME CONSUMER       |      B2B CLINIC & MEDICAL DOCTOR      |
+|   REESKIN HOME-CARE CONSUMER          |   REEMED CLINICAL SOLUTIONS CONSUMER  |
 +───────────────────────────────────────+───────────────────────────────────────+
-| Discovery via Skin Concern & Quiz     | Discovery via Technical Specifications|
-| Single Unit / Consumer Pack Purchases | Wholesale Bulk Packs & Capital Leases |
-| Consumer Courier Delivery (Express)   | Cold-Chain Logistics & Freight Pallets|
-| Standard Card / Shaparak Shetab / C2C | Formal Proforma Invoicing & Sepidar   |
-| Diagnostic Regimen Recommendations    | Medical Council License Validation    |
-| Consumer Support & Protocol Guides    | Dedicated Medical Rep & On-site CME   |
+| Discovery via Skin Concern & Quiz     | Discovery via Solution Lines & Guides |
+| Single Unit / Consumer Pack Purchases | Multi-Unit / Advanced Routine Packs   |
+| Consumer Courier Delivery (Express)   | Cold-Chain Logistics & Replenishment  |
+| Standard Card / Shaparak Shetab / C2C | Formal Tax Invoicing & Sepidar Export |
+| Diagnostic Regimen Recommendations    | Knowledge Base & INCI Deep-Dives      |
+| Consumer Support & Protocol Guides    | Auto-Replenishment Subscriptions      |
 +───────────────────────────────────────+───────────────────────────────────────+
 ```
 
-### 5.1 B2C Patient & Home Consumer Journey
+### 5.1 ReeSkin Home-Care Consumer Journey
 - **Psychological Profile**: Individuals experiencing skin distress (erythema, compromised barrier post-laser, aging, stubborn pigmentation, acne) seeking laboratory-grade efficacy without clinic markups.
 - **UI/UX Expectations**:
   - Interactive physiological simulators explaining why and how the product functions (e.g. `BohrSimulator`).
@@ -159,16 +148,13 @@ The Commerce OS architecture recognizes two distinct customer classes with diver
   - VISIA before/after comparison sliders with high-resolution polarization.
   - Transparent pricing in Iranian Tomans and Rials with zero hidden checkout fees.
 
-### 5.2 B2B Clinic, Med-Spa & Dermatologist Journey
-- **Psychological Profile**: Medical clinic owners, purchasing directors, and aesthetic physicians requiring dependable batch-to-batch repeatability, commercial profitability, regulatory compliance, and operator certification.
+### 5.2 ReeMed Clinical Solutions Consumer Journey
+- **Psychological Profile**: Experienced consumers building advanced multi-step routines who value provenance, exact concentrations, batch consistency, and reproducible protocols over marketing claims.
 - **Commerce & Regulatory Invariants**:
-  1. **Volume Tier Discounts**:
-     - 1–4 Units: Base Clinic Rate.
-     - 5–19 Units: 12% Volume Discount (`1200 bps`).
-     - 20+ Units: 22% Partner Hospital Rate (`2200 bps`).
-  2. **Medical Credential Gating**: Purchase of `Carbox™`, `PlasmaX™`, and high-strength acid peels requires a validated Iranian Medical Council number (نظام پزشکی) or Clinic Operating License.
-  3. **Iranian Tax Law Compliance (ماده ۱۶۹ مکرر)**: Generating official Moadian-compliant tax invoices detailing National Legal Entity ID (شناسه ملی), Economic Code (کد اقتصادی), and itemized 10% VAT.
-  4. **Continuing Medical Education (CME)**: Digital access to surgical video archives, procedural step steppers (`ProtocolStepper`), and verifiable cryptographic completion certificates.
+  1. **Volume Tier Discounts**: tiered multi-unit discounts are computed exclusively in the server-side pricing quote (e.g. 5% for 3+ identical items) — never client-side.
+  2. **Iranian Tax Law Compliance (ماده ۱۶۹ مکرر)**: official Moadian-compliant tax invoices with itemized 10% VAT, backed by the double-entry ledger.
+  3. **Auto-Replenishment**: optional subscription plans with guarded pause/resume/cancel state transitions.
+  4. **Knowledge & Research**: protocol guides and INCI dossiers served by the Blog (دانش و پژوهش) — the successor of the retired Academy.
 
 ---
 

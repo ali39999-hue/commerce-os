@@ -406,14 +406,6 @@
   margin: 0;
   line-height: 1.6;
 }
-.pdp-vendor-note {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin: 0;
-}
-.pdp-vendor-note strong {
-  color: var(--brand-deep);
-}
 
 .pdp-rating-strip {
   display: flex;

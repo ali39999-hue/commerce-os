@@ -43,17 +43,10 @@ const DEFAULT_CATEGORIES: RupakCategoryItem[] = [
     staggerClass: 'stagger-4',
   },
   {
-    id: 'electric',
-    title: 'لوازم برقی',
-    image: '/assets/rupak/categories/cat-electric.jpg',
-    href: '/plasmax',
-    staggerClass: 'stagger-5',
-  },
-  {
     id: 'health',
-    title: 'ابزار سلامت',
+    title: 'کربوکسی‌تراپی پوست',
     image: '/assets/rupak/categories/cat-health.jpg',
-    href: '/carbox',
+    href: '/carboxygel',
     staggerClass: 'stagger-6',
   },
 ];

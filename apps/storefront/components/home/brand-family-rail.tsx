@@ -152,8 +152,8 @@ export function BrandFamilyRail() {
             </div>
 
             {/* Visual Products Dual Spotlight */}
-            <div className="family-devices-dual-showcase" aria-label="محصولات و کیت‌های خانواده ReeMed">
-              <Link href="/carboxypod" className="device-modern-card">
+            <div className="family-duo-showcase" aria-label="محصولات و کیت‌های خانواده ReeMed">
+              <Link href="/carboxypod" className="duo-modern-card">
                 <div className="dmc-image-wrap">
                   <img
                     src="/assets/drdermer/2025/07/carbon-carboxypod-app-1-551x600.png"
@@ -169,7 +169,7 @@ export function BrandFamilyRail() {
                 </div>
               </Link>
 
-              <Link href="/carboxypad" className="device-modern-card">
+              <Link href="/carboxypad" className="duo-modern-card">
                 <div className="dmc-image-wrap">
                   <img
                     src="/assets/drdermer/2025/07/carboxygel-activator-mask-and-pads-1-600x600.png"

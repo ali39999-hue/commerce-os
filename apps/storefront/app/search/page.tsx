@@ -237,8 +237,6 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     if (
       slug.includes('reemed') ||
       title.includes('ری‌مد') ||
-      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
-      slug.includes('plasmax') ||
       slug.includes('pod') ||
       title.includes('پاد')
     ) {
@@ -1066,7 +1064,7 @@ function SearchPageContent() {
           <h1>کاتالوگ و کاوش تخصصی محصولات</h1>
           <p>
             جست‌وجوی پیشرفته در میان محصولات کربوکسی‌تراپی، لاین‌های بالینی ReeSkin و ReeMed، فرمولاسیون‌های
-            پپتیدی و تجهیزات مراقبت پوست با استانداردهای درموسوتیکال انگلستان.
+            پپتیدی و مراقبت پوست با استانداردهای درموسوتیکال انگلستان.
           </p>
         </div>
 

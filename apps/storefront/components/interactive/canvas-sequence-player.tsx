@@ -39,7 +39,7 @@ export interface CanvasSequencePlayerProps {
   autoRotate?: boolean;
   autoRotateSpeedMs?: number;
   interactiveDrag?: boolean;
-  aspectRatio?: number; // width / height, e.g. 1.33 for carbox, 1.25 for plasmax
+  aspectRatio?: number; // width / height, e.g. 1.33 for carboxypod stage 1
   overlayHotspots?: HotspotPin[];
   className?: string;
   label?: string;

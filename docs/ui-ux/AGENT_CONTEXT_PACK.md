@@ -16,7 +16,7 @@
 | **Biological Accents**| Pale Sage & Warm Sand | `--sage: #dce8df`, `--sand: #ede5da` |
 | **Luxury Accent** | Dermal Amber & Gold | `--accent: #c69c70` (Restricted to badges & VIP actions) |
 | **Alerts & Warnings** | Clinical Red | `--danger: #b84d4d` (Real contraindications only) |
-| **Dark Stages** | Restricted to Medical Hardware | `/carbox`, `/plasmax` (Obsidian stage `#172421` to `#0d1413`) |
+| **Dark Stages** | Restricted to Interactive Educational Simulators | Bohr-effect canvas, product sequence scrubbers (Obsidian stage `#172421` to `#0d1413`) |
 
 ---
 
@@ -36,19 +36,17 @@
 ## 3. Mandatory Page & Route Contracts
 
 1. **Homepage (`/`)**:
-   - Single clear H1, Hero with 1 primary CTA, Path Selector (Home Care vs Cabin Pro vs Hardware).
+   - Single clear H1, Hero with 1 primary CTA, Path Selector (Home Care/ReeSkin vs Clinical Solutions/ReeMed).
 2. **Product Detail Pages (PDP)**:
    - Above-the-fold purchase configurator with volume toggle (5x Home vs 500ml Pro).
    - Progressive disclosure for indications, step-by-step usage, active ingredients, full INCI, and contraindications.
    - Never delete scientific formulation data.
-3. **B2B Portal (`/b2b`)**:
-   - 5-step guided wizard: Clinic Info -> Needs/Products -> Volume -> Contact -> Review/Submit.
-4. **Partner Directory (`/vendors`)**:
-   - Accredited Clinical Directory with verification badges, specialties, and contact info.
-5. **Canonical Routing**:
-   - Dedicated clinical routes (`/carboxygel`, `/crystalene`, `/healene`, `/silicalene`, `/carboxypod`, `/carbox`, `/plasmax`) must always resolve via `getCanonicalProductHref(slug)`.
-6. **Admin ERP (`/admin`)**:
-   - 6 functional operational groups, tabular numerals, live Outbox telemetry, and double-entry balanced ledger (`SUM(DEBIT) === SUM(CREDIT)`).
+3. **Canonical Routing**:
+   - Dedicated clinical routes (`/carboxygel`, `/carboxypod`, `/carboxypad`, `/crystalene`, `/healene`, `/silicalene`) must always resolve via `getCanonicalProductHref(slug)`.
+4. **Admin ERP (`/admin`)**:
+   - Operational groups including API-backed catalog authoring (`CatalogPimManager`) and server-backed section control (`StorefrontSectionsManager`), tabular numerals, live Outbox telemetry, and double-entry balanced ledger (`SUM(DEBIT) === SUM(CREDIT)`).
+
+> **Note (2026-11-07)**: The B2B portal (`/b2b`), Partner Directory (`/vendors`) and Academy contracts were retired with the business pivot (ADR-013); legacy URLs redirect permanently.
 
 ---
 

@@ -26,7 +26,7 @@ export interface InciIngredientItem {
   bohrEffectRole?: string;
 }
 
-export interface AcademyArticleItem {
+export interface KnowledgeArticleItem {
   id: string;
   title: string;
   category: string;
@@ -124,7 +124,7 @@ const INITIAL_INCI: InciIngredientItem[] = [
   },
 ];
 
-const INITIAL_ARTICLES: AcademyArticleItem[] = [
+const INITIAL_ARTICLES: KnowledgeArticleItem[] = [
   {
     id: "art_1",
     title: "مکانیسم اثر گاز دی‌اکسید کربن در کربوکسی‌تراپی بدون سوزن (Bohr Effect)",
@@ -150,10 +150,10 @@ export default function ClinicalContentManager({
 }: {
   userRole?: string;
 }) {
-  const [tab, setTab] = useState<"claims" | "inci" | "academy">("claims");
+  const [tab, setTab] = useState<"claims" | "inci" | "articles">("claims");
   const [claims, setClaims] = useState<ClinicalClaimItem[]>(INITIAL_CLAIMS);
   const [inciList, setInciList] = useState<InciIngredientItem[]>(INITIAL_INCI);
-  const [articles, setArticles] = useState<AcademyArticleItem[]>(INITIAL_ARTICLES);
+  const [articles, setArticles] = useState<KnowledgeArticleItem[]>(INITIAL_ARTICLES);
   const [selectedClaim, setSelectedClaim] = useState<ClinicalClaimItem | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -243,7 +243,7 @@ export default function ClinicalContentManager({
             setTab("claims");
             setSearchQuery("");
           }}
-          className={`b2b-chip ${tab === "claims" ? "active" : ""}`}
+          className={`filter-chip ${tab === "claims" ? "active" : ""}`}
         >
           🔬 ادعاها و شواهد آزمایشگاهی ({faNumber(claims.length)})
         </button>
@@ -252,18 +252,18 @@ export default function ClinicalContentManager({
             setTab("inci");
             setSearchQuery("");
           }}
-          className={`b2b-chip ${tab === "inci" ? "active" : ""}`}
+          className={`filter-chip ${tab === "inci" ? "active" : ""}`}
         >
           🧪 دایرکتوری ترکیبات INCI و فرمولاسیون ({faNumber(inciList.length)})
         </button>
         <button
           onClick={() => {
-            setTab("academy");
+            setTab("articles");
             setSearchQuery("");
           }}
-          className={`b2b-chip ${tab === "academy" ? "active" : ""}`}
+          className={`filter-chip ${tab === "articles" ? "active" : ""}`}
         >
-          📚 پایگاه مقالات و پروتکل‌های بالینی ({faNumber(articles.length)})
+          📚 مقالات دانش بالینی ({faNumber(articles.length)})
         </button>
       </div>
 
@@ -469,7 +469,7 @@ export default function ClinicalContentManager({
         </section>
       )}
 
-      {tab === "academy" && (
+      {tab === "articles" && (
         <section className="admin-section-box">
           <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>

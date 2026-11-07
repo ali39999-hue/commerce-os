@@ -197,7 +197,7 @@ export default function RupakShowcasePage() {
               کاتالوگ تخصصی روپاک شاپ
             </span>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
-              محصولات برگزیده مراقبت پوستی و تجهیزات درمانی
+              محصولات برگزیده مراقبت پوستی
             </h2>
             <p className="text-slate-600 text-sm mt-2 max-w-2xl leading-relaxed">
               تمامی فرآورده‌ها دارای گواهینامه‌های رسمی کنترل کیفی، تاییدیه‌های آزمایشگاهی VISIA و پروتکل‌های ترمیم لایه شاخی پوست هستند.
@@ -378,7 +378,7 @@ export default function RupakShowcasePage() {
                 ارتباط با کارشناسان روپاک
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                برای دریافت مشاوره تخصصی در زمینه انتخاب محصولات یا ثبت سفارشات عمده کلینیکی:
+                برای دریافت مشاوره تخصصی در زمینه انتخاب محصولات یا پیگیری سفارش خود:
               </p>
               <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 flex items-center justify-between">
                 <div>
@@ -404,7 +404,7 @@ export default function RupakShowcasePage() {
               تمامی حقوق مادی و معنوی این سامانه متعلق به روپاک شاپ و Commerce OS می‌باشد.
             </p>
             <div className="flex items-center gap-4">
-              <span>نسخه ۲.۰.۰ — معماری بالینی هیبرید</span>
+              <span>نسخه ۲.۰.۰ — ارسال سریع سراسر کشور</span>
             </div>
           </div>
         </div>

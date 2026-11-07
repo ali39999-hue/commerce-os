@@ -142,13 +142,13 @@ export default function OrdersManager({
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
         <button
           onClick={() => setSubTab("orders")}
-          className={`b2b-chip ${subTab === "orders" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "orders" ? "active" : ""}`}
         >
           📦 سفارشات فروشگاه ({faNumber(orders.length)})
         </button>
         <button
           onClick={() => setSubTab("receipts")}
-          className={`b2b-chip ${subTab === "receipts" ? "active" : ""}`}
+          className={`filter-chip ${subTab === "receipts" ? "active" : ""}`}
         >
           💳 تایید فیش‌های واریزی
           {pendingReceipts.length > 0 && (
