@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useId } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import Link from 'next/link';
 import './carboxygel.css';
 import { useCart } from '../../components/cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { apiBase, storeSlug } from '../../lib/catalog';
 import { ClinicalProductGallery } from '@commerce-os/ui';
 
 /* ── 3 Formulations Breakdown Data ── */
@@ -337,29 +338,73 @@ export default function CarboxygelLandingPage() {
   const [addedPro, setAddedPro] = useState(false);
   const [addedHome, setAddedHome] = useState(false);
 
+  // نگاشت SKU → واریانت زندهٔ سرور: افزودن به سبد شناسهٔ واقعی دیتابیس را
+  // استفاده می‌کند نه شناسه‌های دموی هاردکد (که پرداخت را می‌شکنند).
+  const [liveVariantBySku, setLiveVariantBySku] = useState<
+    Record<string, { variantId: string; productId: string; priceAmount: string }>
+  >({});
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${apiBase}/v1/stores/${encodeURIComponent(storeSlug)}/products/carboxygel`, {
+      cache: 'no-store',
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(3500),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (!active || !j?.data?.variants) return;
+        const map: Record<string, { variantId: string; productId: string; priceAmount: string }> = {};
+        for (const v of j.data.variants) {
+          const skuKey = String(v.sku ?? '').trim().toUpperCase();
+          if (skuKey) {
+            map[skuKey] = {
+              variantId: v.id,
+              productId: j.data.id,
+              priceAmount: String(v.priceAmount ?? ''),
+            };
+          }
+        }
+        setLiveVariantBySku(map);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const withLiveIds = (
+    item: { variantId: string; productId: string; title: string; sku: string; priceAmount: string; image: string }
+  ) => {
+    const live = liveVariantBySku[item.sku.trim().toUpperCase()];
+    return live
+      ? { ...item, variantId: live.variantId, productId: live.productId, priceAmount: live.priceAmount || item.priceAmount }
+      : item;
+  };
+
   const handleHeroAddToCart = () => {
     if (heroPackChoice === 'pro') {
       addItem(
-        {
+        withLiveIds({
           variantId: 'var_skin_001_single',
           productId: 'prod_skin_001',
           title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
           sku: 'CBG-PRO-500ML',
           priceAmount: '48500000',
           image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
-        },
+        }),
         heroQty
       );
     } else {
       addItem(
-        {
+        withLiveIds({
           variantId: 'var_skin_001_home',
           productId: 'prod_skin_001',
           title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
           sku: 'CBG-HOME-5X',
           priceAmount: '19500000',
           image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
-        },
+        }),
         heroQty
       );
     }
@@ -369,28 +414,32 @@ export default function CarboxygelLandingPage() {
   };
 
   const handleAddProToCart = () => {
-    addItem({
-      variantId: 'var_skin_001_single',
-      productId: 'prod_skin_001',
-      title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
-      sku: 'CBG-PRO-500ML',
-      priceAmount: '48500000',
-      image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
-    });
+    addItem(
+      withLiveIds({
+        variantId: 'var_skin_001_single',
+        productId: 'prod_skin_001',
+        title: 'پک حرفه‌ای کلینیکال CarboxyGel ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
+        sku: 'CBG-PRO-500ML',
+        priceAmount: '48500000',
+        image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
+      })
+    );
     setAddedPro(true);
     openDrawer();
     setTimeout(() => setAddedPro(false), 2000);
   };
 
   const handleAddHomeToCart = () => {
-    addItem({
-      variantId: 'var_skin_001_home',
-      productId: 'prod_skin_001',
-      title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
-      sku: 'CBG-HOME-5X',
-      priceAmount: '19500000',
-      image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
-    });
+    addItem(
+      withLiveIds({
+        variantId: 'var_skin_001_home',
+        productId: 'prod_skin_001',
+        title: 'کیت خانگی ۵ عددی CarboxyGel (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
+        sku: 'CBG-HOME-5X',
+        priceAmount: '19500000',
+        image: '/assets/drdermer/2025/07/multi-active-carboxygel.png',
+      })
+    );
     setAddedHome(true);
     openDrawer();
     setTimeout(() => setAddedHome(false), 2000);

@@ -39,10 +39,14 @@ test.describe('Storefront Critical Pages HTTP & DOM Verification', () => {
 
   test('cart drawer opens and closes without error', async ({ page }) => {
     await page.goto('/');
-    const cartTriggers = page.locator('button[aria-label*="سبد"], a[href="/cart"], .cart-badge-btn');
-    if ((await cartTriggers.count()) > 0) {
-      await cartTriggers.first().click();
-      await page.waitForTimeout(300);
-    }
+    const cartTrigger = page.locator('button.cart-trigger').first();
+    await expect(cartTrigger).toBeVisible();
+    await cartTrigger.click();
+    // کشوی سبد باید واقعاً باز شود — این ادعا قبلاً وجود نداشت و باگِ «کشوی
+    // خالی» (return null) را پنهان کرده بود
+    const drawer = page.locator('.cart-drawer-overlay').first();
+    await expect(drawer).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(drawer).toBeHidden();
   });
 });
