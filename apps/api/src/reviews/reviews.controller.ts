@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Param, Query, Body, Headers, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  Query,
+  Body,
+  Headers,
+  UseGuards,
+} from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
 import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
 import { CurrentCustomer } from "../common/guards/current-tenant.decorator";
@@ -44,7 +54,17 @@ export class ReviewsController {
     );
   }
 
+  @Get("admin/all")
+  @UseGuards(AdminGuard)
+  async listAll(
+    @Query("status") status?: string,
+    @Query("limit") limit?: string
+  ) {
+    return this.reviewsService.listAllAdmin(status, limit ? parseInt(limit, 10) : 100);
+  }
+
   @Get("admin/pending")
+  @UseGuards(AdminGuard)
   async listPending(@Query("limit") limit?: string) {
     return this.reviewsService.listPending(limit ? parseInt(limit, 10) : 50);
   }
@@ -58,5 +78,20 @@ export class ReviewsController {
     @Body() body: { decision: ReviewModerationDecision; moderator?: string }
   ) {
     return this.reviewsService.moderate(id, body?.decision, body?.moderator || "admin");
+  }
+
+  @Post("admin/:id/reply")
+  @UseGuards(AdminGuard)
+  async reply(
+    @Param("id") id: string,
+    @Body() body: { replyText: string; moderator?: string }
+  ) {
+    return this.reviewsService.replyReview(id, body?.replyText, body?.moderator);
+  }
+
+  @Delete("admin/:id")
+  @UseGuards(AdminGuard)
+  async deleteReview(@Param("id") id: string) {
+    return this.reviewsService.deleteReview(id);
   }
 }

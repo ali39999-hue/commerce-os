@@ -175,6 +175,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           detail: { variantId: item.variantId, qty },
         })
       );
+      window.dispatchEvent(
+        new CustomEvent("commerce_os:notify", {
+          detail: {
+            type: "cart_add",
+            title: "کالا به سبد خرید اضافه شد",
+            item: {
+              title: item.title,
+              priceAmount: item.priceAmount,
+              image: item.image,
+              qty: qty,
+              sku: item.sku,
+            },
+          },
+        })
+      );
     }
   }, []);
 

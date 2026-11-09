@@ -14,6 +14,32 @@ import SubscriptionsManager from "../components/SubscriptionsManager";
 import VendorsManager from "../components/VendorsManager";
 import DigitalLicensesManager from "../components/DigitalLicensesManager";
 import AdminLoginGate from "../components/AdminLoginGate";
+import ApprovalsManager from "../components/ApprovalsManager";
+import ExceptionCenterManager from "../components/ExceptionCenterManager";
+import ClinicCustomer360Manager from "../components/ClinicCustomer360Manager";
+import AdvancedFinancialReports from "../components/AdvancedFinancialReports";
+import ReviewsCommentsManager from "../components/ReviewsCommentsManager";
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  ShieldCheck,
+  Tag,
+  Package,
+  Warehouse,
+  Stethoscope,
+  Building2,
+  Sparkles,
+  Repeat,
+  Store,
+  KeyRound,
+  FileSpreadsheet,
+  BarChart3,
+  AlertTriangle,
+  Activity,
+  LogOut,
+  Shield,
+  MessageSquare,
+} from "lucide-react";
 import {
   ADMIN_ROLES,
   clearAdminSession,
@@ -25,16 +51,21 @@ import { buildSepidarCsv } from "@commerce-os/finance";
 export type AdminTab =
   | "overview"
   | "orders"
+  | "approvals"
+  | "exceptions"
   | "catalog"
   | "inventory"
   | "coupons"
+  | "clinics360"
   | "b2b"
   | "clinical"
   | "finance"
+  | "finance_reports"
   | "ops"
   | "subscriptions"
   | "vendors"
-  | "digital";
+  | "digital"
+  | "reviews";
 
 export type AdminUserRole = "SUPER_ADMIN" | "OPERATOR" | "ACCOUNTANT";
 
@@ -87,6 +118,16 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
     title: "مدیریت سفارشات و تایید فیش‌های کارت‌به‌کارت",
     description: "پایش جریان تسویه شتاب، آماده‌سازی انبار، ارسال به باربری و صدور فاکتور",
   },
+  approvals: {
+    breadcrumb: ["خانه ERP", "کنترل سازمانی", "مرکز تأیید و کنترل دوطرفه (Maker-Checker)"],
+    title: "مرکز تأیید و کنترل‌های دوطرفه سازمانی (Maker-Checker Approval Desk)",
+    description: "تأیید سفارشات سنگین، تغییر سقف اعتبار B2B، امحای ضایعات سردخانه و تفکیک وظایف (SoD)",
+  },
+  exceptions: {
+    breadcrumb: ["خانه ERP", "سلامت و عملیات", "مرکز رسیدگی به استثناها و هشدارهای فوری"],
+    title: "مرکز پایش استثناها و هشدارهای فوری کلینیکال و عملیات (Control Tower)",
+    description: "پایش بلادرنگ زنجیره سرد ۲-۸ درجه، خطاهای درگاه پرداخت و کسری کارتریج استریل",
+  },
   coupons: {
     breadcrumb: ["خانه ERP", "عملیات فروش", "تخفیف و پروموشن‌ها"],
     title: "موتور قیمت‌گذاری، تخفیف‌ها و کدهای پروموشن",
@@ -106,6 +147,16 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
     breadcrumb: ["خانه ERP", "کلینیکال و محتوا", "ادعاهای بالینی، INCI و مقالات"],
     title: "شورای نظارت علمی، ادعاهای بالینی و استاندارد INCI",
     description: "اعتبارسنجی آزمایشگاهی کارآزمایی‌های بالینی، کدینگ ترکیبات فرمولاسیون و آکادمی",
+  },
+  reviews: {
+    breadcrumb: ["خانه ERP", "کلینیکال و محتوا", "نظرات و دیدگاه‌های خریداران"],
+    title: "مدیریت نظرات، دیدگاه‌ها و رضایت‌سنجی خریداران",
+    description: "پایش برخط دیدگاه‌های ارسالی از فروشگاه، تایید یا رد ادعاها و پاسخ کارشناسی درماتولوژی",
+  },
+  clinics360: {
+    breadcrumb: ["خانه ERP", "همکاری تجاری", "پرونده ۳۶۰ درجه کلینیک‌ها و پزشکان"],
+    title: "پرونده جامع ۳۶۰ درجه کلینیک‌ها، پزشکان و مراکز درمانی همکار",
+    description: "استعلام پروانه نظام پزشکی، سقف اعتبار Net-30، گواهی اثر بور و استیشن‌های PlasmaX",
   },
   b2b: {
     breadcrumb: ["خانه ERP", "همکاری تجاری", "استعلام‌های عمده کلینیک‌ها (B2B)"],
@@ -131,6 +182,11 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
     breadcrumb: ["خانه ERP", "امور مالی", "دفتر روزنامه و خروجی سپیدار"],
     title: "دفترکل مالی، اسناد دوبل‌اندر و خروجی استاندارد سپیدار",
     description: "ثبت غیرقابل تغییر اسناد حسابداری، بررسی تراز آزمایشی و مغایرت‌گیری بانکی",
+  },
+  finance_reports: {
+    breadcrumb: ["خانه ERP", "امور مالی", "تراز آزمایشی و سود و زیان خطوط محصول"],
+    title: "گزارش‌های جامع مالی، تراز آزمایشی ۴ ستونی و تحلیل سود و زیان (P&L)",
+    description: "پایش برابری بدهکار و بستانکار، حاشیه سود فرمولاسیون ReeSkin و ترازنامه",
   },
   ops: {
     breadcrumb: ["خانه ERP", "سلامت سیستم و عملیات", "صف خروج Outbox و Worker Leases"],
@@ -298,7 +354,7 @@ export default function AdminDashboardPage() {
   // Wait for the localStorage session check before rendering (avoids a
   // post-hydration flash of the gate for logged-in operators).
   if (!sessionLoaded) {
-    return <div style={{ minHeight: "100vh", background: "#F7F6F2" }} />;
+    return <div style={{ minHeight: "100vh", background: "#f8fafc" }} />;
   }
 
   if (!session) {
@@ -309,24 +365,38 @@ export default function AdminDashboardPage() {
     <div className="admin-container">
       {/* ── Sidebar ── */}
       <aside className="admin-sidebar">
+        {/* Brand Header */}
         <div className="admin-brand">
-          <div className="admin-logo-mark">COS</div>
+          <div className="admin-logo-mark">DR</div>
           <div>
-            <strong>Commerce OS ERP</strong>
-            <small>مدیریت یکپارچه عملیات و سلامت سیستم</small>
+            <strong>Dr Dermer UK ERP</strong>
+            <small>سیستم یکپارچه کلینیکال و بازرگانی</small>
           </div>
         </div>
 
-        {/* Role Switcher */}
-        <div style={{ marginBottom: "16px", padding: "0 4px" }}>
-          <label htmlFor="admin-role-select" style={{ fontSize: "0.75rem", color: "#c4d4cc", display: "block", marginBottom: "4px" }}>
-            نقش عملیاتی فعال:
-          </label>
+        {/* Executive Role Switcher Capsule */}
+        <div className="admin-role-capsule">
+          <div className="admin-role-capsule-header">
+            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Shield size={13} style={{ color: "#274b24" }} />
+              <span>نقش عملیاتی فعال</span>
+            </span>
+            <span
+              style={{
+                display: "inline-block",
+                width: "7px",
+                height: "7px",
+                borderRadius: "50%",
+                background: userRole === "SUPER_ADMIN" ? "#10b981" : userRole === "ACCOUNTANT" ? "#38bdf8" : "#f59e0b",
+                boxShadow: `0 0 8px ${userRole === "SUPER_ADMIN" ? "#10b981" : userRole === "ACCOUNTANT" ? "#38bdf8" : "#f59e0b"}`,
+              }}
+              title="نشست فعال"
+            />
+          </div>
           <select
             id="admin-role-select"
             aria-label="نقش عملیاتی فعال"
-            className="admin-input"
-            style={{ width: "100%", background: "#053733", color: "#fff", border: "1px solid #145e57", fontSize: "0.82rem", padding: "6px" }}
+            className="admin-role-select"
             value={userRole}
             onChange={(e) => setUserRole(e.target.value as AdminUserRole)}
           >
@@ -334,163 +404,270 @@ export default function AdminDashboardPage() {
             <option value="OPERATOR">اپراتور فروش و ارسال</option>
             <option value="ACCOUNTANT">حسابدار مالی و انبار</option>
           </select>
-          <button
-            onClick={handleLogout}
-            className="admin-btn"
-            style={{
-              width: "100%",
-              marginTop: "8px",
-              background: "transparent",
-              color: "#9FD6CB",
-              border: "1px solid #145e57",
-              fontSize: "0.8rem",
-              padding: "6px",
-              cursor: "pointer",
-            }}
-            title={`خروج از نشست ${session?.user.phone ?? ""}`}
-          >
-            خروج از نشست ({session?.user.role === "SUPER_ADMIN" ? "مدیر ارشد" : session?.user.role === "OPERATOR" ? "اپراتور" : session?.user.role === "ACCOUNTANT" ? "حسابدار" : session?.user.role})
-          </button>
         </div>
 
-        <nav className="admin-nav" style={{ overflowY: "auto", maxHeight: "calc(100vh - 220px)" }}>
-          {/* 1. Sales Operations (عملیات فروش) */}
+        {/* Navigation Categories with Lucide Icons */}
+        <nav className="admin-nav">
+          {/* 1. Sales Operations */}
           <div className="nav-category-header">
             <span>عملیات فروش (Sales)</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].sales.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].sales.labelFa}
             </span>
           </div>
+
           <button
             onClick={() => setActiveTab("overview")}
             className={`nav-btn ${activeTab === "overview" ? "active" : ""}`}
           >
-            داشبورد و شاخص‌ها
+            <span className="nav-item-content">
+              <LayoutDashboard size={17} className="nav-icon" />
+              <span>داشبورد و شاخص‌ها</span>
+            </span>
           </button>
+
           <button
             onClick={() => setActiveTab("orders")}
             className={`nav-btn ${activeTab === "orders" ? "active" : ""}`}
           >
-            سفارشات و فیش‌ها
+            <span className="nav-item-content">
+              <ShoppingBag size={17} className="nav-icon" />
+              <span>سفارشات و فیش‌ها</span>
+            </span>
             {pendingReceiptCount > 0 && (
               <span className="badge-count">{pendingReceiptCount}</span>
             )}
           </button>
+
+          <button
+            onClick={() => setActiveTab("approvals")}
+            className={`nav-btn ${activeTab === "approvals" ? "active" : ""}`}
+          >
+            <span className="nav-item-content">
+              <ShieldCheck size={17} className="nav-icon" />
+              <span>مرکز تأیید (Maker-Checker)</span>
+            </span>
+            <span className="badge-count" style={{ background: "#e8f3ee", color: "#274b24", border: "1px solid #77B091" }}>۳</span>
+          </button>
+
           <button
             onClick={() => setActiveTab("coupons")}
             className={`nav-btn ${activeTab === "coupons" ? "active" : ""}`}
           >
-            تخفیف و کوپن‌ها (API)
+            <span className="nav-item-content">
+              <Tag size={17} className="nav-icon" />
+              <span>تخفیف و کوپن‌ها (API)</span>
+            </span>
           </button>
 
-          {/* 2. Catalog & Inventory (کاتالوگ و موجودی) */}
+          {/* 2. Catalog & Inventory */}
           <div className="nav-category-header">
             <span>کاتالوگ و موجودی</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].catalog.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].catalog.labelFa}
             </span>
           </div>
+
           <button
             onClick={() => setActiveTab("catalog")}
             className={`nav-btn ${activeTab === "catalog" ? "active" : ""}`}
           >
-            کاتالوگ و مدیریت PIM
+            <span className="nav-item-content">
+              <Package size={17} className="nav-icon" />
+              <span>کاتالوگ و مدیریت PIM</span>
+            </span>
           </button>
+
           <button
             onClick={() => setActiveTab("inventory")}
             className={`nav-btn ${activeTab === "inventory" ? "active" : ""}`}
           >
-            کنترل انبار و رزروها
+            <span className="nav-item-content">
+              <Warehouse size={17} className="nav-icon" />
+              <span>کنترل انبار و رزروها</span>
+            </span>
             {lowStockCount > 0 && <span className="badge-alert">!</span>}
           </button>
 
-          {/* 3. Clinical & Content (کلینیکال و محتوا) */}
+          {/* 3. Clinical & Content */}
           <div className="nav-category-header">
             <span>کلینیکال و محتوا</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].clinical.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].clinical.labelFa}
             </span>
           </div>
+
           <button
             onClick={() => setActiveTab("clinical")}
             className={`nav-btn ${activeTab === "clinical" ? "active" : ""}`}
           >
-            ادعاهای بالینی، INCI و مقالات
+            <span className="nav-item-content">
+              <Stethoscope size={17} className="nav-icon" />
+              <span>ادعاهای بالینی، INCI و مقالات</span>
+            </span>
           </button>
 
-          {/* 4. B2B Commercial (همکاری تجاری و B2B) */}
+          <button
+            onClick={() => setActiveTab("reviews")}
+            className={`nav-btn ${activeTab === "reviews" ? "active" : ""}`}
+          >
+            <span className="nav-item-content">
+              <MessageSquare size={17} className="nav-icon" />
+              <span>نظرات و دیدگاه‌های خریداران</span>
+            </span>
+          </button>
+
+          {/* 4. B2B Commercial */}
           <div className="nav-category-header">
             <span>همکاری تجاری (B2B)</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].b2b.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].b2b.labelFa}
             </span>
           </div>
+
+          <button
+            onClick={() => setActiveTab("clinics360")}
+            className={`nav-btn ${activeTab === "clinics360" ? "active" : ""}`}
+          >
+            <span className="nav-item-content">
+              <Building2 size={17} className="nav-icon" />
+              <span>پرونده ۳۶۰ درجه کلینیک‌ها</span>
+            </span>
+          </button>
+
           <button
             onClick={() => setActiveTab("b2b")}
             className={`nav-btn ${activeTab === "b2b" ? "active" : ""}`}
           >
-            استعلام‌های عمده B2B
+            <span className="nav-item-content">
+              <Sparkles size={17} className="nav-icon" />
+              <span>استعلام‌های عمده B2B</span>
+            </span>
           </button>
+
           <button
             onClick={() => setActiveTab("subscriptions")}
             className={`nav-btn ${activeTab === "subscriptions" ? "active" : ""}`}
           >
-            اشتراک‌های دوره‌ای
+            <span className="nav-item-content">
+              <Repeat size={17} className="nav-icon" />
+              <span>اشتراک‌های دوره‌ای</span>
+            </span>
           </button>
+
           <button
             onClick={() => setActiveTab("vendors")}
             className={`nav-btn ${activeTab === "vendors" ? "active" : ""}`}
           >
-            فروشندگان مارکت‌پلیس
+            <span className="nav-item-content">
+              <Store size={17} className="nav-icon" />
+              <span>فروشندگان مارکت‌پلیس</span>
+            </span>
           </button>
+
           <button
             onClick={() => setActiveTab("digital")}
             className={`nav-btn ${activeTab === "digital" ? "active" : ""}`}
           >
-            لایسنس‌های دیجیتال
+            <span className="nav-item-content">
+              <KeyRound size={17} className="nav-icon" />
+              <span>لایسنس‌های دیجیتال</span>
+            </span>
           </button>
 
-          {/* 5. Finance (امور مالی) */}
+          {/* 5. Finance */}
           <div className="nav-category-header">
             <span>امور مالی (Finance)</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].finance.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].finance.labelFa}
             </span>
           </div>
+
           <button
             onClick={() => setActiveTab("finance")}
             className={`nav-btn ${activeTab === "finance" ? "active" : ""}`}
           >
-            دفتر روزنامه و خروجی سپیدار
+            <span className="nav-item-content">
+              <FileSpreadsheet size={17} className="nav-icon" />
+              <span>دفتر روزنامه و خروجی سپیدار</span>
+            </span>
           </button>
 
-          {/* 6. System Health & Ops (سلامت سیستم و عملیات) */}
+          <button
+            onClick={() => setActiveTab("finance_reports")}
+            className={`nav-btn ${activeTab === "finance_reports" ? "active" : ""}`}
+          >
+            <span className="nav-item-content">
+              <BarChart3 size={17} className="nav-icon" />
+              <span>تراز آزمایشی و P&L</span>
+            </span>
+          </button>
+
+          {/* 6. System Health & Ops */}
           <div className="nav-category-header">
             <span>سلامت سیستم و عملیات</span>
             <span className={`domain-access-badge access-${DOMAIN_ACCESS_CONFIG[userRole].ops.access.toLowerCase()}`}>
               {DOMAIN_ACCESS_CONFIG[userRole].ops.labelFa}
             </span>
           </div>
+
+          <button
+            onClick={() => setActiveTab("exceptions")}
+            className={`nav-btn ${activeTab === "exceptions" ? "active" : ""}`}
+          >
+            <span className="nav-item-content">
+              <AlertTriangle size={17} className="nav-icon" />
+              <span>مرکز استثناها (Control Tower)</span>
+            </span>
+            <span className="badge-alert">!</span>
+          </button>
+
           <button
             onClick={() => setActiveTab("ops")}
             className={`nav-btn ${activeTab === "ops" ? "active" : ""}`}
           >
-            صف Outbox و اجاره‌نامه‌ها
+            <span className="nav-item-content">
+              <Activity size={17} className="nav-icon" />
+              <span>صف Outbox و اجاره‌نامه‌ها</span>
+            </span>
           </button>
         </nav>
 
-        <div className="admin-user-profile" style={{ marginTop: "auto" }}>
-          <div className="user-avatar">{userRole.slice(0, 2)}</div>
-          <div className="user-info">
-            <strong>
-              {userRole === "SUPER_ADMIN"
-                ? "مدیر ارشد سیستم"
-                : userRole === "ACCOUNTANT"
-                ? "حسابدار ارشد"
-                : "اپراتور سفارشات"}
-            </strong>
-            <small>احراز هویت شده</small>
+        {/* Floating User Profile Card & Seamless Logout */}
+        <div className="admin-user-profile">
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0, flex: 1 }}>
+            <div className="user-avatar">{userRole.slice(0, 2)}</div>
+            <div className="user-info">
+              <strong>
+                {userRole === "SUPER_ADMIN"
+                  ? "مدیر ارشد سیستم"
+                  : userRole === "ACCOUNTANT"
+                  ? "حسابدار ارشد"
+                  : "اپراتور سفارشات"}
+              </strong>
+              <small>
+                <span
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: "#10b981",
+                    boxShadow: "0 0 6px #10b981",
+                    display: "inline-block",
+                  }}
+                />
+                <span>احراز هویت شده</span>
+              </small>
+            </div>
           </div>
+          <button
+            onClick={handleLogout}
+            className="logout-icon-btn"
+            title={`خروج از نشست (${session?.user.phone ?? ""})`}
+            aria-label="خروج از نشست"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
       </aside>
 
@@ -575,6 +752,17 @@ export default function AdminDashboardPage() {
           />
         )}
 
+        {activeTab === "approvals" && (
+          <ApprovalsManager
+            userRole={userRole}
+            currentUserId={session?.user.id || "usr_admin_master"}
+          />
+        )}
+
+        {activeTab === "exceptions" && (
+          <ExceptionCenterManager userRole={userRole} />
+        )}
+
         {activeTab === "catalog" && (
           <CatalogPimManager userRole={userRole} />
         )}
@@ -587,6 +775,10 @@ export default function AdminDashboardPage() {
           <PromotionsCouponsManager userRole={userRole} />
         )}
 
+        {activeTab === "clinics360" && (
+          <ClinicCustomer360Manager userRole={userRole} />
+        )}
+
         {activeTab === "b2b" && (
           <B2BQuotesManager userRole={userRole} />
         )}
@@ -595,8 +787,16 @@ export default function AdminDashboardPage() {
           <ClinicalContentManager userRole={userRole} />
         )}
 
+        {activeTab === "reviews" && (
+          <ReviewsCommentsManager userRole={userRole} />
+        )}
+
         {activeTab === "finance" && (
           <FinanceLedgerView orders={orders} userRole={userRole} />
+        )}
+
+        {activeTab === "finance_reports" && (
+          <AdvancedFinancialReports userRole={userRole} />
         )}
 
         {activeTab === "ops" && (

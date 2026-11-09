@@ -47,11 +47,35 @@ export function ProductReviews({ slug, productTitle }: { slug: string; productTi
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    let userReviews: Review[] = [];
-    try {
-      userReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY(slug)) ?? "[]");
-    } catch {}
-    setReviews([...userReviews, ...(SEED_REVIEWS[slug] ?? GENERIC_SEED)]);
+    fetch(`http://localhost:4000/v1/reviews/products/${encodeURIComponent(slug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.items) && data.items.length > 0) {
+          const apiReviews: Review[] = data.items.map((i: any) => ({
+            id: i.id,
+            author: i.authorName,
+            rating: i.rating,
+            title: i.title,
+            body: i.body,
+            createdAt: i.createdAt,
+            verifiedPurchase: i.isVerifiedPurchase,
+          }));
+          setReviews(apiReviews);
+        } else {
+          let userReviews: Review[] = [];
+          try {
+            userReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY(slug)) ?? "[]");
+          } catch {}
+          setReviews([...userReviews, ...(SEED_REVIEWS[slug] ?? GENERIC_SEED)]);
+        }
+      })
+      .catch(() => {
+        let userReviews: Review[] = [];
+        try {
+          userReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY(slug)) ?? "[]");
+        } catch {}
+        setReviews([...userReviews, ...(SEED_REVIEWS[slug] ?? GENERIC_SEED)]);
+      });
   }, [slug]);
 
   const avg = useMemo(
@@ -80,6 +104,16 @@ export function ProductReviews({ slug, productTitle }: { slug: string; productTi
 
     const nextUser = [review, ...(reviews.filter((r) => !r.id.startsWith("g") && !SEED_REVIEWS[slug]?.some((s) => s.id === r.id)))];
     try { localStorage.setItem(REVIEWS_KEY(slug), JSON.stringify(nextUser)); } catch {}
+    fetch(`http://localhost:4000/v1/reviews/products/${encodeURIComponent(slug)}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        authorName: review.author,
+        rating: review.rating,
+        title: review.title,
+        body: review.body,
+      }),
+    }).catch(() => {});
     setReviews([review, ...reviews]);
     setForm({ author: "", title: "", body: "" });
     setSubmitted(true);

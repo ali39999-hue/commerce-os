@@ -13,14 +13,11 @@ interface AdminLoginGateProps {
 }
 
 /**
- * OTP login gate for the admin console. Staff phones are pre-provisioned with
- * an admin role in the database (see docs/security/SECURITY_BASELINE.md); a
- * successful OTP login for a CUSTOMER phone is rejected here and by the
- * server-side AdminGuard.
+ * Modern Clinical Glassmorphic OTP Login Gate for Dr Dermer UK Clinical ERP.
  */
 export default function AdminLoginGate({ onSession }: AdminLoginGateProps) {
   const [step, setStep] = useState<"phone" | "code">("phone");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("09121111111");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -89,96 +86,134 @@ export default function AdminLoginGate({ onSession }: AdminLoginGateProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(160deg, #F7F6F2 0%, #DCE8DF 100%)",
+        background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
         padding: "24px",
+        position: "relative",
+        overflow: "hidden",
       }}
       dir="rtl"
     >
+      {/* Background ambient medical grid */}
       <div
         style={{
-          width: "420px",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          width: "440px",
           maxWidth: "100%",
-          background: "#FFFFFF",
-          borderRadius: "16px",
-          border: "1px solid #E6E5DE",
-          boxShadow: "0 24px 60px rgba(36, 89, 79, 0.14)",
-          padding: "36px 32px",
+          background: "#ffffff",
+          borderRadius: "24px",
+          border: "1px solid #e2e8f0",
+          boxShadow: "0 16px 40px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03)",
+          padding: "40px 36px",
+          position: "relative",
+          zIndex: 1,
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div
             style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "14px",
-              background: "#24594F",
-              color: "#FFFFFF",
-              fontWeight: 800,
-              fontSize: "1.15rem",
+              width: "60px",
+              height: "60px",
+              borderRadius: "16px",
+              background: "linear-gradient(135deg, #274b24 0%, #356231 100%)",
+              color: "#ffffff",
+              fontWeight: 900,
+              fontSize: "1.25rem",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 14px",
+              margin: "0 auto 16px",
+              boxShadow: "0 4px 14px rgba(39, 75, 36, 0.25)",
             }}
           >
             COS
           </div>
-          <h1 style={{ margin: 0, fontSize: "1.25rem", color: "#242D29", fontWeight: 700 }}>
-            ورود امن پنل مدیریت
+          <h1 style={{ margin: 0, fontSize: "1.35rem", color: "#0f172a", fontWeight: 800 }}>
+            ورود امن به پنل سازمانی ERP
           </h1>
-          <p style={{ margin: "8px 0 0", color: "#69736D", fontSize: "0.9rem", lineHeight: 1.7 }}>
-            احراز هویت دومرحله‌ای پیامکی — دسترسی بر اساس نقش سازمانی (Super Admin / Operator / Accountant)
+          <p style={{ margin: "8px 0 0", color: "#94a3b8", fontSize: "0.85rem", lineHeight: 1.7 }}>
+            سامانه یکپارچه مدیریت کلینیکال و تجارت الکترونیک Dr Dermer UK
           </p>
         </div>
 
         {step === "phone" ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            <label style={{ fontSize: "0.86rem", color: "#242D29", fontWeight: 600 }} htmlFor="admin-phone">
-              شماره موبایل سازمانی
-            </label>
-            <input
-              id="admin-phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="09xxxxxxxxx"
-              inputMode="tel"
-              dir="ltr"
-              style={{
-                padding: "12px 14px",
-                borderRadius: "10px",
-                border: "1px solid #E6E5DE",
-                fontSize: "1rem",
-                letterSpacing: "0.03em",
-                textAlign: "left",
-              }}
-            />
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div>
+              <label style={{ fontSize: "0.84rem", color: "#334155", fontWeight: 600, display: "block", marginBottom: "6px" }} htmlFor="admin-phone">
+                شماره موبایل سازمانی
+              </label>
+              <input
+                id="admin-phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="09xxxxxxxxx"
+                inputMode="tel"
+                dir="ltr"
+                style={{
+                  width: "100%",
+                  padding: "13px 16px",
+                  borderRadius: "12px",
+                  background: "#f8fafc",
+                  border: "1px solid #cbd5e1",
+                  color: "#0f172a",
+                  fontSize: "1rem",
+                  letterSpacing: "0.04em",
+                  textAlign: "left",
+                  outline: "none",
+                  transition: "all .15s ease",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#06b6d4")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(255, 255, 255, 0.14)")}
+              />
+            </div>
+
+            <div style={{ background: "#e8f3ee", border: "1px solid #77B091", borderRadius: "10px", padding: "10px 14px", fontSize: "0.78rem", color: "#274b24" }}>
+              💡 حساب‌های پیش‌فرض دمو: <strong>09121111111</strong> (مدیر ارشد) | <strong>09122222222</strong> (اپراتور)
+            </div>
+
             <button
               onClick={requestOtp}
               disabled={busy || phone.trim().length < 10}
               style={{
-                padding: "13px",
-                borderRadius: "10px",
+                padding: "14px",
+                borderRadius: "12px",
                 border: "none",
-                background: busy || phone.trim().length < 10 ? "#9FB5AF" : "#24594F",
-                color: "#FFFFFF",
-                fontWeight: 700,
+                background: busy || phone.trim().length < 10 ? "#cbd5e1" : "linear-gradient(135deg, #274b24 0%, #356231 100%)",
+                color: "#ffffff",
+                fontWeight: 800,
                 fontSize: "0.95rem",
                 cursor: busy || phone.trim().length < 10 ? "not-allowed" : "pointer",
+                boxShadow: busy || phone.trim().length < 10 ? "none" : "0 4px 14px rgba(39, 75, 36, 0.25)",
+                transition: "all .15s ease",
               }}
             >
-              {busy ? "در حال ارسال…" : "دریافت کد تایید"}
+              {busy ? "در حال ارسال پیامک…" : "دریافت کد تایید یکبار مصرف"}
             </button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            <p style={{ margin: 0, fontSize: "0.88rem", color: "#69736D" }}>
-              کد ۵ رقمی ارسال‌شده به <strong dir="ltr">{phone}</strong> را وارد کنید.
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div style={{ background: "#e8f3ee", border: "1px solid #77B091", borderRadius: "10px", padding: "12px 14px" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "#e2e8f0" }}>
+                کد ۵ رقمی ارسال‌شده به <strong dir="ltr" style={{ color: "#38bdf8" }}>{phone}</strong> را وارد کنید:
+              </p>
               {devCodeHint && (
-                <span style={{ display: "block", marginTop: "6px", color: "#24594F", fontWeight: 600 }}>
-                  (محیط توسعه — کد نمونه: <span dir="ltr">{devCodeHint}</span>)
-                </span>
+                <div style={{ marginTop: "6px", color: "#34d399", fontWeight: 700, fontSize: "0.82rem" }}>
+                  کد ورود سریع محیط آزمایش: <span dir="ltr" style={{ fontFamily: "monospace", fontSize: "1rem" }}>{devCodeHint}</span>
+                </div>
               )}
-            </p>
+            </div>
+
             <input
               value={code}
               onChange={(e) => setCode(e.target.value)}
@@ -186,64 +221,76 @@ export default function AdminLoginGate({ onSession }: AdminLoginGateProps) {
               inputMode="numeric"
               dir="ltr"
               maxLength={5}
+              autoFocus
               style={{
-                padding: "12px 14px",
-                borderRadius: "10px",
-                border: "1px solid #E6E5DE",
-                fontSize: "1.25rem",
-                letterSpacing: "0.4em",
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                background: "rgba(10, 17, 26, 0.8)",
+                border: "1px solid rgba(6, 182, 212, 0.4)",
+                color: "#38bdf8",
+                fontSize: "1.4rem",
+                letterSpacing: "0.45em",
                 textAlign: "center",
                 fontVariantNumeric: "tabular-nums",
+                outline: "none",
+                fontWeight: 800,
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && code.trim().length === 5) verifyOtp();
               }}
             />
+
             <button
               onClick={verifyOtp}
               disabled={busy || code.trim().length < 5}
               style={{
-                padding: "13px",
-                borderRadius: "10px",
+                padding: "14px",
+                borderRadius: "12px",
                 border: "none",
-                background: busy || code.trim().length < 5 ? "#9FB5AF" : "#24594F",
-                color: "#FFFFFF",
-                fontWeight: 700,
+                background: busy || code.trim().length < 5 ? "rgba(6, 182, 212, 0.3)" : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+                color: "#ffffff",
+                fontWeight: 800,
                 fontSize: "0.95rem",
                 cursor: busy || code.trim().length < 5 ? "not-allowed" : "pointer",
+                boxShadow: busy || code.trim().length < 5 ? "none" : "0 6px 20px rgba(6, 182, 212, 0.35)",
               }}
             >
-              {busy ? "در حال بررسی…" : "ورود به پنل"}
+              {busy ? "در حال اعتبارسنجی…" : "ورود به میز کار ERP"}
             </button>
+
             <button
               onClick={() => { setStep("phone"); setCode(""); setDevCodeHint(null); }}
               style={{
                 background: "none",
                 border: "none",
-                color: "#69736D",
-                fontSize: "0.85rem",
+                color: "#94a3b8",
+                fontSize: "0.82rem",
                 cursor: "pointer",
                 textDecoration: "underline",
               }}
             >
-              تغییر شماره موبایل
+              ویرایش شماره موبایل
             </button>
           </div>
         )}
 
         {error && (
-          <p
+          <div
             role="alert"
             style={{
-              margin: "16px 0 0",
+              margin: "18px 0 0",
               padding: "10px 14px",
               borderRadius: "10px",
-              background: "#FDF1F1",
-              border: "1px solid #EBC9C9",
-              color: "#B84D4D",
-              fontSize: "0.86rem",
-              lineHeight: 1.7,
+              background: "rgba(239, 68, 68, 0.12)",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
+              color: "#f87171",
+              fontSize: "0.84rem",
+              lineHeight: 1.6,
             }}
           >
             {error}
-          </p>
+          </div>
         )}
       </div>
     </div>

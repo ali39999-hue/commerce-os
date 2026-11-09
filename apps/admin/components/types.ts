@@ -1,7 +1,10 @@
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
+export const ADMIN_API_KEY = "commerce-os-admin-secret-key-2026";
+
 export const TENANT_HEADERS: Record<string, string> = {
-  "x-tenant-id": "00000000-0000-0000-0000-000000000000",
+  "x-tenant-id": "955982e7-9a09-4bf7-b2f5-a3f2e3bc3291",
+  "x-admin-api-key": ADMIN_API_KEY,
 };
 
 export interface AdminSessionUser {
@@ -37,8 +40,8 @@ export const clearAdminSession = (): void => {
 export const ADMIN_ROLES = ["SUPER_ADMIN", "OPERATOR", "ACCOUNTANT"] as const;
 
 /**
- * fetch wrapper that attaches the live OTP session token so admin-internal
- * endpoints guarded by AdminGuard accept the call.
+ * fetch wrapper that attaches the live OTP session token and admin API key
+ * so admin-internal endpoints guarded by AdminGuard accept the call.
  */
 export const authedFetch = async (
   path: string,
@@ -47,13 +50,15 @@ export const authedFetch = async (
   const session = readAdminSession();
   const headers = new Headers(init.headers);
   headers.set("content-type", "application/json");
+  headers.set("x-tenant-id", "955982e7-9a09-4bf7-b2f5-a3f2e3bc3291");
+  headers.set("x-admin-api-key", ADMIN_API_KEY);
   if (session?.token) {
     headers.set("authorization", `Bearer ${session.token}`);
   }
   return fetch(`${API_BASE}${path}`, {
     ...init,
     headers,
-    signal: init.signal ?? AbortSignal.timeout(5000),
+    signal: init.signal ?? AbortSignal.timeout(6000),
   });
 };
 
@@ -76,12 +81,10 @@ export const postTenantJson = async (
       headers: {
         "content-type": "application/json",
         ...TENANT_HEADERS,
-        // Admin-internal mutating endpoints are guarded since AUTH-003;
-        // the OTP session token authorizes the console's browser calls.
         ...(session?.token ? { authorization: `Bearer ${session.token}` } : {}),
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(6000),
     });
     let data: unknown = null;
     try {
@@ -114,7 +117,7 @@ export const truncateFa = (value: unknown, max = 60): string => {
   return `${trimmed.slice(0, max)}…`;
 };
 
-export const faNumber = (value: number | string | null | undefined): string => {
+export const faNumber = (value: number | string | bigint | null | undefined): string => {
   if (value === null || value === undefined || value === "") return "۰";
   const num = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(num)) return "۰";

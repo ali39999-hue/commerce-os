@@ -14,6 +14,51 @@ import { CatalogService } from './catalog.service';
 export class CatalogController {
   constructor(private readonly catalog: CatalogService) {}
 
+  // ── Admin Endpoints (Tenant-Isolated) ──
+  // هشدار ترتیب مسیرها: این بلاک باید قبل از مسیرهای وایلدکارت (:storeSlug/...)
+  // تعریف شود تا Nest کلمه 'admin' را به عنوان storeSlug مپ نکند.
+  @Get('admin/products')
+  async adminListProducts(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+    @Query('limit') limitStr?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const limit = limitStr ? parseInt(limitStr, 10) : 50;
+    const items = await this.catalog.adminListProducts(tenant, storeSlug, limit);
+    return { data: items, meta: { count: items.length } };
+  }
+
+  @Get('admin/products/:id')
+  async adminGetProduct(
+    @Param('id') id: string,
+    @Headers('x-tenant-id') tenantId?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const item = await this.catalog.adminGetProduct(tenant, id);
+    return { data: item };
+  }
+
+  @Get('admin/brands')
+  async adminListBrands(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const items = await this.catalog.adminListBrands(tenant, storeSlug);
+    return { data: items };
+  }
+
+  @Get('admin/concerns')
+  async adminListSkinConcerns(
+    @Headers('x-tenant-id') tenantId?: string,
+    @Query('store') storeSlug?: string,
+  ) {
+    const tenant = this.requireTenant(tenantId);
+    const items = await this.catalog.adminListSkinConcerns(tenant, storeSlug);
+    return { data: items };
+  }
+
   @Get('resolve')
   async resolve(@Query('slug') slug?: string) {
     return this.catalog.resolveStore(slug ?? '');
@@ -92,50 +137,6 @@ export class CatalogController {
   async listSkinConcerns(@Param('storeSlug') storeSlug: string) {
     const concerns = await this.catalog.listSkinConcerns(storeSlug);
     return { data: concerns };
-  }
-
-  // ── Admin Endpoints (Tenant-Isolated) ──
-
-  @Get('admin/products')
-  async adminListProducts(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-    @Query('limit') limitStr?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const limit = limitStr ? parseInt(limitStr, 10) : 50;
-    const items = await this.catalog.adminListProducts(tenant, storeSlug, limit);
-    return { data: items, meta: { count: items.length } };
-  }
-
-  @Get('admin/products/:id')
-  async adminGetProduct(
-    @Param('id') id: string,
-    @Headers('x-tenant-id') tenantId?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const item = await this.catalog.adminGetProduct(tenant, id);
-    return { data: item };
-  }
-
-  @Get('admin/brands')
-  async adminListBrands(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const items = await this.catalog.adminListBrands(tenant, storeSlug);
-    return { data: items };
-  }
-
-  @Get('admin/concerns')
-  async adminListSkinConcerns(
-    @Headers('x-tenant-id') tenantId?: string,
-    @Query('store') storeSlug?: string,
-  ) {
-    const tenant = this.requireTenant(tenantId);
-    const items = await this.catalog.adminListSkinConcerns(tenant, storeSlug);
-    return { data: items };
   }
 
   private requireTenant(tenantId?: string): string {

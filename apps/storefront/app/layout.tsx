@@ -8,6 +8,7 @@ import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
 import { PwaRegister } from '../components/pwa-register';
 import { Toaster } from 'sonner';
+import { NotificationModal } from '../components/notification-modal';
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_IS_STAGING;
@@ -118,9 +119,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
-        <a href="#main-content" className="skip-to-content-link">
-          پرش به محتوای اصلی صفحه (کلید Enter)
-        </a>
         <LocalizationProvider>
           <CustomerSessionProvider>
           <CartProvider>
@@ -132,6 +130,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <SiteFooter />
             </div>
             <CartDrawer />
+            <NotificationModal />
           </CartProvider>
           </CustomerSessionProvider>
         </LocalizationProvider>

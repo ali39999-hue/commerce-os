@@ -101,7 +101,10 @@ export default async function HomePage() {
       {/* 6. سکشن بنرهای دوقلو، درباره روپاک شاپ و مشاوره رایگان (جایگزین سکشن محصولات) */}
       <RupakAboutSection />
 
-      {/* 6.1 راهنمای سفارش و خدمات تخصصی روپاک شاپ */}
+      {/* 6.1 کاتالوگ و ویترین ۸ محصول شاخص دکتر درمر (طراحی مدرن بر اساس UI جدید) */}
+      <FeaturedProductShowcase products={products} totalCount={products.length} />
+
+      {/* 6.2 راهنمای سفارش و خدمات تخصصی روپاک شاپ */}
       <RupakServicesSection />
 
 

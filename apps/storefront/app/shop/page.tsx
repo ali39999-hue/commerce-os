@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import './shop.css';
@@ -18,10 +18,42 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [maxPrice, setMaxPrice] = useState<number>(56210000);
   const [sortBy, setSortBy] = useState<string>('default');
+  const [products, setProducts] = useState<ShopProductItem[]>(INITIAL_SHOP_PRODUCTS);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/v1/stores/demo/products')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((payload) => {
+        if (Array.isArray(payload?.data) && payload.data.length > 0) {
+          const apiItems: ShopProductItem[] = payload.data.map((p: any) => {
+            const variant = p.variants?.[0];
+            const priceTomans = variant ? Number(variant.priceAmount) / 10 : 2500000;
+            return {
+              id: p.id,
+              slug: p.slug,
+              title: p.titleFa || p.title,
+              category: p.category?.titleFa || 'آمپول و سرم تخصصی',
+              categoryKey: p.category?.slug || 'serum',
+              price: priceTomans,
+              originalPrice: Math.round(priceTomans * 1.15),
+              discountPercent: 15,
+              image: p.media?.[0]?.url || '/assets/drdermer/2025/07/carboxygel.png',
+              badge: p.brand?.name || 'ReeSkin Clinical',
+              inStock: variant?.inStock !== false,
+              rating: 4.9,
+            };
+          });
+          const apiSlugs = new Set(apiItems.map((i) => i.slug));
+          const rest = INITIAL_SHOP_PRODUCTS.filter((i) => !apiSlugs.has(i.slug));
+          setProducts([...apiItems, ...rest]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Filter & Sort Products
   const filteredProducts = useMemo(() => {
-    let result = [...INITIAL_SHOP_PRODUCTS];
+    let result = [...products];
 
     // Filter by Category
     if (selectedCategory !== 'all') {

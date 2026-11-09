@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { formatToman, type Product } from '../../lib/catalog';
 import { ProductCardAction } from '../product-card-action';
+import './featured-showcase.css';
 
 interface FeaturedShowcaseProps {
   products: Product[];
@@ -139,6 +140,80 @@ const CURATED_CLINICAL_PRODUCTS: Product[] = [
   },
 ];
 
+interface ProductCardMeta {
+  mainTitle: string;
+  subtitle: string;
+  theme: string;
+  pillTheme: 'light' | 'dark';
+}
+
+function getProductCardMeta(slug: string): ProductCardMeta {
+  const s = slug.toLowerCase();
+  if (s.includes('plasmax')) {
+    return {
+      mainTitle: 'ایستگاه ۴ کاره PlasmaX',
+      subtitle: 'بلفاروپلاستی غیرتهاجمی و پلاسمای سرد آرگون',
+      theme: 'theme-violet',
+      pillTheme: 'dark',
+    };
+  }
+  if (s.includes('carbox') && !s.includes('carboxypod') && !s.includes('carboxypad') && !s.includes('carboxygel')) {
+    return {
+      mainTitle: 'دستگاه مدیکال CarboX',
+      subtitle: 'تزریق دقیق زیرجلدی CO₂ و فعال‌ساز پاد',
+      theme: 'theme-cyan',
+      pillTheme: 'dark',
+    };
+  }
+  if (s.includes('carboxypad')) {
+    return {
+      mainTitle: 'پدهای آلکالاین CarboxyPad',
+      subtitle: 'شیت‌های میکروپرمنبران برش آناتومیک صورت و گردن',
+      theme: 'theme-mint',
+      pillTheme: 'light',
+    };
+  }
+  if (s.includes('carboxypod')) {
+    return {
+      mainTitle: 'پادهای فعال‌ساز CarboxyPod',
+      subtitle: 'کربن فعال و لایه‌برداری همزمان ترابافتی CO₂',
+      theme: 'theme-amber',
+      pillTheme: 'dark',
+    };
+  }
+  if (s.includes('crystalene')) {
+    return {
+      mainTitle: 'خمیر پولیش Crystalene',
+      subtitle: 'میکرودرم ابریشمی با آلومینای خالص و نیاسینامید',
+      theme: 'theme-peach',
+      pillTheme: 'light',
+    };
+  }
+  if (s.includes('healene')) {
+    return {
+      mainTitle: 'ژل التیام‌بخش Healene',
+      subtitle: 'ترمیم سد دفاعی با نیاسینامید، میموزا و پانتنول B5',
+      theme: 'theme-periwinkle',
+      pillTheme: 'light',
+    };
+  }
+  if (s.includes('silicalene')) {
+    return {
+      mainTitle: 'اسکراب دتوکس Silicalene',
+      subtitle: 'پاکسازی عمیق منافذ با میکروسفرهای کروی سیلیکا',
+      theme: 'theme-slate',
+      pillTheme: 'dark',
+    };
+  }
+  // Default CarboxyGel
+  return {
+    mainTitle: 'ژل کربوکسی‌تراپی CarboxyGel',
+    subtitle: 'اکسیژن‌رسانی سلولی اثر بوهر و کلاژن‌سازی عمیق',
+    theme: 'theme-teal',
+    pillTheme: 'light',
+  };
+}
+
 function getProductPhoto(slug: string): { src: string; alt: string; standardTag: string } {
   const s = slug.toLowerCase();
   if (s.includes('plasmax')) {
@@ -234,52 +309,61 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
           const variant = product.variants[0];
           const isReeMed = product.title.includes('ReeMed') || product.slug === 'carbox' || product.slug === 'plasmax';
           const photo = getProductPhoto(product.slug);
+          const meta = getProductCardMeta(product.slug);
 
           return (
-            <article className="clinical-card" key={product.id}>
-              <div className="card-top-badges">
-                <span className={`brand-family-pill ${isReeMed ? 'medical' : 'clinical'}`}>
-                  {isReeMed ? 'ReeMed Pro' : 'ReeSkin'}
+            <article className={`clinical-card modern-pill-card ${meta.theme}`} key={product.id}>
+              {/* Top Bar with Brand Family & Stock Indicators */}
+              <div className="card-top-bar">
+                <span className="card-family-capsule">
+                  {isReeMed ? 'ReeMed Pro' : 'ReeSkin Clinical'}
                 </span>
-                <span className="stock-pill">
-                  {variant?.inStock ? 'موجود در زنجیره رسمی' : 'در انتظار ترخیص'}
-                </span>
+                {variant?.inStock ? (
+                  <span className="card-stock-dot">
+                    <span className="dot-pulse" />
+                    موجود
+                  </span>
+                ) : (
+                  <span className="card-stock-dot">
+                    عدم موجودی
+                  </span>
+                )}
               </div>
 
+              {/* Seamless Media Stage with Masked Image Fade */}
               <Link
                 href={`/products/${encodeURIComponent(product.slug)}`}
-                className="card-media-box"
+                className="card-media-stage"
                 aria-label={`مشاهده مشخصات ${product.title}`}
               >
-                <div className="media-artistic-visual">
-                  <img
-                    src={photo.src}
-                    alt={photo.alt}
-                    className="product-card-real-img"
-                  />
-                </div>
-                <span className="visual-formula-tag">{photo.standardTag}</span>
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  className="card-product-image"
+                  loading="lazy"
+                />
               </Link>
 
-              <div className="card-content">
-                <div className="card-sku-code">SKU: {variant?.sku ?? 'DD-FORMULA'}</div>
-                <h3 className="card-title">
-                  <Link href={`/products/${encodeURIComponent(product.slug)}`}>
-                    {product.title}
+              {/* Details & Typography */}
+              <div className="card-details-area">
+                <div className="card-price-row">
+                  <strong className="card-main-price">
+                    {variant ? formatToman(variant.priceAmount) : 'استعلام قیمت'}
+                  </strong>
+                </div>
+
+                <h3 className="card-headline">
+                  <Link href={`/products/${encodeURIComponent(product.slug)}`} title={product.title}>
+                    {meta.mainTitle}
                   </Link>
                 </h3>
-                <p className="card-desc">
-                  {product.description ?? 'توضیحات و مشخصات تکمیلی مواد مؤثره در صفحه محصول.'}
+
+                <p className="card-sub-indication" title={meta.subtitle}>
+                  {meta.subtitle}
                 </p>
 
-                <div className="card-pricing-footer">
-                  <div className="price-stack">
-                    <span className="price-label">قیمت مصرف‌کننده:</span>
-                    <strong className="price-amount">
-                      {variant ? formatToman(variant.priceAmount) : 'استعلام قیمت'}
-                    </strong>
-                  </div>
-
+                {/* Floating Pill Action Button */}
+                <div className="card-action-wrap">
                   {variant && variant.inStock ? (
                     <ProductCardAction
                       variantId={variant.id}
@@ -287,9 +371,12 @@ export function FeaturedProductShowcase({ products, totalCount }: FeaturedShowca
                       title={product.title}
                       sku={variant.sku}
                       priceAmount={variant.priceAmount}
+                      pillTheme={meta.pillTheme}
+                      label="خرید سریع"
+                      image={photo.src}
                     />
                   ) : (
-                    <span className="out-of-stock-tag">عدم موجودی</span>
+                    <span className="card-out-of-stock-pill">عدم موجودی</span>
                   )}
                 </div>
               </div>

@@ -15,8 +15,15 @@ import {
   X,
   Sparkles,
   CheckCircle2,
+  User,
+  Bell,
+  Package,
+  Settings,
+  LogOut,
+  ChevronDown,
 } from 'lucide-react';
 import { useCart } from '../cart';
+import { showNotificationModal } from '../notification-modal';
 import './rupak-hero.css';
 
 export interface RupakSlide {
@@ -179,6 +186,18 @@ export function RupakHero({
       ? `${cart.calculations.grandTotalTomans.toLocaleString('fa-IR')} تومان`
       : '۰ تومان';
   const finalCartTotal = cartTotalFormatted ?? computedTotal;
+  const handleUserLogout = () => {
+    try {
+      localStorage.removeItem("commerce_os.auth.token");
+      localStorage.removeItem("commerce_os.auth.user");
+      setAuthUser(null);
+      window.dispatchEvent(new Event("commerce_os:auth_change"));
+      router.push("/");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
   const [isCartBumping, setIsCartBumping] = useState(false);
   const [authUser, setAuthUser] = useState<{ username: string; fullName?: string } | null>(null);
   const prevCountRef = useRef(finalCartCount);
@@ -327,18 +346,177 @@ export function RupakHero({
         {/* Left Nav Actions (in RTL) */}
         <div className="rupak-nav-actions">
           {authUser ? (
-            <Link
-              href="/account"
-              className="rupak-btn-login rupak-btn-logged-in"
-              title={`حساب کاربری: ${authUser.fullName || authUser.username}`}
-            >
-              <span className="rupak-user-dot" />
-              {authUser.fullName ? authUser.fullName.split(" ")[0] : "حساب کاربری"}
-            </Link>
+            <div className="rupak-user-dropdown-container">
+              <Link
+                href="/account"
+                className="rupak-btn-login rupak-btn-logged-in"
+                title={`حساب کاربری: ${authUser.fullName || authUser.username || "کاربر"}`}
+              >
+                <span className="rupak-user-dot" />
+                <span>{authUser.fullName ? authUser.fullName.split(" ")[0] : "کاربر"}</span>
+                <ChevronDown className="rupak-user-chevron" size={13} />
+              </Link>
+
+              {/* Submenu Dropdown on Hover */}
+              <div className="rupak-user-dropdown-menu" role="menu" aria-label="منوی حساب کاربری">
+                {/* User Header */}
+                <div className="rupak-dropdown-header">
+                  <div className="rupak-dropdown-avatar">
+                    <User size={18} />
+                  </div>
+                  <div className="rupak-dropdown-user-info">
+                    <strong className="rupak-dropdown-user-name">
+                      {authUser.fullName || authUser.username || "کاربر روپاک"}
+                    </strong>
+                    <span className="rupak-dropdown-user-badge">
+                      <span className="rupak-user-dot-pulse" />
+                      حساب فعال روپاک
+                    </span>
+                  </div>
+                </div>
+
+                <div className="rupak-dropdown-divider" />
+
+                {/* 1. اطلاعات حساب */}
+                <Link
+                  href="/account?tab=profile"
+                  className="rupak-dropdown-item"
+                  role="menuitem"
+                >
+                  <div className="rupak-dropdown-item-icon">
+                    <User size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">اطلاعات حساب</span>
+                    <span className="rupak-dropdown-item-desc">مشاهده و ویرایش مشخصات فردی</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+
+                {/* 2. داشبورد و وضعیت سفارش */}
+                <Link
+                  href="/account?tab=orders"
+                  className="rupak-dropdown-item"
+                  role="menuitem"
+                >
+                  <div className="rupak-dropdown-item-icon">
+                    <Package size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">داشبورد و وضعیت سفارش</span>
+                    <span className="rupak-dropdown-item-desc">پیگیری سفارش‌ها و فاکتورها</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+
+                {/* 3. تنظیمات */}
+                <Link
+                  href="/account?tab=addresses"
+                  className="rupak-dropdown-item"
+                  role="menuitem"
+                >
+                  <div className="rupak-dropdown-item-icon">
+                    <Settings size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">تنظیمات</span>
+                    <span className="rupak-dropdown-item-desc">آدرس‌های ارسال و امنیت حساب</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+
+                {/* 4. اعلان‌ها و پیام‌ها */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    showNotificationModal({
+                      type: "center",
+                      title: "مرکز اعلان‌ها و پیام‌ها",
+                      message: "۳ اعلان جدید در پرونده کاربری شما ثبت شده است.",
+                    });
+                  }}
+                  className="rupak-dropdown-item"
+                  role="menuitem"
+                >
+                  <div className="rupak-dropdown-item-icon">
+                    <Bell size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">اعلان‌ها و پیام‌ها</span>
+                    <span className="rupak-dropdown-item-desc">مشاهده پیام‌های سیستمی و تخفیف‌ها</span>
+                  </div>
+                  <span className="rupak-cart-badge" style={{ fontSize: "11px", padding: "1px 6px" }}>۳</span>
+                </button>
+
+                <div className="rupak-dropdown-divider" />
+
+                {/* Logout Button */}
+                <button
+                  type="button"
+                  onClick={handleUserLogout}
+                  className="rupak-dropdown-item rupak-dropdown-item-logout"
+                  role="menuitem"
+                >
+                  <div className="rupak-dropdown-item-icon logout-icon">
+                    <LogOut size={15} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">خروج از حساب</span>
+                  </div>
+                </button>
+              </div>
+            </div>
           ) : (
-            <Link href="/login" className="rupak-btn-login">
-              ورود / ثبت‌نام
-            </Link>
+            <div className="rupak-user-dropdown-container">
+              <Link href="/login" className="rupak-btn-login">
+                ورود / ثبت‌نام
+              </Link>
+
+              {/* Submenu Dropdown for Guest on Hover */}
+              <div className="rupak-user-dropdown-menu" role="menu" aria-label="منوی ورود">
+                <div className="rupak-dropdown-header guest">
+                  <div className="rupak-dropdown-user-info">
+                    <strong className="rupak-dropdown-user-name">خوش آمدید!</strong>
+                    <span className="rupak-dropdown-user-badge">جهت دسترسی به سفارشات وارد شوید</span>
+                  </div>
+                </div>
+
+                <div className="rupak-dropdown-divider" />
+
+                <Link href="/login" className="rupak-dropdown-item" role="menuitem">
+                  <div className="rupak-dropdown-item-icon">
+                    <User size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">ورود به حساب</span>
+                    <span className="rupak-dropdown-item-desc">ورود با شماره موبایل و رمز عبور</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+
+                <Link href="/register" className="rupak-dropdown-item" role="menuitem">
+                  <div className="rupak-dropdown-item-icon">
+                    <Sparkles size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">ثبت‌نام سریع</span>
+                    <span className="rupak-dropdown-item-desc">ایجاد حساب جدید در فروشگاه</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+
+                <Link href="/account?tab=orders" className="rupak-dropdown-item" role="menuitem">
+                  <div className="rupak-dropdown-item-icon">
+                    <Package size={16} />
+                  </div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">داشبورد و وضعیت سفارش</span>
+                    <span className="rupak-dropdown-item-desc">پیگیری مرسوله با کد رهگیری</span>
+                  </div>
+                  <ChevronLeft size={14} className="rupak-dropdown-item-arrow" />
+                </Link>
+              </div>
+            </div>
           )}
 
           <button
@@ -412,14 +590,69 @@ export function RupakHero({
             </li>
           </ul>
           <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
-            <Link
-              href="/account"
-              className="rupak-btn-primary"
-              style={{ width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              ورود یا ثبت‌نام کاربر
-            </Link>
+            {authUser ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: 'rgba(119, 176, 145, 0.1)', borderRadius: '12px' }}>
+                  <User size={18} style={{ color: '#274b24' }} />
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#1e293b' }}>
+                    {authUser.fullName || authUser.username || "کاربر روپاک"}
+                  </span>
+                </div>
+                <Link
+                  href="/account?tab=profile"
+                  className="rupak-dropdown-item"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="rupak-dropdown-item-icon"><User size={16} /></div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">اطلاعات حساب</span>
+                  </div>
+                </Link>
+                <Link
+                  href="/account?tab=orders"
+                  className="rupak-dropdown-item"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="rupak-dropdown-item-icon"><Package size={16} /></div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">داشبورد و وضعیت سفارش</span>
+                  </div>
+                </Link>
+                <Link
+                  href="/account?tab=addresses"
+                  className="rupak-dropdown-item"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <div className="rupak-dropdown-item-icon"><Settings size={16} /></div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">تنظیمات</span>
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleUserLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="rupak-dropdown-item rupak-dropdown-item-logout"
+                  style={{ width: '100%' }}
+                >
+                  <div className="rupak-dropdown-item-icon logout-icon"><LogOut size={15} /></div>
+                  <div className="rupak-dropdown-item-content">
+                    <span className="rupak-dropdown-item-title">خروج از حساب</span>
+                  </div>
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="rupak-btn-primary"
+                style={{ width: '100%', textAlign: 'center', boxSizing: 'border-box' }}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                ورود یا ثبت‌نام کاربر
+              </Link>
+            )}
           </div>
         </div>
       )}

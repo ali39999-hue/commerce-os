@@ -1,0 +1,361 @@
+/* ==========================================================================
+   NOTIFICATION MODAL CSS (Rupak & Dr Dermer Clinical Design System)
+   ========================================================================== */
+
+.notif-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 99999;
+  animation: notif-overlay-fade 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  direction: rtl;
+}
+
+@keyframes notif-overlay-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.notif-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border: 1.5px solid rgba(119, 176, 145, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 25px 65px -12px rgba(39, 75, 36, 0.28), 0 0 35px rgba(119, 176, 145, 0.12);
+  padding: 24px 22px;
+  box-sizing: border-box;
+  animation: notif-card-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  text-align: right;
+}
+
+@keyframes notif-card-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Ambient Radial Highlight inside card */
+.notif-modal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(119, 176, 145, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Close Button */
+.notif-close-btn {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+.notif-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  transform: rotate(90deg);
+}
+
+/* Modal Content Wrapper */
+.notif-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header & Status Icon */
+.notif-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.notif-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.notif-icon-circle.success,
+.notif-icon-circle.cart_add {
+  background: rgba(16, 185, 129, 0.14);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.notif-icon-circle.info,
+.notif-icon-circle.order_status {
+  background: rgba(59, 130, 246, 0.14);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.notif-icon-circle.warning {
+  background: rgba(245, 158, 11, 0.14);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.notif-icon-circle.error {
+  background: rgba(239, 68, 68, 0.14);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.notif-title-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.notif-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.notif-subtitle {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 3px 0 0;
+  font-weight: 500;
+}
+
+/* Product Card Preview (Cart Addition) */
+.notif-product-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid rgba(119, 176, 145, 0.22);
+  border-radius: 16px;
+}
+
+.notif-product-thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.notif-product-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: rgba(119, 176, 145, 0.15);
+  display: grid;
+  place-items: center;
+  color: #274b24;
+  flex-shrink: 0;
+}
+
+.notif-product-meta {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.notif-product-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.notif-product-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: #274b24;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notif-product-qty-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  background: #ffffff;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Cart Summary Line */
+.notif-cart-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255, 208, 152, 0.15);
+  border: 1px dashed #ffd098;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Action Buttons Grid */
+.notif-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.notif-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #274b24 0%, #1e3a1b 100%);
+  color: #ffffff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(39, 75, 36, 0.25);
+  text-align: center;
+}
+.notif-btn-primary:hover {
+  background: #1b3518;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(39, 75, 36, 0.35);
+  color: #ffffff;
+}
+
+.notif-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f8fafc;
+  color: #475569;
+  border: 1.5px solid #cbd5e1;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  text-align: center;
+}
+.notif-btn-secondary:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+/* Notification List (for Notification Center) */
+.notif-center-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-left: 4px;
+}
+.notif-center-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition: all 0.15s ease;
+}
+.notif-center-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.notif-center-item.unread {
+  background: rgba(119, 176, 145, 0.08);
+  border-color: rgba(119, 176, 145, 0.3);
+}
+.notif-center-item-content {
+  flex-grow: 1;
+  min-width: 0;
+}
+.notif-center-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notif-center-item-time {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.notif-center-item-text {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  .notif-modal-card {
+    padding: 20px 16px;
+    border-radius: 20px;
+  }
+  .notif-actions {
+    grid-template-columns: 1fr;
+  }
+}
