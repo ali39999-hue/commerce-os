@@ -2,17 +2,39 @@
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
+import {
+  ShoppingBag,
+  X,
+  Truck,
+  Sparkles,
+  ChevronLeft,
+  Plus,
+  Minus,
+  Trash2,
+  Tag,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
 import { useCart, CartItem } from "./cart";
+import { useKyc } from "../lib/kyc-context";
 import { useLocalizedFormatter } from "../lib/use-localized-formatter";
 import { trackViewCart, trackBeginCheckout } from "../lib/analytics";
-import { CrossSellProtocol, CLINICAL_CROSS_SELLS } from "../lib/cart";
+import { listProducts, type Product } from "../lib/catalog";
+import { buildCrossSellsFromCatalog, CrossSellProtocol } from "../lib/cart";
+import { EmptyCartWithXIcon } from "./empty-cart-icon";
 
-export function CartDrawer() {
-  // Drawer modal replaced with dedicated cart page and panel tab per user request
-  return null;
+
+function toPersianDigits(n: number | string): string {
+  const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  return n.toString().replace(/\d/g, (x) => farsiDigits[parseInt(x, 10)]);
 }
 
-function LegacyCartDrawerUnused() {
+function formatPriceWithDots(tomans: number): string {
+  const withDots = Math.round(tomans).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return toPersianDigits(withDots);
+}
+
+export function CartDrawer() {
   const {
     items,
     addItem,
@@ -29,8 +51,10 @@ function LegacyCartDrawerUnused() {
     removeCoupon,
   } = useCart();
   const { formatToman, formatMoney } = useLocalizedFormatter();
+  const { isKycVerified, openKycModal } = useKyc();
 
   const [drawerCouponInput, setDrawerCouponInput] = useState("");
+  const [couponApplying, setCouponApplying] = useState(false);
   const [couponFeedback, setCouponFeedback] = useState<{
     type: "success" | "error";
     message: string;
@@ -78,7 +102,7 @@ function LegacyCartDrawerUnused() {
     };
   }, [isDrawerOpen, items, calculations.totalRials]);
 
-  const handleApplyDrawerCoupon = (e: React.FormEvent) => {
+  const handleApplyDrawerCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     setCouponFeedback(null);
     if (!drawerCouponInput.trim()) {
@@ -88,12 +112,17 @@ function LegacyCartDrawerUnused() {
       });
       return;
     }
-    const res = applyCoupon(drawerCouponInput);
-    if (res.success) {
-      setCouponFeedback({ type: "success", message: res.message });
-      setDrawerCouponInput("");
-    } else {
-      setCouponFeedback({ type: "error", message: res.message });
+    setCouponApplying(true);
+    try {
+      const res = await applyCoupon(drawerCouponInput);
+      if (res.success) {
+        setCouponFeedback({ type: "success", message: res.message });
+        setDrawerCouponInput("");
+      } else {
+        setCouponFeedback({ type: "error", message: res.message });
+      }
+    } finally {
+      setCouponApplying(false);
     }
   };
 
@@ -102,16 +131,23 @@ function LegacyCartDrawerUnused() {
     setCouponFeedback(null);
   };
 
-  // Find the most relevant clinical cross-sell recommendation
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (!isDrawerOpen || catalogProducts.length > 0) return;
+    let cancelled = false;
+    listProducts({ limit: 100 }).then((res) => {
+      if (!cancelled && res?.data) setCatalogProducts(res.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isDrawerOpen, catalogProducts.length]);
+
   const recommendedCrossSell = useMemo(() => {
-    if (items.length === 0) return null;
-    for (const cross of CLINICAL_CROSS_SELLS) {
-      if (cross.targetTriggerMatch(items)) {
-        return cross;
-      }
-    }
-    return null;
-  }, [items]);
+    if (items.length === 0 || catalogProducts.length === 0) return null;
+    return buildCrossSellsFromCatalog(catalogProducts, items)[0] ?? null;
+  }, [items, catalogProducts]);
 
   const handleAddCrossSell = (cross: CrossSellProtocol) => {
     addItem(
@@ -158,87 +194,29 @@ function LegacyCartDrawerUnused() {
   return (
     <div className="cart-drawer-overlay" onClick={closeDrawer} aria-modal="true" role="dialog">
       <div
-        className="cart-drawer-panel"
+        className={`cart-drawer-panel ${items.length === 0 ? "is-empty" : ""}`}
         ref={drawerRef}
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
+        data-lenis-prevent
       >
-        {/* Header */}
+        {/* ── 1. Clean Header (Matching Exact Reference Images 1 & 2) ── */}
         <div className="cart-drawer-header">
           <div className="drawer-title-group">
-            <h3>سبد خرید</h3>
-            <span className="drawer-items-count">({calculations.itemCount} قلم کالا)</span>
-            {isSyncing && <span className="drawer-sync-pill">بررسی موجودی انبار…</span>}
+            <h3 className="drawer-title-heading">سبد خرید</h3>
+            {isSyncing && <span className="drawer-sync-pill">بررسی موجودی…</span>}
           </div>
           <button
+            type="button"
             onClick={closeDrawer}
-            className="drawer-close-btn"
+            className="drawer-close-red-x"
             aria-label="بستن سبد خرید"
           >
-            ✕
+            <X size={18} strokeWidth={2.4} />
           </button>
         </div>
 
-        {/* Dynamic Tiered Threshold Meter (1.5M Free Shipping + 3M VIP Consultation) */}
-        <div className="tiered-threshold-container">
-          <div className="tiered-header-status">
-            <div className="tiered-status-headline">
-              {tier2Achieved ? (
-                <span className="tier-msg-vip">
-                  <strong>تبریک ویژه!</strong> ارسال رایگان و مشاوره تخصصی رایگان با پزشک متخصص پوست فعال شد
-                </span>
-              ) : tier1Achieved ? (
-                <span className="tier-msg-shipping">
-                  ✓ <strong>ارسال رایگان پیشتاز فعال شد!</strong> فقط{" "}
-                  {new Intl.NumberFormat("fa-IR").format(tier2Threshold - subtotalTomans)} تومان تا{" "}
-                  <strong>مشاوره رایگان متخصص پوست</strong>
-                </span>
-              ) : (
-                <span className="tier-msg-initial">
-                  فقط{" "}
-                  <strong>
-                    {new Intl.NumberFormat("fa-IR").format(tier1Threshold - subtotalTomans)} تومان
-                  </strong>{" "}
-                  تا <strong>ارسال رایگان پیشتاز سراسری</strong>
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div className="tiered-progress-track" role="progressbar" aria-valuenow={meterPercentage} aria-valuemin={0} aria-valuemax={100}>
-            <div
-              className={`tiered-progress-fill ${tier2Achieved ? "vip-complete" : tier1Achieved ? "free-complete" : ""}`}
-              style={{ width: `${meterPercentage}%` }}
-            />
-            {/* Milestone Pins */}
-            <div className={`milestone-pin pin-half ${tier1Achieved ? "reached" : ""}`}>
-              <div className="pin-dot">{tier1Achieved ? "✓" : "۱"}</div>
-              <span className="pin-label">ارسال رایگان (۱.۵ م)</span>
-            </div>
-            <div className={`milestone-pin pin-full ${tier2Achieved ? "reached" : ""}`}>
-              <div className="pin-dot">{tier2Achieved ? "★" : "۲"}</div>
-              <span className="pin-label">مشاوره VIP پوست (۳ م)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Cold-Chain Assurance Badge */}
-        <div className="cart-cold-chain-banner">
-          <div className="ccc-visual-icon">
-            <span className="ccc-temp-badge">۲–۸°C</span>
-          </div>
-          <div className="ccc-content">
-            <div className="ccc-title-row">
-              <strong>تضمین پایش هوشمند زنجیره سرد (Cold-Chain)</strong>
-              <span className="ccc-status-tag">کنترل کیفی فعال</span>
-            </div>
-            <p className="ccc-desc">
-              ارسال در بسته‌بندی عایق ایزوترمال با ژل یخ دارویی و سنسور پایش حرارتی؛ تضمین ۱۰۰٪ پایداری پپتیدها و ماتریکس فعال بیولوژیک.
-            </p>
-          </div>
-        </div>
-
-        {/* Server Sync Warnings */}
+        {/* ── 2. Server Sync Warnings ── */}
         {syncWarnings.length > 0 && (
           <div className="cart-drawer-warnings">
             <div className="warning-head">
@@ -255,256 +233,160 @@ function LegacyCartDrawerUnused() {
           </div>
         )}
 
-        {/* Drawer Content */}
-        <div className="cart-drawer-body">
+        {/* ── 3. Drawer Body ── */}
+        <div className={`cart-drawer-body ${items.length === 0 ? "is-empty-body" : ""}`} data-lenis-prevent>
           {items.length === 0 ? (
-            <div className="drawer-empty-state">
-              <div className="empty-cart-icon" aria-hidden="true" style={{ width: "48px", height: "48px", margin: "0 auto 12px", color: "var(--brand)" }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: "100%", height: "100%" }}>
-                  <circle cx="8" cy="21" r="1"/>
-                  <circle cx="19" cy="21" r="1"/>
-                  <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-                </svg>
-              </div>
-              <h4>سبد خرید و نسخه شما خالی است</h4>
-              <p>کالاهای تخصصی درمانی، کربوکسی‌تراپی و مراقبت بالینی پوست را به سبد خود اضافه کنید.</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
-                <Link
-                  href="/#featured-products"
-                  onClick={closeDrawer}
-                  className="btn-back-to-shop"
-                  style={{ textDecoration: "none", textAlign: "center" }}
-                >
-                  مشاهده محصولات منتخب درمانی
-                </Link>
-                <Link
-                  href="/reeskin"
-                  onClick={closeDrawer}
-                  style={{
-                    background: "var(--surface-tint)",
-                    color: "var(--brand-deep)",
-                    border: "1px solid var(--line)",
-                    padding: "8px 18px",
-                    borderRadius: "999px",
-                    fontSize: "0.84rem",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    textAlign: "center"
-                  }}
-                >
-                  خانواده محصولات ReeSkin™
-                </Link>
-              </div>
+            /* ── Pure Clean Empty State (Matching Exactly User Reference Image 2) ── */
+            <div className="drawer-empty-state-clean">
+              <EmptyCartWithXIcon className="empty-cart-illustration" size={170} />
+              <h4 className="drawer-empty-heading-clean">سبد خرید خالی است</h4>
+              <Link
+                href="/shop"
+                onClick={closeDrawer}
+                className="btn-drawer-empty-shop"
+              >
+                <span>مشاهده فروشگاه</span>
+                <span className="arrow" aria-hidden="true">←</span>
+              </Link>
             </div>
           ) : (
-            <>
-              <div className="drawer-items-list">
-                {items.map((item) => {
-                  const lineTotalRials = BigInt(item.priceAmount) * BigInt(item.qty);
-                  return (
-                    <div key={item.variantId} className="drawer-item-card">
-                      <div className="drawer-item-thumb">
-                        <span>{item.title.charAt(0)}</span>
-                      </div>
-                      <div className="drawer-item-details">
-                        <h4>{item.title}</h4>
-                        <div className="drawer-item-meta">
-                          <span className="drawer-item-sku">کد کالا: {item.sku}</span>
-                        </div>
-                        <div className="drawer-item-price">
-                          قیمت واحد: {formatToman(item.priceAmount)}
-                        </div>
-                        {item.qty >= 3 && (
-                          <div>
-                            <span className="volume-discount-tag">
-                              {item.qty >= 6 ? "۸٪ تخفیف پلکانی تعداد" : "۵٪ تخفیف پلکانی تعداد"}
-                            </span>
-                          </div>
-                        )}
-                        <div className="drawer-item-actions">
-                          <div className="drawer-qty-control" aria-label="تنظیم تعداد کالا">
-                            <button
-                              type="button"
-                              onClick={() => setQty(item.variantId, item.qty + 1)}
-                              className="qty-btn"
-                              aria-label="افزایش تعداد"
-                            >
-                              +
-                            </button>
-                            <span className="qty-value" aria-live="polite">{item.qty}</span>
-                            <button
-                              type="button"
-                              onClick={() => setQty(item.variantId, item.qty - 1)}
-                              className="qty-btn"
-                              aria-label="کاهش تعداد"
-                            >
-                              -
-                            </button>
-                          </div>
-                          <strong className="drawer-line-total">
-                            {formatToman(lineTotalRials)}
-                          </strong>
-                          <button
-                            type="button"
-                            onClick={() => removeItem(item.variantId)}
-                            className="drawer-item-remove"
-                            title="حذف از سبد"
-                            aria-label={`حذف ${item.title}`}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
+            /* ── Clean Items List (Matching Exactly User Reference Image 1) ── */
+            <div className="drawer-items-list-clean">
+              {items.map((item) => {
+                const unitPriceTomans = Number(BigInt(item.priceAmount) / 10n);
+                return (
+                  <div key={item.variantId} className="drawer-item-row">
+                    {/* 1. Right: Thumbnail */}
+                    <div className="drawer-item-thumbnail">
+                      {item.image ? (
+                        <img src={item.image} alt={item.title} className="drawer-item-img" />
+                      ) : (
+                        <span className="drawer-item-placeholder">{item.title.charAt(0)}</span>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
 
-              {/* Intelligent Clinical Cross-Sell Section */}
-              {recommendedCrossSell && (
-                <div className="cart-cross-sell-section">
-                  <div className="cross-sell-header">
-                    <span className="cross-sell-badge">{recommendedCrossSell.discountBadge}</span>
-                    <strong className="cross-sell-title">هم‌افزایی بالینی پروتکل درمانی</strong>
-                  </div>
-                  <div className="cross-sell-card">
-                    <div className="cross-sell-details">
-                      <h5>{recommendedCrossSell.title}</h5>
-                      <p className="cross-sell-subtitle">{recommendedCrossSell.subtitle}</p>
-                      <p className="cross-sell-rationale">
-                        <span className="rationale-tag">تحلیل بالینی:</span> {recommendedCrossSell.clinicalRationale}
-                      </p>
-                      <div className="cross-sell-pricing">
-                        <div className="price-stack">
-                          <span className="original-strike">{formatToman(recommendedCrossSell.originalPriceRials)}</span>
-                          <strong className="bundle-price">{formatToman(recommendedCrossSell.bundlePriceRials)}</strong>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleAddCrossSell(recommendedCrossSell)}
-                          className={`btn-add-cross-sell ${addedCrossSells[recommendedCrossSell.id] ? "added" : ""}`}
-                          disabled={addedCrossSells[recommendedCrossSell.id]}
-                        >
-                          {addedCrossSells[recommendedCrossSell.id] ? "✓ اضافه شد" : "+ افزودن با تخفیف باندل"}
-                        </button>
+                    {/* 2. Middle: Title & Quantity x Price */}
+                    <div className="drawer-item-info">
+                      <h4 className="drawer-item-name" title={item.title}>
+                        {item.title}
+                      </h4>
+                      <div className="drawer-item-pricing">
+                        <span className="drawer-item-qty-price">
+                          {toPersianDigits(item.qty)} × {formatPriceWithDots(unitPriceTomans)} تومان
+                        </span>
                       </div>
                     </div>
+
+                    {/* 3. Left: Circular Remove Button */}
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.variantId)}
+                      className="drawer-item-remove-circle"
+                      aria-label={`حذف ${item.title}`}
+                      title="حذف از سبد"
+                    >
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="m15 9-6 6" />
+                        <path d="m9 9 6 6" />
+                      </svg>
+                    </button>
                   </div>
-                </div>
-              )}
-            </>
+                );
+              })}
+            </div>
           )}
         </div>
 
-        {/* Footer Summary & Coupon Section */}
+        {/* ── 4. Footer Summary & Action Buttons (Matching Exactly User Reference Image 1) ── */}
         {items.length > 0 && (
-          <div className="cart-drawer-footer">
-            {/* Drawer Coupon Input */}
-            <div className="drawer-coupon-box">
-              <form onSubmit={handleApplyDrawerCoupon} className="drawer-coupon-form">
-                <input
-                  type="text"
-                  placeholder="کد تخفیف (مثال: WELCOME10 یا DERMER20)"
-                  value={drawerCouponInput}
-                  onChange={(e) => setDrawerCouponInput(e.target.value)}
-                  className="input-text drawer-coupon-input"
-                  disabled={Boolean(appliedCoupon)}
-                />
-                {appliedCoupon ? (
-                  <button
-                    type="button"
-                    onClick={handleRemoveDrawerCoupon}
-                    className="btn-coupon remove"
-                  >
-                    حذف
-                  </button>
-                ) : (
-                  <button type="submit" className="btn-coupon">
-                    اعمال
-                  </button>
-                )}
-              </form>
-
-              {couponFeedback && (
-                <div
-                  className={`drawer-coupon-feedback ${
-                    couponFeedback.type === "success" ? "success" : "error"
-                  }`}
+          <div className="cart-drawer-footer-clean">
+            {/* KYC Security Indicator */}
+            <div className="drawer-kyc-status-row">
+              {isKycVerified ? (
+                <div className="drawer-kyc-tag verified">
+                  <ShieldCheck size={14} />
+                  <span>هویت تأیید شده (مجاز به خرید)</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeDrawer();
+                    openKycModal("/cart");
+                  }}
+                  className="drawer-kyc-tag unverified"
                 >
-                  {couponFeedback.message}
-                </div>
-              )}
-
-              {appliedCoupon && (
-                <div className="active-coupon-tag drawer-active-coupon">
-                  <span>کوپن فعال: {appliedCoupon}</span>
-                </div>
+                  <AlertCircle size={14} />
+                  <span>احراز هویت الزامی پیش از خرید (کلیک کنید)</span>
+                </button>
               )}
             </div>
 
-            <div className="drawer-summary-rows">
-              <div className="drawer-sum-row">
-                <span>جمع قیمت کالاها:</span>
-                <span>{formatMoney(calculations.subtotalRials, "IRR")}</span>
-              </div>
-              {calculations.discountTomans > 0n && (
-                <div className="drawer-sum-row discount">
-                  <span>تخفیف کل (پلکانی / کوپن):</span>
-                  <span>- {formatMoney(calculations.discountRials, "IRR")}</span>
-                </div>
-              )}
-              <div className="drawer-sum-row">
-                <span>هزینه ارسال:</span>
-                <span>
-                  {calculations.isFreeShipping
-                    ? "رایگان (پیشتاز سراسری)"
-                    : formatMoney(calculations.shippingRials, "IRR")}
-                </span>
-              </div>
-              {tier2Achieved && (
-                <div className="drawer-sum-row vip-benefit">
-                  <span>مشاوره VIP متخصص پوست:</span>
-                  <span className="badge-vip-benefit">رایگان (هدیه خرید بالای ۳ م)</span>
-                </div>
-              )}
-              <div className="drawer-sum-row total">
-                <span>مبلغ قابل پرداخت:</span>
-                <strong>{formatMoney(calculations.totalRials, "IRR")}</strong>
-              </div>
+            {/* Total Price Row */}
+            <div className="drawer-total-row">
+              <span className="drawer-total-label">قیمت کل:</span>
+              <span className="drawer-total-value">
+                {formatPriceWithDots(Number(calculations.totalTomans))} تومان
+              </span>
             </div>
 
-            <div className="drawer-action-buttons">
-              <Link
-                href="/checkout"
-                onClick={() => {
-                  trackBeginCheckout(
-                    items.map((i) => ({
-                      item_id: i.productId,
-                      item_name: i.title,
-                      item_variant: i.variantId,
-                      sku: i.sku,
-                      price: Number(i.priceAmount) || 0,
-                      quantity: i.qty,
-                      currency: "IRR",
-                    })),
-                    Number(calculations.totalRials) || 0,
-                    appliedCoupon || undefined,
-                    "IRR"
-                  );
+            {/* Button 1: View Cart (Light Green Pill) */}
+            <Link
+              href="/cart"
+              onClick={(e) => {
+                if (!isKycVerified) {
+                  e.preventDefault();
                   closeDrawer();
-                }}
-                className="btn-drawer-checkout"
-              >
-                تأیید سبد و ادامه به تسویه‌حساب ←
-              </Link>
-              <Link
-                href="/cart"
-                onClick={closeDrawer}
-                className="btn-drawer-view-cart"
-              >
-                مشاهده صفحه کامل سبد خرید
-              </Link>
-            </div>
+                  openKycModal("/cart");
+                  return;
+                }
+                closeDrawer();
+              }}
+              className="btn-drawer-cart-view"
+            >
+              مشاهده سبد خرید
+            </Link>
+
+            {/* Button 2: Checkout Action (Dark Forest Green) */}
+            <Link
+              href="/checkout"
+              onClick={(e) => {
+                if (!isKycVerified) {
+                  e.preventDefault();
+                  closeDrawer();
+                  openKycModal("/checkout");
+                  return;
+                }
+                trackBeginCheckout(
+                  items.map((i) => ({
+                    item_id: i.productId,
+                    item_name: i.title,
+                    item_variant: i.variantId,
+                    sku: i.sku,
+                    price: Number(i.priceAmount) || 0,
+                    quantity: i.qty,
+                    currency: "IRR",
+                  })),
+                  Number(calculations.totalRials) || 0,
+                  appliedCoupon || undefined,
+                  "IRR"
+                );
+                closeDrawer();
+              }}
+              className="btn-drawer-checkout-action"
+            >
+              تسویه حساب
+            </Link>
           </div>
         )}
       </div>

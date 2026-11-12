@@ -25,14 +25,19 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { B2bModule } from './b2b/b2b.module';
 import { VendorsModule } from './vendors/vendors.module';
 import { DigitalModule } from './digital/digital.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['../../.env', '.env'] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', 'apps/api/.env', '../../.env', '../.env'],
+    }),
     DatabaseModule,
     HealthModule,
     IdentityModule,
     CatalogModule,
+    CartModule,
     SearchModule,
     PricingModule,
     InventoryModule,

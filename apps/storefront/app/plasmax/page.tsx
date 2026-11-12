@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CanvasSequencePlayer, HotspotPin } from '../../components/interactive/canvas-sequence-player';
+import { getProduct, resolveVariant, type Product } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 
 // ── Interactive Hotspots on PlasmaX 360 Console ──
 const PLASMAX_HOTSPOTS: HotspotPin[] = [
@@ -210,9 +212,23 @@ const CLINICAL_TRIALS = [
 ];
 
 export default function PlasmaxLandingPage() {
+  const { formatToman } = useLocalizedFormatter();
+  const [plasmaxProduct, setPlasmaxProduct] = useState<Product | null>(null);
   const [activeMode, setActiveMode] = useState<'continuous' | 'cold-jet' | 'dbd'>('continuous');
   const [activeSpecTab, setActiveSpecTab] = useState<'gasAndFlow' | 'electrical' | 'regulatory'>('gasAndFlow');
   const [selectedHotspot, setSelectedHotspot] = useState<HotspotPin | null>(PLASMAX_HOTSPOTS[0]);
+
+  useEffect(() => {
+    let mounted = true;
+    getProduct('plasmax').then((p) => {
+      if (mounted && p) setPlasmaxProduct(p);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const primaryPlasmaxVariant = resolveVariant(plasmaxProduct, ['RM-DEV-PLASMAX-PRO']);
 
   // B2B Quote State
   const [clinicName, setClinicName] = useState('');
@@ -292,11 +308,19 @@ export default function PlasmaxLandingPage() {
             {/* Action Buttons */}
             <div className="station-actions-row">
               <a href="#quote-section" className="station-btn-primary cyan">
-                <span>استعلام پیش‌فاکتور رسمی و خرید اقساطی کلینیک</span>
+                <span>
+                  {primaryPlasmaxVariant
+                    ? `استعلام پیش‌فاکتور کلینیک (قیمت مصوب: ${formatToman(primaryPlasmaxVariant.priceAmount)})`
+                    : 'استعلام پیش‌فاکتور رسمی و خرید اقساطی کلینیک'}
+                </span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
               </a>
+
+              <Link href="/products/plasmax" className="station-btn-secondary">
+                <span>مشاهده مشخصات و ثبت سفارش آنلاین</span>
+              </Link>
 
               <Link href="/b2b/workshops" className="station-btn-secondary">
                 <span>تقویم ورکشاپ‌های جراحی پلاسما</span>

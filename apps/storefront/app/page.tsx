@@ -1,4 +1,4 @@
-import { listProducts } from '../lib/catalog';
+import { listCategories, listProducts } from '../lib/catalog';
 import { RupakHero } from '../components/rupak-hero/rupak-hero';
 import { RupakCategoryWave } from '../components/rupak-hero/rupak-category-wave';
 import { RupakSpecialOffers } from '../components/rupak-hero/rupak-special-offers';
@@ -12,9 +12,8 @@ import { ScienceMechanismSpotlight } from '../components/home/science-spotlight'
 import { BohrOxygenationSimulator } from '../components/home/bohr-simulator';
 import { VisiaTrialComparisonSlider } from '../components/home/visia-comparison-slider';
 import { RupakServicesSection } from '../components/rupak-services/rupak-services-section';
-import { MedicalDevicesShowcase } from '../components/home/medical-devices-showcase';
 import { ClinicalResultsTestimonials } from '../components/home/clinical-results';
-import { AcademyGuides } from '../components/home/academy-guides';
+import { RupakArticlesSection } from '../components/rupak-articles/rupak-articles-section';
 
 
 export const dynamic = 'force-dynamic';
@@ -22,7 +21,10 @@ export const dynamic = 'force-dynamic';
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
 export default async function HomePage() {
-  const catalog = await listProducts();
+  const [catalog, categories] = await Promise.all([
+    listProducts({ limit: 100 }),
+    listCategories(),
+  ]);
   const products = catalog?.data ?? [];
 
   const homeJsonLd = {
@@ -85,18 +87,18 @@ export default async function HomePage() {
       <RupakHero showImage={false} />
 
       {/* 3.1 Rupak Wave Category Section */}
-      <RupakCategoryWave />
+      <RupakCategoryWave categories={categories} />
 
 
       {/* 4. Trust & Clinical Credibility Bar */}
       {/* 4. Rupak Special Offers & Dual Banners */}
       <div id="rupak-catalog">
-        <RupakSpecialOffers />
+        <RupakSpecialOffers products={products} />
       </div>
 
       {/* 6. Brand Families Architecture (ReeSkin & ReeMed) */}
       {/* 5. Rupak Newest Products Carousel (جدیدترین محصولات) */}
-      <RupakNewestProducts />
+      <RupakNewestProducts products={products} />
 
       {/* 6. سکشن بنرهای دوقلو، درباره روپاک شاپ و مشاوره رایگان (جایگزین سکشن محصولات) */}
       <RupakAboutSection />
@@ -120,11 +122,9 @@ export default async function HomePage() {
       {/* 8.1 Verified Clinical Results / Doctor Testimonials */}
       <ClinicalResultsTestimonials />
 
-      {/* 8.2 Interactive Medical Devices 360-Degree Hotspot Showcase (CarboX & PlasmaX) */}
-      <MedicalDevicesShowcase />
-
+      
       {/* 9. Academy & Protocol Guides */}
-      <AcademyGuides />
+      <RupakArticlesSection />
 
 
     </div>

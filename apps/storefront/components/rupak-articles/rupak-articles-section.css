@@ -1,0 +1,143 @@
+/* Rupak Articles Section Styling */
+
+.rupak-articles-section {
+  padding: 64px 0 80px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 40%, #f1f5f9 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.rupak-articles-container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.rupak-articles-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+  gap: 20px;
+  direction: rtl;
+}
+
+.rupak-articles-lead {
+  max-width: 720px;
+}
+
+.rupak-articles-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ecfdf5;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #047857;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+
+.rupak-articles-title {
+  font-size: clamp(1.45rem, 2.5vw, 1.95rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+.rupak-articles-subtitle {
+  font-size: 0.94rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* View All Button */
+.rupak-articles-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.rupak-articles-all-btn:hover {
+  border-color: #10b981;
+  color: #047857;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+  transform: translateY(-2px);
+}
+
+.art-all-arrow {
+  transition: transform 0.2s ease;
+}
+
+.rupak-articles-all-btn:hover .art-all-arrow {
+  transform: translateX(-4px);
+}
+
+/* Grid */
+.rupak-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  direction: rtl;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+  .rupak-articles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rupak-articles-section {
+    padding: 48px 0 60px;
+  }
+
+  .rupak-articles-container {
+    padding: 0 16px;
+  }
+
+  .rupak-articles-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .rupak-articles-title {
+    font-size: 1.35rem;
+  }
+
+  .rupak-articles-subtitle {
+    font-size: 0.86rem;
+  }
+
+  .rupak-articles-all-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .rupak-articles-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}

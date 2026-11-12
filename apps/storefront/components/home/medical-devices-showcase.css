@@ -53,6 +53,7 @@
 }
 
 .dev-main-title {
+  font-family: 'MyBaby', 'MyBaby Chubby', sans-serif !important;
   font-size: clamp(1.65rem, 2.7vw, 2.3rem);
   font-weight: 900;
   color: #0f172a;

@@ -10,10 +10,12 @@ export class SearchController {
     @Query("storeSlug") storeSlug = "demo",
     @Query("q") q?: string,
     @Query("category") category?: string,
+    @Query("brand") brand?: string,
+    @Query("concern") concern?: string,
     @Query("minPrice") minPrice?: string,
     @Query("maxPrice") maxPrice?: string,
     @Query("inStock") inStock?: string,
-    @Query("sort") sort?: "newest" | "price_asc" | "price_desc",
+    @Query("sort") sort?: "popular" | "newest" | "price_asc" | "price_desc",
     @Query("limit") limit?: string,
     @Query("offset") offset?: string
   ) {
@@ -21,6 +23,8 @@ export class SearchController {
       storeSlug,
       query: q,
       categorySlug: category,
+      brandSlug: brand,
+      concernSlug: concern,
       minPriceRials: minPrice ? parseInt(minPrice, 10) : undefined,
       maxPriceRials: maxPrice ? parseInt(maxPrice, 10) : undefined,
       inStockOnly: inStock === "true" || inStock === "1",

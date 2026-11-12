@@ -6,11 +6,15 @@ import { LocalizationProvider } from '../lib/localization-context';
 import { CustomerSessionProvider } from '../lib/customer-session';
 import { SiteHeader } from '../components/header';
 import { SiteFooter } from '../components/footer';
+import { SmoothScrollProvider } from '../components/smooth-scroll-provider';
+import { KycProvider } from '../lib/kyc-context';
+import { KycModal } from '../components/kyc-modal';
 import { PwaRegister } from '../components/pwa-register';
 import { Toaster } from 'sonner';
 import { NotificationModal } from '../components/notification-modal';
+import { BackendStatusGuard } from '../components/backend-status-guard';
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://dermavia.ir').replace(/\/$/, '');
 const isProduction = process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_IS_STAGING;
 
 export const viewport: Viewport = {
@@ -26,8 +30,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'دکتر درمر | سیستم جامع سلامت و مراقبت تخصصی پوست (ReeSkin & ReeMed)',
-    template: '%s | دکتر درمر',
+    default: 'dermavia | فروشگاه تخصصی پوست و زیبایی',
+    template: '%s | dermavia',
   },
   description:
     'فروشگاه رسمی و آکادمی تخصصی برندهای درمانی ReeSkin و ReeMed انگلستان؛ کربوکسی‌تراپی پیشرفته (CarboxyGel)، نوسازی سلولی با اثر بوهر (Bohr Effect)، تجهیزات پزشکی و پروتکل‌های حرفه‌ای کلینیک.',
@@ -45,9 +49,9 @@ export const metadata: Metadata = {
     'Bohr Effect',
   ],
   authors: [{ name: 'Dr Dermer Clinical Research Laboratories', url: 'https://www.drdermer.co.uk' }],
-  creator: 'Dr Dermer UK Clinical Laboratories',
-  publisher: 'Dr Dermer International',
-  applicationName: 'Dr Dermer Storefront',
+  creator: 'dermavia',
+  publisher: 'dermavia',
+  applicationName: 'dermavia',
   formatDetection: {
     telephone: true,
     date: false,
@@ -74,8 +78,8 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fa_IR',
     url: SITE_URL,
-    siteName: 'دکتر درمر | Dr Dermer Clinical Skin & Health',
-    title: 'دکتر درمر | درمان هدفمند سلولی پوست با فناوری Carboxy CO2',
+    siteName: 'dermavia | پوست و زیبایی',
+    title: 'dermavia | مراقبت پیشرفته پوست',
     description:
       'محصولات برتر بالینی، پروتکل‌های ترمیم سد دفاعی و پورتال اختصاصی تأمین ملزومات کلینیک‌های پوست و زیبایی.',
     images: [
@@ -117,21 +121,33 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="preload"
+          href="/fonts/mybaby/mybaby-chubby.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <LocalizationProvider>
           <CustomerSessionProvider>
-          <CartProvider>
-            <div className="page-shell-wrapper">
-              <SiteHeader />
-              <main id="main-content" tabIndex={-1}>
-                {children}
-              </main>
-              <SiteFooter />
-            </div>
-            <CartDrawer />
-            <NotificationModal />
-          </CartProvider>
+            <CartProvider>
+              <KycProvider>
+                <SmoothScrollProvider>
+                  <div className="page-shell-wrapper">
+                    <SiteHeader />
+                    <main id="main-content" tabIndex={-1}>
+                      <BackendStatusGuard>{children}</BackendStatusGuard>
+                    </main>
+                    <SiteFooter />
+                  </div>
+                  <CartDrawer />
+                  <NotificationModal />
+                  <KycModal />
+                </SmoothScrollProvider>
+              </KycProvider>
+            </CartProvider>
           </CustomerSessionProvider>
         </LocalizationProvider>
         <Toaster position="bottom-left" dir="rtl" richColors closeButton />

@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { DirectProductOrder } from '../../components/interactive/direct-product-order';
 import { ClinicalPhotoShowcase } from '../../components/interactive/clinical-photo-showcase';
 import { CrystaleneInteractiveSection } from './crystalene-interactive-section';
+import { getProduct, resolveProductImage, resolveVariant } from '../../lib/catalog';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste | دکتر درمر انگلستان',
@@ -41,7 +44,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CrystalenePage() {
+export default async function CrystalenePage() {
+  const product = await getProduct('crystalene');
+  const primaryVariant = resolveVariant(product, ['DD-CRY-200ML']);
+  const primaryImage = resolveProductImage(
+    product,
+    '/assets/drdermer/2025/08/15crystalene-1200x1109.webp'
+  );
   const photoViews = [
     {
       id: 'primary',
@@ -137,18 +146,19 @@ export default function CrystalenePage() {
 
             {/* Direct Order Component */}
             <DirectProductOrder
-              productId="prod_drdermer_004"
-              variantId="var_cry_200ml"
-              sku="DD-CRY-200ML"
-              title="خمیر پولیش کریستالین Crystalene Polish Paste"
-              volume="۲۰۰ میلی‌لیتر (تیوب سالنی)"
-              priceAmount="17500000"
-              originalPriceAmount="20500000"
-              discountPercent={14}
-              inStock={true}
+              productId={product?.id ?? ''}
+              variantId={primaryVariant?.id ?? ''}
+              productSlug="crystalene"
+              sku={primaryVariant?.sku ?? 'DD-CRY-200ML'}
+              title={product?.title ?? 'خمیر پولیش کریستالین Crystalene Polish Paste'}
+              volume={primaryVariant?.sizeOrVolume ?? '۲۰۰ میلی‌لیتر (تیوب سالنی)'}
+              priceAmount={primaryVariant?.priceAmount ?? '0'}
+              originalPriceAmount={primaryVariant?.originalPriceAmount ?? undefined}
+              discountPercent={primaryVariant?.discountPercent ?? undefined}
+              inStock={primaryVariant?.inStock ?? true}
               theme="emerald"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
-              image="/assets/drdermer/2025/08/15crystalene-1200x1109.webp"
+              image={primaryImage}
             />
           </div>
 

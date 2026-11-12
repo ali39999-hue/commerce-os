@@ -1,23 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { listProducts, resolveProductImage, type Product } from '../../lib/catalog';
 
 export interface TreatmentGelOption {
-  id: string;
+  productId: string;
+  variantId: string;
   sku: string;
   title: string;
   volume: string;
   sessions: string;
-  priceAmount: string; // Rials string
+  priceAmount: string;
   originalPriceAmount: string;
   badge?: string;
+  image?: string;
 }
 
 export interface ActivationPodOption {
-  id: string;
+  productId: string;
+  variantId: string;
   sku: string;
   title: string;
   packSize: string;
@@ -25,10 +29,12 @@ export interface ActivationPodOption {
   priceAmount: string;
   originalPriceAmount: string;
   isRecommended?: boolean;
+  image?: string;
 }
 
 export interface RecoveryAddonOption {
-  id: string;
+  productId: string;
+  variantId: string;
   sku: string;
   title: string;
   volume: string;
@@ -36,125 +42,211 @@ export interface RecoveryAddonOption {
   priceAmount: string;
   originalPriceAmount: string;
   discountPercentage: number;
+  image?: string;
 }
 
-const DEFAULT_GEL_OPTIONS: TreatmentGelOption[] = [
+interface GelDescriptor {
+  sku: string;
+  volume: string;
+  sessions: string;
+  badge?: string;
+}
+
+interface PodDescriptor {
+  productSlug: string;
+  sku: string;
+  packSize: string;
+  purposeFa: string;
+  isRecommended?: boolean;
+}
+
+interface AddonDescriptor {
+  productSlug: string;
+  sku: string;
+  volume: string;
+  roleFa: string;
+  discountPercentage: number;
+}
+
+const GEL_DESCRIPTORS: GelDescriptor[] = [
   {
-    id: 'gel_500ml',
     sku: 'CBG-PRO-500ML',
-    title: 'ژل CarboxyGel پک کلینیکال ۵۰۰ میلی‌لیتر',
     volume: '500ml',
     sessions: '۲۰ جلسه کلینیکی کامل',
-    priceAmount: '48500000', // 4,850,000 Tomans
-    originalPriceAmount: '56000000',
     badge: 'به‌صرفه‌ترین قیمت در هر جلسه',
   },
   {
-    id: 'gel_box5',
     sku: 'CBG-HOME-5X',
-    title: 'کیت هوم‌کر ۵ عددی (۵ تیوب ۲۵ میلی‌لیتر)',
     volume: '5x25ml',
     sessions: '۵ جلسه درمان کامل',
-    priceAmount: '19500000', // 1,950,000 Tomans
-    originalPriceAmount: '23000000',
     badge: 'محبوب‌ترین انتخاب مراجعین',
   },
   {
-    id: 'gel_50ml',
     sku: 'CBG-TUBE-50ML',
-    title: 'تیوب تکی ۵۰ میلی‌لیتر',
     volume: '50ml',
     sessions: '۲ جلسه تست یا تمدید',
-    priceAmount: '8900000', // 890,000 Tomans
-    originalPriceAmount: '10500000',
   },
 ];
 
-const DEFAULT_POD_OPTIONS: ActivationPodOption[] = [
+const POD_DESCRIPTORS: PodDescriptor[] = [
   {
-    id: 'pod_carboxypod_box5',
+    productSlug: 'carboxypod',
     sku: 'RMD-CPD-005',
-    title: 'پدهای فعال‌ساز فیبری CarboxyPod (باکس ۵ ساشه وکیوم)',
     packSize: '۵ عدد ساشه استریل',
     purposeFa: 'پدهای ارگونومیک با الیاف بارگذاری شده با اسید سیتریک میکروکپسوله',
-    priceAmount: '12500000', // 1,250,000 Tomans
-    originalPriceAmount: '14800000',
     isRecommended: true,
   },
   {
-    id: 'pod_carboxypad_neck',
+    productSlug: 'carboxypad',
     sku: 'RMD-CPAD-NECK5',
-    title: 'پدهای فعال‌ساز تخصصی صورت و دکلته CarboxyPad',
     packSize: '۵ ست صورت و گردن',
     purposeFa: 'برش آناتومیک اختصاصی برای زاویه فک، غبغب و خطوط گردن',
-    priceAmount: '15500000', // 1,550,000 Tomans
-    originalPriceAmount: '18000000',
   },
   {
-    id: 'pod_carboxypod_box20',
+    productSlug: 'carboxypod',
     sku: 'RMD-CPD-020',
-    title: 'پک اقتصادی کلینیکال CarboxyPod (باکس ۲۰ ساشه مطبی)',
     packSize: '۲۰ ساشه سالنی',
     purposeFa: 'تأمین سالنی ویژه پزشکان و اسکین‌تراپیست‌ها با بالاترین تخفیف',
-    priceAmount: '44000000', // 4,400,000 Tomans
-    originalPriceAmount: '52000000',
   },
 ];
 
-const DEFAULT_RECOVERY_ADDONS: RecoveryAddonOption[] = [
+const ADDON_DESCRIPTORS: AddonDescriptor[] = [
   {
-    id: 'addon_healene_250',
+    productSlug: 'healene',
     sku: 'DD-HEA-250ML',
-    title: 'ژل تسکین‌بخش و خنک‌کننده هیلین Healene Soothing Gel',
     volume: '250ml پمپی',
     roleFa: 'رفع آنی قرمزی و ترمیم سد دفاعی پوست با پانتنول و ۷ عصاره سیکا',
-    priceAmount: '16000000', // 1,600,000 Tomans
-    originalPriceAmount: '18500000',
     discountPercentage: 15,
   },
   {
-    id: 'addon_crystalene_200',
+    productSlug: 'crystalene',
     sku: 'DD-CRY-200ML',
-    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
     volume: '200ml تیوب',
     roleFa: 'آماده‌سازی پوست و حذف سلول‌های کدر پیش از کربوکسی با میکروآلومینا',
-    priceAmount: '17500000', // 1,750,000 Tomans
-    originalPriceAmount: '20500000',
     discountPercentage: 15,
   },
 ];
 
-export function DynamicRegimenBuilder() {
-  const { addItem } = useCart();
+export function DynamicRegimenBuilder({
+  catalogProducts,
+}: {
+  catalogProducts?: Product[];
+}) {
+  const { addItem, openDrawer } = useCart();
   const { formatToman } = useLocalizedFormatter();
+  const [products, setProducts] = useState<Product[]>(catalogProducts ?? []);
+  const [loading, setLoading] = useState(!catalogProducts);
 
-  // State: Chosen Gel, Pod, and Addons
-  const [selectedGelId, setSelectedGelId] = useState<string>(DEFAULT_GEL_OPTIONS[1].id); // 5x kit
-  const [selectedPodId, setSelectedPodId] = useState<string>(DEFAULT_POD_OPTIONS[0].id); // 5 pads
+  useEffect(() => {
+    if (catalogProducts && catalogProducts.length > 0) {
+      setProducts(catalogProducts);
+      setLoading(false);
+      return;
+    }
+    let mounted = true;
+    listProducts({ limit: 100 })
+      .then((res) => {
+        if (mounted && res?.data) {
+          setProducts(res.data);
+        }
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [catalogProducts]);
+
+  const { gelOptions, podOptions, recoveryAddons } = useMemo(() => {
+    const gelProd = products.find((p) => p.slug === 'carboxygel');
+    const gels: TreatmentGelOption[] = gelProd
+      ? GEL_DESCRIPTORS.map((desc): TreatmentGelOption | null => {
+          const variant = gelProd.variants.find((v) => v.sku === desc.sku);
+          if (!variant) return null;
+          return {
+            productId: gelProd.id,
+            variantId: variant.id,
+            sku: variant.sku,
+            title: variant.title || gelProd.title,
+            volume: desc.volume,
+            sessions: desc.sessions,
+            priceAmount: variant.priceAmount,
+            originalPriceAmount: variant.originalPriceAmount || variant.priceAmount,
+            badge: desc.badge,
+            image: resolveProductImage(gelProd),
+          };
+        }).filter((g): g is TreatmentGelOption => g !== null)
+      : [];
+
+    const pods: ActivationPodOption[] = POD_DESCRIPTORS.map((desc): ActivationPodOption | null => {
+      const prod = products.find((p) => p.slug === desc.productSlug);
+      const variant = prod?.variants.find((v) => v.sku === desc.sku);
+      if (!prod || !variant) return null;
+      return {
+        productId: prod.id,
+        variantId: variant.id,
+        sku: variant.sku,
+        title: `${prod.title} (${variant.title})`,
+        packSize: desc.packSize,
+        purposeFa: desc.purposeFa,
+        priceAmount: variant.priceAmount,
+        originalPriceAmount: variant.originalPriceAmount || variant.priceAmount,
+        isRecommended: desc.isRecommended,
+        image: resolveProductImage(prod),
+      };
+    }).filter((p): p is ActivationPodOption => p !== null);
+
+    const addons: RecoveryAddonOption[] = ADDON_DESCRIPTORS.map((desc): RecoveryAddonOption | null => {
+      const prod = products.find((p) => p.slug === desc.productSlug);
+      const variant = prod?.variants.find((v) => v.sku === desc.sku);
+      if (!prod || !variant) return null;
+      return {
+        productId: prod.id,
+        variantId: variant.id,
+        sku: variant.sku,
+        title: prod.title,
+        volume: desc.volume,
+        roleFa: desc.roleFa,
+        priceAmount: variant.priceAmount,
+        originalPriceAmount: variant.originalPriceAmount || variant.priceAmount,
+        discountPercentage: variant.discountPercent || desc.discountPercentage,
+        image: resolveProductImage(prod),
+      };
+    }).filter((a): a is RecoveryAddonOption => a !== null);
+
+    return { gelOptions: gels, podOptions: pods, recoveryAddons: addons };
+  }, [products]);
+
+  const [selectedGelSku, setSelectedGelSku] = useState<string>('CBG-HOME-5X');
+  const [selectedPodSku, setSelectedPodSku] = useState<string>('RMD-CPD-005');
   const [selectedAddons, setSelectedAddons] = useState<Record<string, boolean>>({
-    addon_healene_250: true, // Default checked for optimal regimen
+    'DD-HEA-250ML': true,
   });
   const [bundleAdded, setBundleAdded] = useState(false);
 
-  const selectedGel = DEFAULT_GEL_OPTIONS.find((g) => g.id === selectedGelId) || DEFAULT_GEL_OPTIONS[0];
-  const selectedPod = DEFAULT_POD_OPTIONS.find((p) => p.id === selectedPodId) || DEFAULT_POD_OPTIONS[0];
-  const activeAddonsList = DEFAULT_RECOVERY_ADDONS.filter((a) => selectedAddons[a.id]);
+  const selectedGel =
+    gelOptions.find((g) => g.sku === selectedGelSku) || gelOptions[0];
+  const selectedPod =
+    podOptions.find((p) => p.sku === selectedPodSku) || podOptions[0];
+  const activeAddonsList = recoveryAddons.filter((a) => selectedAddons[a.sku]);
 
-  const toggleAddon = (id: string) => {
-    setSelectedAddons((prev) => ({ ...prev, [id]: !prev[id] }));
+  if (loading || !selectedGel || !selectedPod) {
+    return null;
+  }
+
+  const toggleAddon = (sku: string) => {
+    setSelectedAddons((prev) => ({ ...prev, [sku]: !prev[sku] }));
   };
 
-  // Pricing math
   const gelPrice = BigInt(selectedGel.priceAmount);
   const podPrice = BigInt(selectedPod.priceAmount);
-  const addonsPrice = activeAddonsList.reduce((sum, a) => sum + BigInt(a.priceAmount), 0n);
+  const addonsPrice = activeAddonsList.reduce(
+    (sum, a) => sum + BigInt(a.priceAmount),
+    0n
+  );
 
   const subtotalRials = gelPrice + podPrice + addonsPrice;
-
-  // Tiered Regimen Savings:
-  // 2 items (gel + pod) => 10% extra bundle discount
-  // 3 items (gel + pod + 1 addon) => 15% extra bundle discount
-  // 4 items (gel + pod + 2 addons) => 20% extra bundle discount
   const totalItemCount = 2 + activeAddonsList.length;
   let bundleDiscountPercent = 10;
   if (totalItemCount === 3) bundleDiscountPercent = 15;
@@ -163,51 +255,54 @@ export function DynamicRegimenBuilder() {
   const bundleDiscountAmount = (subtotalRials * BigInt(bundleDiscountPercent)) / 100n;
   const finalPriceRials = subtotalRials - bundleDiscountAmount;
 
-  // Calculate full original non-bundle price for comparison
   const originalGel = BigInt(selectedGel.originalPriceAmount);
   const originalPod = BigInt(selectedPod.originalPriceAmount);
-  const originalAddons = activeAddonsList.reduce((sum, a) => sum + BigInt(a.originalPriceAmount), 0n);
+  const originalAddons = activeAddonsList.reduce(
+    (sum, a) => sum + BigInt(a.originalPriceAmount),
+    0n
+  );
   const totalOriginalRials = originalGel + originalPod + originalAddons;
-  const totalCustomerSavings = totalOriginalRials - finalPriceRials;
+  const totalCustomerSavings =
+    totalOriginalRials > finalPriceRials ? totalOriginalRials - finalPriceRials : 0n;
 
   const handleAddCustomRegimen = () => {
-    // 1. Add Gel
     addItem({
-      variantId: `var_${selectedGel.sku}`,
-      productId: 'prod_skin_001',
+      variantId: selectedGel.variantId,
+      productId: selectedGel.productId,
       title: selectedGel.title,
       sku: selectedGel.sku,
       priceAmount: selectedGel.priceAmount,
+      image: selectedGel.image,
     });
 
-    // 2. Add Pod
     addItem({
-      variantId: `var_${selectedPod.sku}`,
-      productId: 'prod_clinical_carboxypod',
+      variantId: selectedPod.variantId,
+      productId: selectedPod.productId,
       title: selectedPod.title,
       sku: selectedPod.sku,
       priceAmount: selectedPod.priceAmount,
+      image: selectedPod.image,
     });
 
-    // 3. Add active addons
     activeAddonsList.forEach((addon) => {
       addItem({
-        variantId: `var_${addon.sku}`,
-        productId: addon.id,
+        variantId: addon.variantId,
+        productId: addon.productId,
         title: addon.title,
         sku: addon.sku,
         priceAmount: addon.priceAmount,
+        image: addon.image,
       });
     });
 
     setBundleAdded(true);
+    openDrawer();
     setTimeout(() => setBundleAdded(false), 2800);
   };
 
   return (
     <section className="regimen-builder-root" aria-label="باندل‌ساز پویا و شخصی‌سازی پروتکل">
       <div className="regimen-builder-card">
-        {/* Header with tiered savings badge */}
         <div className="regimen-builder-header">
           <div className="regimen-header-top-row">
             <span className="regimen-builder-badge">سازنده هوشمند رژیم درمانی</span>
@@ -222,7 +317,6 @@ export function DynamicRegimenBuilder() {
           </p>
         </div>
 
-        {/* Step 1: Select Gel Volume */}
         <div className="regimen-step-block">
           <div className="step-label-row">
             <span className="step-num-circle">۱</span>
@@ -233,15 +327,15 @@ export function DynamicRegimenBuilder() {
           </div>
 
           <div className="regimen-options-grid cols-3" role="radiogroup" aria-label="انتخاب حجم ژل">
-            {DEFAULT_GEL_OPTIONS.map((gel) => {
-              const isSelected = gel.id === selectedGelId;
+            {gelOptions.map((gel) => {
+              const isSelected = gel.sku === selectedGel.sku;
               return (
                 <button
-                  key={gel.id}
+                  key={gel.variantId}
                   type="button"
                   role="radio"
                   aria-checked={isSelected}
-                  onClick={() => setSelectedGelId(gel.id)}
+                  onClick={() => setSelectedGelSku(gel.sku)}
                   className={`regimen-option-card ${isSelected ? 'is-selected' : ''}`}
                 >
                   {gel.badge && <span className="option-top-badge">{gel.badge}</span>}
@@ -253,7 +347,9 @@ export function DynamicRegimenBuilder() {
                   <span className="option-sessions">{gel.sessions}</span>
                   <div className="option-pricing">
                     <span className="option-current-price">{formatToman(gel.priceAmount)}</span>
-                    <span className="option-orig-price">{formatToman(gel.originalPriceAmount)}</span>
+                    {gel.originalPriceAmount !== gel.priceAmount && (
+                      <span className="option-orig-price">{formatToman(gel.originalPriceAmount)}</span>
+                    )}
                   </div>
                 </button>
               );
@@ -261,7 +357,6 @@ export function DynamicRegimenBuilder() {
           </div>
         </div>
 
-        {/* Step 2: Select Activation Pod / Pad Variant */}
         <div className="regimen-step-block">
           <div className="step-label-row">
             <span className="step-num-circle">۲</span>
@@ -272,15 +367,15 @@ export function DynamicRegimenBuilder() {
           </div>
 
           <div className="regimen-options-grid cols-3" role="radiogroup" aria-label="انتخاب مدل پد">
-            {DEFAULT_POD_OPTIONS.map((pod) => {
-              const isSelected = pod.id === selectedPodId;
+            {podOptions.map((pod) => {
+              const isSelected = pod.sku === selectedPod.sku;
               return (
                 <button
-                  key={pod.id}
+                  key={pod.variantId}
                   type="button"
                   role="radio"
                   aria-checked={isSelected}
-                  onClick={() => setSelectedPodId(pod.id)}
+                  onClick={() => setSelectedPodSku(pod.sku)}
                   className={`regimen-option-card ${isSelected ? 'is-selected' : ''}`}
                 >
                   {pod.isRecommended && (
@@ -294,7 +389,9 @@ export function DynamicRegimenBuilder() {
                   <p className="option-sessions">{pod.purposeFa}</p>
                   <div className="option-pricing">
                     <span className="option-current-price">{formatToman(pod.priceAmount)}</span>
-                    <span className="option-orig-price">{formatToman(pod.originalPriceAmount)}</span>
+                    {pod.originalPriceAmount !== pod.priceAmount && (
+                      <span className="option-orig-price">{formatToman(pod.originalPriceAmount)}</span>
+                    )}
                   </div>
                 </button>
               );
@@ -302,61 +399,62 @@ export function DynamicRegimenBuilder() {
           </div>
         </div>
 
-        {/* Step 3: Add-on Soothing & Priming Steps (Optional Multi-Select) */}
-        <div className="regimen-step-block">
-          <div className="step-label-row">
-            <span className="step-num-circle">۳</span>
-            <div>
-              <h4 className="step-heading">افزودن محصولات ریکاوری و آماده‌سازی سد دفاعی</h4>
-              <p className="step-subheading">افزودن هر مورد درصد تخفیف کل سبد رژیم را ۵٪ افزایش می‌دهد</p>
+        {recoveryAddons.length > 0 && (
+          <div className="regimen-step-block">
+            <div className="step-label-row">
+              <span className="step-num-circle">۳</span>
+              <div>
+                <h4 className="step-heading">افزودن محصولات ریکاوری و آماده‌سازی سد دفاعی</h4>
+                <p className="step-subheading">افزودن هر مورد درصد تخفیف کل سبد رژیم را ۵٪ افزایش می‌دهد</p>
+              </div>
             </div>
-          </div>
 
-          <div className="regimen-addons-grid" role="group" aria-label="محصولات مکمل ریکاوری">
-            {DEFAULT_RECOVERY_ADDONS.map((addon) => {
-              const isChecked = !!selectedAddons[addon.id];
-              return (
-                <div
-                  key={addon.id}
-                  onClick={() => toggleAddon(addon.id)}
-                  className={`regimen-addon-card ${isChecked ? 'is-checked' : ''}`}
-                >
-                  <label className="addon-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={() => {}} // Handled by card click
-                      className="addon-real-checkbox"
-                      aria-label={`افزودن ${addon.title}`}
-                    />
-                    <span className="addon-custom-check" aria-hidden="true" />
-                  </label>
+            <div className="regimen-addons-grid" role="group" aria-label="محصولات مکمل ریکاوری">
+              {recoveryAddons.map((addon) => {
+                const isChecked = !!selectedAddons[addon.sku];
+                return (
+                  <div
+                    key={addon.variantId}
+                    onClick={() => toggleAddon(addon.sku)}
+                    className={`regimen-addon-card ${isChecked ? 'is-checked' : ''}`}
+                  >
+                    <label className="addon-checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {}}
+                        className="addon-real-checkbox"
+                        aria-label={`افزودن ${addon.title}`}
+                      />
+                      <span className="addon-custom-check" aria-hidden="true" />
+                    </label>
 
-                  <div className="addon-content">
-                    <div className="addon-head-row">
-                      <h5 className="addon-title">{addon.title}</h5>
-                      <span className="addon-vol-tag">{addon.volume}</span>
-                    </div>
-                    <p className="addon-role">{addon.roleFa}</p>
-                    <div className="addon-price-row">
-                      <strong className="addon-price">{formatToman(addon.priceAmount)}</strong>
-                      <span className="addon-disc-tag">{addon.discountPercentage}٪ تخفیف مکمل</span>
+                    <div className="addon-content">
+                      <div className="addon-head-row">
+                        <h5 className="addon-title">{addon.title}</h5>
+                        <span className="addon-vol-tag">{addon.volume}</span>
+                      </div>
+                      <p className="addon-role">{addon.roleFa}</p>
+                      <div className="addon-price-row">
+                        <strong className="addon-price">{formatToman(addon.priceAmount)}</strong>
+                        <span className="addon-disc-tag">{addon.discountPercentage}٪ تخفیف مکمل</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Summary Footer with Live Price & Instant Checkout */}
         <div className="regimen-summary-footer">
           <div className="regimen-summary-meta">
             <div className="regimen-selected-items-summary">
               <span className="items-count-badge">اقلام پکیج: {totalItemCount} کالا</span>
               <span className="items-list-preview">
                 {selectedGel.volume} + {selectedPod.packSize}
-                {activeAddonsList.length > 0 && ` + ${activeAddonsList.map((a) => a.title.split(' ')[0]).join(', ')}`}
+                {activeAddonsList.length > 0 &&
+                  ` + ${activeAddonsList.map((a) => a.title.split(' ')[0]).join('، ')}`}
               </span>
             </div>
 
@@ -367,7 +465,9 @@ export function DynamicRegimenBuilder() {
               </div>
 
               <div className="regimen-calc-final-row">
-                <span className="calc-final-label">مبلغ پرداختی نهایی با {bundleDiscountPercent}٪ تخفیف پلکانی:</span>
+                <span className="calc-final-label">
+                  مبلغ پرداختی نهایی با {bundleDiscountPercent}٪ تخفیف پلکانی:
+                </span>
                 <strong className="calc-final-val">{formatToman(finalPriceRials)}</strong>
               </div>
 

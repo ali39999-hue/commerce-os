@@ -11,9 +11,11 @@ import {
   addToWishlist,
   type WishlistItem,
 } from '../../lib/wishlist';
+import { listProducts } from '../../lib/catalog';
 import {
-  RECOMMENDED_CLINICAL_PRODUCTS,
+  toClinicalCatalogItem,
   getCanonicalProductHref,
+  type CuratedProductItem,
 } from '../../lib/clinical-specs';
 import { CompareButton } from '../../components/discovery/compare-button';
 
@@ -21,6 +23,7 @@ export default function WishlistPage() {
   const { addItem } = useCart();
   const { formatToman } = useLocalizedFormatter();
   const [items, setItems] = useState<WishlistItem[] | null>(null);
+  const [recommendedProducts, setRecommendedProducts] = useState<CuratedProductItem[]>([]);
   const [transferredAll, setTransferredAll] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -32,6 +35,18 @@ export default function WishlistPage() {
     return () => {
       window.removeEventListener(WISHLIST_CHANGED_EVENT, sync);
       window.removeEventListener('storage', sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    listProducts({ collection: 'featured', limit: 6 }).then((res) => {
+      if (!cancelled && res?.data) {
+        setRecommendedProducts(res.data.slice(0, 6).map(toClinicalCatalogItem));
+      }
+    });
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -71,8 +86,9 @@ export default function WishlistPage() {
               <span>پیشنهاد فرمولاسیون‌های شاخص کلینیکال دکتر درمر جهت ذخیره</span>
             </h3>
             <div className="empty-recommendations-grid">
-              {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => {
+              {recommendedProducts.map((rec) => {
                 const recHref = getCanonicalProductHref(rec.slug);
+                const variantId = rec.variantId || rec.id;
                 return (
                   <article className="product-card" key={rec.id}>
                     <Link className="product-art" href={recHref}>
@@ -96,7 +112,7 @@ export default function WishlistPage() {
                           className="btn-transfer"
                           onClick={() => {
                             addToWishlist({
-                              variantId: rec.id,
+                              variantId,
                               productId: rec.id,
                               slug: rec.slug,
                               title: rec.title,

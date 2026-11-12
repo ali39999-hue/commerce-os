@@ -41,8 +41,19 @@ export class AdminGuard implements CanActivate {
 
     // 1) Server-to-server key (CI, verify scripts, internal tooling) —
     //    trusted clients may pin the tenant through the header.
-    const configuredKey = process.env.ADMIN_API_KEY;
-    if (configuredKey && apiKeyHeader && timingSafeEqualStrings(configuredKey, apiKeyHeader)) {
+    const rawConfiguredKey = process.env.ADMIN_API_KEY;
+    const configuredKey = rawConfiguredKey
+      ? rawConfiguredKey.trim().replace(/^["']|["']$/g, "")
+      : "";
+    const normalizedApiKeyHeader =
+      typeof apiKeyHeader === "string"
+        ? apiKeyHeader.trim().replace(/^["']|["']$/g, "")
+        : "";
+    if (
+      configuredKey &&
+      normalizedApiKeyHeader &&
+      timingSafeEqualStrings(configuredKey, normalizedApiKeyHeader)
+    ) {
       request.tenantId = headerTenant;
       return true;
     }

@@ -7,25 +7,39 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import {
   CartItem,
   CartCalculation,
+  CartFunnelStage,
+  ValidatedCouponRule,
   calculateCartTotals,
   verifyCartWithServer,
-  validateCoupon,
+  validateCouponRemote,
+  syncCartToServer,
+  syncCartStageToServer,
+  getOrCreateCartSessionId,
+  rotateCartSessionId,
+  readStoredCustomerAuth,
   MAX_QTY_PER_ITEM,
 } from "../lib/cart";
 import { trackAddToCart, trackRemoveFromCart } from "../lib/analytics";
 
-export type { CartItem, CartCalculation };
+export type { CartItem, CartCalculation, ValidatedCouponRule, CartFunnelStage };
+
+export interface CouponApplyOverrides {
+  customerPhone?: string;
+  customerType?: "B2C" | "B2B_CLINIC";
+  medicalLicenseNumber?: string;
+}
 
 interface CartContextType {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "qty">, qty?: number) => void;
   removeItem: (variantId: string) => void;
   setQty: (variantId: string, qty: number) => void;
-  clearCart: () => void;
+  clearCart: (rotateSession?: unknown) => void;
   itemCount: number;
   totalAmountRials: bigint;
   isReady: boolean;
@@ -33,50 +47,105 @@ interface CartContextType {
   openDrawer: () => void;
   closeDrawer: () => void;
   toggleDrawer: () => void;
+  cartSessionId: string;
   couponCode: string;
   setCouponCode: (code: string) => void;
   appliedCoupon: string | null;
-  applyCoupon: (code: string) => { success: boolean; message: string };
+  appliedCouponRule: ValidatedCouponRule | null;
+  applyCoupon: (
+    code: string,
+    overrides?: CouponApplyOverrides
+  ) => Promise<{ success: boolean; message: string }>;
   removeCoupon: () => void;
+  customerType: "B2C" | "B2B_CLINIC";
+  setCustomerType: (t: "B2C" | "B2B_CLINIC") => void;
+  buyerPhone: string;
+  setBuyerPhone: (p: string) => void;
+  clinicName: string;
+  setClinicName: (name: string) => void;
+  medicalLicenseNumber: string;
+  setMedicalLicenseNumber: (lic: string) => void;
   shippingMethod: string;
   setShippingMethod: (method: string) => void;
   calculations: CartCalculation;
   isSyncing: boolean;
   syncWarnings: string[];
   clearSyncWarnings: () => void;
+  syncStage: (
+    stage: CartFunnelStage,
+    extra?: { customerName?: string; customerPhone?: string; customerType?: "B2C" | "B2B_CLINIC" }
+  ) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 const STORAGE_KEY = "commerce_os.cart.v1";
 const COUPON_STORAGE_KEY = "commerce_os.cart.coupon.v1";
+const COUPON_RULE_STORAGE_KEY = "commerce_os.cart.coupon_rule.v1";
 const SHIPPING_STORAGE_KEY = "commerce_os.cart.shipping.v1";
+const CUSTOMER_TYPE_STORAGE_KEY = "commerce_os.cart.customer_type.v1";
+const BUYER_PHONE_STORAGE_KEY = "commerce_os.cart.buyer_phone.v1";
+const CLINIC_NAME_STORAGE_KEY = "commerce_os.cart.clinic_name.v1";
+const MEDICAL_LICENSE_STORAGE_KEY = "commerce_os.cart.medical_license.v1";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [cartSessionId, setCartSessionId] = useState("ssr-session");
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [appliedCouponRule, setAppliedCouponRule] = useState<ValidatedCouponRule | null>(null);
+  const [customerType, setCustomerType] = useState<"B2C" | "B2B_CLINIC">("B2C");
+  const [buyerPhone, setBuyerPhone] = useState("");
+  const [clinicName, setClinicName] = useState("");
+  const [medicalLicenseNumber, setMedicalLicenseNumber] = useState("");
   const [shippingMethod, setShippingMethod] = useState("POST_PISHTAZ");
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncWarnings, setSyncWarnings] = useState<string[]>([]);
 
+  const hasSyncedCartRef = useRef(false);
+  const skipNextEmptySyncRef = useRef(false);
+
   // Load from local storage
   useEffect(() => {
     try {
+      setCartSessionId(getOrCreateCartSessionId());
       const savedItems = localStorage.getItem(STORAGE_KEY);
       if (savedItems) {
-        setItems(JSON.parse(savedItems));
+        const parsed = JSON.parse(savedItems);
+        setItems(parsed);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          hasSyncedCartRef.current = true;
+        }
       }
       const savedCoupon = localStorage.getItem(COUPON_STORAGE_KEY);
       if (savedCoupon) {
         setAppliedCoupon(savedCoupon);
         setCouponCode(savedCoupon);
       }
+      const savedRule = localStorage.getItem(COUPON_RULE_STORAGE_KEY);
+      if (savedRule) {
+        setAppliedCouponRule(JSON.parse(savedRule));
+      }
       const savedShipping = localStorage.getItem(SHIPPING_STORAGE_KEY);
       if (savedShipping) {
         setShippingMethod(savedShipping);
       }
+      const savedCustomerType = localStorage.getItem(CUSTOMER_TYPE_STORAGE_KEY);
+      if (savedCustomerType === "B2B_CLINIC" || savedCustomerType === "B2C") {
+        setCustomerType(savedCustomerType);
+      }
+      const savedPhone = localStorage.getItem(BUYER_PHONE_STORAGE_KEY);
+      const auth = readStoredCustomerAuth();
+      if (savedPhone) {
+        setBuyerPhone(savedPhone);
+      } else if (auth.phone) {
+        setBuyerPhone(auth.phone);
+      }
+      const savedClinic = localStorage.getItem(CLINIC_NAME_STORAGE_KEY);
+      if (savedClinic) setClinicName(savedClinic);
+      const savedLicense = localStorage.getItem(MEDICAL_LICENSE_STORAGE_KEY);
+      if (savedLicense) setMedicalLicenseNumber(savedLicense);
     } catch {
       // ignore storage error
     }
@@ -94,7 +163,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isReady]);
 
-  // Save coupon
+  // Save coupon & rule
   useEffect(() => {
     if (isReady) {
       try {
@@ -103,22 +172,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         } else {
           localStorage.removeItem(COUPON_STORAGE_KEY);
         }
+        if (appliedCouponRule) {
+          localStorage.setItem(COUPON_RULE_STORAGE_KEY, JSON.stringify(appliedCouponRule));
+        } else {
+          localStorage.removeItem(COUPON_RULE_STORAGE_KEY);
+        }
       } catch {
         // ignore
       }
     }
-  }, [appliedCoupon, isReady]);
+  }, [appliedCoupon, appliedCouponRule, isReady]);
 
-  // Save shipping
+  // Save buyer context
   useEffect(() => {
-    if (isReady) {
-      try {
-        localStorage.setItem(SHIPPING_STORAGE_KEY, shippingMethod);
-      } catch {
-        // ignore
-      }
+    if (!isReady) return;
+    try {
+      localStorage.setItem(SHIPPING_STORAGE_KEY, shippingMethod);
+      localStorage.setItem(CUSTOMER_TYPE_STORAGE_KEY, customerType);
+      if (buyerPhone) localStorage.setItem(BUYER_PHONE_STORAGE_KEY, buyerPhone);
+      else localStorage.removeItem(BUYER_PHONE_STORAGE_KEY);
+      if (clinicName) localStorage.setItem(CLINIC_NAME_STORAGE_KEY, clinicName);
+      else localStorage.removeItem(CLINIC_NAME_STORAGE_KEY);
+      if (medicalLicenseNumber) localStorage.setItem(MEDICAL_LICENSE_STORAGE_KEY, medicalLicenseNumber);
+      else localStorage.removeItem(MEDICAL_LICENSE_STORAGE_KEY);
+    } catch {
+      // ignore
     }
-  }, [shippingMethod, isReady]);
+  }, [shippingMethod, customerType, buyerPhone, clinicName, medicalLicenseNumber, isReady]);
 
   // Periodic and on-mount server inventory check
   useEffect(() => {
@@ -128,14 +208,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setIsSyncing(true);
 
     verifyCartWithServer(items)
-      .then(({ verifiedItems, priceChanges, stockIssues }) => {
+      .then(({ verifiedItems, priceChanges, stockIssues, hasRepairs }) => {
         if (!active) return;
         const allNotes = [...priceChanges, ...stockIssues];
         if (allNotes.length > 0) {
           setSyncWarnings(allNotes);
         }
-        // Update price in cart if server updated price
-        if (priceChanges.length > 0) {
+        if (priceChanges.length > 0 || hasRepairs) {
           setItems(verifiedItems);
         }
       })
@@ -147,6 +226,54 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       active = false;
     };
   }, [isReady]);
+
+  const calculations = useMemo(() => {
+    return calculateCartTotals(items, appliedCoupon, shippingMethod, appliedCouponRule);
+  }, [items, appliedCoupon, shippingMethod, appliedCouponRule]);
+
+  // Debounced live push of Cart contents & buyer state to PostgreSQL + Admin ERP
+  useEffect(() => {
+    if (!isReady || !cartSessionId || cartSessionId === "ssr-session") return;
+    if (items.length === 0) {
+      if (skipNextEmptySyncRef.current) {
+        skipNextEmptySyncRef.current = false;
+        return;
+      }
+      if (!hasSyncedCartRef.current) return;
+    } else {
+      hasSyncedCartRef.current = true;
+    }
+
+    const timer = setTimeout(() => {
+      void syncCartToServer({
+        sessionId: cartSessionId,
+        items,
+        customerName: clinicName.trim() || undefined,
+        customerPhone: buyerPhone.trim() || undefined,
+        customerType,
+        stage: items.length === 0 ? "ABANDONED" : "BROWSING",
+        couponCode: appliedCoupon,
+        shippingMethod,
+        subtotalTomans: Number(calculations.subtotalTomans),
+        discountTomans: Number(calculations.discountTomans),
+        totalTomans: Number(calculations.totalTomans),
+      });
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [
+    isReady,
+    cartSessionId,
+    items,
+    appliedCoupon,
+    shippingMethod,
+    customerType,
+    buyerPhone,
+    clinicName,
+    calculations.subtotalTomans,
+    calculations.discountTomans,
+    calculations.totalTomans,
+  ]);
 
   const addItem = useCallback((item: Omit<CartItem, "qty">, qty = 1) => {
     setItems((prev) => {
@@ -222,9 +349,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const clearCart = useCallback(() => {
+  const clearCart = useCallback((rotateSession?: unknown) => {
+    if (rotateSession === true) {
+      skipNextEmptySyncRef.current = true;
+      hasSyncedCartRef.current = false;
+      setCartSessionId(rotateCartSessionId());
+    }
     setItems([]);
     setAppliedCoupon(null);
+    setAppliedCouponRule(null);
     setCouponCode("");
   }, []);
 
@@ -233,24 +366,41 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const toggleDrawer = useCallback(() => setIsDrawerOpen((v) => !v), []);
 
   const applyCoupon = useCallback(
-    (code: string) => {
+    async (
+      code: string,
+      overrides?: CouponApplyOverrides
+    ): Promise<{ success: boolean; message: string }> => {
       const subtotalRials = items.reduce(
         (sum, i) => sum + BigInt(i.priceAmount) * BigInt(i.qty),
         0n
       );
-      const res = validateCoupon(code, subtotalRials);
-      if (res.valid) {
-        const clean = code.trim().toUpperCase();
-        setAppliedCoupon(clean);
+      const effectiveType = overrides?.customerType ?? customerType;
+      const effectivePhone = overrides?.customerPhone ?? (buyerPhone || undefined);
+      const effectiveLicense = overrides?.medicalLicenseNumber ?? (medicalLicenseNumber || undefined);
+
+      const res = await validateCouponRemote({
+        code,
+        subtotalRials,
+        customerPhone: effectivePhone,
+        customerType: effectiveType,
+        medicalLicenseNumber: effectiveLicense,
+      });
+
+      if (res.valid && res.rule) {
+        setAppliedCoupon(res.rule.code);
+        setAppliedCouponRule(res.rule);
+        setCouponCode(res.rule.code);
         return { success: true, message: res.message };
       }
+
       return { success: false, message: res.message };
     },
-    [items]
+    [items, customerType, buyerPhone, medicalLicenseNumber]
   );
 
   const removeCoupon = useCallback(() => {
     setAppliedCoupon(null);
+    setAppliedCouponRule(null);
     setCouponCode("");
   }, []);
 
@@ -258,9 +408,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setSyncWarnings([]);
   }, []);
 
-  const calculations = useMemo(() => {
-    return calculateCartTotals(items, appliedCoupon, shippingMethod);
-  }, [items, appliedCoupon, shippingMethod]);
+  const syncStage = useCallback(
+    (
+      stage: CartFunnelStage,
+      extra?: { customerName?: string; customerPhone?: string; customerType?: "B2C" | "B2B_CLINIC" }
+    ) => {
+      if (!cartSessionId || cartSessionId === "ssr-session") return;
+      void syncCartStageToServer({
+        sessionId: cartSessionId,
+        stage,
+        customerName: extra?.customerName ?? (clinicName.trim() || undefined),
+        customerPhone: extra?.customerPhone ?? (buyerPhone.trim() || undefined),
+        customerType: extra?.customerType ?? customerType,
+        couponCode: appliedCoupon,
+        shippingMethod,
+        subtotalTomans: Number(calculations.subtotalTomans),
+        discountTomans: Number(calculations.discountTomans),
+        totalTomans: Number(calculations.totalTomans),
+      });
+    },
+    [
+      cartSessionId,
+      clinicName,
+      buyerPhone,
+      customerType,
+      appliedCoupon,
+      shippingMethod,
+      calculations.subtotalTomans,
+      calculations.discountTomans,
+      calculations.totalTomans,
+    ]
+  );
 
   const value = useMemo(
     () => ({
@@ -276,17 +454,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       openDrawer,
       closeDrawer,
       toggleDrawer,
+      cartSessionId,
       couponCode,
       setCouponCode,
       appliedCoupon,
+      appliedCouponRule,
       applyCoupon,
       removeCoupon,
+      customerType,
+      setCustomerType,
+      buyerPhone,
+      setBuyerPhone,
+      clinicName,
+      setClinicName,
+      medicalLicenseNumber,
+      setMedicalLicenseNumber,
       shippingMethod,
       setShippingMethod,
       calculations,
       isSyncing,
       syncWarnings,
       clearSyncWarnings,
+      syncStage,
     }),
     [
       items,
@@ -300,14 +489,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       openDrawer,
       closeDrawer,
       toggleDrawer,
+      cartSessionId,
       couponCode,
       appliedCoupon,
+      appliedCouponRule,
       applyCoupon,
       removeCoupon,
+      customerType,
+      buyerPhone,
+      clinicName,
+      medicalLicenseNumber,
       shippingMethod,
       isSyncing,
       syncWarnings,
       clearSyncWarnings,
+      syncStage,
     ]
   );
 

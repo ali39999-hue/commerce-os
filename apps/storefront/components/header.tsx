@@ -15,7 +15,7 @@ export function SiteHeader() {
   const cart = useCart();
   const { itemCount = 0, isReady = true, openDrawer } = cart ?? {};
   const computedTotal =
-    cart?.calculations?.grandTotalTomans != null
+    itemCount > 0 && cart?.calculations?.grandTotalTomans != null && cart.calculations.grandTotalTomans > 0n
       ? `${cart.calculations.grandTotalTomans.toLocaleString('fa-IR')} تومان`
       : '۰ تومان';
   const [searchTerm, setSearchTerm] = useState("");
@@ -152,7 +152,7 @@ export function SiteHeader() {
     <>
       {/* ── 1. Top Clinical Announcement & Utility Bar ── */}
       <div className="rupak-store-topbar">
-        <a href="tel:09358727492" className="rupak-phone-badge" title="پشتیبانی روپاک">
+        <a href="tel:09358727492" className="rupak-phone-badge" title="پشتیبانی dermavia">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
           </svg>
@@ -180,15 +180,14 @@ export function SiteHeader() {
               </svg>
             </button>
 
-            <Link className="rupak-brand-link" href="/" aria-label="فروشگاه روپاک - صفحه اصلی">
-              <div className="rupak-logo-mark">
-                <svg width="34" height="34" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 36V10C12 10 18 8 26 8C33 8 36 12 36 17C36 22 31 25 24 25" stroke="#1e293b" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M18 24L34 37" stroke="#1e293b" strokeWidth="3.4" strokeLinecap="round" />
-                  <path d="M23 15C25 12 29 11 31 13C33 15 32 19 28 21" stroke="#77B091" strokeWidth="2.2" strokeLinecap="round" />
-                </svg>
-              </div>
-              <span className="rupak-logo-text" style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b', letterSpacing: '0.04em' }}>RUPAK</span>
+            <Link className="rupak-brand-link" href="/" aria-label="dermavia - صفحه اصلی">
+              <img
+                src="/assets/dermavia-logo.svg"
+                alt="dermavia"
+                width={150}
+                height={36}
+                style={{ display: 'block', height: '36px', width: 'auto', objectFit: 'contain' }}
+              />
             </Link>
           </div>
 
@@ -213,8 +212,15 @@ export function SiteHeader() {
           {/* Action Hub */}
           <div className="header-actions rupak-actions-style">
             {/* 1. Cart with amount pill (۰ تومان) */}
-            <Link
-              href="/cart"
+            <button
+              type="button"
+              onClick={() => {
+                if (openDrawer) {
+                  openDrawer();
+                } else {
+                  router.push("/cart");
+                }
+              }}
               className={`rupak-header-cart-btn ${isCartBumping ? 'cart-bump-active' : ''}`}
               aria-label={`سبد خرید با ${itemCount} قلم کالا و مبلغ ${computedTotal}`}
             >
@@ -231,7 +237,7 @@ export function SiteHeader() {
                   </span>
                 )}
               </div>
-            </Link>
+            </button>
 
             {/* 2. Wishlist Heart Icon */}
             <Link href="/wishlist" className="rupak-header-icon-btn" aria-label="علاقه‌مندی‌ها">
@@ -265,11 +271,11 @@ export function SiteHeader() {
                     </div>
                     <div className="rupak-dropdown-user-info">
                       <strong className="rupak-dropdown-user-name">
-                        {authUser.fullName || authUser.username || "کاربر روپاک"}
+                        {authUser.fullName || authUser.username || "کاربر dermavia"}
                       </strong>
                       <span className="rupak-dropdown-user-badge">
                         <span className="rupak-user-dot-pulse" />
-                        حساب فعال روپاک
+                        حساب فعال dermavia
                       </span>
                     </div>
                   </div>

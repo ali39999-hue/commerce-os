@@ -277,4 +277,47 @@ export class PaymentsService {
       refId: `C2C-${receipt.referenceNumber}`,
     };
   }
+
+  async rejectCardToCardReceipt(receiptId: string, reviewer: string, reason?: string) {
+    const receipt = await this.prisma.cardToCardReceipt.findUnique({
+      where: { id: receiptId },
+      include: {
+        paymentIntent: {
+          include: { order: true },
+        },
+      },
+    });
+
+    if (!receipt || receipt.status !== "PENDING_REVIEW") {
+      throw new BadRequestException("فیش واریزی در وضعیت انتظار بررسی نیست");
+    }
+
+    const intent = receipt.paymentIntent;
+    await this.prisma.$transaction(async (tx) => {
+      await tx.cardToCardReceipt.update({
+        where: { id: receiptId },
+        data: {
+          status: "REJECTED",
+          reviewedBy: reviewer,
+          reviewedAt: new Date(),
+        },
+      });
+
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: intent.orderId,
+          fromStatus: intent.order.status,
+          toStatus: intent.order.status,
+          actor: reviewer,
+          reason: reason?.trim() || `رد فیش واریز بانکی شماره ${receipt.referenceNumber}`,
+        },
+      });
+    });
+
+    return {
+      success: true,
+      orderId: intent.orderId,
+      status: "REJECTED",
+    };
+  }
 }

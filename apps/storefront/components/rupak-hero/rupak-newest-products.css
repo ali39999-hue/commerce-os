@@ -76,6 +76,7 @@
 }
 
 .rupak-newest-title {
+  font-family: 'MyBaby', 'MyBaby Chubby', sans-serif !important;
   font-size: 32px;
   font-weight: 900;
   line-height: 1.25;
@@ -251,11 +252,12 @@
 }
 
 .rupak-newest-card {
-  flex: 0 0 215px;
+  flex: 0 0 220px;
   background-color: #ffffff;
-  border-radius: 28px;
+  border-radius: 20px;
+  border: 1px solid #eef2f6;
   padding: 14px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -263,12 +265,13 @@
   scroll-snap-align: start;
   text-decoration: none;
   box-sizing: border-box;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .rupak-newest-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  border-color: #dce5dc;
+  box-shadow: 0 12px 28px rgba(55, 84, 55, 0.08);
 }
 
 /* Top Discount Badge */
@@ -292,13 +295,13 @@
 
 .rupak-newest-img-box {
   width: 100%;
-  height: 135px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
   overflow: hidden;
-  background-color: #fbfbfc;
+  background-color: #f7f9f7;
   border-radius: 12px;
 }
 
@@ -310,13 +313,13 @@
 }
 
 .rupak-newest-card:hover .rupak-newest-img {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
 .rupak-newest-category {
   font-size: 11px;
-  color: #d97706;
-  font-weight: 700;
+  color: #acaec2;
+  font-weight: 600;
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -324,21 +327,21 @@
 }
 
 .rupak-newest-card-title {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: #1e293b;
-  line-height: 1.5;
+  color: #375437;
+  line-height: 1.45;
   margin: 0 0 10px 0;
-  min-height: 38px;
+  min-height: 40px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .rupak-newest-card:hover .rupak-newest-card-title {
-  color: #77B091;
+  color: #274b24;
 }
 
 .rupak-newest-price-row {
@@ -372,29 +375,29 @@
 /* "افزودن به سبد خرید" Button */
 .rupak-newest-add-btn {
   width: 100%;
-  background-color: #77B091;
-  color: #ffffff;
+  height: 38px;
+  background-color: #edf2ed;
+  color: #375437;
   border: none;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 800;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 2px 8px rgba(95, 168, 125, 0.3);
-  transition: all 0.22s ease;
+  transition: all 0.2s ease;
 }
 
 .rupak-newest-add-btn:hover {
-  background-color: #5e9577;
+  background-color: #dfe8df;
+  color: #274b24;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(95, 168, 125, 0.45);
 }
 
 .rupak-newest-add-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 /* Responsive */

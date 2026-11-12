@@ -108,6 +108,18 @@ export interface SkincareBundleItem {
   inStock: boolean;
 }
 
+export interface HierarchicalSpecItem {
+  label: string;
+  value: string;
+}
+
+export interface HierarchicalSpecGroup {
+  id: string;
+  groupTitle: string;
+  groupIcon?: string;
+  items: HierarchicalSpecItem[];
+}
+
 export interface ProductDetailedOverview {
   introParagraphs?: string[];
   featuresTitle?: string;
@@ -116,9 +128,19 @@ export interface ProductDetailedOverview {
   keyIngredients?: Array<{
     name: string;
     description: string;
+    iconType?: 'wave' | 'droplet' | 'shield' | string;
   }>;
   usageTitle?: string;
   usageInstructions?: string;
+  usageRecommendation?: string;
+  specs?: {
+    volume?: string;
+    origin?: string;
+    expiration?: string;
+    skinType?: string;
+    texture?: string;
+  };
+  hierarchicalSpecs?: HierarchicalSpecGroup[];
 }
 
 export interface ExtendedProductData {

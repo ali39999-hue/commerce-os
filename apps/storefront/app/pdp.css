@@ -4166,3 +4166,619 @@
 
 
 
+
+
+/* =========================================================================
+   2. Gamified Interactive Clinical Protocol & Bohr Simulation System
+   ========================================================================= */
+.protocol-gamified-root {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 1. Gamification HUD Header */
+.gamified-hud-card {
+  background: linear-gradient(135deg, #071520 0%, #0c2332 50%, #061e2a 100%);
+  border: 1px solid rgba(13, 148, 136, 0.35);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  color: #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.gamified-hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.hud-player-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hud-avatar-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d9488, #10b981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.hud-player-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hud-player-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-rank-tag {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.hud-xp-badge {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+.hud-xp-track {
+  width: 220px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hud-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.7);
+}
+
+/* Speed Controls */
+.hud-speed-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-speed-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.speed-pills-row {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.speed-pill-btn {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speed-pill-btn:hover {
+  color: #ffffff;
+}
+
+.speed-pill-btn.active {
+  background: #0d9488;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.5);
+}
+
+/* Physiological Telemetry Gauges */
+.hud-telemetry-gauges-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.hud-gauge-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.gauge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.gauge-icon {
+  font-size: 1.1rem;
+}
+
+.gauge-title {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  font-weight: 700;
+  margin-right: 6px;
+  flex: 1;
+}
+
+.gauge-val {
+  font-size: 0.92rem;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+.gauge-val.glow-val {
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+.gauge-val.o2-val {
+  color: #fb7185;
+  text-shadow: 0 0 10px rgba(251, 113, 133, 0.5);
+}
+
+.gauge-val.co2-val {
+  color: #34d399;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+}
+
+.gauge-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.gauge-fill.glow-fill {
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+}
+
+.gauge-fill.o2-fill {
+  background: linear-gradient(90deg, #e11d48, #fb7185);
+}
+
+.gauge-fill.co2-fill {
+  background: linear-gradient(90deg, #059669, #34d399);
+}
+
+/* 2. Interactive Gamified Action Box */
+.gamified-action-box {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 100%);
+  border: 1.5px solid #0d9488;
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 18px rgba(13, 148, 136, 0.12);
+  position: relative;
+}
+
+.gamified-action-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.action-game-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0f766e;
+  background: #ccfbf1;
+  padding: 3px 12px;
+  border-radius: 999px;
+}
+
+.action-xp-gain {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.gamified-action-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gamified-action-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #042f2e;
+  margin: 0 0 4px 0;
+}
+
+.gamified-action-sub {
+  font-size: 0.84rem;
+  color: #0f766e;
+  margin: 0;
+}
+
+.gamified-btn-relative-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.gamified-interactive-btn {
+  background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.gamified-interactive-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.45);
+}
+
+.gamified-interactive-btn:active {
+  transform: scale(0.95);
+}
+
+.gamified-interactive-btn.is-bohr-clicker {
+  background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.4);
+}
+
+.floating-bubble-particle {
+  position: absolute;
+  pointer-events: none;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  z-index: 25;
+  animation: floatFadeUp 1.4s ease-out forwards;
+}
+
+@keyframes floatFadeUp {
+  0% {
+    transform: translate(-50%, 0) scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -65px) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* 3. Badges Ribbon */
+.protocol-badges-ribbon-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.badges-ribbon-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.badges-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.badges-count {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0d9488;
+  background: #f0fdfa;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid #ccfbf1;
+}
+
+.badges-grid-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.badge-item-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  transition: all 0.2s ease;
+}
+
+.badge-item-pill.unlocked {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-color: #86efac;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.12);
+}
+
+.badge-item-pill.locked {
+  background: #f8fafc;
+  opacity: 0.55;
+}
+
+.badge-item-pill .badge-icon {
+  font-size: 1.4rem;
+}
+
+.badge-item-pill .badge-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-name {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.badge-status-txt {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* 4. Victory Celebration Modal */
+.victory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.victory-modal-content {
+  background: #ffffff;
+  border-radius: 22px;
+  max-width: 540px;
+  width: 100%;
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  border: 2px solid #f59e0b;
+  animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.victory-confetti-top {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+}
+
+.victory-main-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+  line-height: 1.35;
+}
+
+.victory-sub-desc {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.65;
+  margin: 0 0 20px 0;
+}
+
+.victory-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 22px;
+  background: #f8fafc;
+  padding: 14px 10px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.victory-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.v-stat-num {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0d9488;
+}
+
+.v-stat-lbl {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.victory-coupon-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px dashed #f59e0b;
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+}
+
+.coupon-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+
+.coupon-card-desc {
+  font-size: 0.8rem;
+  color: #78350f;
+  margin: 0 0 10px 0;
+}
+
+.coupon-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.coupon-code-chip {
+  background: #ffffff;
+  border: 1.5px solid #d97706;
+  color: #b45309;
+  font-weight: 900;
+  font-family: monospace;
+  font-size: 1.15rem;
+  padding: 8px 18px;
+  border-radius: 8px;
+  letter-spacing: 2px;
+}
+
+.coupon-copy-btn {
+  background: #d97706;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.coupon-copy-btn:hover {
+  background: #b45309;
+}
+
+.victory-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.victory-close-btn {
+  background: #0d9488;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.victory-close-btn:hover {
+  background: #0f766e;
+}
+
+.victory-replay-btn {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.victory-replay-btn:hover {
+  background: #f1f5f9;
+}
+
+@media (max-width: 900px) {
+  .hud-telemetry-gauges-row {
+    grid-template-columns: 1fr;
+  }
+  .gamified-hud-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .victory-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

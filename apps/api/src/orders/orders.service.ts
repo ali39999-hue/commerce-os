@@ -67,15 +67,28 @@ export class OrdersService {
   }) {
     const { storeId, status, limit = 20, offset = 0 } = params;
 
+    let resolvedStoreId = storeId;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(storeId);
+    if (!isUuid) {
+      const store = await this.prisma.store.findFirst({
+        where: { slug: storeId },
+        select: { id: true },
+      });
+      if (store) {
+        resolvedStoreId = store.id;
+      }
+    }
+
     const [items, total] = await Promise.all([
       this.prisma.order.findMany({
         where: {
-          storeId,
+          storeId: resolvedStoreId,
           ...(status ? { status } : {}),
         },
         include: {
           lines: true,
           paymentIntents: true,
+          shipments: true,
         },
         orderBy: { createdAt: "desc" },
         take: limit,
@@ -83,13 +96,157 @@ export class OrdersService {
       }),
       this.prisma.order.count({
         where: {
-          storeId,
+          storeId: resolvedStoreId,
           ...(status ? { status } : {}),
         },
       }),
     ]);
 
     return { items, total, limit, offset };
+  }
+
+  async listAdminOrders(params: {
+    tenantId?: string;
+    storeId?: string;
+    status?: OrderStatus;
+    limit?: number;
+    offset?: number;
+  }) {
+    const { tenantId, storeId, status, limit = 50, offset = 0 } = params;
+
+    let resolvedStoreId = storeId;
+    if (storeId) {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(storeId);
+      if (!isUuid) {
+        const store = await this.prisma.store.findFirst({
+          where: { slug: storeId },
+          select: { id: true },
+        });
+        if (store) resolvedStoreId = store.id;
+      }
+    }
+
+    const isDefaultTenant = !tenantId || tenantId === "00000000-0000-0000-0000-000000000000";
+    const where = {
+      ...(!isDefaultTenant ? { tenantId } : {}),
+      ...(resolvedStoreId ? { storeId: resolvedStoreId } : {}),
+      ...(status ? { status } : {}),
+    };
+
+    const [rawOrders, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          lines: true,
+          paymentIntents: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+          shipments: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    const methodMap: Record<string, string> = {
+      ZARINPAL: "زرین‌پال (شاپرک)",
+      ZIBAL: "زیبال (شاپرک)",
+      CARD_TO_CARD: "کارت‌به‌کارت بانکی",
+      WALLET: "کیف پول اعتباری",
+    };
+
+    const items = rawOrders.map((order) => {
+      const pi = order.paymentIntents?.[0];
+      const paymentMethod = (pi && methodMap[pi.method]) || "پرداخت آنلاین";
+      const totalAmountTomans = Math.round(Number(order.totalAmount) / 10);
+
+      return {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        customerName: order.customerName,
+        customerPhone: order.customerPhone,
+        customerType: (order.customerType || "B2C") as "B2C" | "B2B_CLINIC",
+        couponCode: order.couponCode || undefined,
+        visitorCode: order.visitorCode || undefined,
+        clinicName: order.clinicName || undefined,
+        status: order.status,
+        totalAmountTomans,
+        paymentMethod,
+        createdAt: order.createdAt.toISOString(),
+        trackingNumber: order.shipments?.[0]?.trackingNumber || undefined,
+        itemsCount: order.lines.reduce((acc, l) => acc + l.qty, 0),
+        lines: order.lines.map((l) => ({
+          id: l.id,
+          titleFa: l.titleFa,
+          sku: l.sku,
+          qty: l.qty,
+          unitPriceTomans: Math.round(Number(l.unitPrice) / 10),
+          subtotalTomans: Math.round(Number(l.subtotal) / 10),
+        })),
+      };
+    });
+
+    return { items, total, limit, offset };
+  }
+
+  async listAdminReceipts(params: {
+    tenantId?: string;
+    status?: string;
+    limit?: number;
+  }) {
+    const { tenantId, status, limit = 50 } = params;
+    const isDefaultTenant = !tenantId || tenantId === "00000000-0000-0000-0000-000000000000";
+
+    const receipts = await this.prisma.cardToCardReceipt.findMany({
+      where: {
+        ...(status ? { status: status as any } : {}),
+        ...(!isDefaultTenant
+          ? { paymentIntent: { tenantId } }
+          : {}),
+      },
+      include: {
+        paymentIntent: {
+          include: {
+            order: {
+              select: {
+                id: true,
+                orderNumber: true,
+                customerName: true,
+                customerPhone: true,
+                customerType: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+
+    const items = receipts.map((r) => ({
+      id: r.id,
+      orderId: r.paymentIntent.orderId,
+      orderNumber: r.paymentIntent.order.orderNumber,
+      customerName: r.paymentIntent.order.customerName,
+      customerPhone: r.paymentIntent.order.customerPhone,
+      customerType: r.paymentIntent.order.customerType || "B2C",
+      amountTomans: Math.round(Number(r.paymentIntent.amount) / 10),
+      referenceNumber: r.referenceNumber,
+      payerCardNumber: r.payerCardNumber || "****",
+      receiptImageUrl: r.receiptImageUrl || undefined,
+      status: r.status,
+      reviewedBy: r.reviewedBy || undefined,
+      reviewedAt: r.reviewedAt?.toISOString(),
+      submittedAt: r.createdAt.toISOString(),
+    }));
+
+    return { items, total: items.length };
   }
 
   async transitionStatus(orderIdOrNumber: string, toStatus: OrderStatus, actor: string, reason?: string) {

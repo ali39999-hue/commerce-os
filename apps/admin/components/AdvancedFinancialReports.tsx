@@ -12,7 +12,12 @@ import {
   ShieldCheck,
   TrendingUp,
 } from "lucide-react";
-import { CHART_OF_ACCOUNTS, buildSepidarCsv } from "@commerce-os/finance";
+import {
+  CHART_OF_ACCOUNTS,
+  buildSepidarCsv,
+  formatAccountingJalaliDate,
+  getFiscalYear,
+} from "@commerce-os/finance";
 import { formatJalaliDateTime } from "@commerce-os/localization";
 import { faNumber, authedFetch } from "./types";
 
@@ -221,7 +226,27 @@ export default function AdvancedFinancialReports({ userRole = "SUPER_ADMIN" }: {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          // Live API data can be mapped if backend populated
+          const hasActivity = data.some(
+            (r: any) => BigInt(r.totalDebitRials || "0") > 0n || BigInt(r.totalCreditRials || "0") > 0n,
+          );
+          if (hasActivity) {
+            setTrialRows(
+              data.map((r: any) => {
+                const turnoverDebitRials = BigInt(r.totalDebitRials || "0");
+                const turnoverCreditRials = BigInt(r.totalCreditRials || "0");
+                const net = turnoverDebitRials - turnoverCreditRials;
+                return {
+                  code: String(r.code),
+                  nameFa: String(r.nameFa || r.code),
+                  category: r.category,
+                  turnoverDebitRials,
+                  turnoverCreditRials,
+                  balanceDebitRials: net > 0n ? net : 0n,
+                  balanceCreditRials: net < 0n ? -net : 0n,
+                };
+              }),
+            );
+          }
         }
       }
     } catch {
@@ -241,11 +266,16 @@ export default function AdvancedFinancialReports({ userRole = "SUPER_ADMIN" }: {
       return;
     }
 
+    const now = new Date();
+    const jalaliDate = formatAccountingJalaliDate(now);
+    const fiscalPeriod = getFiscalYear(now);
+    const isoDate = now.toISOString();
+
     const rows = trialRows.map((r) => ({
-      entryNumber: `TB-1405-${r.code}`,
-      jalaliDate: "1405/08/15",
-      isoDate: new Date().toISOString(),
-      fiscalPeriod: "1405",
+      entryNumber: `TB-${fiscalPeriod}-${r.code}`,
+      jalaliDate,
+      isoDate,
+      fiscalPeriod,
       accountCode: r.code,
       accountName: r.nameFa,
       entryDescription: `تراز آزمایشی دوره جاری حساب ${r.nameFa}`,

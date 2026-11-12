@@ -2,8 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  API_BASE,
-  TENANT_HEADERS,
+  authedFetch,
   faNumber,
   postTenantJson,
   patchTenantJson,
@@ -16,155 +15,105 @@ import {
   DollarSign,
   CheckCircle2,
   Package,
-  Layers,
-  Sparkles,
   FlaskConical,
-  X,
-  Save,
+  Trash2,
 } from "lucide-react";
+
+export interface PimIngredientRow {
+  id?: string;
+  name: string;
+  inciName?: string | null;
+  concentrationPercent?: string | null;
+  purpose?: string | null;
+  isKeyIngredient?: boolean;
+}
+
+export interface PimClaimRow {
+  id?: string;
+  claimText: string;
+  studyReference?: string | null;
+  status?: "APPROVED" | "DRAFT" | "REVIEW_REQUIRED";
+}
 
 export interface PimProduct {
   id: string;
   slug: string;
   titleFa: string;
+  description?: string | null;
   category: string;
+  categorySlug?: string | null;
   brand: string;
+  brandSlug?: string | null;
   status: "PUBLISHED" | "DRAFT" | "ARCHIVED";
   priceTomans: number;
   variantsCount: number;
   ingredientsCount: number;
   claimsCount: number;
+  ingredients: PimIngredientRow[];
+  claims: PimClaimRow[];
   images: string[];
-  inStock?: boolean;
+  inStock: boolean;
+  inventoryQty: number;
 }
 
-const INITIAL_PRODUCTS: PimProduct[] = [
-  {
-    id: "prod_drdermer_001",
-    slug: "carboxygel",
-    titleFa: "ژل حرفه‌ای کربوکسی‌تراپی CarboxyGel™ Professional Therapy",
-    category: "کربوکسی‌تراپی و اکسیژن‌رسانی",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 3200000,
-    variantsCount: 2,
-    ingredientsCount: 7,
-    claimsCount: 4,
-    images: ["/assets/drdermer/2025/07/carboxygel.png"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_002",
-    slug: "carboxypod",
-    titleFa: "کپسول‌های فعال‌ساز کربوکسی‌پاد CarboxyPod™ Activation Pods",
-    category: "پادهای لایه‌بردار و فعال‌ساز",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 1200000,
-    variantsCount: 3,
-    ingredientsCount: 6,
-    claimsCount: 3,
-    images: ["/assets/drdermer/2025/07/carbon-carboxypod-1.png"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_003",
-    slug: "carboxypad",
-    titleFa: "شیت ماسک‌های فعال‌ساز صورت و گردن CarboxyPad™",
-    category: "ماسک‌های ترنس‌درمال",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 1400000,
-    variantsCount: 2,
-    ingredientsCount: 4,
-    claimsCount: 3,
-    images: ["/assets/drdermer/2025/07/carboxypad-1024x198.png"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_004",
-    slug: "crystalene",
-    titleFa: "خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste",
-    category: "میکرودرم و لایه‌برداری",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 1750000,
-    variantsCount: 1,
-    ingredientsCount: 9,
-    claimsCount: 4,
-    images: ["/assets/drdermer/2025/08/15crystalene-1200x1109.webp"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_005",
-    slug: "healene",
-    titleFa: "ژل تسکین‌بخش و ترمیم سد دفاعی هیلین Healene Soothing Gel",
-    category: "ترمیم و التیام پوست",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 1650000,
-    variantsCount: 1,
-    ingredientsCount: 8,
-    claimsCount: 4,
-    images: ["/assets/drdermer/2025/08/13healene-1200x1109.webp"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_006",
-    slug: "silicalene",
-    titleFa: "اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub",
-    category: "دتوکس و کنترل سبوم",
-    brand: "ReeSkin Clinical",
-    status: "PUBLISHED",
-    priceTomans: 1550000,
-    variantsCount: 1,
-    ingredientsCount: 9,
-    claimsCount: 3,
-    images: ["/assets/drdermer/2025/08/14silicalene-1200x1109.webp"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_007",
-    slug: "carbox",
-    titleFa: "ایستگاه بالینی کربوکسی‌تراپی CarboX™ Medical Station",
-    category: "تجهیزات کلینیکال و پزشکی",
-    brand: "ReeMed Medical Pro",
-    status: "PUBLISHED",
-    priceTomans: 45000000,
-    variantsCount: 1,
-    ingredientsCount: 0,
-    claimsCount: 6,
-    images: ["/assets/drdermer/2025/08/19carbox.webp"],
-    inStock: true,
-  },
-  {
-    id: "prod_drdermer_008",
-    slug: "plasmax",
-    titleFa: "دستگاه جراحی و درمانی میکروپلاسما PlasmaX™ Multi-Energy",
-    category: "تجهیزات کلینیکال و پزشکی",
-    brand: "ReeMed Medical Pro",
-    status: "PUBLISHED",
-    priceTomans: 58000000,
-    variantsCount: 2,
-    ingredientsCount: 2,
-    claimsCount: 6,
-    images: ["/assets/drdermer/2025/08/18plasmax.webp"],
-    inStock: true,
-  },
-];
+interface CatalogRefOption {
+  id: string;
+  slug: string;
+  titleFa?: string;
+  name?: string;
+}
+
+function mapApiProductToPim(p: any): PimProduct {
+  const variant = p.variants?.[0];
+  const priceTomans = variant ? Math.round(Number(variant.priceAmount) / 10) : p.priceTomans || 0;
+  const totalQty = Array.isArray(p.variants)
+    ? p.variants.reduce((sum: number, v: any) => sum + Number(v.inventoryQty ?? 0), 0)
+    : 0;
+  const anyInStock = Array.isArray(p.variants)
+    ? p.variants.some((v: any) => v.inStock === true)
+    : false;
+
+  return {
+    id: p.id,
+    slug: p.slug,
+    titleFa: p.titleFa || p.title,
+    description: p.description ?? null,
+    category: p.category?.titleFa || p.category || "مراقبت پوست و درماتولوژی",
+    categorySlug: p.category?.slug ?? null,
+    brand: p.brand?.name || "ReeSkin Clinical",
+    brandSlug: p.brand?.slug ?? null,
+    status: (p.status as PimProduct["status"]) || "PUBLISHED",
+    priceTomans,
+    variantsCount: p.variants?.length || 1,
+    ingredientsCount: p.ingredients?.length || 0,
+    claimsCount: p.claims?.length || 0,
+    ingredients: Array.isArray(p.ingredients) ? p.ingredients : [],
+    claims: Array.isArray(p.claims) ? p.claims : [],
+    images:
+      Array.isArray(p.media) && p.media.length > 0
+        ? p.media.map((m: any) => m.url)
+        : [],
+    inStock: anyInStock,
+    inventoryQty: totalQty,
+  };
+}
 
 export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRole?: string }) {
   const canEditPim = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
-  const [products, setProducts] = useState<PimProduct[]>(INITIAL_PRODUCTS);
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<PimProduct[]>([]);
+  const [categories, setCategories] = useState<CatalogRefOption[]>([]);
+  const [brands, setBrands] = useState<CatalogRefOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [brandFilter, setBrandFilter] = useState<"ALL" | "ReeSkin" | "ReeMed">("ALL");
+  const [brandFilter, setBrandFilter] = useState<"ALL" | "ReeSkin" | "ReeMed" | "OTHER">("ALL");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Quick Price Modal State
   const [pricingProduct, setPricingProduct] = useState<PimProduct | null>(null);
   const [pricingAmount, setPricingAmount] = useState("");
   const [pricingInStock, setPricingInStock] = useState(true);
+  const [pricingQty, setPricingQty] = useState("25");
   const [priceSubmitting, setPriceSubmitting] = useState(false);
 
   // Add Product Modal State
@@ -176,6 +125,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   const [addPrice, setAddPrice] = useState("");
   const [addSku, setAddSku] = useState("");
   const [addInStock, setAddInStock] = useState(true);
+  const [addStockQty, setAddStockQty] = useState("50");
   const [addInci, setAddInci] = useState("");
   const [addClaim, setAddClaim] = useState("");
   const [addImageUrl, setAddImageUrl] = useState("/assets/drdermer/2025/07/carboxygel.png");
@@ -185,8 +135,16 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   // Comprehensive PIM Editor Modal State
   const [selectedProduct, setSelectedProduct] = useState<PimProduct | null>(null);
   const [showEditor, setShowEditor] = useState(false);
+  const [editorLoading, setEditorLoading] = useState(false);
   const [editingTitle, setEditingTitle] = useState("");
+  const [editingDescription, setEditingDescription] = useState("");
   const [editingPrice, setEditingPrice] = useState("");
+  const [editingInStock, setEditingInStock] = useState(true);
+  const [editingStockQty, setEditingStockQty] = useState("25");
+  const [editingStatus, setEditingStatus] = useState<PimProduct["status"]>("PUBLISHED");
+  const [editingImageUrl, setEditingImageUrl] = useState("");
+  const [editingIngredients, setEditingIngredients] = useState<PimIngredientRow[]>([]);
+  const [editingClaims, setEditingClaims] = useState<PimClaimRow[]>([]);
   const [claimInput, setClaimInput] = useState("");
   const [ingredientInput, setIngredientInput] = useState("");
   const [editorSubmitting, setEditorSubmitting] = useState(false);
@@ -198,38 +156,38 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
-      const res = await fetch(`${API_BASE}/v1/stores/admin/products`, {
-        headers: TENANT_HEADERS,
-        cache: "no-store",
-        signal: AbortSignal.timeout(6000),
-      });
-      if (res.ok) {
-        const payload = await res.json();
-        if (Array.isArray(payload?.data) && payload.data.length > 0) {
-          const mapped: PimProduct[] = payload.data.map((p: any) => {
-            const variant = p.variants?.[0];
-            const priceTomans = variant ? Number(variant.priceAmount) / 10 : p.priceTomans || 0;
-            return {
-              id: p.id,
-              slug: p.slug,
-              titleFa: p.titleFa || p.title,
-              category: p.category?.titleFa || p.category || "مراقبت پوست و درماتولوژی",
-              brand: p.brand?.name || (p.slug.includes("plasmax") || p.slug.includes("carbox") ? "ReeMed Medical Pro" : "ReeSkin Clinical"),
-              status: (p.status as any) || "PUBLISHED",
-              priceTomans,
-              variantsCount: p.variants?.length || 1,
-              ingredientsCount: p.ingredients?.length || 0,
-              claimsCount: p.claims?.length || 0,
-              images: p.media?.map((m: any) => m.url) || ["/assets/drdermer/2025/07/carboxygel.png"],
-              inStock: variant?.inStock !== false,
-            };
-          });
-          setProducts(mapped);
+      const [prodRes, catRes, brandRes] = await Promise.all([
+        authedFetch("/v1/stores/admin/products?limit=100", { cache: "no-store" }),
+        authedFetch("/v1/stores/admin/categories", { cache: "no-store" }),
+        authedFetch("/v1/stores/admin/brands", { cache: "no-store" }),
+      ]);
+
+      if (!prodRes.ok) {
+        const errPayload = await prodRes.json().catch(() => null);
+        throw new Error(errPayload?.message || `HTTP ${prodRes.status}`);
+      }
+
+      const payload = await prodRes.json();
+      if (Array.isArray(payload?.data)) {
+        setProducts(payload.data.map(mapApiProductToPim));
+      }
+
+      if (catRes.ok) {
+        const catPayload = await catRes.json().catch(() => null);
+        if (Array.isArray(catPayload?.data)) {
+          setCategories(catPayload.data);
         }
       }
-    } catch (err) {
-      console.warn("Using local catalog seed due to network timeout:", err);
+      if (brandRes.ok) {
+        const brandPayload = await brandRes.json().catch(() => null);
+        if (Array.isArray(brandPayload?.data)) {
+          setBrands(brandPayload.data);
+        }
+      }
+    } catch (err: any) {
+      setLoadError(err?.message || "خطا در دریافت کاتالوگ از سرور");
     } finally {
       setLoading(false);
     }
@@ -243,7 +201,8 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   const handleOpenPricing = (p: PimProduct) => {
     setPricingProduct(p);
     setPricingAmount(p.priceTomans.toString());
-    setPricingInStock(p.inStock !== false);
+    setPricingInStock(p.inStock);
+    setPricingQty((p.inventoryQty > 0 ? p.inventoryQty : 25).toString());
   };
 
   // Submit Quick Price Change
@@ -254,26 +213,39 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
       alert("لطفاً قیمت معتبر به تومان وارد کنید.");
       return;
     }
+    const numQty = pricingInStock ? Math.max(1, Number(pricingQty) || 25) : 0;
 
     setPriceSubmitting(true);
     try {
-      const res = await patchTenantJson(`/v1/stores/admin/products/${pricingProduct.slug}/price`, {
-        priceTomans: numPrice,
-        inStock: pricingInStock,
-      });
+      const res = await patchTenantJson(
+        `/v1/stores/admin/products/${encodeURIComponent(pricingProduct.id)}/price`,
+        {
+          priceTomans: numPrice,
+          inStock: pricingInStock,
+          stockQty: numQty,
+        },
+      );
 
       if (res.ok) {
         setProducts((prev) =>
           prev.map((item) =>
-            item.id === pricingProduct.id || item.slug === pricingProduct.slug
-              ? { ...item, priceTomans: numPrice, inStock: pricingInStock }
-              : item
-          )
+            item.id === pricingProduct.id
+              ? {
+                  ...item,
+                  priceTomans: numPrice,
+                  inStock: pricingInStock,
+                  inventoryQty: numQty,
+                }
+              : item,
+          ),
         );
-        showToast(`قیمت کالا «${pricingProduct.titleFa}» به ${new Intl.NumberFormat("fa-IR").format(numPrice)} تومان به‌روز شد.`);
+        showToast(
+          `قیمت کالا «${pricingProduct.titleFa}» به ${new Intl.NumberFormat("fa-IR").format(numPrice)} تومان در دیتابیس به‌روز شد.`,
+        );
         setPricingProduct(null);
+        void loadProducts();
       } else {
-        alert(res.message || "خطا در به‌روزرسانی قیمت");
+        alert(res.message || "خطا در به‌روزرسانی قیمت در سرور");
       }
     } catch {
       alert("خطای ارتباط با سرور");
@@ -282,39 +254,160 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
     }
   };
 
-  // Open PIM Comprehensive Editor
-  const handleEdit = (p: PimProduct) => {
+  // Open PIM Comprehensive Editor (loads full DB record)
+  const handleEdit = async (p: PimProduct) => {
     setSelectedProduct(p);
     setEditingTitle(p.titleFa);
+    setEditingDescription(p.description || "");
     setEditingPrice(p.priceTomans.toString());
+    setEditingInStock(p.inStock);
+    setEditingStockQty((p.inventoryQty || 25).toString());
+    setEditingStatus(p.status);
+    setEditingImageUrl(p.images[0] || "");
+    setEditingIngredients(p.ingredients || []);
+    setEditingClaims(p.claims || []);
+    setClaimInput("");
+    setIngredientInput("");
     setShowEditor(true);
+
+    setEditorLoading(true);
+    try {
+      const res = await authedFetch(`/v1/stores/admin/products/${encodeURIComponent(p.id)}`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.data) {
+          const full = mapApiProductToPim(json.data);
+          setSelectedProduct(full);
+          setEditingTitle(full.titleFa);
+          setEditingDescription(full.description || "");
+          setEditingPrice(full.priceTomans.toString());
+          setEditingInStock(full.inStock);
+          setEditingStockQty((full.inventoryQty || 25).toString());
+          setEditingStatus(full.status);
+          setEditingImageUrl(full.images[0] || "");
+          setEditingIngredients(full.ingredients);
+          setEditingClaims(full.claims);
+        }
+      }
+    } catch {
+      // Keep list data if detail refresh times out
+    } finally {
+      setEditorLoading(false);
+    }
   };
 
-  // Save Comprehensive PIM Changes
+  const handleAddIngredientDraft = () => {
+    if (!ingredientInput.trim()) return;
+    const raw = ingredientInput.trim();
+    const [rawLeft, rawPurpose] = raw.split(/\s*[—–:]\s*/, 2);
+    const left = (rawLeft || raw).trim();
+    const pctMatch = left.match(/(\d+(?:\.\d+)?)\s*%/);
+    const cleanName = left.replace(/\d+(?:\.\d+)?\s*%/g, "").replace(/\s+/g, " ").trim() || left;
+    setEditingIngredients((prev) => [
+      ...prev,
+      {
+        name: cleanName,
+        inciName: left,
+        concentrationPercent: pctMatch ? Number(pctMatch[1]).toFixed(2) : null,
+        purpose: rawPurpose?.trim() || "ترکیب فعال بالینی",
+        isKeyIngredient: true,
+      },
+    ]);
+    setIngredientInput("");
+  };
+
+  const handleAddClaimDraft = () => {
+    if (!claimInput.trim()) return;
+    setEditingClaims((prev) => [
+      ...prev,
+      {
+        claimText: claimInput.trim(),
+        status: "APPROVED",
+      },
+    ]);
+    setClaimInput("");
+  };
+
+  // Save Comprehensive PIM Changes atomically to backend DB
   const handleSavePim = async () => {
     if (!selectedProduct) return;
+    const numPrice = Number(editingPrice);
+    if (!Number.isFinite(numPrice) || numPrice <= 0) {
+      alert("لطفاً قیمت معتبر به تومان وارد نمایید.");
+      return;
+    }
+
+    // Include unsaved draft inputs automatically on save
+    let finalIngredients = [...editingIngredients];
+    if (ingredientInput.trim()) {
+      const raw = ingredientInput.trim();
+      const [rawLeft, rawPurpose] = raw.split(/\s*[—–:]\s*/, 2);
+      const left = (rawLeft || raw).trim();
+      const pctMatch = left.match(/(\d+(?:\.\d+)?)\s*%/);
+      const cleanName = left.replace(/\d+(?:\.\d+)?\s*%/g, "").replace(/\s+/g, " ").trim() || left;
+      finalIngredients.push({
+        name: cleanName,
+        inciName: left,
+        concentrationPercent: pctMatch ? Number(pctMatch[1]).toFixed(2) : null,
+        purpose: rawPurpose?.trim() || "ترکیب فعال بالینی",
+        isKeyIngredient: true,
+      });
+    }
+
+    let finalClaims = [...editingClaims];
+    if (claimInput.trim()) {
+      finalClaims.push({
+        claimText: claimInput.trim(),
+        status: "APPROVED",
+      });
+    }
+
     setEditorSubmitting(true);
     try {
-      const numPrice = Number(editingPrice) || selectedProduct.priceTomans;
-      // Also sync price to server
-      await patchTenantJson(`/v1/stores/admin/products/${selectedProduct.slug}/price`, {
+      const payload = {
+        titleFa: editingTitle.trim() || selectedProduct.titleFa,
+        description: editingDescription.trim() || null,
         priceTomans: numPrice,
-      });
+        inStock: editingInStock,
+        stockQty: editingInStock ? Math.max(1, Number(editingStockQty) || 25) : 0,
+        status: editingStatus,
+        ...(editingImageUrl.trim() ? { imageUrl: editingImageUrl.trim() } : {}),
+        ingredients: finalIngredients.map((ing, idx) => ({
+          name: ing.name,
+          inciName: ing.inciName ?? ing.name,
+          concentrationPercent: ing.concentrationPercent ?? undefined,
+          purpose: ing.purpose ?? undefined,
+          isKeyIngredient: ing.isKeyIngredient ?? true,
+          sortOrder: idx + 1,
+        })),
+        claims: finalClaims.map((cl) => ({
+          claimText: cl.claimText,
+          studyReference: cl.studyReference ?? undefined,
+          status: cl.status ?? "APPROVED",
+        })),
+      };
 
-      setProducts((prev) =>
-        prev.map((item) =>
-          item.id === selectedProduct.id
-            ? {
-                ...item,
-                titleFa: editingTitle.trim() || item.titleFa,
-                priceTomans: numPrice,
-                claimsCount: claimInput ? item.claimsCount + 1 : item.claimsCount,
-                ingredientsCount: ingredientInput ? item.ingredientsCount + 1 : item.ingredientsCount,
-              }
-            : item
-        )
+      const res = await patchTenantJson(
+        `/v1/stores/admin/products/${encodeURIComponent(selectedProduct.id)}`,
+        payload,
       );
-      showToast(`تغییرات کاتالوگ و فرمولاسیون «${selectedProduct.titleFa}» با موفقیت ذخیره شد.`);
+
+      if (!res.ok) {
+        alert(res.message || "خطا در ذخیره تغییرات PIM در سرور");
+        return;
+      }
+
+      const updatedData = (res.data as any)?.data;
+      if (updatedData) {
+        const mapped = mapApiProductToPim(updatedData);
+        setProducts((prev) => prev.map((item) => (item.id === mapped.id ? mapped : item)));
+      } else {
+        void loadProducts();
+      }
+
+      showToast(`تغییرات کاتالوگ، ترکیبات INCI و ادعاهای «${editingTitle.trim() || selectedProduct.titleFa}» در دیتابیس ذخیره شد.`);
       setShowEditor(false);
       setClaimInput("");
       setIngredientInput("");
@@ -328,46 +421,56 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   // Submit Add Product Form
   const handleCreateProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!addTitle.trim() || !addPrice) {
-      alert("لطفاً عنوان فارسی و قیمت محصول را وارد نمایید.");
+    const numPrice = Number(addPrice);
+    if (!addTitle.trim() || !Number.isFinite(numPrice) || numPrice <= 0) {
+      alert("لطفاً عنوان فارسی و قیمت معتبر محصول را وارد نمایید.");
       return;
     }
 
     setAddSubmitting(true);
     try {
-      const numPrice = Number(addPrice);
       const generatedSlug =
         addSlug.trim() ||
         addTitle
           .trim()
           .toLowerCase()
-          .replace(/[^\w\s-]/g, "")
+          .replace(/[^a-z0-9\s-]/g, "")
           .replace(/\s+/g, "-") ||
         `prod-${Date.now().toString(36)}`;
+
+      const matchedCat = categories.find(
+        (c) => c.titleFa === addCategory || c.slug === addCategory,
+      );
+      const matchedBrand = brands.find(
+        (b) => b.name === addBrand || b.slug === addBrand,
+      );
 
       const payload = {
         titleFa: addTitle.trim(),
         slug: generatedSlug,
+        ...(matchedBrand ? { brandId: matchedBrand.id } : {}),
         brandName: addBrand,
+        ...(matchedCat ? { categoryId: matchedCat.id, categorySlug: matchedCat.slug } : {}),
         category: addCategory,
         priceTomans: numPrice,
-        sku: addSku.trim() || `SKU-${generatedSlug.toUpperCase().slice(0, 8)}`,
+        sku: addSku.trim() || `SKU-${generatedSlug.toUpperCase().slice(0, 12)}`,
         inStock: addInStock,
+        stockQty: addInStock ? Math.max(1, Number(addStockQty) || 50) : 0,
         description: addDescription.trim() || null,
-        imageUrl: addImageUrl.trim(),
+        imageUrl: addImageUrl.trim() || null,
         inci: addInci.trim() || null,
         claim: addClaim.trim() || null,
       };
 
       const res = await postTenantJson("/v1/stores/admin/products", payload);
       if (res.ok) {
-        showToast(`محصول جدید «${addTitle}» با موفقیت به کاتالوگ افزوده و در فروشگاه منتشر شد.`);
+        showToast(`محصول جدید «${addTitle}» با ترکیبات INCI و موجودی انبار در دیتابیس ثبت و منتشر شد.`);
         setShowAddModal(false);
-        // Reset form
         setAddTitle("");
         setAddSlug("");
         setAddPrice("");
         setAddSku("");
+        setAddStockQty("50");
         setAddInci("");
         setAddClaim("");
         setAddDescription("");
@@ -383,19 +486,39 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
   };
 
   const filteredProducts = products.filter((p) => {
+    const q = searchQuery.trim().toLowerCase();
     const matchSearch =
-      !searchQuery.trim() ||
-      p.titleFa.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.slug.toLowerCase().includes(searchQuery.toLowerCase());
+      !q ||
+      p.titleFa.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.slug.toLowerCase().includes(q);
 
     const matchBrand =
       brandFilter === "ALL" ||
       (brandFilter === "ReeSkin" && p.brand.includes("ReeSkin")) ||
-      (brandFilter === "ReeMed" && p.brand.includes("ReeMed"));
+      (brandFilter === "ReeMed" && p.brand.includes("ReeMed")) ||
+      (brandFilter === "OTHER" && !p.brand.includes("ReeSkin") && !p.brand.includes("ReeMed"));
 
     return matchSearch && matchBrand;
   });
+
+  const brandOptions =
+    brands.length > 0
+      ? brands.map((b) => b.name || b.slug)
+      : ["ReeSkin Clinical", "ReeMed Medical Pro"];
+  const categoryOptions =
+    categories.length > 0
+      ? categories.map((c) => c.titleFa || c.slug)
+      : [
+          "آمپول و سرم تخصصی",
+          "کربوکسی‌تراپی و اکسیژن‌رسانی",
+          "پادهای لایه‌بردار و فعال‌ساز",
+          "ترمیم و التیام پوست",
+          "میکرودرم و لایه‌برداری",
+          "دتوکس و کنترل سبوم",
+          "تجهیزات کلینیکال و پزشکی",
+        ];
 
   return (
     <div className="tab-pane">
@@ -430,14 +553,14 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
         <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
           <div>
             <h2>کاتالوگ تخصصی اقلام بالینی و درمانی (PIM / DAM)</h2>
-            <small>مدیریت جامع ویژگی‌های تخصصی، قیمت‌گذاری لحظه‌ای، فرمولاسیون و ادعاهای اثبات‌شده</small>
+            <small>مدیریت جامع ویژگی‌های تخصصی، قیمت‌گذاری لحظه‌ای، فرمولاسیون و ادعاهای اثبات‌شده متصل به دیتابیس</small>
           </div>
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <button
               onClick={() => void loadProducts()}
               className="btn-action"
               style={{ display: "flex", alignItems: "center", gap: "6px", borderRadius: "9999px" }}
-              title="بارگذاری مجدد کاتالوگ"
+              title="بارگذاری مجدد کاتالوگ از سرور"
             >
               <RefreshCw size={14} className={loading ? "spin" : ""} />
               <span>به‌روزرسانی</span>
@@ -470,7 +593,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               <Search size={16} style={{ position: "absolute", right: "14px", color: "var(--muted)", pointerEvents: "none" }} />
               <input
                 type="text"
-                placeholder="جستجو در کاتالوگ (نام فارسی، دسته‌بندی یا شناسه انگلیسی)..."
+                placeholder="جستجو در کاتالوگ (نام فارسی، دسته‌بندی، برند یا اسلاگ)..."
                 className="admin-search-input"
                 style={{ paddingRight: "40px", width: "100%", borderRadius: "9999px" }}
                 value={searchQuery}
@@ -478,7 +601,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               />
             </div>
           </div>
-          <div className="filter-chips-group" style={{ display: "flex", gap: "8px" }}>
+          <div className="filter-chips-group" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <button
               className={`filter-chip ${brandFilter === "ALL" ? "active" : ""}`}
               onClick={() => setBrandFilter("ALL")}
@@ -489,16 +612,28 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               className={`filter-chip ${brandFilter === "ReeSkin" ? "active" : ""}`}
               onClick={() => setBrandFilter("ReeSkin")}
             >
-              مراقبت خانگی ReeSkin ({faNumber(products.filter((p) => p.brand.includes("ReeSkin")).length)})
+              ReeSkin ({faNumber(products.filter((p) => p.brand.includes("ReeSkin")).length)})
             </button>
             <button
               className={`filter-chip ${brandFilter === "ReeMed" ? "active" : ""}`}
               onClick={() => setBrandFilter("ReeMed")}
             >
-              تجهیزات مطبی ReeMed ({faNumber(products.filter((p) => p.brand.includes("ReeMed")).length)})
+              ReeMed ({faNumber(products.filter((p) => p.brand.includes("ReeMed")).length)})
+            </button>
+            <button
+              className={`filter-chip ${brandFilter === "OTHER" ? "active" : ""}`}
+              onClick={() => setBrandFilter("OTHER")}
+            >
+              سایر برندهای کلینیکال ({faNumber(products.filter((p) => !p.brand.includes("ReeSkin") && !p.brand.includes("ReeMed")).length)})
             </button>
           </div>
         </div>
+
+        {loadError && (
+          <div style={{ marginTop: "14px", padding: "12px 16px", borderRadius: "12px", background: "#fef2f2", border: "1px solid #fecaca", color: "#b91c1c", fontSize: "0.88rem" }}>
+            خطا در دریافت کاتالوگ از API: {loadError}
+          </div>
+        )}
 
         {/* Table */}
         <div className="table-responsive-container" style={{ marginTop: "16px" }}>
@@ -518,7 +653,13 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.length === 0 ? (
+              {loading && products.length === 0 ? (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "32px", color: "var(--muted)" }}>
+                    در حال بارگذاری کاتالوگ از پایگاه داده...
+                  </td>
+                </tr>
+              ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td colSpan={10} style={{ textAlign: "center", padding: "32px", color: "var(--muted)" }}>
                     کالایی با این مشخصات در کاتالوگ یافت نشد.
@@ -540,15 +681,12 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                           justifyContent: "center",
                         }}
                       >
-                        {p.images && p.images[0] ? (
+                        {p.images[0] ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={p.images[0]}
                             alt={p.titleFa}
                             style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/assets/drdermer/2025/07/carboxygel.png";
-                            }}
                           />
                         ) : (
                           <Package size={20} color="#94a3b8" />
@@ -574,23 +712,22 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                           borderRadius: "9999px",
                           fontSize: "0.75rem",
                           fontWeight: 600,
-                          background: p.inStock !== false ? "rgba(16,185,129,0.12)" : "rgba(239,68,68,0.12)",
-                          color: p.inStock !== false ? "#047857" : "#b91c1c",
+                          background: p.inStock ? "rgba(16,185,129,0.12)" : "rgba(239,68,68,0.12)",
+                          color: p.inStock ? "#047857" : "#b91c1c",
                         }}
                       >
-                        {p.inStock !== false ? "✓ موجود در انبار" : "✕ ناموجود"}
+                        {p.inStock ? `✓ موجود (${faNumber(p.inventoryQty)})` : "✕ ناموجود"}
                       </span>
                     </td>
                     <td className="tabular-nums">{faNumber(p.ingredientsCount)} ماده فعال</td>
                     <td className="tabular-nums">{faNumber(p.claimsCount)} ادعا</td>
                     <td>
                       <span className={`status-pill ${p.status === "PUBLISHED" ? "approved pulse" : "pending_review"}`}>
-                        {p.status === "PUBLISHED" ? "منتشر شده" : "پیش‌نویس"}
+                        {p.status === "PUBLISHED" ? "منتشر شده" : p.status === "ARCHIVED" ? "بایگانی شده" : "پیش‌نویس"}
                       </span>
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: "6px" }}>
-                        {/* Quick Pricing Button */}
                         {canEditPim && (
                           <button
                             onClick={() => handleOpenPricing(p)}
@@ -615,9 +752,8 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                           </button>
                         )}
 
-                        {/* Comprehensive PIM Edit Button */}
                         <button
-                          onClick={() => handleEdit(p)}
+                          onClick={() => void handleEdit(p)}
                           className="btn-action"
                           style={{
                             padding: "4px 10px",
@@ -706,7 +842,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               )}
             </div>
 
-            <div style={{ marginBottom: "24px" }}>
+            <div style={{ marginBottom: "16px" }}>
               <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "8px" }}>
                 وضعیت موجودی در انبار مرکزی
               </label>
@@ -748,6 +884,23 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               </div>
             </div>
 
+            {pricingInStock && (
+              <div style={{ marginBottom: "24px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#334155", marginBottom: "6px" }}>
+                  تعداد موجودی انبار مرکزی
+                </label>
+                <input
+                  type="number"
+                  dir="ltr"
+                  min={1}
+                  className="admin-input"
+                  style={{ width: "100%" }}
+                  value={pricingQty}
+                  onChange={(e) => setPricingQty(e.target.value)}
+                />
+              </div>
+            )}
+
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
               <button
                 type="button"
@@ -759,7 +912,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               </button>
               <button
                 type="button"
-                onClick={handleSavePrice}
+                onClick={() => void handleSavePrice()}
                 disabled={priceSubmitting}
                 className="btn-primary"
                 style={{ borderRadius: "9999px", padding: "8px 24px" }}
@@ -792,7 +945,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               borderRadius: "24px",
               padding: "26px 30px",
               width: "100%",
-              maxWidth: "680px",
+              maxWidth: "700px",
               maxHeight: "90vh",
               overflowY: "auto",
               boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
@@ -803,7 +956,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                 <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "#0f172a" }}>
                   افزودن محصول جدید به کاتالوگ فروشگاه
                 </h3>
-                <small style={{ color: "var(--muted)" }}>انتشار لحظه‌ای در استورفرانت و ثبت در سیستم کاتالوگ و PIM</small>
+                <small style={{ color: "var(--muted)" }}>ثبت تراکنشی محصول، واریانت، موجودی انبار، ترکیبات INCI و ادعاهای بالینی در PostgreSQL</small>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
@@ -813,7 +966,7 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               </button>
             </div>
 
-            <form onSubmit={handleCreateProduct}>
+            <form onSubmit={(e) => void handleCreateProduct(e)}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
@@ -856,8 +1009,11 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     className="admin-input"
                     style={{ width: "100%" }}
                   >
-                    <option value="ReeSkin Clinical">ReeSkin Clinical (مراقبت درماتولوژی)</option>
-                    <option value="ReeMed Medical Pro">ReeMed Medical Pro (تجهیزات و پروسیجر مطبی)</option>
+                    {brandOptions.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -870,18 +1026,16 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     className="admin-input"
                     style={{ width: "100%" }}
                   >
-                    <option value="آمپول و سرم تخصصی">آمپول و سرم تخصصی</option>
-                    <option value="کربوکسی‌تراپی و اکسیژن‌رسانی">کربوکسی‌تراپی و اکسیژن‌رسانی</option>
-                    <option value="پادهای لایه‌بردار و فعال‌ساز">پادهای لایه‌بردار و فعال‌ساز</option>
-                    <option value="ترمیم و التیام پوست">ترمیم و التیام پوست</option>
-                    <option value="میکرودرم و لایه‌برداری">میکرودرم و لایه‌برداری</option>
-                    <option value="دتوکس و کنترل سبوم">دتوکس و کنترل سبوم</option>
-                    <option value="تجهیزات کلینیکال و پزشکی">تجهیزات کلینیکال و پزشکی</option>
+                    {categoryOptions.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px", marginBottom: "14px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "12px", marginBottom: "14px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
                     قیمت به تومان *
@@ -892,28 +1046,28 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     dir="ltr"
                     value={addPrice}
                     onChange={(e) => setAddPrice(e.target.value)}
-                    placeholder="مثال: 2850000"
+                    placeholder="2850000"
                     className="admin-input"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
-                    کد انبارداری (SKU)
+                    کد SKU
                   </label>
                   <input
                     type="text"
                     dir="ltr"
                     value={addSku}
                     onChange={(e) => setAddSku(e.target.value)}
-                    placeholder="مثال: RS-RET-025"
+                    placeholder="RS-RET-025"
                     className="admin-input"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
-                    وضعیت اولیه انبار
+                    وضعیت انبار
                   </label>
                   <select
                     value={addInStock ? "1" : "0"}
@@ -921,37 +1075,52 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
                     className="admin-input"
                     style={{ width: "100%" }}
                   >
-                    <option value="1">موجود در انبار</option>
-                    <option value="0">ناموجود (کسری)</option>
+                    <option value="1">موجود</option>
+                    <option value="0">ناموجود</option>
                   </select>
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
+                    موجودی اولیه
+                  </label>
+                  <input
+                    type="number"
+                    dir="ltr"
+                    min={0}
+                    disabled={!addInStock}
+                    value={addInStock ? addStockQty : "0"}
+                    onChange={(e) => setAddStockQty(e.target.value)}
+                    className="admin-input"
+                    style={{ width: "100%" }}
+                  />
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
-                    ماده موثره اصلی (INCI)
+                    مواد موثره اصلی INCI (جداشده با + یا خط جدید)
                   </label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={3}
                     value={addInci}
                     onChange={(e) => setAddInci(e.target.value)}
-                    placeholder="مثال: Retinol 2.5% + Bakuchiol 1%"
+                    placeholder={"Retinol 2.5% — نوسازی سلولی\nBakuchiol 1% — ضدالتهاب گیاهی"}
                     className="admin-input"
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", resize: "vertical" }}
                   />
                 </div>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#334155", marginBottom: "4px" }}>
-                    ادعای بالینی اثبات‌شده
+                    ادعاهای بالینی اثبات‌شده (هر خط یک ادعا)
                   </label>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={3}
                     value={addClaim}
                     onChange={(e) => setAddClaim(e.target.value)}
-                    placeholder="مثال: کاهش ۳۸٪ خطوط ریز در ۲۸ روز"
+                    placeholder={"کاهش ۳۸٪ خطوط ریز در ۲۸ روز (In-Vivo)\nافزایش سنتز کلاژن نوع ۱"}
                     className="admin-input"
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", resize: "vertical" }}
                   />
                 </div>
               </div>
@@ -1007,13 +1176,15 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
         </div>
       )}
 
-      {/* ── 4. Modal: Comprehensive PIM Editor ── */}
+      {/* ── 4. Panel: Comprehensive PIM Editor ── */}
       {showEditor && selectedProduct && (
         <section className="admin-section-box" style={{ marginTop: "24px", border: "2px solid #047857" }}>
           <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <h2>ویرایشگر جامع PIM: {selectedProduct.titleFa}</h2>
-              <small>تنظیم مواد موثره (INCI)، تصاویر گالری DAM و ادعاهای سازمانی</small>
+              <small>
+                تنظیم مواد موثره (INCI)، تصویر کالا و ادعاهای سازمانی {editorLoading ? "(در حال بارگذاری جزئیات کامل...)" : ""}
+              </small>
             </div>
             <button onClick={() => setShowEditor(false)} className="btn-reject" style={{ borderRadius: "9999px" }}>
               ✕ بستن ویرایشگر
@@ -1040,30 +1211,176 @@ export default function CatalogPimManager({ userRole = "SUPER_ADMIN" }: { userRo
               />
             </div>
             <div className="coupon-field">
-              <label>افزودن ماده موثره جدید (INCI)</label>
+              <label>وضعیت انتشار</label>
+              <select
+                className="admin-input"
+                value={editingStatus}
+                onChange={(e) => setEditingStatus(e.target.value as PimProduct["status"])}
+              >
+                <option value="PUBLISHED">منتشر شده (PUBLISHED)</option>
+                <option value="DRAFT">پیش‌نویس (DRAFT)</option>
+                <option value="ARCHIVED">بایگانی (ARCHIVED)</option>
+              </select>
+            </div>
+            <div className="coupon-field">
+              <label>موجودی انبار ({editingInStock ? "موجود" : "ناموجود"})</label>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <select
+                  className="admin-input"
+                  value={editingInStock ? "1" : "0"}
+                  onChange={(e) => setEditingInStock(e.target.value === "1")}
+                >
+                  <option value="1">موجود</option>
+                  <option value="0">ناموجود</option>
+                </select>
+                <input
+                  className="admin-input"
+                  dir="ltr"
+                  type="number"
+                  min={0}
+                  disabled={!editingInStock}
+                  value={editingInStock ? editingStockQty : "0"}
+                  onChange={(e) => setEditingStockQty(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="coupon-form-grid" style={{ marginTop: "12px" }}>
+            <div className="coupon-field">
+              <label>آدرس تصویر اصلی (DAM Image URL)</label>
               <input
                 className="admin-input"
-                placeholder="مثال: Zinc PCA 1% — کنترل چربی و التیام‌بخش"
-                value={ingredientInput}
-                onChange={(e) => setIngredientInput(e.target.value)}
+                dir="ltr"
+                value={editingImageUrl}
+                onChange={(e) => setEditingImageUrl(e.target.value)}
               />
             </div>
             <div className="coupon-field">
-              <label>افزودن ادعای بالینی و رفرنس مقاله</label>
+              <label>شرح بالینی محصول</label>
               <input
                 className="admin-input"
-                placeholder="مثال: کاهش ۳۲٪ قرمزی پس از ۱۴ روز (مطالعه In-Vivo)"
-                value={claimInput}
-                onChange={(e) => setClaimInput(e.target.value)}
+                value={editingDescription}
+                onChange={(e) => setEditingDescription(e.target.value)}
               />
             </div>
           </div>
 
+          {/* Real INCI Ingredients Registry */}
+          <div style={{ marginTop: "18px", padding: "14px", borderRadius: "14px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px", fontWeight: 700, color: "#0f172a" }}>
+              <FlaskConical size={16} color="#047857" />
+              <span>ترکیبات موثره INCI ثبت‌شده در دیتابیس ({faNumber(editingIngredients.length)} مورد)</span>
+            </div>
+            {editingIngredients.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
+                {editingIngredients.map((ing, idx) => (
+                  <span
+                    key={`${ing.name}-${idx}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "4px 10px",
+                      borderRadius: "9999px",
+                      background: "#ecfdf5",
+                      border: "1px solid #a7f3d0",
+                      color: "#065f46",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    <strong>{ing.inciName || ing.name}</strong>
+                    {ing.purpose ? `(${ing.purpose})` : ""}
+                    {canEditPim && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditingIngredients((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                        style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 0 }}
+                        aria-label="حذف ترکیب"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                className="admin-input"
+                style={{ flex: 1 }}
+                placeholder="افزودن ترکیب INCI جدید (مثال: Zinc PCA 1% — کنترل چربی و التیام‌بخش)"
+                value={ingredientInput}
+                onChange={(e) => setIngredientInput(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={handleAddIngredientDraft}
+                className="btn-action"
+                style={{ borderRadius: "9999px" }}
+              >
+                + افزودن به لیست INCI
+              </button>
+            </div>
+          </div>
+
+          {/* Real Clinical Claims Registry */}
+          <div style={{ marginTop: "14px", padding: "14px", borderRadius: "14px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+            <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "10px" }}>
+              ادعاهای بالینی تاییدشده ({faNumber(editingClaims.length)} مورد)
+            </div>
+            {editingClaims.length > 0 && (
+              <ul style={{ margin: "0 0 10px 0", paddingInlineStart: "18px", fontSize: "0.85rem", color: "#334155" }}>
+                {editingClaims.map((cl, idx) => (
+                  <li key={`${cl.claimText}-${idx}`} style={{ marginBottom: "4px" }}>
+                    {cl.claimText}{" "}
+                    {canEditPim && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingClaims((prev) => prev.filter((_, i) => i !== idx))}
+                        style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", marginRight: "6px" }}
+                        aria-label="حذف ادعا"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                className="admin-input"
+                style={{ flex: 1 }}
+                placeholder="افزودن ادعای بالینی جدید (مثال: کاهش ۳۲٪ قرمزی پس از ۱۴ روز (مطالعه In-Vivo))"
+                value={claimInput}
+                onChange={(e) => setClaimInput(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={handleAddClaimDraft}
+                className="btn-action"
+                style={{ borderRadius: "9999px" }}
+              >
+                + افزودن ادعا
+              </button>
+            </div>
+          </div>
+
           <div className="coupon-form-actions" style={{ marginTop: "20px", display: "flex", alignItems: "center", gap: "12px" }}>
-            <button onClick={handleSavePim} disabled={editorSubmitting} className="btn-primary" style={{ borderRadius: "9999px", padding: "8px 24px" }}>
-              {editorSubmitting ? "در حال ذخیره..." : "💾 ذخیره تغییرات کاتالوگ و PIM"}
-            </button>
-            <span className="muted-text">تغییرات بلافاصله در پایگاه داده و فروشگاه سایت اعمال می‌شود.</span>
+            {canEditPim && (
+              <button
+                onClick={() => void handleSavePim()}
+                disabled={editorSubmitting}
+                className="btn-primary"
+                style={{ borderRadius: "9999px", padding: "8px 24px" }}
+              >
+                {editorSubmitting ? "در حال ذخیره در دیتابیس..." : "💾 ذخیره تراکنشی کاتالوگ و PIM"}
+              </button>
+            )}
+            <span className="muted-text">تمام تغییرات در یک تراکنش دیتابیس ثبت و بلافاصله در فروشگاه نمایش داده می‌شود.</span>
           </div>
         </section>
       )}

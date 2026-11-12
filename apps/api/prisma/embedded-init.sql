@@ -59,10 +59,16 @@ CREATE TYPE "QuoteRequestStatus" AS ENUM ('NEW', 'IN_REVIEW', 'QUOTED', 'CLOSED'
 CREATE TYPE "ProductKind" AS ENUM ('PHYSICAL', 'DIGITAL');
 
 -- CreateEnum
-CREATE TYPE "MediaRole" AS ENUM ('HERO', 'GALLERY', 'LIFESTYLE', 'DETAIL', 'HOW_TO', 'CERTIFICATE');
+CREATE TYPE "MediaRole" AS ENUM ('HERO', 'GALLERY', 'LIFESTYLE', 'DETAIL', 'HOW_TO', 'CERTIFICATE', 'TEXTURE', 'IN_CLINIC', 'PACKAGING');
 
 -- CreateEnum
 CREATE TYPE "ClinicalClaimStatus" AS ENUM ('APPROVED', 'DRAFT', 'REVIEW_REQUIRED');
+
+-- CreateEnum
+CREATE TYPE "CouponAudienceType" AS ENUM ('PUBLIC', 'B2B_CLINIC', 'VISITOR_EXCLUSIVE', 'SPECIFIC_PHONE');
+
+-- CreateEnum
+CREATE TYPE "CartStage" AS ENUM ('BROWSING', 'CART_REVIEW', 'CHECKOUT_STARTED', 'SHIPPING_SELECTED', 'PAYMENT_INITIATED', 'ORDER_PLACED', 'ABANDONED');
 
 -- CreateTable
 CREATE TABLE "tenants" (
@@ -154,6 +160,8 @@ CREATE TABLE "categories" (
     "slug" VARCHAR(100) NOT NULL,
     "titleFa" VARCHAR(200) NOT NULL,
     "description" TEXT,
+    "imageUrl" TEXT,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "parentId" UUID,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
@@ -170,7 +178,19 @@ CREATE TABLE "products" (
     "kind" "ProductKind" NOT NULL DEFAULT 'PHYSICAL',
     "slug" VARCHAR(180) NOT NULL,
     "titleFa" VARCHAR(300) NOT NULL,
+    "subtitleFa" VARCHAR(400),
+    "scientificName" VARCHAR(255),
+    "formulation" VARCHAR(300),
     "description" TEXT,
+    "badge" VARCHAR(120),
+    "ratingValue" DECIMAL(3,2),
+    "reviewCount" INTEGER NOT NULL DEFAULT 0,
+    "isFeatured" BOOLEAN NOT NULL DEFAULT false,
+    "isSpecialOffer" BOOLEAN NOT NULL DEFAULT false,
+    "isNewest" BOOLEAN NOT NULL DEFAULT false,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "coldChainRequired" BOOLEAN NOT NULL DEFAULT false,
+    "clinicalData" JSONB,
     "status" "ProductStatus" NOT NULL DEFAULT 'DRAFT',
     "publishedAt" TIMESTAMPTZ(6),
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -203,10 +223,16 @@ CREATE TABLE "product_variants" (
     "productId" UUID NOT NULL,
     "sku" VARCHAR(100) NOT NULL,
     "titleFa" VARCHAR(200) NOT NULL,
+    "sizeOrVolume" VARCHAR(120),
     "priceAmount" DECIMAL(20,0) NOT NULL,
+    "originalPriceAmount" DECIMAL(20,0),
+    "discountPercent" INTEGER,
     "currency" CHAR(3) NOT NULL DEFAULT 'IRR',
     "status" "VariantStatus" NOT NULL DEFAULT 'ACTIVE',
     "digitalFileUrl" TEXT,
+    "mediaRoleMatch" VARCHAR(64),
+    "isRecommended" BOOLEAN NOT NULL DEFAULT false,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
@@ -370,6 +396,18 @@ CREATE TABLE "carts" (
     "storeId" UUID NOT NULL,
     "userId" UUID,
     "sessionId" VARCHAR(128),
+    "customerName" VARCHAR(150),
+    "customerPhone" VARCHAR(20),
+    "customerType" VARCHAR(20) NOT NULL DEFAULT 'B2C',
+    "stage" "CartStage" NOT NULL DEFAULT 'BROWSING',
+    "couponCode" VARCHAR(50),
+    "shippingMethod" VARCHAR(60),
+    "subtotalAmount" DECIMAL(20,0) NOT NULL DEFAULT 0,
+    "discountAmount" DECIMAL(20,0) NOT NULL DEFAULT 0,
+    "totalAmount" DECIMAL(20,0) NOT NULL DEFAULT 0,
+    "convertedOrderId" UUID,
+    "convertedOrderNumber" VARCHAR(50),
+    "lastActivityAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
@@ -382,6 +420,9 @@ CREATE TABLE "cart_lines" (
     "cartId" UUID NOT NULL,
     "variantId" UUID NOT NULL,
     "qty" INTEGER NOT NULL DEFAULT 1,
+    "titleFa" VARCHAR(250),
+    "sku" VARCHAR(100),
+    "unitPrice" DECIMAL(20,0),
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "cart_lines_pkey" PRIMARY KEY ("id")
@@ -394,6 +435,10 @@ CREATE TABLE "checkout_sessions" (
     "storeId" UUID NOT NULL,
     "cartId" UUID,
     "reservationId" UUID,
+    "customerName" VARCHAR(150),
+    "customerPhone" VARCHAR(20),
+    "customerType" VARCHAR(20) NOT NULL DEFAULT 'B2C',
+    "couponCode" VARCHAR(50),
     "quoteFingerprint" VARCHAR(64) NOT NULL,
     "quoteSnapshot" JSONB NOT NULL,
     "addressSnapshot" JSONB,
@@ -412,6 +457,10 @@ CREATE TABLE "orders" (
     "userId" UUID,
     "customerPhone" VARCHAR(20) NOT NULL,
     "customerName" VARCHAR(150) NOT NULL,
+    "customerType" VARCHAR(20) NOT NULL DEFAULT 'B2C',
+    "couponCode" VARCHAR(50),
+    "visitorCode" VARCHAR(60),
+    "clinicName" VARCHAR(200),
     "status" "OrderStatus" NOT NULL DEFAULT 'PENDING_PAYMENT',
     "subtotalAmount" DECIMAL(20,0) NOT NULL,
     "discountAmount" DECIMAL(20,0) NOT NULL DEFAULT 0,
@@ -579,6 +628,18 @@ CREATE TABLE "coupons" (
     "tenantId" UUID NOT NULL,
     "storeId" UUID NOT NULL,
     "code" VARCHAR(50) NOT NULL,
+    "titleFa" VARCHAR(200),
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "audienceType" "CouponAudienceType" NOT NULL DEFAULT 'PUBLIC',
+    "customerSegment" VARCHAR(20) NOT NULL DEFAULT 'ALL',
+    "b2bOnly" BOOLEAN NOT NULL DEFAULT false,
+    "clinicName" VARCHAR(200),
+    "clinicLicenseNumber" VARCHAR(60),
+    "visitorName" VARCHAR(150),
+    "visitorCode" VARCHAR(60),
+    "visitorPhone" VARCHAR(20),
+    "allowedPhones" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "perUserLimit" INTEGER,
     "discountBps" INTEGER,
     "fixedDiscount" DECIMAL(20,0),
     "minSubtotal" DECIMAL(20,0),
@@ -597,6 +658,10 @@ CREATE TABLE "coupon_redemptions" (
     "couponId" UUID NOT NULL,
     "orderId" UUID NOT NULL,
     "userId" UUID,
+    "customerPhone" VARCHAR(20),
+    "customerName" VARCHAR(150),
+    "visitorCode" VARCHAR(60),
+    "discountAmount" DECIMAL(20,0) NOT NULL DEFAULT 0,
     "redeemedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "coupon_redemptions_pkey" PRIMARY KEY ("id")
@@ -1003,6 +1068,12 @@ CREATE INDEX "inventory_reservation_lines_reservationId_idx" ON "inventory_reser
 CREATE INDEX "carts_tenantId_storeId_userId_sessionId_idx" ON "carts"("tenantId", "storeId", "userId", "sessionId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "carts_tenantId_storeId_sessionId_key" ON "carts"("tenantId", "storeId", "sessionId");
+
+-- CreateIndex
+CREATE INDEX "carts_tenantId_storeId_stage_lastActivityAt_idx" ON "carts"("tenantId", "storeId", "stage", "lastActivityAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "cart_lines_cartId_variantId_key" ON "cart_lines"("cartId", "variantId");
 
 -- CreateIndex
@@ -1063,7 +1134,16 @@ CREATE INDEX "ledger_entries_accountId_createdAt_idx" ON "ledger_entries"("accou
 CREATE UNIQUE INDEX "coupons_tenantId_storeId_code_key" ON "coupons"("tenantId", "storeId", "code");
 
 -- CreateIndex
+CREATE INDEX "coupons_tenantId_storeId_audienceType_isActive_idx" ON "coupons"("tenantId", "storeId", "audienceType", "isActive");
+
+-- CreateIndex
 CREATE INDEX "coupon_redemptions_couponId_idx" ON "coupon_redemptions"("couponId");
+
+-- CreateIndex
+CREATE INDEX "coupon_redemptions_couponId_customerPhone_idx" ON "coupon_redemptions"("couponId", "customerPhone");
+
+-- CreateIndex
+CREATE INDEX "coupon_redemptions_couponId_userId_idx" ON "coupon_redemptions"("couponId", "userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "shipping_methods_tenantId_code_key" ON "shipping_methods"("tenantId", "code");
@@ -1277,4 +1357,3 @@ ALTER TABLE "loyalty_transactions" ADD CONSTRAINT "loyalty_transactions_accountI
 
 -- AddForeignKey
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_planId_fkey" FOREIGN KEY ("planId") REFERENCES "subscription_plans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-

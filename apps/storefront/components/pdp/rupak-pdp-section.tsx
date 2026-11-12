@@ -13,8 +13,16 @@ import {
   Sparkles,
   ChevronLeft,
   Share2,
+  ClipboardList,
+  Leaf,
+  FlaskConical,
+  Info,
+  Waves,
+  Droplet,
+  Shield,
 } from 'lucide-react';
 import { ExtendedProductData, ProductVariantItem } from '../../lib/pdp-types';
+import { getProductCategoryHierarchy, getProductHierarchicalSpecs } from '../../lib/pdp-data';
 import { useCart } from '../cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { isWishlisted, toggleWishlist, WISHLIST_CHANGED_EVENT } from '../../lib/wishlist';
@@ -57,6 +65,11 @@ export function RupakPdpSection({
   const [added, setAdded] = useState(false);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const [isInWishlistState, setIsInWishlistState] = useState(false);
+  const [activeSpecTab, setActiveSpecTab] = useState<string>('all');
+
+  // Hierarchical category & specification data
+  const categoryHierarchy = getProductCategoryHierarchy(productData);
+  const hierarchicalSpecs = getProductHierarchicalSpecs(productData, selectedVariant);
 
   // Sync wishlist state
   useEffect(() => {
@@ -144,21 +157,30 @@ export function RupakPdpSection({
       productData.scienceMechanism?.summary,
       productData.subtitleFa,
     ].filter(Boolean) as string[],
-    featuresTitle: 'ویژگی ها:',
+    featuresTitle: 'ویژگی‌ها',
     features: [
       ...(productData.scienceMechanism?.clinicalBenefits || []),
       ...(productData.cleanBadges || []),
     ],
-    ingredientsTitle: 'ترکیبات کلیدی:',
+    ingredientsTitle: 'ترکیبات کلیدی',
     keyIngredients: productData.ingredients?.map((ing) => ({
       name: ing.nameFa,
       description: ing.purpose,
+      iconType: 'droplet',
     })) || [],
-    usageTitle: 'نحوه ی مصرف:',
+    usageTitle: 'نحوه مصرف',
     usageInstructions:
       productData.usageProtocol?.steps?.map((s) => `${s.title}: ${s.instruction}`).join(' ') ||
       productData.usageProtocol?.routineTime ||
       'پس از شستشوی کامل پوست، مقدار مناسبی را روی صورت ماساژ دهید.',
+    usageRecommendation: 'قابل ترکیب با مرطوب‌کننده برای حفظ رطوبت بیشتر.',
+    specs: {
+      volume: selectedVariant?.sizeOrVolume || productData.variants[0]?.sizeOrVolume || 'استاندارد',
+      origin: productData.brand?.originCountry || 'انگلستان (UK)',
+      expiration: '۱۴۰۶ / ۱۴۰۷',
+      skinType: 'انواع پوست، به‌ویژه حساس',
+      texture: 'سبک و زودجذب',
+    },
   };
 
   return (
@@ -411,73 +433,156 @@ export function RupakPdpSection({
       <section className="rupak-pdp-card rupak-pdp-description-card" aria-label="معرفی و توضیحات محصول">
         {/* Card Header with palette accents */}
         <div className="rupak-pdp-desc-header">
-          <div className="rupak-pdp-desc-title-wrap">
-            <span className="rupak-pdp-desc-pill-accent" aria-hidden="true" />
-            <h2 className="rupak-pdp-desc-title">معرفی و توضیحات</h2>
-          </div>
-          <span className="rupak-pdp-desc-badge">اصالت و سلامت تضمین‌شده</span>
-        </div>
-
-        {/* Intro Paragraphs */}
-        <div className="rupak-pdp-desc-body">
-          {detailedOverview.introParagraphs?.map((paragraph, idx) => (
-            <p key={idx} className="rupak-pdp-desc-paragraph">
-              {paragraph}
+          <div className="rupak-pdp-desc-title-group">
+            <div className="rupak-pdp-desc-title-wrap">
+              <span className="rupak-pdp-desc-bar" aria-hidden="true" />
+              <h2 className="rupak-pdp-desc-title">معرفی و توضیحات</h2>
+            </div>
+            <p className="rupak-pdp-desc-subtitle">
+              {categoryTitle || 'مراقبت پوست'} · {productData.subtitleFa || 'آبرسان قوی'}
             </p>
-          ))}
+          </div>
+          <div className="rupak-pdp-desc-badge">
+            <ShieldCheck className="rupak-pdp-desc-badge-icon" size={17} />
+            <span>اصالت و سلامت تضمین‌شده</span>
+          </div>
         </div>
 
-        {/* Features Bullet List */}
-        {detailedOverview.features && detailedOverview.features.length > 0 && (
-          <div className="rupak-pdp-desc-features-section">
-            <h3 className="rupak-pdp-desc-subtitle">
-              <span className="rupak-pdp-desc-dot" aria-hidden="true" />
-              {detailedOverview.featuresTitle || 'ویژگی ها:'}
-            </h3>
-            <ul className="rupak-pdp-features-list">
-              {detailedOverview.features.map((feature, idx) => (
-                <li key={idx} className="rupak-pdp-feature-item">
-                  <span className="rupak-pdp-feature-bullet" aria-hidden="true">•</span>
-                  <span className="rupak-pdp-feature-text">{feature}</span>
-                </li>
+        {/* Two-Column Layout (RTL: Main Content on right, Sidebar on left) */}
+        <div className="rupak-pdp-desc-main-grid">
+          {/* Main Content Column */}
+          <div className="rupak-pdp-desc-content-col">
+            {/* Intro Paragraphs */}
+            <div className="rupak-pdp-desc-intro">
+              {detailedOverview.introParagraphs?.map((paragraph, idx) => (
+                <p key={idx} className="rupak-pdp-desc-paragraph">
+                  {paragraph}
+                </p>
               ))}
-            </ul>
-          </div>
-        )}
+            </div>
 
-        {/* Key Ingredients */}
-        {detailedOverview.keyIngredients && detailedOverview.keyIngredients.length > 0 && (
-          <div className="rupak-pdp-desc-ingredients-section">
-            <h3 className="rupak-pdp-desc-subtitle">
-              <span className="rupak-pdp-desc-dot accent-peach" aria-hidden="true" />
-              {detailedOverview.ingredientsTitle || 'ترکیبات کلیدی:'}
-            </h3>
-            <ul className="rupak-pdp-ingredients-list">
-              {detailedOverview.keyIngredients.map((item, idx) => (
-                <li key={idx} className="rupak-pdp-ingredient-item">
-                  <span className="rupak-pdp-feature-bullet accent-peach" aria-hidden="true">•</span>
-                  <div className="rupak-pdp-ingredient-content">
-                    <strong className="rupak-pdp-ingredient-name">{item.name}:</strong>{' '}
-                    <span className="rupak-pdp-ingredient-desc">{item.description}</span>
+            {/* Key Features (ویژگی‌ها) */}
+            {detailedOverview.features && detailedOverview.features.length > 0 && (
+              <div className="rupak-pdp-features-section">
+                <h3 className="rupak-pdp-section-heading">
+                  <Sparkles className="rupak-pdp-heading-icon" size={19} />
+                  <span>{detailedOverview.featuresTitle || 'ویژگی‌ها'}</span>
+                </h3>
+                <div className="rupak-pdp-features-grid">
+                  {detailedOverview.features.map((feature, idx) => (
+                    <div key={idx} className="rupak-pdp-feature-item">
+                      <span className="rupak-pdp-feature-check">
+                        <Check size={16} strokeWidth={2.5} />
+                      </span>
+                      <span className="rupak-pdp-feature-text">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Key Ingredients (ترکیبات کلیدی) */}
+            {detailedOverview.keyIngredients && detailedOverview.keyIngredients.length > 0 && (
+              <div className="rupak-pdp-ingredients-section">
+                <h3 className="rupak-pdp-section-heading">
+                  <FlaskConical className="rupak-pdp-heading-icon" size={19} />
+                  <span>{detailedOverview.ingredientsTitle || 'ترکیبات کلیدی'}</span>
+                </h3>
+                <div className="rupak-pdp-ingredients-box">
+                  {detailedOverview.keyIngredients.map((item, idx) => {
+                    const iconType = item.iconType || (idx === 0 ? 'wave' : idx === 1 ? 'droplet' : 'shield');
+                    return (
+                      <div key={idx} className="rupak-pdp-ingredient-row">
+                        <div className="rupak-pdp-ingredient-info">
+                          <h4 className="rupak-pdp-ingredient-name">{item.name}</h4>
+                          <p className="rupak-pdp-ingredient-desc">{item.description}</p>
+                        </div>
+                        <div className="rupak-pdp-ingredient-icon-box" aria-hidden="true">
+                          {iconType === 'wave' && <Waves size={22} />}
+                          {iconType === 'droplet' && <Droplet size={22} />}
+                          {iconType === 'shield' && <Shield size={22} />}
+                          {iconType !== 'wave' && iconType !== 'droplet' && iconType !== 'shield' && <Sparkles size={22} />}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* How to Use (نحوه مصرف) */}
+            {detailedOverview.usageInstructions && (
+              <div className="rupak-pdp-usage-section">
+                <h3 className="rupak-pdp-section-heading">
+                  <Info className="rupak-pdp-heading-icon" size={19} />
+                  <span>{detailedOverview.usageTitle || 'نحوه مصرف'}</span>
+                </h3>
+                <div className="rupak-pdp-usage-banner">
+                  <p className="rupak-pdp-usage-text">
+                    .{detailedOverview.usageInstructions.replace(/^[.\s]+/, '').replace(/[.\s]+$/, '')}
+                  </p>
+                  <div className="rupak-pdp-usage-icon-circle" aria-hidden="true">
+                    <Droplet size={20} className="fill-current text-white" />
                   </div>
-                </li>
-              ))}
-            </ul>
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
-        {/* Usage Instructions */}
-        {detailedOverview.usageInstructions && (
-          <div className="rupak-pdp-desc-usage-section">
-            <h3 className="rupak-pdp-desc-subtitle">
-              <span className="rupak-pdp-desc-dot" aria-hidden="true" />
-              {detailedOverview.usageTitle || 'نحوه ی مصرف:'}
-            </h3>
-            <p className="rupak-pdp-usage-text">
-              {detailedOverview.usageInstructions}
-            </p>
-          </div>
-        )}
+          {/* Sidebar Column (Left) */}
+          <aside className="rupak-pdp-desc-sidebar" aria-label="مشخصات و پیشنهاد استفاده">
+            {/* Card 1: مشخصات محصول */}
+            <div className="rupak-pdp-sidebar-card rupak-pdp-specs-card">
+              <div className="rupak-pdp-sidebar-card-header">
+                <ClipboardList size={18} className="rupak-pdp-sidebar-icon" />
+                <h4 className="rupak-pdp-sidebar-title">مشخصات محصول</h4>
+              </div>
+              <div className="rupak-pdp-specs-table">
+                <div className="rupak-pdp-spec-row">
+                  <span className="rupak-pdp-spec-label">حجم</span>
+                  <span className="rupak-pdp-spec-value">
+                    {detailedOverview.specs?.volume || selectedVariant?.sizeOrVolume || '۴۵ گرم'}
+                  </span>
+                </div>
+                <div className="rupak-pdp-spec-row">
+                  <span className="rupak-pdp-spec-label">ساخت</span>
+                  <span className="rupak-pdp-spec-value">
+                    {detailedOverview.specs?.origin || productData.brand?.originCountry || 'کره'}
+                  </span>
+                </div>
+                <div className="rupak-pdp-spec-row">
+                  <span className="rupak-pdp-spec-label">تاریخ انقضا</span>
+                  <span className="rupak-pdp-spec-value">
+                    {detailedOverview.specs?.expiration || '۱۴۰۲/۱۰'}
+                  </span>
+                </div>
+                <div className="rupak-pdp-spec-row">
+                  <span className="rupak-pdp-spec-label">نوع پوست</span>
+                  <span className="rupak-pdp-spec-value">
+                    {detailedOverview.specs?.skinType || 'همه انواع پوست'}
+                  </span>
+                </div>
+                <div className="rupak-pdp-spec-row">
+                  <span className="rupak-pdp-spec-label">بافت</span>
+                  <span className="rupak-pdp-spec-value">
+                    {detailedOverview.specs?.texture || 'سبک و آبی'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: پیشنهاد استفاده */}
+            <div className="rupak-pdp-sidebar-card rupak-pdp-recommendation-card">
+              <div className="rupak-pdp-sidebar-card-header rupak-pdp-rec-header">
+                <Leaf size={18} className="rupak-pdp-rec-icon" />
+                <h4 className="rupak-pdp-rec-title">پیشنهاد استفاده</h4>
+              </div>
+              <p className="rupak-pdp-rec-text">
+                {detailedOverview.usageRecommendation || 'قابل ترکیب با مرطوب‌کننده برای حفظ رطوبت بیشتر.'}
+              </p>
+            </div>
+          </aside>
+        </div>
       </section>
 
       {/* Rich Tabs (توضیحات، ترکیبات، راهنما و نظرات) */}

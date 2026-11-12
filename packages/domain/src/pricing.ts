@@ -108,6 +108,9 @@ export function calculateQuote(params: {
   // Evaluate coupon discount
   let couponDiscount = Money.zero("IRR");
   if (coupon) {
+    if (coupon.isActive === false) {
+      throw new Error("این کد تخفیف در حال حاضر غیرفعال است");
+    }
     if (coupon.minSubtotal && subtotal.lessThan(coupon.minSubtotal)) {
       throw new Error(`حداقل خرید برای اعمال این کوپن ${coupon.minSubtotal.formatTomans()} است`);
     }
@@ -134,7 +137,7 @@ export function calculateQuote(params: {
 
     discounts.push({
       code: coupon.code,
-      title: `کد تخفیف ${coupon.code}`,
+      title: coupon.title || `کد تخفیف ${coupon.code}`,
       amount: couponDiscount,
     });
   }

@@ -1,18 +1,18 @@
 import type { MetadataRoute } from 'next';
-import { DEMO_PRODUCT_SLUGS } from '../lib/catalog';
+import { listProducts } from '../lib/catalog';
 import { BLOG_POSTS } from '../lib/blog';
 import { INGREDIENT_ENCYCLOPEDIA } from '../lib/ingredients';
 
-export { DEMO_PRODUCT_SLUGS };
+export const dynamic = 'force-dynamic';
 
 const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://drdermer.ir').replace(/\/$/, '');
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
-  // 1. Institutional, Legal & Brand Core Pages
   const institutionalEntries: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/`, lastModified, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${BASE_URL}/shop`, lastModified, changeFrequency: 'daily', priority: 0.95 },
     { url: `${BASE_URL}/about`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/contact`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE_URL}/faq`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
@@ -31,14 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/silicalene`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
   ];
 
-  // 2. B2B & Clinical Professional Protocols
   const b2bEntries: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/b2b`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/b2b/protocols`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE_URL}/b2b/workshops`, lastModified, changeFrequency: 'weekly', priority: 0.7 },
   ];
 
-  // 3. Educational & Editorial (Academy & Blog Articles)
   const academyEntries: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/academy`, lastModified, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE_URL}/blog`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
@@ -51,7 +49,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: post.isPeerReviewed ? 0.85 : 0.7,
   }));
 
-  // 4. Active Ingredients Encyclopedia & Standards (INCI)
   const ingredientBaseEntry: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/ingredients`, lastModified, changeFrequency: 'weekly', priority: 0.85 },
   ];
@@ -63,9 +60,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  // 5. Products & Medical Equipment Catalog
-  const productEntries: MetadataRoute.Sitemap = DEMO_PRODUCT_SLUGS.map((slug) => ({
-    url: `${BASE_URL}/products/${slug}`,
+  const catalog = await listProducts({ limit: 100 });
+  const productEntries: MetadataRoute.Sitemap = (catalog?.data ?? []).map((p) => ({
+    url: `${BASE_URL}/products/${encodeURIComponent(p.slug)}`,
     lastModified,
     changeFrequency: 'weekly',
     priority: 0.9,
@@ -81,4 +78,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...productEntries,
   ];
 }
-

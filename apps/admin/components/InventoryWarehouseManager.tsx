@@ -1,101 +1,119 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { faNumber } from "./types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { authedFetch, faNumber } from "./types";
 
 export interface InventoryItem {
+  variantId: string;
+  productId: string;
   sku: string;
   title: string;
+  slug: string;
+  warehouseCode: string;
+  warehouseLocation: string;
+  isColdChain?: boolean;
   onHand: number;
   reserved: number;
   available: number;
   threshold: number;
-  warehouseLocation: string;
-  isColdChain?: boolean;
+  updatedAt?: string;
 }
 
-const DEFAULT_INVENTORY: InventoryItem[] = [
-  {
-    sku: "SKN-CRM-01",
-    title: "سرم سد دفاعی سرامید و نیاسینامید ۵٪ (۳۰ میلی‌لیتر)",
-    onHand: 45,
-    reserved: 3,
-    available: 42,
-    threshold: 10,
-    warehouseLocation: "قفسه B-04-12 (انبار مرکزی)",
-    isColdChain: false,
-  },
-  {
-    sku: "SKN-CLN-02",
-    title: "شوینده ژلی ملایم هیالورونیک اسید و پانتنول (۲۰۰ میلی‌لیتر)",
-    onHand: 18,
-    reserved: 4,
-    available: 14,
-    threshold: 15,
-    warehouseLocation: "قفسه B-02-08 (انبار مرکزی)",
-    isColdChain: false,
-  },
-  {
-    sku: "SKN-PEP-03",
-    title: "کرم ضدچروک و لیفتینگ چندپپتیدی (۵۰ میلی‌لیتر)",
-    onHand: 6,
-    reserved: 3,
-    available: 3,
-    threshold: 10,
-    warehouseLocation: "قفسه A-01-03 (سردخانه کلینیکال)",
-    isColdChain: true,
-  },
-  {
-    sku: "SKN-SUN-04",
-    title: "ضدآفتاب مینرال بی‌رنگ SPF50+ بدون عطر (۵۰ میلی‌لیتر)",
-    onHand: 85,
-    reserved: 0,
-    available: 85,
-    threshold: 20,
-    warehouseLocation: "قفسه C-05-18 (انبار مرکزی)",
-    isColdChain: false,
-  },
-  {
-    sku: "SKN-CBX-05",
-    title: "ژل حرفه‌ای کربوکسی‌تراپی CarboxyGel™ (بسته‌های کلینیکال)",
-    onHand: 32,
-    reserved: 5,
-    available: 27,
-    threshold: 8,
-    warehouseLocation: "سردخانه مرکزی دمای ۲-۸ درجه",
-    isColdChain: true,
-  },
-];
+export interface InventoryWarehouseManagerProps {
+  userRole?: string;
+  onLowStockCountChange?: (count: number) => void;
+}
 
 export default function InventoryWarehouseManager({
   userRole = "SUPER_ADMIN",
-}: {
-  userRole?: string;
-}) {
-  const [items, setItems] = useState<InventoryItem[]>(DEFAULT_INVENTORY);
+  onLowStockCountChange,
+}: InventoryWarehouseManagerProps) {
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [savingSku, setSavingSku] = useState<string | null>(null);
   const [selectedSku, setSelectedSku] = useState<string | null>(null);
   const [restockAmount, setRestockAmount] = useState<string>("10");
   const [message, setMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"ALL" | "LOW_STOCK" | "COLD_CHAIN">("ALL");
 
-  const handleRestock = (sku: string) => {
-    const qty = parseInt(restockAmount, 10);
-    if (isNaN(qty) || qty <= 0) return;
+  const loadInventory = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage(null);
+    try {
+      const res = await authedFetch("/v1/inventory/admin", { cache: "no-store" });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.message || `خطا در دریافت موجودی انبار (HTTP ${res.status})`);
+      }
+      const data = await res.json();
+      const loaded: InventoryItem[] = Array.isArray(data?.items) ? data.items : [];
+      setItems(loaded);
+      const lowCount =
+        typeof data?.summary?.lowStockCount === "number"
+          ? data.summary.lowStockCount
+          : loaded.filter((i) => i.available <= i.threshold).length;
+      onLowStockCountChange?.(lowCount);
+    } catch (err: unknown) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "خطا در برقراری ارتباط با سرویس انبارداری",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [onLowStockCountChange]);
 
-    setItems((prev) =>
-      prev.map((item) =>
-        item.sku === sku
-          ? {
-              ...item,
-              onHand: item.onHand + qty,
-              available: item.available + qty,
-            }
-          : item
-      )
-    );
-    setMessage(`موجودی کالا با شناسه ${sku} با موفقیت ${faNumber(qty)} واحد شارژ شد.`);
-    setSelectedSku(null);
+  useEffect(() => {
+    void loadInventory();
+  }, [loadInventory]);
+
+  const handleRestock = async (item: InventoryItem) => {
+    const qty = parseInt(restockAmount, 10);
+    if (isNaN(qty) || qty <= 0) {
+      setErrorMessage("تعداد افزایش موجودی باید عدد صحیح بزرگ‌تر از صفر باشد.");
+      return;
+    }
+
+    setSavingSku(item.sku);
+    setErrorMessage(null);
+    setMessage(null);
+    try {
+      const res = await authedFetch("/v1/inventory/admin/restock", {
+        method: "POST",
+        body: JSON.stringify({
+          variantId: item.variantId,
+          sku: item.sku,
+          warehouseCode: item.warehouseCode || "MAIN",
+          quantityDelta: qty,
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.item) {
+        throw new Error(data?.message || `خطا در ثبت افزایش موجودی (HTTP ${res.status})`);
+      }
+
+      const updatedItem: InventoryItem = data.item;
+      setItems((prev) => {
+        const next = prev.map((row) =>
+          row.variantId === updatedItem.variantId || row.sku === updatedItem.sku
+            ? updatedItem
+            : row,
+        );
+        onLowStockCountChange?.(next.filter((r) => r.available <= r.threshold).length);
+        return next;
+      });
+      setMessage(
+        `موجودی کالا با شناسه ${item.sku} در پایگاه‌داده ${faNumber(qty)} واحد افزایش یافت (موجودی فعلی: ${faNumber(updatedItem.onHand)} عدد).`,
+      );
+      setSelectedSku(null);
+    } catch (err: unknown) {
+      setErrorMessage(
+        err instanceof Error ? err.message : "خطا در ثبت افزایش موجودی در سرور",
+      );
+    } finally {
+      setSavingSku(null);
+    }
   };
 
   const canRestock = userRole === "SUPER_ADMIN" || userRole === "OPERATOR";
@@ -105,11 +123,12 @@ export default function InventoryWarehouseManager({
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
+      const q = searchQuery.trim().toLowerCase();
       const matchSearch =
-        !searchQuery.trim() ||
-        item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.title.includes(searchQuery) ||
-        item.warehouseLocation.includes(searchQuery);
+        !q ||
+        item.sku.toLowerCase().includes(q) ||
+        item.title.toLowerCase().includes(q) ||
+        item.warehouseLocation.toLowerCase().includes(q);
 
       if (!matchSearch) return false;
 
@@ -135,20 +154,25 @@ export default function InventoryWarehouseManager({
       )}
 
       {lowStockItems.length > 0 && (
-        <div className="banner-offline-warning" style={{ background: "#fffbeb", borderColor: "#fde68a", color: "#92400e" }}>
+        <div
+          className="banner-offline-warning"
+          style={{ background: "#fffbeb", borderColor: "#fde68a", color: "#92400e" }}
+        >
           <div>
-            <strong>⚠️ هشدار آستانه حداقل موجودی (Inventory Alert):</strong> تعداد {faNumber(lowStockItems.length)} قلم کالا به کمتر یا مساوی آستانه بحرانی رسیده‌اند و نیازمند سفارش خرید هستند.
+            <strong>⚠️ هشدار آستانه حداقل موجودی (Inventory Alert):</strong> تعداد{" "}
+            {faNumber(lowStockItems.length)} قلم کالا به کمتر یا مساوی آستانه بحرانی رسیده‌اند و نیازمند سفارش خرید هستند.
           </div>
         </div>
       )}
 
+      {errorMessage && <div className="form-feedback-error">{errorMessage}</div>}
       {message && <div className="form-feedback-success">{message}</div>}
 
       <div className="kpi-grid kpi-grid-5">
         <div className="kpi-card">
           <span className="kpi-title">کل اقلام در گردش</span>
           <strong className="kpi-value tabular-nums">{faNumber(items.length)} SKU</strong>
-          <span className="kpi-sub">انبار مرکزی و سردخانه دارویی</span>
+          <span className="kpi-sub">انبار مرکزی و سردخانه دارویی (متصل به DB)</span>
         </div>
         <div className="kpi-card highlight">
           <span className="kpi-title">موجودی فیزیکی کل</span>
@@ -172,11 +196,15 @@ export default function InventoryWarehouseManager({
           <strong className="kpi-value status-ok tabular-nums">
             {faNumber(totalColdChainAvailable)} قابل فروش
           </strong>
-          <span className="kpi-sub">{faNumber(coldChainItems.length)} فرمولاسیون حساس (سنسور پایدار)</span>
+          <span className="kpi-sub">
+            {faNumber(coldChainItems.length)} فرمولاسیون حساس (سنسور پایدار)
+          </span>
         </div>
         <div className="kpi-card">
           <span className="kpi-title">کالاهای زیر آستانه هشدار</span>
-          <strong className={`kpi-value tabular-nums ${lowStockItems.length > 0 ? "accent-text" : "status-ok"}`}>
+          <strong
+            className={`kpi-value tabular-nums ${lowStockItems.length > 0 ? "accent-text" : "status-ok"}`}
+          >
             {faNumber(lowStockItems.length)} قلم
           </strong>
           <span className="kpi-sub">نیاز به ثبت سفارش تامین مجدد</span>
@@ -184,12 +212,25 @@ export default function InventoryWarehouseManager({
       </div>
 
       <section className="admin-section-box">
-        <div className="box-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          className="box-header"
+          style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap" }}
+        >
           <div>
             <h2>موجودی انبارها، رزروهای سیستمی و مدیریت آستانه</h2>
-            <small>رزروهای موقت سبد خرید دارای اجاره‌نامه زمانی (TTL Lease) ۱۵ دقیقه‌ای هستند تا انبار قفل نماند.</small>
+            <small>رزروهای موقت سبد خرید دارای اجاره‌نامه زمانی (TTL Lease) ۱۵ دقیقه‌ای هستند و هر شارژ موجودی در AuditLog ثبت می‌شود.</small>
           </div>
-          <span className="badge-live">ISOLATION LEVEL SERIALIZABLE</span>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <button
+              type="button"
+              className="btn-action"
+              onClick={() => void loadInventory()}
+              disabled={loading}
+            >
+              {loading ? "در حال همگام‌سازی..." : "بروزرسانی از دیتابیس"}
+            </button>
+            <span className="badge-live">ISOLATION LEVEL SERIALIZABLE</span>
+          </div>
         </div>
 
         {/* Toolbar */}
@@ -220,7 +261,7 @@ export default function InventoryWarehouseManager({
               className={`filter-chip ${filterType === "COLD_CHAIN" ? "active" : ""}`}
               onClick={() => setFilterType("COLD_CHAIN")}
             >
-              زنجیره سرد ({faNumber(items.filter((i) => i.isColdChain).length)})
+              زنجیره سرد ({faNumber(coldChainItems.length)})
             </button>
           </div>
         </div>
@@ -241,7 +282,13 @@ export default function InventoryWarehouseManager({
               </tr>
             </thead>
             <tbody>
-              {filteredItems.length === 0 ? (
+              {loading && items.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: "center", padding: "24px" }} className="muted-text">
+                    در حال دریافت موجودی واقعی انبار از سرور...
+                  </td>
+                </tr>
+              ) : filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan={9} style={{ textAlign: "center", padding: "24px" }} className="muted-text">
                     کالایی با این مشخصات یافت نشد.
@@ -250,8 +297,9 @@ export default function InventoryWarehouseManager({
               ) : (
                 filteredItems.map((item) => {
                   const isLow = item.available <= item.threshold;
+                  const isSaving = savingSku === item.sku;
                   return (
-                    <tr key={item.sku}>
+                    <tr key={item.variantId}>
                       <td className="bold" dir="ltr">
                         {item.sku}
                       </td>
@@ -282,22 +330,28 @@ export default function InventoryWarehouseManager({
                               style={{ width: "70px", padding: "4px" }}
                               value={restockAmount}
                               onChange={(e) => setRestockAmount(e.target.value)}
+                              disabled={isSaving}
                             />
                             <button
-                              onClick={() => handleRestock(item.sku)}
+                              type="button"
+                              onClick={() => void handleRestock(item)}
                               className="btn-approve"
+                              disabled={isSaving}
                             >
-                              تایید
+                              {isSaving ? "..." : "تایید"}
                             </button>
                             <button
+                              type="button"
                               onClick={() => setSelectedSku(null)}
                               className="btn-reject"
+                              disabled={isSaving}
                             >
                               انصراف
                             </button>
                           </div>
                         ) : (
                           <button
+                            type="button"
                             onClick={() => {
                               if (!canRestock) return;
                               setSelectedSku(item.sku);

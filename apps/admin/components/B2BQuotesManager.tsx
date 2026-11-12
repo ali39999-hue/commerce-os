@@ -3,8 +3,7 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { formatJalaliDateTime } from "@commerce-os/localization";
 import {
-  API_BASE,
-  TENANT_HEADERS,
+  authedFetch,
   faNumber,
   postTenantJson,
   str,
@@ -72,8 +71,7 @@ export default function B2BQuotesManager({ userRole = "SUPER_ADMIN" }: { userRol
     setLoading(true);
     try {
       const query = currentFilter === "ALL" ? "" : `?status=${encodeURIComponent(currentFilter)}`;
-      const res = await fetch(`${API_BASE}/v1/b2b/quote-requests${query}`, {
-        headers: TENANT_HEADERS,
+      const res = await authedFetch(`/v1/b2b/quote-requests${query}`, {
         signal: AbortSignal.timeout(4000),
         cache: "no-store",
       });

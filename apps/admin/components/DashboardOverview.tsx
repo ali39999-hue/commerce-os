@@ -2,7 +2,13 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { formatJalaliDateTime } from "@commerce-os/localization";
-import { faNumber, str, authedFetch } from "./types";
+import {
+  faNumber,
+  str,
+  authedFetch,
+  type LiveCartSessionItem,
+  type LiveCartSummary,
+} from "./types";
 
 export interface DashboardOrder {
   id: string;
@@ -19,6 +25,8 @@ export interface DashboardOverviewProps {
   orders: DashboardOrder[];
   pendingReceiptCount: number;
   lowStockCount: number;
+  liveCarts?: LiveCartSessionItem[];
+  cartSummary?: LiveCartSummary | null;
   userRole?: string;
   onNavigateTab?: (tab: string) => void;
 }
@@ -40,6 +48,8 @@ export default function DashboardOverview({
   orders,
   pendingReceiptCount,
   lowStockCount,
+  liveCarts = [],
+  cartSummary = null,
   userRole = "SUPER_ADMIN",
   onNavigateTab,
 }: DashboardOverviewProps) {
@@ -182,24 +192,53 @@ export default function DashboardOverview({
 
         <div className="kpi-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="kpi-title">حجم سفارشات جاری</span>
-            <span className="badge-live">LIVE</span>
+            <span className="kpi-title">حجم سفارشات و قیف زنده</span>
+            {onNavigateTab ? (
+              <button
+                type="button"
+                className="badge-live"
+                style={{ cursor: "pointer", border: "none" }}
+                onClick={() => onNavigateTab("orders")}
+                title="مشاهده سفارش‌ها و سبدهای زنده در ERP"
+              >
+                LIVE
+              </button>
+            ) : (
+              <span className="badge-live">LIVE</span>
+            )}
           </div>
           <strong className="kpi-value tabular-nums">{faNumber(activeOrdersCount)} سفارش</strong>
-          <span className="kpi-sub">{faNumber(orders.length)} کل سفارشات ثبت‌شده</span>
+          <span className="kpi-sub">
+            {faNumber(orders.length)} سفارش ·{" "}
+            {faNumber(
+              cartSummary
+                ? cartSummary.activeBrowsing + cartSummary.inCheckout + cartSummary.paymentInitiated
+                : liveCarts.filter((c) => c.stage !== "ORDER_PLACED" && c.stage !== "ABANDONED")
+                    .length
+            )}{" "}
+            سبد فعال ({faNumber((cartSummary?.inCheckout ?? 0) + (cartSummary?.paymentInitiated ?? 0))} در تسویه)
+          </span>
         </div>
 
         <div className="kpi-card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="kpi-title">رزروهای فعال انبار</span>
+            <span className="kpi-title">رزروها و انتظار پرداخت</span>
             {lowStockCount > 0 ? (
               <span className="badge-offline-warning">{faNumber(lowStockCount)} کسری</span>
             ) : (
               <span className="badge-live">پایدار</span>
             )}
           </div>
-          <strong className="kpi-value tabular-nums">{faNumber(pendingReceiptCount + 4)} رزرو</strong>
-          <span className="kpi-sub">قفل ردیفی با انقضای ۱۵ دقیقه‌ای</span>
+          <strong className="kpi-value tabular-nums">
+            {faNumber(
+              pendingReceiptCount + (cartSummary?.inCheckout ?? 0) + (cartSummary?.paymentInitiated ?? 0)
+            )}{" "}
+            مورد
+          </strong>
+          <span className="kpi-sub">
+            {faNumber(pendingReceiptCount)} فیش در انتظار ·{" "}
+            {faNumber((cartSummary?.inCheckout ?? 0) + (cartSummary?.paymentInitiated ?? 0))} سبد در مرحله تسویه
+          </span>
         </div>
 
         <div className="kpi-card">

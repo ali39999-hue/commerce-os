@@ -2,10 +2,19 @@ import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-// Load .env from root and current directory
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Load .env from repo root and apps/api reliably regardless of cwd or compiled dist depth
+const envCandidates = [
+  path.resolve(process.cwd(), '.env'),
+  path.resolve(process.cwd(), 'apps/api/.env'),
+  path.resolve(process.cwd(), '../../.env'),
+  path.resolve(__dirname, '../.env'),
+  path.resolve(__dirname, '../../.env'),
+  path.resolve(__dirname, '../../../.env'),
+  path.resolve(__dirname, '../../../../.env'),
+];
+for (const candidate of envCandidates) {
+  dotenv.config({ path: candidate, override: false });
+}
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -90,6 +99,7 @@ async function bootstrap() {
       'x-user-id',
       'x-idempotency-key',
       'x-correlation-id',
+      'x-admin-api-key',
     ],
   });
 

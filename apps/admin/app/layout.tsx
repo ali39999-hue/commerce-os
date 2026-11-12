@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AdminBackendGuard } from '../components/AdminBackendGuard';
 
 export const metadata: Metadata = {
   title: 'پنل مدیریت یکپارچه دکتر درمر | Dr. Dermer UK Operations ERP',
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AdminBackendGuard>{children}</AdminBackendGuard>
+      </body>
     </html>
   );
 }

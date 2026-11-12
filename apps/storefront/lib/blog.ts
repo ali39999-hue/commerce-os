@@ -41,6 +41,8 @@ export interface BlogPost {
   author: string;
   body: string[]; // paragraphs
   tags: string[];
+  image?: string;
+  dateFa?: string;
   isPeerReviewed?: boolean;
   reviewer?: ScientificReviewer;
   studyLimitations?: string[];
@@ -52,13 +54,15 @@ export interface BlogPost {
 export const BLOG_POSTS: BlogPost[] = [
   {
     slug: "bohr-effect-carboxy-therapy-needle-free",
-    title: "مکانیسم اثر گاز دی‌اکسید کربن در کربوکسی‌تراپی بدون سوزن (Bohr Effect)",
+    image: "/assets/rupak/articles/art-bohr-carboxy.jpg",
+    title: "مکانیسم اثر گاز دی‌اکسید کربن در (Bohr Effect) کربوکسی‌تراپی",
     excerpt:
-      "بررسی فیزیولوژی تبادل گاز CO₂ از اپیدرم به بسترهای مویرگی، افت موضعی pH و آزادسازی انفجاری اکسیژن توسط هموگلوبین در لایه‌های درم بدون ایجاد تروما یا نیاز به نیدلینگ.",
-    category: "فیزیولوژی پوست و تکنولوژی",
+      "از اپیدرم به بستر مویرگی، اثر موضعی CO2 بررسی تبادل گاز بر آفینیتی هموگلوبین و اکسیژن‌رسانی بافتی در pH لایه‌های درم",
+    category: "پروتکل‌های درمانی",
     readingMinutes: 9,
-    publishedAt: "2026-10-28T09:00:00Z",
-    author: "دپارتمان آموزش علمی و درماتولوژی Dr. Dermer UK Clinical Laboratories",
+    publishedAt: "2026-10-28T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۶ آبان ۱۴۰۵",
     isPeerReviewed: true,
     reviewer: {
       name: "دکتر مریم سهرابی",
@@ -156,13 +160,15 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "protocol-hyperpigmentation-retinol-niacinamide",
-    title: "پروتکل جامع درمان لک و تیرگی با رتینول انکپسوله و نیاسینامید",
+    image: "/assets/rupak/articles/art-retinol-niacinamide.jpg",
+    title: "پروتکل جامع درمان لک و تیرگی با رتینول و نیاسینامید",
     excerpt:
-      "هم‌افزایی بیولوژیک رتینوئیدهای لیپوزومال با ویتامین B3 در مهار چندمسیره ملانوژنز، مهار انتقال ملانوزوم به کراتینوسیت‌ها و تقویت سد لیپیدی بدون ایجاد درماتیت رتینوئیدی.",
-    category: "پروتکل‌های بالینی و درمان لک",
+      "هم‌افزایی بیولوژیک رتینوئیدهای لیپوزومال با ویتامین B3 در مهار انتقال ملانوزوم و تقویت سد لیپیدی بدون ایجاد درماتیت",
+    category: "ترکیبات و مواد مؤثره",
     readingMinutes: 8,
-    publishedAt: "2026-10-27T11:00:00Z",
-    author: "دپارتمان فرمولاسیون و بالین Dr. Dermer UK Clinical Laboratories",
+    publishedAt: "2026-10-27T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۵ آبان ۱۴۰۵",
     isPeerReviewed: true,
     reviewer: {
       name: "مهندس کیانوش راد",
@@ -260,13 +266,15 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "skin-barrier-restoration-post-procedure",
+    image: "/assets/rupak/articles/art-barrier-post-procedure.jpg",
     title: "راهنمای ترمیم سد دفاعی پوست پس از لیزر و میکرونیدلینگ",
     excerpt:
-      "مدیریت فیزیولوژیک فاز حاد التهاب و نوسازی بافت پوششی پس از روش‌های تهاجمی و نیمه‌تهاجمی کلینیکی با بهره‌گیری از کمپلکس سرامیدهای بیومیمتیک، مادکاسوساید و زینک.",
-    category: "مراقبت‌های پس از پروسیجر و ترمیم بافت",
-    readingMinutes: 10,
-    publishedAt: "2026-10-25T14:30:00Z",
-    author: "کلینیک ریسرچ و آکادمی پوست Dr. Dermer UK Clinical Laboratories",
+      "مدیریت فیزیولوژیک فاز حاد التهاب و نوسازی بافت پوششی پس از روش‌های تهاجمی با کمپلکس سرامیدهای بیومیمتیک و زینک",
+    category: "پوست و مو",
+    readingMinutes: 6,
+    publishedAt: "2026-10-25T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۳ آبان ۱۴۰۵",
     isPeerReviewed: true,
     reviewer: {
       name: "دکتر مریم سهرابی",
@@ -363,13 +371,15 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "signal-peptides-vs-copper-peptides",
-    title: "مقایسه پپتیدهای سیگنال‌دهنده و مس‌پپتید در جوان‌سازی پوست",
+    image: "/assets/rupak/articles/art-peptides-rejuvenation.jpg",
+    title: "مقایسه پپتیدهای سیگنال‌دهنده و مس‌پپتید در جوانسازی پوست",
     excerpt:
-      "ارزیابی مقایسه‌ای مکانیسم‌های مولکولی Palmitoyl Tripeptide-5 و GHK-Cu در تحریک سنتز ماتریکس خارج‌سلولی، ریمادلینگ کلاژن، افزایش استحکام درم و سرعت بهبود بافتی.",
-    category: "بیوتکنولوژی و ضدپیری پیشرفته",
+      "ارزیابی مقایسه‌ای مکانیسم‌های مولکولی پالمیتوئیل در تحریک سنتز ماتریکس خارج‌سلولی، ریمادلینگ کلاژن و افزایش استحکام درم",
+    category: "ترمیم و ضدپیری",
     readingMinutes: 8,
-    publishedAt: "2026-10-24T16:00:00Z",
-    author: "دپارتمان تحقیقات بیوتکنولوژی و نانوپپتیدهای Dr. Dermer UK Clinical Laboratories",
+    publishedAt: "2026-10-24T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۲ آبان ۱۴۰۵",
     isPeerReviewed: true,
     reviewer: {
       name: "مهندس کیانوش راد",
@@ -461,13 +471,15 @@ export const BLOG_POSTS: BlogPost[] = [
   },
   {
     slug: "clinical-skincare-selection-guide",
-    title: "راهنمای بالینی انتخاب پروتکل‌های درموسوتیکال دکتر درمر",
+    image: "/assets/rupak/articles/art-dermaceutical-selection.jpg",
+    title: "راهنمای بالینی انتخاب پروتکل‌های درموسوتیکال در درمان",
     excerpt:
-      "راهنمای گام‌به‌گام متخصصان پوست و مراجعان کلینیکی برای انتخاب سیستم‌های درمانی Dr. Dermer UK Clinical Laboratories بر اساس تایپ پوستی فیتزپاتریک و آسیب‌های بافتی.",
-    category: "راهنمای بالینی و تجویز",
+      "راهنمای گام‌به‌گام متخصصان پوست و مراجعان کلینیک برای انتخاب سیستم‌های درمانی بر اساس تایپ پوستی فیتزپاتریک و آسیب‌های پوستی",
+    category: "پروتکل‌های درمانی",
     readingMinutes: 7,
-    publishedAt: "2026-10-18T08:30:00Z",
-    author: "دپارتمان آموزش علمی و بالینی Dr. Dermer UK Clinical Laboratories",
+    publishedAt: "2026-10-18T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۲۶ مهر ۱۴۰۵",
     tags: ["درموسوتیکال", "کربوکسی‌تراپی", "راهنمای بالینی", "دکتر درمر", "پروتکل پوستی"],
     isPeerReviewed: true,
     reviewer: {
@@ -552,6 +564,238 @@ export const BLOG_POSTS: BlogPost[] = [
         image: "/assets/drdermer/2025/08/16healene-1200x1109.webp",
         badge: "تثبیت نتایج کلینیکال",
         priceFormatted: "۱,۶۰۰,۰۰۰ تومان",
+      },
+    ],
+  },
+  {
+    slug: "hormonal-acne-management-maintenance",
+    image: "/assets/rupak/articles/art-hormonal-acne.jpg",
+    title: "مدیریت آکنه هورمونی: از تشخیص افتراقی تا رژیم نگهدارنده",
+    excerpt:
+      "الگوریتم تصمیم‌گیری بالینی برای آکنه بزرگسالان با تمرکز بر محور آندروژن، انتخاب درمان سیستمیک و راهبرد پیشگیری از عود",
+    category: "پوست و مو",
+    readingMinutes: 7,
+    publishedAt: "2026-10-30T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۸ آبان ۱۴۰۵",
+    tags: ["آکنه هورمونی", "درماتولوژی بالینی", "آندروژن", "پروتکل نگهدارنده", "سبوم"],
+    isPeerReviewed: true,
+    reviewer: {
+      name: "دکتر مریم سهرابی",
+      role: "متخصص پوست و مو (Dermatologist)",
+      medicalCouncilOrId: "نظام پزشکی: ۱۳۹۴۸۲",
+      reviewDate: "۲۰۲۶/۱۰/۳۱",
+      badgeLabel: "تأییدیه پروتکل درمانی آکنه",
+      verified: true,
+    },
+    clinicalProtocol: {
+      skinTypeTarget: "پوست‌های چرب، مختلط و مستعد آکنه التهابی ناحیه یو-زون (U-Zone) فک و چانه",
+      primaryIndication: "کنترل سبوم مازاد، تنظیم فلور میکروبی کاتیوباکتریوم و پیشگیری از اسکار التهابی",
+      contraindications: ["تحریک شدید سد پوستی ناشی از استفاده همزمان چند اکتیو لایه‌بردار تهاجمی"],
+      regimenSteps: [
+        {
+          step: "گام ۱: پاکسازی ملایم با سالیسیلیک اسید کپسوله",
+          instruction: "شستشو با شوینده ملایم غیرکومدون‌زا جهت پاکسازی عمقی منافذ بدون آسیب به لایه لیپیدی.",
+          frequency: "روزانه صبح و شب",
+        },
+        {
+          step: "گام ۲: نیاسینامید و آزلائیک اسید",
+          instruction: "استفاده از آزلائیک اسید ۱۰٪ جهت مهار آنزیم ۵-آلفاردوکتاز و کاهش التهاب ماکولوپاپولار.",
+          frequency: "شبانگاه",
+        },
+        {
+          step: "گام ۳: سد دفاعی و آبرسانی سبک",
+          instruction: "تثبیت رطوبت با ژل-کرم سرامیدی سبک فاقد چربی و فیلترهای ضدآفتاب وسیع‌الطیف.",
+          frequency: "صبح‌ها و تمدید در طول روز",
+        },
+      ],
+      keyIngredients: ["Azelaic Acid", "Encapsulated Salicylic Acid", "Zinc PCA", "Niacinamide"],
+    },
+    studyLimitations: [
+      "آکنه هورمونی در زنان نیازمند غربالگری هورمونی و ارزیابی سندرم تخمدان پلی‌کیستیک (PCOS) توسط پزشک است.",
+    ],
+    bibliography: [
+      {
+        citation: "Thiboutot, D. et al. (2024). Practical Management of Adult Female Acne: An Evidence-Based Consensus.",
+        journal: "Journal of the American Academy of Dermatology",
+        year: 2024,
+        doiOrUrl: "https://doi.org/10.1016/j.jaad.2023.11.045",
+      },
+    ],
+    body: [
+      "آکنه دیررس یا هورمونی در بزرگسالان به‌ویژه در بانوان، الگوی متفاوتی از آکنه ولگاریس دوران بلوغ دارد و معمولاً ناحیه خط فک، چانه و گردن (الگوی U-Zone) را درگیر می‌کند.",
+      "پاتوفیزیولوژی این عارضه با حساسیت بیش از حد گیرنده‌های آندروژن فولیکولار به دی‌هیدروتستوسترون (DHT) و تغییر ترکیب کیفی سبوم (کاهش اسید لینولئیک و اکسیداسیون اسکوالن) در ارتباط مستقیم است.",
+      "رویکرد بالینی مدرن به جای استفاده تهاجمی از آنتی‌بیوتیک‌های موضعی طولانی‌مدت، بر مهار آنزیمی، تثبیت سد پوستی و تنظیم پی‌اچ اپیدرمال با ترکیبات هم‌افزا نظیر آزلائیک اسید، زینک پی‌سی‌ای و نیاسینامید متمرکز است.",
+    ],
+    relatedProducts: [
+      {
+        slug: "carboxygel-professional-therapy",
+        title: "کیت ژل کربوکسی تخصصی کلینیکال CarboxyGel",
+        categoryFa: "پروتکل گایدلاین مطبی",
+        image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel.png",
+        badge: "پایه پروتکل‌های بوهر",
+        priceFormatted: "۴,۸۵۰,۰۰۰ تومان",
+      },
+      {
+        slug: "healene",
+        title: "ژل تسکین‌بخش و التیام‌دهنده درمال Healene",
+        categoryFa: "مراقبت خانگی و کلینیکی لاملار",
+        image: "/assets/drdermer/2025/08/16healene-1200x1109.webp",
+        badge: "تثبیت نتایج کلینیکال",
+        priceFormatted: "۱,۶۰۰,۰۰۰ تومان",
+      },
+    ],
+  },
+  {
+    slug: "superficial-chemical-peels-dark-skin",
+    image: "/assets/rupak/articles/art-chemical-peels-dark.jpg",
+    title: "پیلینگ‌های شیمیایی سطحی در تایپ‌های پوستی تیره",
+    excerpt:
+      "مرور شواهد درباره پروفایل ایمنی پیلینگ‌ها در پوست‌های مستعد ملاسما، انتخاب اسید مناسب و پروتکل پیش‌درمانی و پس‌درمانی",
+    category: "ترکیبات و مواد مؤثره",
+    readingMinutes: 6,
+    publishedAt: "2026-11-01T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۱۰ آبان ۱۴۰۵",
+    tags: ["پیلینگ شیمیایی", "فیتزپاتریک IV-VI", "ماندلیک اسید", "لاکتیک اسید", "پیشگیری PIH"],
+    isPeerReviewed: true,
+    reviewer: {
+      name: "مهندس کیانوش راد",
+      role: "شیمیست فرمولاتور آرایشی (Cosmetic Chemist)",
+      medicalCouncilOrId: "عضو انجمن شیمیست‌های آرایشی IFSCC",
+      reviewDate: "۲۰۲۶/۱۱/۰۲",
+      badgeLabel: "تأییدیه فرمولاسیون و پایداری مواد",
+      verified: true,
+    },
+    clinicalProtocol: {
+      skinTypeTarget: "فوتوتایپ‌های تیره (Fitzpatrick IV to VI)، پوست‌های مستعد ملاسما و هایپرپیگمانتاسیون پس‌التهابی",
+      primaryIndication: "لایه‌برداری کنترل‌شده سطحی بدون فعال‌سازی ملانوسیت‌های بیش‌فعال با ماندلیک اسید و PHA",
+      contraindications: ["استفاده از اسید گلیکولیک با درصد بالا بدون پرایمینگ قبلی حداقل به مدت ۲ تا ۴ هفته"],
+      regimenSteps: [
+        {
+          step: "۱. پرایمینگ ۲ تا ۴ هفته قبل",
+          instruction: "تجویز نیاسینامید، مهارکننده‌های تیروزیناز و محافظت نوری سختگیرانه جهت کاهش فعالیت ملانوسیت‌ها.",
+          frequency: "روزانه پیش از عمل پیلینگ",
+        },
+        {
+          step: "۲. اجرای پیلینگ ماندلیک یا لاکتیک",
+          instruction: "اپلیکیشن کنترل‌شده با زمان تماس دقیق جهت جلوگیری از فروستینگ یا اریتم عمیق اپیدرم.",
+          frequency: "طبق صلاحدید پزشک هر ۳ تا ۴ هفته یکبار",
+        },
+        {
+          step: "۳. خنثی‌سازی و مهار التهاب فوری",
+          instruction: "خنثی‌سازی کامل با محلول بافر، استفاده از کمپلکس سد دفاعی و پپتیدهای مس.",
+          frequency: "بلافاصله پس از شستشوی اسید",
+        },
+      ],
+      keyIngredients: ["Mandelic Acid", "Lactic Acid", "Gluconolactone (PHA)", "Tranexamic Acid"],
+    },
+    studyLimitations: [
+      "پروسیجر پیلینگ در پوست‌های تیره حتماً باید توسط درماتولوژیست مجرب و با تست حساسیت موضعی صورت پذیرد.",
+    ],
+    bibliography: [
+      {
+        citation: "Castillo, D. E. & Keri, J. (2023). Chemical Peels in Skin of Color: A Review of Safety and Efficacy.",
+        journal: "Dermatologic Surgery",
+        year: 2023,
+        doiOrUrl: "https://doi.org/10.1097/DSS.0000000000003710",
+      },
+    ],
+    body: [
+      "اجرای پیلینگ شیمیایی در فوتوتایپ‌های تیره فیتزپاتریک (IV تا VI) همواره با چالش ریسک بروز هایپرپیگمانتاسیون پس‌التهابی (PIH) همراه است.",
+      "وزن مولکولی بزرگتر ماندلیک اسید و پلی‌هیدروکسی اسیدها (PHA) منجر به نفوذ آهسته‌تر و یکنواخت‌تر در مقایسه با گلیکولیک اسید کوچک‌مولکول شده و نوسان شدید در pH سلولی را تعدیل می‌کند.",
+      "رعایت رژیم پرایمینگ پوستی با آنتی‌اکسیدان‌ها و مهارکننده‌های پیش‌ساز ملانین، ضامن اثربخشی بدون عوارض پیلینگ‌های کلینیکال در پوست‌های ایرانی و خاورمیانه‌ای است.",
+    ],
+    relatedProducts: [
+      {
+        slug: "crystalene",
+        title: "کرم صیقل‌دهنده و میکرودرم کریستالین Crystalene",
+        categoryFa: "میکروپولیش و لایه‌برداری ملایم",
+        image: "/assets/drdermer/2025/08/17crystalene-1200x1109.webp",
+        badge: "پایه لاملار ایمن",
+        priceFormatted: "۱,۷۵۰,۰۰۰ تومان",
+      },
+      {
+        slug: "healene",
+        title: "ژل تسکین‌بخش و التیام‌دهنده درمال Healene",
+        categoryFa: "مراقبت خانگی و کلینیکی لاملار",
+        image: "/assets/drdermer/2025/08/16healene-1200x1109.webp",
+        badge: "تثبیت نتایج کلینیکال",
+        priceFormatted: "۱,۶۰۰,۰۰۰ تومان",
+      },
+    ],
+  },
+  {
+    slug: "photodermatosis-next-gen-uv-filters",
+    image: "/assets/rupak/articles/art-photoprotection-filters.jpg",
+    title: "فتودرماتوز و محافظت نوری: بازنگری فیلترهای نسل جدید",
+    excerpt:
+      "نوین، پایداری UVB و UVA تحلیل طیف جذبی فیلترهای نوری فرمولاسیون‌ها و توصیه‌های عملی برای بیماران تحت رتینوئید",
+    category: "ترمیم و ضدپیری",
+    readingMinutes: 7,
+    publishedAt: "2026-11-03T10:00:00Z",
+    author: "علیرضا حمداللهی",
+    dateFa: "۱۲ آبان ۱۴۰۵",
+    tags: ["محافظت نوری", "ضدآفتاب بالینی", "فیلترهای نسل جدید", "فتودرماتوز", "رتینوئید"],
+    isPeerReviewed: true,
+    reviewer: {
+      name: "دکتر مریم سهرابی",
+      role: "متخصص پوست و مو (Dermatologist)",
+      medicalCouncilOrId: "نظام پزشکی: ۱۳۹۴۸۲",
+      reviewDate: "۲۰۲۶/۱۱/۰۴",
+      badgeLabel: "تأییدیه فوتوپروتکشن بالینی",
+      verified: true,
+    },
+    clinicalProtocol: {
+      skinTypeTarget: "پوست‌های حساس، فوتودرماتوز، بیماران تحت درمان با رتینوئیدهای خوراکی یا موضعی و بعد از لیزر",
+      primaryIndication: "سد محافظتی وسیع‌الطیف در برابر اشعه‌های UVA1، UVA2، UVB و نور مرئی پرانرژی (HEV / Blue Light)",
+      contraindications: ["عدم تمدید ضدآفتاب در ساعات اوج تابش در شرایط تعریق یا شستشو"],
+      regimenSteps: [
+        {
+          step: "۱. استفاده پایه صبحگاهی",
+          instruction: "اعمال ۲ میلی‌گرم بر سانتی‌متر مربع (قانون دو انگشت) ضدآفتاب مینرال یا هایبرید نسل جدید.",
+          frequency: "۲۰ دقیقه قبل از خروج از منزل",
+        },
+        {
+          step: "۲. تمدید دوره‌ای",
+          instruction: "تمدید هر ۲ ساعت یکبار یا بلافاصله پس از شنا و تعریق شدید.",
+          frequency: "در طول روز",
+        },
+      ],
+      keyIngredients: ["Tinosorb S / M", "Bis-Ethylhexyloxyphenol Methoxyphenyl Triazine", "Micronized Zinc Oxide", "Ectoin"],
+    },
+    studyLimitations: [
+      "محافظت نوری کامل نیازمند رعایت همزمان اقدامات فیزیکی (کلاه، عینک آفتابی استاندارد و پرهیز از ساعات اوج آفتاب) است.",
+    ],
+    bibliography: [
+      {
+        citation: "Krutmann, J. et al. (2024). Next-Generation Photoprotection: Beyond SPF into Broad-Spectrum Molecular Defense.",
+        journal: "Photodermatology, Photoimmunology & Photomedicine",
+        year: 2024,
+        doiOrUrl: "https://doi.org/10.1111/phpp.12890",
+      },
+    ],
+    body: [
+      "پیشرفت‌های اخیر در شیمی فیلترهای نوری، نسل نوینی از مولکول‌های محافظت‌کننده فوتواستیبل نظیر تینوسورب (Tinosorb) و یوینول (Uvinul) را جایگزین فیلترهای ناپایدار سنتی کرده است.",
+      "بیمارانی که تحت درمان با مشتقات رتینوئید یا لایه‌برداری شیمیایی قرار دارند، آستانه اریتم ناشی از آفتاب بسیار پایین‌تری دارند؛ از این رو حفظ طول موج بحرانی (Critical Wavelength) بالای ۳۷۰ نانومتر در فرمولاسیون ضروری است.",
+      "افزودن آنتی‌اکسیدان‌های درون‌سلولی نظیر اکتوئین (Ectoin) علاوه بر فیلتراسیون فیزیکی، مانع از تولید رادیکال‌های آزاد اکسیژن (ROS) در ماتریکس میتوکندریال سلول‌های فیبروبلاست می‌گردد.",
+    ],
+    relatedProducts: [
+      {
+        slug: "healene",
+        title: "ژل تسکین‌بخش و التیام‌دهنده درمال Healene",
+        categoryFa: "مراقبت خانگی و کلینیکی لاملار",
+        image: "/assets/drdermer/2025/08/16healene-1200x1109.webp",
+        badge: "تثبیت نتایج کلینیکال",
+        priceFormatted: "۱,۶۰۰,۰۰۰ تومان",
+      },
+      {
+        slug: "carboxygel-professional-therapy",
+        title: "کیت ژل کربوکسی تخصصی کلینیکال CarboxyGel",
+        categoryFa: "پروتکل گایدلاین مطبی",
+        image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel.png",
+        badge: "پایه پروتکل‌های بوهر",
+        priceFormatted: "۴,۸۵۰,۰۰۰ تومان",
       },
     ],
   },

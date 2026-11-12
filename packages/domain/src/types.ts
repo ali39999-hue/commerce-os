@@ -58,6 +58,8 @@ export interface Quote {
 
 export interface CouponRule {
   code: string;
+  title?: string;
+  isActive?: boolean;
   discountBps?: number; // e.g. 1000 = 10%
   fixedDiscount?: Money;
   minSubtotal?: Money;

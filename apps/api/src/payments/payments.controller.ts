@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Query, UseGuards } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
-import { PaymentInitiateDto, ReceiptApproveDto, ReceiptSubmitDto } from "../common/dto/resource-writes.dto";
+import { PaymentInitiateDto, ReceiptApproveDto, ReceiptRejectDto, ReceiptSubmitDto } from "../common/dto/resource-writes.dto";
 import { PaymentsService } from "./payments.service";
 
 @Controller("payments")
@@ -48,6 +48,19 @@ export class PaymentsController {
     return this.paymentsService.approveCardToCardReceipt(
       receiptId,
       body.reviewer || "admin"
+    );
+  }
+
+  @Post("receipts/:receiptId/reject")
+  @UseGuards(AdminGuard)
+  async rejectReceipt(
+    @Param("receiptId") receiptId: string,
+    @Body() body: ReceiptRejectDto
+  ) {
+    return this.paymentsService.rejectCardToCardReceipt(
+      receiptId,
+      body.reviewer || "admin",
+      body.reason
     );
   }
 }

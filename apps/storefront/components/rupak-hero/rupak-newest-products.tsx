@@ -1,13 +1,20 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import {
+  listProducts,
+  resolveProductImage,
+  resolveVariant,
+  type Product,
+} from '../../lib/catalog';
 import { useCart } from '../cart';
 import './rupak-newest-products.css';
 
 export interface NewestProductItem {
   id: string;
+  slug: string;
   variantId: string;
   productId: string;
   title: string;
@@ -16,100 +23,80 @@ export interface NewestProductItem {
   discountPercent?: number;
   oldPriceTomans?: string;
   priceTomans: string;
-  priceAmount: string; // Rials string
+  priceAmount: string;
   sku: string;
 }
 
-const DEFAULT_NEWEST: NewestProductItem[] = [
-  {
-    id: 'newest-1',
-    variantId: 'var-differin-01',
-    productId: 'prod-differin',
-    title: 'ژل ضدجوش و لایه‌بردار دیفرین Differin اصل',
-    category: 'ضد جوش، مراقبت پوستی',
-    image: '/assets/rupak/newest/prod-differin.jpg',
-    discountPercent: 9,
-    oldPriceTomans: '۶۴۰,۰۰۰',
-    priceTomans: '۵۹۰,۰۰۰',
-    priceAmount: '5900000',
-    sku: 'DIF-GEL-01',
-  },
-  {
-    id: 'newest-2',
-    variantId: 'var-guerlain-24k',
-    productId: 'prod-guerlain',
-    title: 'پرایمر آبرسان و جوانساز گلد گرلن Guerlain 24K Primer Parure Gold',
-    category: 'آرایش صورت، آرایشی',
-    image: '/assets/rupak/newest/prod-guerlain.jpg',
-    discountPercent: 10,
-    oldPriceTomans: '۳,۸۰۰,۰۰۰',
-    priceTomans: '۳,۴۰۰,۰۰۰',
-    priceAmount: '34000000',
-    sku: 'GRL-24K-PRIM',
-  },
-  {
-    id: 'newest-3',
-    variantId: 'var-skin-detox',
-    productId: 'prod-skin-detox',
-    title: 'میسلار واتر نوتروژینا مدل اسکین دتوکس Skin Detox اصل ۴۰۰ میل',
-    category: 'آرایشی، مراقبت پوستی',
-    image: '/assets/rupak/newest/prod-skindetox.jpg',
-    discountPercent: 24,
-    oldPriceTomans: '۳۸۰,۰۰۰',
-    priceTomans: '۲۹۰,۰۰۰',
-    priceAmount: '2900000',
-    sku: 'NTG-DETOX-400',
-  },
-  {
-    id: 'newest-4',
-    variantId: 'var-hydro-boost',
-    productId: 'prod-hydro-boost',
-    title: 'میسلار واتر نوتروژینا مدل هیدروبوست Hydro Boost اصل ۴۰۰ میل',
-    category: 'آرایشی، مراقبت پوستی',
-    image: '/assets/rupak/newest/prod-hydroboost.jpg',
-    discountPercent: 24,
-    oldPriceTomans: '۳۸۰,۰۰۰',
-    priceTomans: '۲۹۰,۰۰۰',
-    priceAmount: '2900000',
-    sku: 'NTG-HYDRO-400',
-  },
-  {
-    id: 'newest-5',
-    variantId: 'var-healene-150',
-    productId: 'prod-healene',
-    title: 'ژل ترمیم‌کننده سد دفاعی پوست Healene 150ml دکسپانتنول ۵٪',
-    category: 'مراقبت بالینی پوست',
-    image: '/assets/drdermer/2024/10/2-azel-170-hydrapod.webp',
-    priceTomans: '۹۸۰,۰۰۰',
-    priceAmount: '9800000',
-    sku: 'HLN-GEL-150',
-  },
-  {
-    id: 'newest-6',
-    variantId: 'var-silicalene-200',
-    productId: 'prod-silicalene',
-    title: 'اسکراب دتوکس و لایروبی منافذ Silicalene 200ml با کربن فعال',
-    category: 'پاکسازی عمیق و لایه‌بردار',
-    image: '/assets/drdermer/2024/10/v-glycolic-170-carbo-pod.webp',
-    priceTomans: '۱,۲۸۰,۰۰۰',
-    priceAmount: '12800000',
-    sku: 'SLC-SCRUB-200',
-  },
-];
+export interface RupakNewestProductsProps {
+  products?: Product[];
+}
 
-export function RupakNewestProducts() {
+function toNewestItems(products: Product[]): NewestProductItem[] {
+  const newest = products.filter((p) => p.isNewest && Boolean(resolveVariant(p)?.inStock));
+  const pool = (newest.length > 0 ? newest : products.filter((p) => resolveVariant(p)?.inStock)).slice(0, 12);
+
+  return pool
+    .map((p): NewestProductItem | null => {
+      const v = resolveVariant(p);
+      if (!v) return null;
+      const priceTomansNum = Number(BigInt(v.priceAmount || '0') / 10n);
+      const origTomansNum = v.originalPriceAmount
+        ? Number(BigInt(v.originalPriceAmount) / 10n)
+        : 0;
+      const discountPercent =
+        typeof v.discountPercent === 'number' && v.discountPercent > 0
+          ? v.discountPercent
+          : origTomansNum > priceTomansNum && origTomansNum > 0
+          ? Math.round(((origTomansNum - priceTomansNum) * 100) / origTomansNum)
+          : undefined;
+
+      return {
+        id: p.id,
+        slug: p.slug,
+        variantId: v.id,
+        productId: p.id,
+        title: p.titleFa || p.title,
+        category: p.category?.titleFa || 'مراقبت پوستی',
+        image: resolveProductImage(p),
+        discountPercent,
+        oldPriceTomans:
+          origTomansNum > priceTomansNum ? origTomansNum.toLocaleString('fa-IR') : undefined,
+        priceTomans: priceTomansNum.toLocaleString('fa-IR'),
+        priceAmount: v.priceAmount,
+        sku: v.sku,
+      };
+    })
+    .filter((item): item is NewestProductItem => item !== null);
+}
+
+export function RupakNewestProducts({ products }: RupakNewestProductsProps) {
   const cart = useCart();
+  const [liveProducts, setLiveProducts] = useState<Product[]>(products ?? []);
   const [addedId, setAddedId] = useState<string | null>(null);
 
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(true);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
-  // Mouse Drag state for desktop swipe
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeftPos, setScrollLeftPos] = useState(0);
   const [hasDragged, setHasDragged] = useState(false);
+
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setLiveProducts(products);
+      return;
+    }
+    let cancelled = false;
+    listProducts({ collection: 'newest', limit: 20 }).then((res) => {
+      if (!cancelled && res?.data) setLiveProducts(res.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [products]);
+
+  const newestItems = useMemo(() => toNewestItems(liveProducts), [liveProducts]);
 
   const updateScrollState = useCallback(() => {
     if (!carouselRef.current) return;
@@ -123,28 +110,22 @@ export function RupakNewestProducts() {
 
   useEffect(() => {
     updateScrollState();
-    const el = carouselRef.current;
-    if (!el) return;
-
     window.addEventListener('resize', updateScrollState);
     return () => window.removeEventListener('resize', updateScrollState);
-  }, [updateScrollState]);
+  }, [updateScrollState, newestItems.length]);
 
   const handleScrollNext = () => {
     if (!carouselRef.current) return;
-    // In RTL, next items are to the left, so scrollBy negative
     carouselRef.current.scrollBy({ left: -260, behavior: 'smooth' });
     setTimeout(updateScrollState, 350);
   };
 
   const handleScrollPrev = () => {
     if (!carouselRef.current) return;
-    // In RTL, prev items are back to the right, so scrollBy positive
     carouselRef.current.scrollBy({ left: 260, behavior: 'smooth' });
     setTimeout(updateScrollState, 350);
   };
 
-  // Drag-to-swipe handlers for mouse users
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!carouselRef.current) return;
     setIsMouseDown(true);
@@ -187,12 +168,16 @@ export function RupakNewestProducts() {
           priceAmount: item.priceAmount,
           image: item.image,
         },
-        1
+        1,
       );
       setAddedId(item.id);
       setTimeout(() => setAddedId(null), 1800);
     }
   };
+
+  if (newestItems.length === 0) {
+    return null;
+  }
 
   return (
     <section
@@ -202,20 +187,17 @@ export function RupakNewestProducts() {
       dir="rtl"
     >
       <div className="rupak-newest-container">
-        {/* Soft Sage-Green Banner Outer Container */}
         <div className="rupak-newest-box">
           <div className="rupak-newest-inner">
-            {/* Lead Column (Right in RTL): Title, 3 Bottles Art, View All */}
             <div className="rupak-newest-lead">
               <div className="rupak-newest-title-block">
-                <h2 className="rupak-newest-title">
+                <h2 className="rupak-newest-title" style={{ fontFamily: "'MyBaby', 'MyBaby Chubby', sans-serif" }}>
                   جدیدترین
                   <br />
                   محصولات
                 </h2>
               </div>
 
-              {/* 3 Bottles Art Illustration */}
               <div className="rupak-newest-art-wrap">
                 <img
                   src="/assets/rupak/newest/newest-art.png"
@@ -225,9 +207,8 @@ export function RupakNewestProducts() {
                 />
               </div>
 
-              {/* Lead Actions: "مشاهده همه" + Mini Directional Nav */}
               <div className="rupak-newest-lead-actions">
-                <Link href="/shop" className="rupak-newest-viewall">
+                <Link href="/shop?sort=newest" className="rupak-newest-viewall">
                   <span>مشاهده همه</span>
                   <ChevronLeft className="w-3.5 h-3.5" />
                 </Link>
@@ -256,9 +237,7 @@ export function RupakNewestProducts() {
               </div>
             </div>
 
-            {/* Product Cards Carousel (Left in RTL) */}
             <div className="rupak-newest-carousel-wrap">
-              {/* Floating Swipe Left Button (Next products in RTL) */}
               <button
                 type="button"
                 onClick={handleScrollNext}
@@ -269,7 +248,6 @@ export function RupakNewestProducts() {
                 <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
               </button>
 
-              {/* Floating Swipe Right Button (Prev products in RTL) */}
               <button
                 type="button"
                 onClick={handleScrollPrev}
@@ -289,17 +267,19 @@ export function RupakNewestProducts() {
                 onMouseLeave={handleMouseUpOrLeave}
                 className={`rupak-newest-carousel ${isMouseDown ? 'is-dragging' : ''}`}
               >
-                {DEFAULT_NEWEST.map((item) => (
+                {newestItems.map((item) => (
                   <div key={item.id} className="rupak-newest-card">
-                    {/* Discount Badge */}
                     {item.discountPercent && (
                       <span className="rupak-newest-discount-badge">
                         {item.discountPercent}٪
                       </span>
                     )}
 
-                    {/* Product Image */}
-                    <div className="rupak-newest-img-box">
+                    <Link
+                      href={`/products/${encodeURIComponent(item.slug)}`}
+                      className="rupak-newest-img-box"
+                      draggable={false}
+                    >
                       <img
                         src={item.image}
                         alt={item.title}
@@ -307,15 +287,14 @@ export function RupakNewestProducts() {
                         loading="lazy"
                         draggable={false}
                       />
-                    </div>
+                    </Link>
 
-                    {/* Category */}
                     <span className="rupak-newest-category">{item.category}</span>
 
-                    {/* Product Title */}
-                    <h3 className="rupak-newest-card-title">{item.title}</h3>
+                    <Link href={`/products/${encodeURIComponent(item.slug)}`}>
+                      <h3 className="rupak-newest-card-title">{item.title}</h3>
+                    </Link>
 
-                    {/* Price Row */}
                     <div className="rupak-newest-price-row">
                       {item.oldPriceTomans && (
                         <span className="rupak-newest-old-price">
@@ -328,7 +307,6 @@ export function RupakNewestProducts() {
                       </span>
                     </div>
 
-                    {/* Add to Cart CTA */}
                     <button
                       type="button"
                       onClick={(e) => handleAddToCart(e, item)}
@@ -336,7 +314,7 @@ export function RupakNewestProducts() {
                     >
                       {addedId === item.id ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-white" />
+                          <Check className="w-3.5 h-3.5 text-emerald-700" />
                           <span>به سبد اضافه شد</span>
                         </>
                       ) : (

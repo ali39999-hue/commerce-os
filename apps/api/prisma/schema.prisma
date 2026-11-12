@@ -154,12 +154,32 @@ enum MediaRole {
   DETAIL
   HOW_TO
   CERTIFICATE
+  TEXTURE
+  IN_CLINIC
+  PACKAGING
 }
 
 enum ClinicalClaimStatus {
   APPROVED
   DRAFT
   REVIEW_REQUIRED
+}
+
+enum CouponAudienceType {
+  PUBLIC
+  B2B_CLINIC
+  VISITOR_EXCLUSIVE
+  SPECIFIC_PHONE
+}
+
+enum CartStage {
+  BROWSING
+  CART_REVIEW
+  CHECKOUT_STARTED
+  SHIPPING_SELECTED
+  PAYMENT_INITIATED
+  ORDER_PLACED
+  ABANDONED
 }
 
 // ── Multi-Tenant Hierarchy ──
@@ -279,6 +299,8 @@ model Category {
   slug        String    @db.VarChar(100)
   titleFa     String    @db.VarChar(200)
   description String?   @db.Text
+  imageUrl    String?   @db.Text
+  sortOrder   Int       @default(0)
   parentId    String?   @db.Uuid
   parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
   children    Category[] @relation("CategoryHierarchy")
@@ -291,20 +313,32 @@ model Category {
 }
 
 model Product {
-  id          String           @id @default(uuid()) @db.Uuid
-  tenantId    String           @db.Uuid
-  storeId     String           @db.Uuid
-  categoryId  String?          @db.Uuid
-  brandId     String?          @db.Uuid
-  vendorId    String?          @db.Uuid
-  kind        ProductKind      @default(PHYSICAL)
-  slug        String           @db.VarChar(180)
-  titleFa     String           @db.VarChar(300)
-  description String?          @db.Text
-  status      ProductStatus    @default(DRAFT)
-  publishedAt DateTime?        @db.Timestamptz(6)
-  createdAt   DateTime         @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime         @updatedAt @db.Timestamptz(6)
+  id                String               @id @default(uuid()) @db.Uuid
+  tenantId          String               @db.Uuid
+  storeId           String               @db.Uuid
+  categoryId        String?              @db.Uuid
+  brandId           String?              @db.Uuid
+  vendorId          String?              @db.Uuid
+  kind              ProductKind          @default(PHYSICAL)
+  slug              String               @db.VarChar(180)
+  titleFa           String               @db.VarChar(300)
+  subtitleFa        String?              @db.VarChar(400)
+  scientificName    String?              @db.VarChar(255)
+  formulation       String?              @db.VarChar(300)
+  description       String?              @db.Text
+  badge             String?              @db.VarChar(120)
+  ratingValue       Decimal?             @db.Decimal(3, 2)
+  reviewCount       Int                  @default(0)
+  isFeatured        Boolean              @default(false)
+  isSpecialOffer    Boolean              @default(false)
+  isNewest          Boolean              @default(false)
+  sortOrder         Int                  @default(0)
+  coldChainRequired Boolean              @default(false)
+  clinicalData      Json?                @db.JsonB
+  status            ProductStatus        @default(DRAFT)
+  publishedAt       DateTime?            @db.Timestamptz(6)
+  createdAt         DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime             @updatedAt @db.Timestamptz(6)
   store       Store            @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
   category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   brand       Brand?           @relation(fields: [brandId], references: [id], onDelete: SetNull)
@@ -345,18 +379,24 @@ model Vendor {
 }
 
 model ProductVariant {
-  id              String           @id @default(uuid()) @db.Uuid
-  tenantId        String           @db.Uuid
-  storeId         String           @db.Uuid
-  productId       String           @db.Uuid
-  sku             String           @unique @db.VarChar(100)
-  titleFa         String           @db.VarChar(200)
-  priceAmount     Decimal          @db.Decimal(20, 0)
-  currency        String           @default("IRR") @db.Char(3)
-  status          VariantStatus    @default(ACTIVE)
-  digitalFileUrl  String?          @db.Text
-  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
-  updatedAt       DateTime         @updatedAt @db.Timestamptz(6)
+  id                  String                     @id @default(uuid()) @db.Uuid
+  tenantId            String                     @db.Uuid
+  storeId             String                     @db.Uuid
+  productId           String                     @db.Uuid
+  sku                 String                     @unique @db.VarChar(100)
+  titleFa             String                     @db.VarChar(200)
+  sizeOrVolume        String?                    @db.VarChar(120)
+  priceAmount         Decimal                    @db.Decimal(20, 0)
+  originalPriceAmount Decimal?                   @db.Decimal(20, 0)
+  discountPercent     Int?
+  currency            String                     @default("IRR") @db.Char(3)
+  status              VariantStatus              @default(ACTIVE)
+  digitalFileUrl      String?                    @db.Text
+  mediaRoleMatch      String?                    @db.VarChar(64)
+  isRecommended       Boolean                    @default(false)
+  sortOrder           Int                        @default(0)
+  createdAt           DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime                   @updatedAt @db.Timestamptz(6)
   product         Product          @relation(fields: [tenantId, storeId, productId], references: [tenantId, storeId, id], onDelete: Restrict)
   inventoryLevels InventoryLevel[]
   reservationLines InventoryReservationLine[]
@@ -556,17 +596,31 @@ model InventoryReservationLine {
 // ── Cart & Checkout ──
 
 model Cart {
-  id        String     @id @default(uuid()) @db.Uuid
-  tenantId  String     @db.Uuid
-  storeId   String     @db.Uuid
-  userId    String?    @db.Uuid
-  sessionId String?    @db.VarChar(128)
-  createdAt DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
-  store     Store      @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
-  lines     CartLine[]
+  id                   String     @id @default(uuid()) @db.Uuid
+  tenantId             String     @db.Uuid
+  storeId              String     @db.Uuid
+  userId               String?    @db.Uuid
+  sessionId            String?    @db.VarChar(128)
+  customerName         String?    @db.VarChar(150)
+  customerPhone        String?    @db.VarChar(20)
+  customerType         String     @default("B2C") @db.VarChar(20)
+  stage                CartStage  @default(BROWSING)
+  couponCode           String?    @db.VarChar(50)
+  shippingMethod       String?    @db.VarChar(60)
+  subtotalAmount       Decimal    @default(0) @db.Decimal(20, 0)
+  discountAmount       Decimal    @default(0) @db.Decimal(20, 0)
+  totalAmount          Decimal    @default(0) @db.Decimal(20, 0)
+  convertedOrderId     String?    @db.Uuid
+  convertedOrderNumber String?    @db.VarChar(50)
+  lastActivityAt       DateTime   @default(now()) @db.Timestamptz(6)
+  createdAt            DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime   @updatedAt @db.Timestamptz(6)
+  store                Store      @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
+  lines                CartLine[]
 
+  @@unique([tenantId, storeId, sessionId])
   @@index([tenantId, storeId, userId, sessionId])
+  @@index([tenantId, storeId, stage, lastActivityAt])
   @@map("carts")
 }
 
@@ -575,6 +629,9 @@ model CartLine {
   cartId    String         @db.Uuid
   variantId String         @db.Uuid
   qty       Int            @default(1)
+  titleFa   String?        @db.VarChar(250)
+  sku       String?        @db.VarChar(100)
+  unitPrice Decimal?       @db.Decimal(20, 0)
   createdAt DateTime       @default(now()) @db.Timestamptz(6)
   cart      Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
   variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Restrict)
@@ -589,6 +646,10 @@ model CheckoutSession {
   storeId          String   @db.Uuid
   cartId           String?  @db.Uuid
   reservationId    String?  @db.Uuid
+  customerName     String?  @db.VarChar(150)
+  customerPhone    String?  @db.VarChar(20)
+  customerType     String   @default("B2C") @db.VarChar(20)
+  couponCode       String?  @db.VarChar(50)
   quoteFingerprint String   @db.VarChar(64)
   quoteSnapshot    Json     @db.JsonB
   addressSnapshot  Json?    @db.JsonB
@@ -610,6 +671,10 @@ model Order {
   userId         String?              @db.Uuid
   customerPhone  String               @db.VarChar(20)
   customerName   String               @db.VarChar(150)
+  customerType   String               @default("B2C") @db.VarChar(20)
+  couponCode     String?              @db.VarChar(50)
+  visitorCode    String?              @db.VarChar(60)
+  clinicName     String?              @db.VarChar(200)
   status         OrderStatus          @default(PENDING_PAYMENT)
   subtotalAmount Decimal              @db.Decimal(20, 0)
   discountAmount Decimal              @default(0) @db.Decimal(20, 0)
@@ -807,34 +872,53 @@ model LedgerEntry {
 // ── Coupons & Promotions ──
 
 model Coupon {
-  id               String             @id @default(uuid()) @db.Uuid
-  tenantId         String             @db.Uuid
-  storeId          String             @db.Uuid
-  code             String             @db.VarChar(50)
-  discountBps      Int?
-  fixedDiscount    Decimal?           @db.Decimal(20, 0)
-  minSubtotal      Decimal?           @db.Decimal(20, 0)
-  maxDiscount      Decimal?           @db.Decimal(20, 0)
-  usageLimit       Int?
-  usedCount        Int                @default(0)
-  expiresAt        DateTime?          @db.Timestamptz(6)
-  createdAt        DateTime           @default(now()) @db.Timestamptz(6)
-  store            Store              @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
-  redemptions      CouponRedemption[]
+  id                  String             @id @default(uuid()) @db.Uuid
+  tenantId            String             @db.Uuid
+  storeId             String             @db.Uuid
+  code                String             @db.VarChar(50)
+  titleFa             String?            @db.VarChar(200)
+  isActive            Boolean            @default(true)
+  audienceType        CouponAudienceType @default(PUBLIC)
+  customerSegment     String             @default("ALL") @db.VarChar(20)
+  b2bOnly             Boolean            @default(false)
+  clinicName          String?            @db.VarChar(200)
+  clinicLicenseNumber String?            @db.VarChar(60)
+  visitorName         String?            @db.VarChar(150)
+  visitorCode         String?            @db.VarChar(60)
+  visitorPhone        String?            @db.VarChar(20)
+  allowedPhones       String[]           @default([])
+  perUserLimit        Int?
+  discountBps         Int?
+  fixedDiscount       Decimal?           @db.Decimal(20, 0)
+  minSubtotal         Decimal?           @db.Decimal(20, 0)
+  maxDiscount         Decimal?           @db.Decimal(20, 0)
+  usageLimit          Int?
+  usedCount           Int                @default(0)
+  expiresAt           DateTime?          @db.Timestamptz(6)
+  createdAt           DateTime           @default(now()) @db.Timestamptz(6)
+  store               Store              @relation(fields: [tenantId, storeId], references: [tenantId, id], onDelete: Restrict)
+  redemptions         CouponRedemption[]
 
   @@unique([tenantId, storeId, code])
+  @@index([tenantId, storeId, audienceType, isActive])
   @@map("coupons")
 }
 
 model CouponRedemption {
-  id         String   @id @default(uuid()) @db.Uuid
-  couponId   String   @db.Uuid
-  orderId    String   @db.Uuid
-  userId     String?  @db.Uuid
-  redeemedAt DateTime @default(now()) @db.Timestamptz(6)
-  coupon     Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  id             String   @id @default(uuid()) @db.Uuid
+  couponId       String   @db.Uuid
+  orderId        String   @db.Uuid
+  userId         String?  @db.Uuid
+  customerPhone  String?  @db.VarChar(20)
+  customerName   String?  @db.VarChar(150)
+  visitorCode    String?  @db.VarChar(60)
+  discountAmount Decimal  @default(0) @db.Decimal(20, 0)
+  redeemedAt     DateTime @default(now()) @db.Timestamptz(6)
+  coupon         Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
 
   @@index([couponId])
+  @@index([couponId, customerPhone])
+  @@index([couponId, userId])
   @@map("coupon_redemptions")
 }
 

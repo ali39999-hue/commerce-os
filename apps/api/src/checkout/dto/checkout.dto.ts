@@ -48,6 +48,10 @@ export class CheckoutSessionDto {
   @IsString()
   storeSlug?: string;
 
+  @IsOptional()
+  @IsString()
+  cartSessionId?: string;
+
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
@@ -59,6 +63,34 @@ export class CheckoutSessionDto {
 
   @IsString()
   customerName!: string;
+
+  @IsOptional()
+  @IsIn(["B2C", "B2B", "B2B_CLINIC"])
+  customerType?: "B2C" | "B2B" | "B2B_CLINIC";
+
+  @IsOptional()
+  @IsString()
+  clinicName?: string;
+
+  @IsOptional()
+  @IsString()
+  medicalLicenseNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  nationalCode?: string;
+
+  @IsOptional()
+  @IsString()
+  economicCode?: string;
+
+  @IsOptional()
+  @IsString()
+  shippingMethod?: string;
+
+  @IsOptional()
+  @IsString()
+  deliverySlot?: string;
 
   @ValidateNested()
   @Type(() => AddressSnapshotDto)

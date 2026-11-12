@@ -1,4 +1,4 @@
-import { CLINICAL_SKINCARE_PRODUCTS } from './pdp-data';
+import { resolveProductImage, resolveVariant, type Product } from './catalog';
 
 export interface ClinicalSpecs {
   brand: string;
@@ -11,6 +11,7 @@ export interface ClinicalSpecs {
 export interface CuratedProductItem {
   id: string;
   slug: string;
+  variantId?: string;
   title: string;
   brand: string;
   sku: string;
@@ -24,159 +25,101 @@ export interface CuratedProductItem {
   image?: string;
 }
 
-export const RECOMMENDED_CLINICAL_PRODUCTS: CuratedProductItem[] = [
-  {
-    id: 'prod_skin_001',
-    slug: 'carboxygel',
-    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
-    brand: 'ReeSkin Clinical',
-    sku: 'CBG-PRO-500ML',
-    priceAmount: '32000000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-    formulation: 'carboxy-gel',
-    concern: 'anti-aging-lifting',
-    volume: '۵۰۰ میلی‌لیتر کلینیکال',
-    description: 'سیستم کربوکسی تراپی غیرتهاجمی با تحریک پدیده اثر بوهر (Bohr Effect) جهت اکسیژن‌رسانی عمیق سلولی و لیفتینگ.',
-    image: '/assets/drdermer/2025/07/carboxygel.png',
-  },
-  {
-    id: 'prod_clinical_carboxypod',
-    slug: 'carboxypod',
-    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌اسکین (بسته ۱۰ عددی)',
-    brand: 'ReeSkin Clinical',
-    sku: 'DD-POD-10X',
-    priceAmount: '12000000',
-    inStock: true,
-    categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
-    formulation: 'activation-pods',
-    concern: 'acne-blemish',
-    volume: 'باکس ۱۰ عددی وکیوم',
-    description: 'پدهای فعال‌ساز فیبری متخلخل غنی از اسید سیتریک میکروکپسوله برای فعال‌سازی آنی واکنش گاز CO2.',
-    image: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
-  },
-  {
-    id: 'prod_skin_healene',
-    slug: 'healene',
-    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
-    brand: 'ReeSkin Clinical',
-    sku: 'DD-HEA-250ML',
-    priceAmount: '16500000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-    formulation: 'soothing-gel',
-    concern: 'barrier-dryness',
-    volume: '۲۵۰ میلی‌لیتر بطری پمپی',
-    description: 'ژل سبک التیام‌بخش با پانتنول، نیاسینامید، هیالورونیک اسید و ۷ عصاره گیاهی جهت رفع فوری التهاب و ترمیم سد دفاعی.',
-    image: '/assets/drdermer/2025/08/13healene-1200x1109.webp',
-  },
-  {
-    id: 'prod_skin_crystalene',
-    slug: 'crystalene',
-    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
-    brand: 'ReeSkin Clinical',
-    sku: 'DD-CRY-200ML',
-    priceAmount: '17500000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-    formulation: 'polish-paste',
-    concern: 'acne-blemish',
-    volume: '۲۰۰ میلی‌لیتر تیوب سالنی',
-    description: 'پولیش میکرودرم ابریشمی با کریستال‌های آلومینای میکرونی، نیاسینامید و لاکتیک اسید جهت پاکسازی سلول‌های مرده.',
-    image: '/assets/drdermer/2025/08/15crystalene-1200x1109.webp',
-  },
-  {
-    id: 'prod_drdermer_006',
-    slug: 'silicalene',
-    title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub',
-    brand: 'ReeSkin Clinical',
-    sku: 'DD-SIL-200ML',
-    priceAmount: '15500000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-    formulation: 'detox-scrub',
-    concern: 'acne-blemish',
-    volume: '۲۰۰ میلی‌لیتر تیوب',
-    description: 'اسکراب دتوکس روزانه با میکروسفرهای گرد سیلیکا، کربن فعال و سالیسیلیک اسید برای لایروبی عمیق منافذ.',
-    image: '/assets/drdermer/2025/08/14silicalene-1200x1109.webp',
-  },
-  {
-    id: 'prod_drdermer_003',
-    slug: 'carboxypad',
-    title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad',
-    brand: 'ReeSkin Clinical',
-    sku: 'DD-PAD-20X',
-    priceAmount: '14000000',
-    inStock: true,
-    categoryTitleFa: 'ملزومات و پدهای مصرفی',
-    formulation: 'alkaline-pad',
-    concern: 'anti-aging-lifting',
-    volume: 'بسته ۲۰ عددی صورت و گردن',
-    description: 'شیت‌های فیبری یکپارچه صورت و گردن جهت ایجاد حداکثر واکنش تبادل گازی بر سطح ژل کربوکسی.',
-    image: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
-  },
-  {
-    id: 'prod_drdermer_007',
-    slug: 'carbox',
-    title: 'دستگاه تخصصی تزریق گاز CO2 و کربوکسی‌پاد کلینیکال CarboX',
-    brand: 'ReeMed Medical Pro',
-    sku: 'RM-DEV-CARBOX-PRO',
-    priceAmount: '450000000',
-    inStock: true,
-    categoryTitleFa: 'تجهیزات و دستگاه‌های کلینیکال',
-    formulation: 'clinical-equipment',
-    concern: 'scar-recovery',
-    volume: 'کنسول پرتابل مدیکال با ترولی',
-    description: 'سیستم دوگانه کربوکسی‌تراپی تهاجمی و غیرتهاجمی با کنترل دیجیتال فشار و دوز دی‌اکسید کربن پزشکی.',
-    image: '/assets/drdermer/2025/08/19carbox.webp',
-  },
-  {
-    id: 'prod_drdermer_008',
-    slug: 'plasmax',
-    title: 'دستگاه پیشرفته انرژی پلاسما و جت پلاسمای سرد PlasmaX',
-    brand: 'ReeMed Medical Pro',
-    sku: 'RM-DEV-PLASMAX-PRO',
-    priceAmount: '620000000',
-    inStock: true,
-    categoryTitleFa: 'تجهیزات و دستگاه‌های کلینیکال',
-    formulation: 'clinical-equipment',
-    concern: 'anti-aging-lifting',
-    volume: 'کنسول ایستاده کلینیکال با پروب‌ها',
-    description: 'سیستم مولد انرژی پلاسمای مدیکال مجهز به جت پلاسمای سرد آرگون و هلیوم برای بلفاروپلاستی غیرجراحی و اسکار.',
-    image: '/assets/drdermer/2025/07/1-plasma22-600x600.png',
-  },
-];
+/**
+ * تبدیل محصول دریافت‌شده از دیتابیس به آیتم استاندارد برای مقایسه، جستجو و علاقه‌مندی‌ها
+ */
+export function toClinicalCatalogItem(product: Product): CuratedProductItem {
+  const variant = resolveVariant(product);
+  const firstConcern =
+    product.skinConcerns?.[0]?.name ||
+    (Array.isArray(product.clinicalData?.skinConcerns)
+      ? product.clinicalData.skinConcerns[0]
+      : null) ||
+    product.category?.titleFa ||
+    'مراقبت تخصصی پوست';
 
-export function getClinicalSpecs(item: { slug?: string; title?: string }): ClinicalSpecs {
-  const slug = (item.slug ?? '').toLowerCase();
-  const title = (item.title ?? '').toLowerCase();
+  return {
+    id: product.id,
+    slug: product.slug,
+    variantId: variant?.id,
+    title: product.titleFa || product.title,
+    brand: product.brand?.name || 'Dr Dermer Clinical',
+    sku: variant?.sku || product.slug.toUpperCase(),
+    priceAmount: String(variant?.priceAmount ?? '0'),
+    inStock: Boolean(variant?.inStock),
+    categoryTitleFa: product.category?.titleFa || 'محصول تخصصی',
+    formulation:
+      product.formulation ||
+      product.clinicalData?.formulation ||
+      'فرمولاسیون درماتولوژیک استاندارد',
+    concern: String(firstConcern),
+    volume:
+      variant?.sizeOrVolume ||
+      variant?.titleFa ||
+      variant?.title ||
+      product.clinicalData?.sizeOrVolume ||
+      'استاندارد',
+    description:
+      product.description ||
+      product.subtitleFa ||
+      'فرمولاسیون تخصصی تاییدشده با ضمانت اصالت کالا',
+    image: resolveProductImage(product),
+  };
+}
 
-  // 1. Check exact match in CLINICAL_SKINCARE_PRODUCTS
-  const exact = CLINICAL_SKINCARE_PRODUCTS[slug];
-  if (exact) {
-    const keyActives = exact.ingredients
-      .filter((i) => i.isKeyActive)
-      .map((i) => i.nameFa)
+/**
+ * استخراج مشخصات بالینی و فرمولاسیون محصول (اولویت با داده‌های واقعی دیتابیس،
+ * سپس fallback سبک برای آیتم‌های ذخیره‌شده قدیمی در مرورگر)
+ */
+export function getClinicalSpecs(item: {
+  slug?: string;
+  title?: string;
+  product?: Product | null;
+}): ClinicalSpecs {
+  const product = item.product;
+  if (product) {
+    const cd = product.clinicalData ?? {};
+    const variant = resolveVariant(product);
+    const dbIngredients = (product.ingredients ?? [])
+      .filter((i) => i.isKeyIngredient !== false)
+      .map((i) => (i.concentrationPercent ? `${i.name} (${i.concentrationPercent})` : i.name))
       .slice(0, 3);
-    const fallbackActives = exact.ingredients.map((i) => i.nameFa).slice(0, 3);
+    const extendedIngs = Array.isArray(cd.extendedIngredients)
+      ? cd.extendedIngredients
+          .filter((i: any) => i.isKeyActive !== false)
+          .map((i: any) => i.nameFa || i.inciName)
+          .slice(0, 3)
+      : [];
+
+    const activeIngredients =
+      dbIngredients.length > 0
+        ? dbIngredients
+        : extendedIngs.length > 0
+        ? extendedIngs
+        : ['کمپلکس اکتیو کلینیکال استاندارد'];
+
+    const certs = Array.isArray(cd.clinicalOrigin?.ceIsoStandards)
+      ? cd.clinicalOrigin.ceIsoStandards
+      : Array.isArray(cd.cleanBadges)
+      ? cd.cleanBadges.slice(0, 3)
+      : ['تضمین اصالت اورجینال', 'کنترل کیفیت آزمایشگاهی'];
 
     return {
-      brand: exact.brand.name,
-      volume: exact.variants[0]?.sizeOrVolume ?? '۵۰۰ میلی‌لیتر',
-      activeIngredients:
-        keyActives.length > 0
-          ? keyActives
-          : fallbackActives.length > 0
-          ? fallbackActives
-          : exact.cleanBadges.slice(0, 3),
-      clinicalFunction: exact.scienceMechanism?.heading || exact.subtitleFa,
-      certifications: exact.clinicalOrigin?.ceIsoStandards?.length
-        ? exact.clinicalOrigin.ceIsoStandards
-        : exact.cleanBadges.slice(0, 3),
+      brand: product.brand?.name || 'Dr Dermer Clinical',
+      volume: variant?.sizeOrVolume || variant?.titleFa || variant?.title || 'استاندارد',
+      activeIngredients,
+      clinicalFunction:
+        cd.scienceMechanism?.heading ||
+        product.claims?.[0]?.claimText ||
+        product.subtitleFa ||
+        'بهبود سلامت و سد دفاعی پوست',
+      certifications: certs,
     };
   }
 
-  // 2. Intelligent heuristics based on clinical keywords
+  const slug = (item.slug ?? '').toLowerCase();
+  const title = (item.title ?? '').toLowerCase();
+
   if (slug.includes('carboxypod') || title.includes('پد') || title.includes('pod')) {
     return {
       brand: 'ReeMed Medical Pro',
@@ -201,43 +144,22 @@ export function getClinicalSpecs(item: { slug?: string; title?: string }): Clini
     return {
       brand: 'ReeSkin Clinical',
       volume: '۳۰ میلی‌لیتر',
-      activeIngredients: ['رتینول خالص ۰.۵٪ انکپسوله', 'باکوچیول گیاهی', 'ویتامین E توکوفرول'],
+      activeIngredients: ['رتینول خالص انکپسوله', 'باکوچیول گیاهی', 'ویتامین E توکوفرول'],
       clinicalFunction: 'تسریع نوسازی اپیدرم، کلاژن‌سازی و رفع هایپرپیگمنتیشن',
       certifications: ['Dermatologist Approved', 'فاقد پارابن', 'GMP Certified'],
     };
   }
 
-  if (slug.includes('serum') || title.includes('سرم') || title.includes('peptide') || title.includes('پپتید')) {
+  if (slug.includes('serum') || title.includes('سرم') || title.includes('آمپول')) {
     return {
-      brand: 'ReeSkin Clinical',
+      brand: 'Clinical Skincare',
       volume: '۵۰ میلی‌لیتر',
-      activeIngredients: ['پپتید مس GHK-Cu', 'سرامید NP لاملار', 'سنتلا آسیاتیکا ۴۰٪'],
-      clinicalFunction: 'بازسازی فیبروبلاست‌ها، تقویت سد دفاعی و التیام التهاب مزمن',
-      certifications: ['Hypoallergenic Clinical', 'تست درماتولوژی لندن', 'فاقد عطر مصنوعی'],
+      activeIngredients: ['هیالورونیک اسید چندوزنی', 'نیاسینامید خالص', 'عصاره سنتلا آسیاتیکا'],
+      clinicalFunction: 'آبرسانی عمقی، تقویت سد دفاعی و روشن‌سازی اپیدرم',
+      certifications: ['Hypoallergenic Clinical', 'تست درماتولوژی', 'فاقد عطر مصنوعی'],
     };
   }
 
-  if (slug.includes('cream') || slug.includes('barrier') || title.includes('کرم') || title.includes('بریر')) {
-    return {
-      brand: 'ReeSkin Clinical',
-      volume: '۷۵ میلی‌لیتر تیوب ایرلس',
-      activeIngredients: ['لیپیدهای بیومیمتیک سد دفاعی', 'مادکاسوساید خالص ۹۵٪', 'نیاسینامید ۴٪'],
-      clinicalFunction: 'کاهش TEWL، تسریع ترمیم لایه اپیدرم و رطوبت‌رسانی ماندگار ۷۲ ساعته',
-      certifications: ['ISO 22716 GMP', 'سازگار با میکروبیوم', 'Cruelty-Free'],
-    };
-  }
-
-  if (slug.includes('mask') || title.includes('ماسک')) {
-    return {
-      brand: 'ReeSkin Clinical',
-      volume: 'پک ۶ عددی شیت ماسک',
-      activeIngredients: ['فاکتور رشد اپیدرمال EGF', 'بیوسلولز آب نارگیل تخمیری', 'پپتید الاستین'],
-      clinicalFunction: 'لیفتینگ فوری، آبرسانی عمیق و آرام‌بخشی بافت پس از درمان‌های کلینیکی',
-      certifications: ['استریل ساشه منفرد', 'سازگار با انواع پوست', 'فاقد الکل'],
-    };
-  }
-
-  // Generic fallback
   return {
     brand: title.includes('reemed') ? 'ReeMed Medical Pro' : 'ReeSkin Clinical',
     volume: 'سایز استاندارد کلینیکال',
@@ -248,8 +170,7 @@ export function getClinicalSpecs(item: { slug?: string; title?: string }): Clini
 }
 
 /**
- * Resolves a product or slug to its canonical dedicated route if it exists,
- * falling back to `/products/${slug}`.
+ * مسیر صفحه اختصاصی محصول (در صورت وجود صفحه کلینیکال اختصاصی) یا صفحه عمومی محصول
  */
 export function getCanonicalProductHref(slug?: string | null): string {
   if (!slug) return '/search';
@@ -269,4 +190,3 @@ export function getCanonicalProductHref(slug?: string | null): string {
   }
   return `/products/${encodeURIComponent(clean)}`;
 }
-

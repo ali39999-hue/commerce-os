@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { DirectProductOrder } from '../../components/interactive/direct-product-order';
 import { ClinicalPhotoShowcase } from '../../components/interactive/clinical-photo-showcase';
 import { HealeneInteractiveSection } from './healene-interactive-section';
+import { getProduct, resolveProductImage, resolveVariant } from '../../lib/catalog';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel | دکتر درمر انگلستان',
@@ -43,7 +46,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HealenePage() {
+export default async function HealenePage() {
+  const product = await getProduct('healene');
+  const primaryVariant = resolveVariant(product, ['DD-HEA-250ML']);
+  const primaryImage = resolveProductImage(
+    product,
+    '/assets/drdermer/2025/08/16healene-1200x1109.webp'
+  );
   const photoViews = [
     {
       id: 'primary',
@@ -144,18 +153,19 @@ export default function HealenePage() {
 
             {/* Direct Order Component */}
             <DirectProductOrder
-              productId="prod_drdermer_005"
-              variantId="var_hea_250ml"
-              sku="DD-HEA-250ML"
-              title="ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel"
-              volume="۲۵۰ میلی‌لیتر (بطری پمپی)"
-              priceAmount="16000000"
-              originalPriceAmount="18500000"
-              discountPercent={13}
-              inStock={true}
+              productId={product?.id ?? ''}
+              variantId={primaryVariant?.id ?? ''}
+              productSlug="healene"
+              sku={primaryVariant?.sku ?? 'DD-HEA-250ML'}
+              title={product?.title ?? 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel'}
+              volume={primaryVariant?.sizeOrVolume ?? '۲۵۰ میلی‌لیتر (بطری پمپی)'}
+              priceAmount={primaryVariant?.priceAmount ?? '0'}
+              originalPriceAmount={primaryVariant?.originalPriceAmount ?? undefined}
+              discountPercent={primaryVariant?.discountPercent ?? undefined}
+              inStock={primaryVariant?.inStock ?? true}
               theme="cyan"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
-              image="/assets/drdermer/2025/08/16healene-1200x1109.webp"
+              image={primaryImage}
             />
           </div>
 

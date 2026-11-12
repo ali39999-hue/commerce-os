@@ -19,23 +19,17 @@ export class LedgerService {
    * Ensures chart of accounts entries exist for this tenant.
    */
   async ensureAccounts(tenantId: string): Promise<void> {
-    for (const [code, def] of Object.entries(CHART_OF_ACCOUNTS)) {
-      await this.prisma.ledgerAccount.upsert({
-        where: {
-          tenantId_code_currency: {
-            tenantId,
-            code,
-            currency: "IRR",
-          },
-        },
-        update: {},
-        create: {
-          tenantId,
-          code,
-          nameFa: def.nameFa,
-          category: def.category as any,
-          currency: "IRR",
-        },
+    const entries = Object.entries(CHART_OF_ACCOUNTS).map(([code, def]) => ({
+      tenantId,
+      code,
+      nameFa: def.nameFa,
+      category: def.category as any,
+      currency: "IRR",
+    }));
+    if (entries.length > 0) {
+      await this.prisma.ledgerAccount.createMany({
+        data: entries,
+        skipDuplicates: true,
       });
     }
   }

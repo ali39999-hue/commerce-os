@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -46,7 +46,7 @@ const DEFAULT_SLIDES: RupakSlide[] = [
     id: 'rupak-botanical',
     badge: 'هدیه‌ای برای خاص پسندان',
     titlePrefix: 'با محصولات ',
-    titleAccent: 'مراقبت پوستی روپاک شاپ،',
+    titleAccent: 'مراقبت پوستی dermavia،',
     titleSuffix: 'زیبایی و شادابی به پوستت هدیه بده',
     description:
       'از مرطوب‌کننده‌ها و سرم‌ها تا ضدآفتاب‌ها و ماسک‌های صورت، هرچی که نیاز داری رو می‌تونی اینجا پیدا کنی و از سلامت و زیبایی پوستت لذت ببری!',
@@ -59,7 +59,7 @@ const DEFAULT_SLIDES: RupakSlide[] = [
     id: 'carboxygel-bohr',
     badge: 'کربوکسی‌تراپی غیرتهاجمی با اثر بوهر',
     titlePrefix: 'تجربه اکسیژن‌رسانی عمیق با ',
-    titleAccent: 'CarboxyGel Pro 1500ml،',
+    titleAccent: 'CarboxyGel Pro 1500ml',
     titleSuffix: 'تحریک فیزیولوژیک نوسازی سلولی پوست',
     description:
       'آزادسازی بیش از ۱۱۰۰ppm گاز CO2 نفوذی در بافت و رهایش انفجاری اکسیژن (+۴۵٪ تا +۹۴٪) بر پایه اثر فیزیولوژیک بوهر (Bohr Effect) ویژه متخصصین و کلینیک‌ها.',
@@ -72,7 +72,7 @@ const DEFAULT_SLIDES: RupakSlide[] = [
     id: 'plasmax-device',
     badge: 'تکنولوژی انحصاری انرژی میکروپلاسما',
     titlePrefix: 'ایستگاه درمانی سه‌گانه ',
-    titleAccent: 'PlasmaX Tri-Modality،',
+    titleAccent: 'PlasmaX Tri-Modality',
     titleSuffix: 'بلفاروپلاستی غیرجراحی و لیفت پیشرفته',
     description:
       'تلفیق نوآورانه ۳ مدالیته آرک پیوسته جراحی، جت پلاسمای سرد اتمسفری (CAP) و تخلیه سد دی‌الکتریک (DBD) برای جوانسازی کامل بدون بیهوشی و بدون اسکار.',
@@ -165,6 +165,7 @@ export function RupakHero({
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setIsSearchFocused(false);
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
@@ -182,10 +183,14 @@ export function RupakHero({
 
   const finalCartCount = cartCount ?? cart?.itemCount ?? 0;
   const computedTotal =
-    cart?.calculations?.grandTotalTomans != null
+    finalCartCount > 0 && cart?.calculations?.grandTotalTomans != null && cart.calculations.grandTotalTomans > 0n
       ? `${cart.calculations.grandTotalTomans.toLocaleString('fa-IR')} تومان`
       : '۰ تومان';
   const finalCartTotal = cartTotalFormatted ?? computedTotal;
+  const computedTotalAmount =
+    finalCartCount > 0 && cart?.calculations?.grandTotalTomans != null && cart.calculations.grandTotalTomans > 0n
+      ? cart.calculations.grandTotalTomans.toLocaleString('fa-IR')
+      : '۰';
   const handleUserLogout = () => {
     try {
       localStorage.removeItem("commerce_os.auth.token");
@@ -244,7 +249,7 @@ export function RupakHero({
   }, []);
 
   const renderNavbar = (sticky: boolean) => (
-    <header className={`rupak-navbar-wrapper ${sticky ? 'is-sticky' : ''}`}>
+    <header className={`rupak-navbar-wrapper ${sticky ? 'is-sticky' : ''} ${cart?.isDrawerOpen ? 'drawer-is-open' : ''}`}>
       <nav className="rupak-navbar" aria-label="ناوبری اصلی فروشگاه">
         {/* Right Nav Menu (in RTL) */}
         <ul className="rupak-nav-menu">
@@ -291,7 +296,7 @@ export function RupakHero({
             -------------------------------------------------------------- */}
         <svg
           className="rupak-logo-bulge-svg"
-          viewBox="0 0 160 110"
+          viewBox="0 0 180 110"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
@@ -299,48 +304,32 @@ export function RupakHero({
         >
           <path
             d="M 10 20
-               C 40 20, 52 4, 80 4
-               C 108 4, 120 20, 150 20
-               L 150 88
-               C 120 88, 108 104, 80 104
-               C 52 104, 40 88, 10 88
+               C 42 20, 56 4, 90 4
+               C 124 4, 138 20, 170 20
+               L 170 88
+               C 138 88, 124 104, 90 104
+               C 56 104, 42 88, 10 88
                Z"
             fill="#ffffff"
           />
         </svg>
 
         {/* Center Logo Content */}
-        <Link href="/" className="rupak-logo-container" aria-label="لوگوی فروشگاه روپاک">
-          <div className="rupak-logo-mark">
-            <svg
-              width="36"
-              height="36"
-              viewBox="0 0 44 44"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 36V10C12 10 18 8 26 8C33 8 36 12 36 17C36 22 31 25 24 25"
-                stroke="#1e293b"
-                strokeWidth="3.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M18 24L34 37"
-                stroke="#1e293b"
-                strokeWidth="3.4"
-                strokeLinecap="round"
-              />
-              <path
-                d="M23 15C25 12 29 11 31 13C33 15 32 19 28 21"
-                stroke="#77B091"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-          <span className="rupak-logo-text">RUPAK</span>
+        <Link href="/" className="rupak-logo-container" aria-label="dermavia - صفحه اصلی">
+          <img
+            src="/assets/dermavia-logo.svg"
+            alt="dermavia"
+            width={136}
+            height={30}
+            className="rupak-hero-brand-logo"
+            style={{
+              display: 'block',
+              height: '28px',
+              width: 'auto',
+              maxWidth: '136px',
+              objectFit: 'contain',
+            }}
+          />
         </Link>
 
         {/* Left Nav Actions (in RTL) */}
@@ -366,11 +355,11 @@ export function RupakHero({
                   </div>
                   <div className="rupak-dropdown-user-info">
                     <strong className="rupak-dropdown-user-name">
-                      {authUser.fullName || authUser.username || "کاربر روپاک"}
+                      {authUser.fullName || authUser.username || "کاربر dermavia"}
                     </strong>
                     <span className="rupak-dropdown-user-badge">
                       <span className="rupak-user-dot-pulse" />
-                      حساب فعال روپاک
+                      حساب فعال dermavia
                     </span>
                   </div>
                 </div>
@@ -526,13 +515,15 @@ export function RupakHero({
               if (cart?.openDrawer) {
                 cart.openDrawer();
               } else {
-                const cartBtn = document.getElementById('open-cart-drawer');
-                if (cartBtn) cartBtn.click();
+                router.push('/cart');
               }
             }}
             aria-label={`سبد خرید با ${finalCartCount} قلم کالا و مبلغ ${finalCartTotal}`}
           >
-            <span>{finalCartTotal}</span>
+            <span className="rupak-cart-price-text">
+              <span className="rupak-cart-amount">{cartTotalFormatted ? finalCartTotal : computedTotalAmount}</span>
+              {!cartTotalFormatted && <span className="rupak-cart-currency">تومان</span>}
+            </span>
             <div className="rupak-cart-icon-wrapper">
               <ShoppingBag className="w-4 h-4 text-slate-800" />
               {finalCartCount > 0 && (
@@ -595,7 +586,7 @@ export function RupakHero({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', background: 'rgba(119, 176, 145, 0.1)', borderRadius: '12px' }}>
                   <User size={18} style={{ color: '#274b24' }} />
                   <span style={{ fontSize: '13px', fontWeight: 800, color: '#1e293b' }}>
-                    {authUser.fullName || authUser.username || "کاربر روپاک"}
+                    {authUser.fullName || authUser.username || "کاربر dermavia"}
                   </span>
                 </div>
                 <Link
@@ -663,7 +654,7 @@ export function RupakHero({
     <section
       dir="rtl"
       className="rupak-hero-root"
-      aria-label="بخش هیرو فروشگاه روپاک"
+      aria-label="بخش هیرو فروشگاه dermavia"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -702,32 +693,23 @@ export function RupakHero({
               onBlur={() => setTimeout(() => setIsSearchFocused(false), 250)}
               placeholder="جستجو محصولات..."
               className="rupak-search-input"
-              aria-label="جستجوی محصولات روپاک"
+              aria-label="جستجوی محصولات dermavia"
             />
             <Search className="rupak-search-icon" aria-hidden="true" />
 
             {/* Quick Live Search Suggestions */}
             {isSearchFocused && (
               <div
-                style={{
-                  position: 'absolute',
-                  top: '100%',
-                  right: 0,
-                  left: 0,
-                  marginTop: '6px',
-                  background: '#ffffff',
-                  borderRadius: '14px',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
-                  padding: '10px 14px',
-                  color: '#334155',
-                  fontSize: '12px',
-                  zIndex: 40,
-                }}
+                className="rupak-search-suggestions"
+                onMouseDown={(e) => e.preventDefault()}
+                role="region"
+                aria-label="پیشنهادات جستجو"
               >
-                <div style={{ fontWeight: 700, color: '#64748b', marginBottom: '6px' }}>
-                  جستجوهای پرتکرار:
+                <div className="rupak-search-suggestions-title">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 inline" aria-hidden="true" />
+                  <span>جستجوهای پرتکرار:</span>
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                <div className="rupak-search-tags">
                   {['کربوکسی ژل', 'روغن درخت چای', 'سرم ضدلک', 'ماسک CarboxyPad', 'PlasmaX'].map(
                     (tag) => (
                       <button
@@ -735,17 +717,10 @@ export function RupakHero({
                         type="button"
                         onClick={() => {
                           setSearchQuery(tag);
+                          setIsSearchFocused(false);
                           router.push(`/search?q=${encodeURIComponent(tag)}`);
                         }}
-                        style={{
-                          background: '#f1f5f9',
-                          border: 'none',
-                          borderRadius: '8px',
-                          padding: '4px 8px',
-                          fontSize: '11px',
-                          cursor: 'pointer',
-                          color: '#0f172a',
-                        }}
+                        className="rupak-search-tag-chip"
                       >
                         {tag}
                       </button>
@@ -783,8 +758,8 @@ export function RupakHero({
 
             <h1 className="rupak-hero-heading">
               {currentSlide.titlePrefix}
-              <span className="rupak-heading-accent">{currentSlide.titleAccent}</span>
-              <br />
+              <bdi className="rupak-heading-accent">{currentSlide.titleAccent}</bdi>
+              {' '}
               {currentSlide.titleSuffix}
             </h1>
 

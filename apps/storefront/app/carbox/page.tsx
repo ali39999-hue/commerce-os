@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CanvasSequencePlayer, HotspotPin } from '../../components/interactive/canvas-sequence-player';
+import { getProduct, resolveVariant, type Product } from '../../lib/catalog';
+import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 
 // ── Interactive Hotspots on CarboX 360 Console ──
 const CARBOX_HOTSPOTS: HotspotPin[] = [
@@ -153,9 +155,23 @@ const CLINICAL_INDICATIONS = [
 ];
 
 export default function CarboxLandingPage() {
+  const { formatToman } = useLocalizedFormatter();
+  const [carboxProduct, setCarboxProduct] = useState<Product | null>(null);
   const [activeModality, setActiveModality] = useState<'subcutaneous' | 'transdermal'>('subcutaneous');
   const [activeSpecTab, setActiveSpecTab] = useState<'gasDelivery' | 'transdermalSystem' | 'standards'>('gasDelivery');
   const [selectedHotspot, setSelectedHotspot] = useState<HotspotPin | null>(CARBOX_HOTSPOTS[0]);
+
+  useEffect(() => {
+    let mounted = true;
+    getProduct('carbox').then((p) => {
+      if (mounted && p) setCarboxProduct(p);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const primaryCarboxVariant = resolveVariant(carboxProduct, ['RM-DEV-CARBOX-PRO']);
 
   // B2B Quote Form State
   const [clinicName, setClinicName] = useState('');
@@ -235,11 +251,19 @@ export default function CarboxLandingPage() {
             {/* Action Buttons */}
             <div className="station-actions-row">
               <a href="#quote-section" className="station-btn-primary">
-                <span>استعلام رسمی قیمت و شرایط فروش اقساطی کلینیک</span>
+                <span>
+                  {primaryCarboxVariant
+                    ? `استعلام قیمت کلینیک (قیمت مصوب: ${formatToman(primaryCarboxVariant.priceAmount)})`
+                    : 'استعلام رسمی قیمت و شرایط فروش اقساطی کلینیک'}
+                </span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
               </a>
+
+              <Link href="/products/carbox" className="station-btn-secondary">
+                <span>مشاهده مشخصات و ثبت سفارش آنلاین</span>
+              </Link>
 
               <Link href="/b2b/workshops" className="station-btn-secondary">
                 <span>رزرو ورکشاپ هندزآن CarboX</span>

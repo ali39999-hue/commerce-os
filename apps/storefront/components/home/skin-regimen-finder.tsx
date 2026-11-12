@@ -1,72 +1,106 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { getProduct, type Product } from "../../lib/catalog";
 import { useCart } from "../cart";
 
 export function SkinRegimenFinderWidget() {
   const { addItem, openDrawer } = useCart();
+  const [carboxyProduct, setCarboxyProduct] = useState<Product | null>(null);
   const [skinType, setSkinType] = useState<string>("oily_acne");
   const [targetGoal, setTargetGoal] = useState<string>("clarity");
   const [sessionCadence, setSessionCadence] = useState<string>("weekly");
   const [isAdded, setIsAdded] = useState(false);
 
-  // Recommendations matrix:
-  // Glycolic CarboxyGel + Carbo-Pod Carbon
-  // Azelaic Acid CarboxyGel + Hydra-Pod
-  // Multi-Active CarboxyGel + Vita-Pod
+  useEffect(() => {
+    let cancelled = false;
+    getProduct("carboxygel").then((prod) => {
+      if (!cancelled && prod) setCarboxyProduct(prod);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const getRecommendation = () => {
+    const pickVariant = (skuPrefix: string) =>
+      carboxyProduct?.variants.find((v) => v.sku.toUpperCase().includes(skuPrefix)) ??
+      carboxyProduct?.variants[0] ??
+      null;
+
     if (targetGoal === "anti_aging" || skinType === "dry_mature") {
+      const liveVariant = pickVariant("CBG-GLY");
+      const priceRials = liveVariant?.priceAmount ?? "39500000";
       return {
-        gelName: "کربوکسی‌ژل اسید گلیکولیک (Glycolic Acid CarboxyGel)",
+        productId: carboxyProduct?.id ?? "",
+        variantId: liveVariant?.id ?? "",
+        sku: liveVariant?.sku ?? "CBG-GLY-200ML",
+        gelName: liveVariant?.titleFa || "کربوکسی‌ژل اسید گلیکولیک (Glycolic Acid CarboxyGel)",
         gelSub: "ReeSkin™ Glycolic 10% + Matrixyl 3000 · pH 3.5",
         podName: "پاد ترابافتی CarboxyPod Carbo-Pod (هسته کربن فعال)",
         podDesc: "محرک سنتز فیبروبلاست و نوسازی کلاژن نوع ۱ و ۳",
         actives: ["اسید گلیکولیک ۱۰٪", "پپتید ماتریکسیل", "اسید هیالورونیک ریزمولکول"],
         image: "/assets/drdermer/2025/07/glycolic-acid-carboxygel-207x300.png",
-        variantId: "glycolic-gel-1",
-        price: 2680000,
+        priceAmount: priceRials,
+        priceTomans: Number(BigInt(priceRials) / 10n),
         badge: "کاندید ایده‌آل جوانسازی و خطوط عمیق",
+        ready: Boolean(liveVariant?.id && carboxyProduct?.id),
       };
     }
     if (targetGoal === "clarity" || skinType === "oily_acne") {
+      const liveVariant = pickVariant("CBG-AZL");
+      const priceRials = liveVariant?.priceAmount ?? "38500000";
       return {
-        gelName: "کربوکسی‌ژل اسید آزالائیک (Azelaic Acid CarboxyGel)",
+        productId: carboxyProduct?.id ?? "",
+        variantId: liveVariant?.id ?? "",
+        sku: liveVariant?.sku ?? "CBG-AZL-200ML",
+        gelName: liveVariant?.titleFa || "کربوکسی‌ژل اسید آزالائیک (Azelaic Acid CarboxyGel)",
         gelSub: "ReeSkin™ Azelaic 15% + Niacinamide 4% · pH 4.0",
         podName: "پاد ترابافتی CarboxyPod Hydra-Pod (هیدراسیون اسمزی)",
         podDesc: "مهارکننده تیروزیناز، ضداکنه و ضدلک التهابی PIH",
         actives: ["اسید آزالائیک ۱۵٪", "نیاسینامید ۴٪", "ترانگزامیک اسید ۲٪"],
         image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png",
-        variantId: "azelaic-gel-1",
-        price: 2450000,
+        priceAmount: priceRials,
+        priceTomans: Number(BigInt(priceRials) / 10n),
         badge: "کاندید ایده‌آل لک ملاسما و آکنه",
+        ready: Boolean(liveVariant?.id && carboxyProduct?.id),
       };
     }
-    // Default / Sensitive / Barrier
+    const liveVariant = pickVariant("CBG-MLT");
+    const priceRials = liveVariant?.priceAmount ?? "42000000";
     return {
-      gelName: "کربوکسی‌ژل مولتی‌اکتیو (Multi-Active CarboxyGel)",
+      productId: carboxyProduct?.id ?? "",
+      variantId: liveVariant?.id ?? "",
+      sku: liveVariant?.sku ?? "CBG-MLT-200ML",
+      gelName: liveVariant?.titleFa || "کربوکسی‌ژل مولتی‌اکتیو (Multi-Active CarboxyGel)",
       gelSub: "ReeSkin™ Biomimetic Peptides & Ceramide NP · pH 3.8",
       podName: "پاد ترابافتی CarboxyPod Vita-Pod (مولتی‌ویتامین)",
       podDesc: "ترمیم سد دفاعی آسیب‌دیده، تسکین روزاسه و اریتم عروقی",
       actives: ["فاکتور رشد بیومیمتیک EGF", "پپتید مس GHK-Cu", "سرامید NP و پانتنول"],
       image: "/assets/drdermer/2025/07/multi-active-carboxygel-207x300.png",
-      variantId: "multi-gel-1",
-      price: 2550000,
+      priceAmount: priceRials,
+      priceTomans: Number(BigInt(priceRials) / 10n),
       badge: "کاندید ایده‌آل سد دفاعی و پوست حساس",
+      ready: Boolean(liveVariant?.id && carboxyProduct?.id),
     };
   };
 
   const rec = getRecommendation();
 
   const handleAddToCart = () => {
-    addItem({
-      variantId: rec.variantId,
-      productId: "finder-" + rec.variantId,
-      title: rec.gelName,
-      sku: "FINDER-" + rec.variantId.toUpperCase(),
-      priceAmount: (BigInt(rec.price) * 10n).toString(),
-      image: rec.image,
-    }, 1);
+    if (!rec.ready) return;
+    addItem(
+      {
+        variantId: rec.variantId,
+        productId: rec.productId,
+        title: rec.gelName,
+        sku: rec.sku,
+        priceAmount: rec.priceAmount,
+        image: rec.image,
+      },
+      1
+    );
     setIsAdded(true);
     setTimeout(() => {
       setIsAdded(false);
@@ -221,7 +255,7 @@ export function SkinRegimenFinderWidget() {
               type="button"
               className="rf-add-cart-btn"
               onClick={handleAddToCart}
-              disabled={isAdded}
+              disabled={isAdded || !rec.ready}
             >
               {isAdded ? (
                 <>
@@ -237,7 +271,9 @@ export function SkinRegimenFinderWidget() {
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>
-                  افزودن این کیت پیشنهادی به سبد ({rec.price.toLocaleString("fa-IR")} تومان)
+                  {rec.ready
+                    ? `افزودن این کیت پیشنهادی به سبد (${rec.priceTomans.toLocaleString("fa-IR")} تومان)`
+                    : 'در حال استعلام قیمت و موجودی...'}
                 </>
               )}
             </button>

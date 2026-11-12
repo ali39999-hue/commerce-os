@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import { CarboxypodInteractiveLanding } from './carboxypod-interactive';
+import { getProduct } from '../../lib/catalog';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'پادهای فعال‌ساز کربوکسی‌پاد ReeSkin CarboxyPod™ | دکتر درمر انگلستان',
@@ -36,7 +39,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CarboxypodPage() {
-  return <CarboxypodInteractiveLanding />;
+export default async function CarboxypodPage() {
+  const product = await getProduct('carboxypod');
+  return <CarboxypodInteractiveLanding initialProduct={product} />;
 }
-

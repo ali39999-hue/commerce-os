@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CanvasSequencePlayer, HotspotPin } from '../../components/interactive/canvas-sequence-player';
 import { useCart } from '../../components/cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { getProduct, type Product } from '../../lib/catalog';
 
 // ── Multi-Stage Breakdown Specifications ──
 interface PodStage {
@@ -184,10 +185,6 @@ interface VariantData {
   indications: string;
   sku10: string;
   sku20: string;
-  price10Rials: string;
-  price20Rials: string;
-  price10Tomans: string;
-  price20Tomans: string;
 }
 
 const POD_VARIANTS: VariantData[] = [
@@ -213,10 +210,6 @@ const POD_VARIANTS: VariantData[] = [
     indications: 'پوست‌های کدر، دارای لک‌های ناشی از آفتاب، خطوط ریز صورت و گردن، و پوست‌های نیازمند ریوتالایزاسیون.',
     sku10: 'RMD-CPD-VIT-10',
     sku20: 'RMD-CPD-VIT-20',
-    price10Rials: '24500000', // 2,450,000 Tomans
-    price20Rials: '45000000', // 4,500,000 Tomans
-    price10Tomans: '۲٬۴۵۰٬۰۰۰',
-    price20Tomans: '۴٬۵۰۰٬۰۰۰',
   },
   {
     id: 'carbon-pod',
@@ -239,10 +232,6 @@ const POD_VARIANTS: VariantData[] = [
     indications: 'پوست‌های چرب، مختلط، دارای جوش‌های سرسیاه و کومدون، منافذ باز بینی و گونه، و مقیمین کلان‌شهرهای آلوده.',
     sku10: 'RMD-CPD-CRB-10',
     sku20: 'RMD-CPD-CRB-20',
-    price10Rials: '24500000',
-    price20Rials: '45000000',
-    price10Tomans: '۲٬۴۵۰٬۰۰۰',
-    price20Tomans: '۴٬۵۰۰٬۰۰۰',
   },
   {
     id: 'hydra-pod',
@@ -265,10 +254,6 @@ const POD_VARIANTS: VariantData[] = [
     indications: 'پوست‌های دهیدراته و کدر، پوست‌های حساس و نازک‌شده، بازیابی طراوت پس از پروسیجرهای لیزر و لایه‌برداری شیمیایی.',
     sku10: 'RMD-CPD-HYD-10',
     sku20: 'RMD-CPD-HYD-20',
-    price10Rials: '24500000',
-    price20Rials: '45000000',
-    price10Tomans: '۲٬۴۵۰٬۰۰۰',
-    price20Tomans: '۴٬۵۰۰٬۰۰۰',
   },
 ];
 
@@ -346,9 +331,25 @@ const USAGE_STEPS: UsageStep[] = [
   },
 ];
 
-export function CarboxypodInteractiveLanding() {
+export function CarboxypodInteractiveLanding({
+  initialProduct = null,
+}: {
+  initialProduct?: Product | null;
+}) {
   const { addItem, openDrawer } = useCart();
   const { formatToman } = useLocalizedFormatter();
+  const [product, setProduct] = useState<Product | null>(initialProduct);
+
+  useEffect(() => {
+    if (initialProduct) return;
+    let mounted = true;
+    getProduct('carboxypod').then((p) => {
+      if (mounted && p) setProduct(p);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [initialProduct]);
 
   // Active stage for the 3D breakdown
   const [activeStageId, setActiveStageId] = useState<'casing' | 'core' | 'handpiece'>('casing');
@@ -366,22 +367,17 @@ export function CarboxypodInteractiveLanding() {
 
   const selectedVariantData = POD_VARIANTS.find((v) => v.variantKey === selectedVariantKey) || POD_VARIANTS[0];
 
-  const currentPriceRials =
-    selectedPackSize === 'pack10'
-      ? selectedVariantData.price10Rials
-      : selectedVariantData.price20Rials;
-
-  const currentPriceTomans =
-    selectedPackSize === 'pack10'
-      ? selectedVariantData.price10Tomans
-      : selectedVariantData.price20Tomans;
-
   const currentSku =
     selectedPackSize === 'pack10'
       ? selectedVariantData.sku10
       : selectedVariantData.sku20;
 
+  const currentDbVariant =
+    product?.variants.find((v) => v.sku === currentSku) || product?.variants[0] || null;
+  const currentPriceRials = currentDbVariant?.priceAmount ?? '0';
+
   const handleAddToCart = () => {
+    if (!product || !currentDbVariant) return;
     const packTitle =
       selectedPackSize === 'pack10'
         ? `باکس ۱۰ عددی کلینیکال`
@@ -389,11 +385,11 @@ export function CarboxypodInteractiveLanding() {
 
     addItem(
       {
-        variantId: `${selectedVariantData.id}-${selectedPackSize}`,
-        productId: 'prod_clinical_carboxypod',
+        variantId: currentDbVariant.id,
+        productId: product.id,
         title: `${selectedVariantData.nameFa} (${packTitle})`,
-        sku: currentSku,
-        priceAmount: currentPriceRials,
+        sku: currentDbVariant.sku,
+        priceAmount: currentDbVariant.priceAmount,
         image: selectedVariantData.heroImg,
       },
       quantity
@@ -661,7 +657,12 @@ export function CarboxypodInteractiveLanding() {
                   <div className="flex items-center justify-between pt-2 border-t border-slate-800">
                     <div>
                       <span className="text-[10px] text-slate-400 block">شروع قیمت از:</span>
-                      <strong className="text-sm font-bold text-emerald-400">{variant.price10Tomans} تومان</strong>
+                      <strong className="text-sm font-bold text-emerald-400">
+                        {(() => {
+                          const v10 = product?.variants.find((v) => v.sku === variant.sku10);
+                          return v10 ? formatToman(v10.priceAmount) : 'استعلام قیمت';
+                        })()}
+                      </strong>
                     </div>
 
                     <button
@@ -869,7 +870,9 @@ export function CarboxypodInteractiveLanding() {
                 </div>
                 <div>
                   <span className="cpod-price-val">
-                    {formatToman(BigInt(currentPriceRials) * BigInt(quantity))}
+                    {currentDbVariant
+                      ? formatToman(BigInt(currentPriceRials) * BigInt(quantity))
+                      : 'استعلام قیمت'}
                   </span>
                 </div>
               </div>
@@ -878,6 +881,7 @@ export function CarboxypodInteractiveLanding() {
               <button
                 type="button"
                 onClick={handleAddToCart}
+                disabled={!currentDbVariant}
                 className={`cpod-order-btn ${isAddedToCart ? 'added' : ''}`}
               >
                 {isAddedToCart ? (

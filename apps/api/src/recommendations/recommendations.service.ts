@@ -15,6 +15,9 @@ export interface RecommendationItem {
   slug: string;
   title: string;
   description: string | null;
+  image: string | null;
+  primaryVariantId: string | null;
+  primarySku: string | null;
   category: { slug: string; titleFa: string } | null;
   priceRials: string;
   priceTomans: string;
@@ -51,46 +54,65 @@ export function clampLimit(limitInput: number | undefined, fallback: number): nu
   return Math.min(Math.max(Math.trunc(limitInput), MIN_LIMIT), MAX_LIMIT);
 }
 
+const PRODUCT_REC_INCLUDE = {
+  category: true,
+  media: { orderBy: [{ isPrimary: "desc" as const }, { sortOrder: "asc" as const }], take: 1 },
+  variants: {
+    where: { status: "ACTIVE" as const },
+    orderBy: [{ sortOrder: "asc" as const }, { sku: "asc" as const }],
+    include: { inventoryLevels: true },
+  },
+};
+
 type ProductWithRelations = Prisma.ProductGetPayload<{
-  include: {
-    category: true;
-    variants: { where: { status: "ACTIVE" }; include: { inventoryLevels: true } };
-  };
+  include: typeof PRODUCT_REC_INCLUDE;
 }>;
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 @Injectable()
 export class RecommendationsService {
   constructor(private readonly prisma: PrismaService) {}
 
   // ── 1) Related: same-category products ranked by real sales (order_lines) ──
-  async related(productId: string, limit?: number): Promise<RecommendationsResponse> {
+  async related(productIdOrSlug: string, limit?: number): Promise<RecommendationsResponse> {
     const effectiveLimit = clampLimit(limit, 6);
 
     try {
-      const product = await this.prisma.product.findUnique({
-        where: { id: productId },
-        include: {
-          category: true,
-          variants: { where: { status: "ACTIVE" }, include: { inventoryLevels: true } },
-        },
+      const product = await this.prisma.product.findFirst({
+        where: UUID_REGEX.test(productIdOrSlug)
+          ? { id: productIdOrSlug }
+          : { slug: productIdOrSlug, status: "PUBLISHED" },
+        include: PRODUCT_REC_INCLUDE,
       });
 
-      if (product && product.categoryId) {
-        const siblings = await this.prisma.product.findMany({
-          where: {
-            categoryId: product.categoryId,
-            status: "PUBLISHED",
-            id: { not: product.id },
-          },
-          include: {
-            category: true,
-            variants: { where: { status: "ACTIVE" }, include: { inventoryLevels: true } },
-          },
-        });
+      if (product) {
+        let siblings = product.categoryId
+          ? await this.prisma.product.findMany({
+              where: {
+                categoryId: product.categoryId,
+                status: "PUBLISHED",
+                id: { not: product.id },
+              },
+              include: PRODUCT_REC_INCLUDE,
+            })
+          : [];
+
+        if (siblings.length === 0) {
+          siblings = await this.prisma.product.findMany({
+            where: {
+              storeId: product.storeId,
+              status: "PUBLISHED",
+              id: { not: product.id },
+            },
+            include: PRODUCT_REC_INCLUDE,
+            take: effectiveLimit,
+            orderBy: { sortOrder: "asc" },
+          });
+        }
 
         if (siblings.length > 0) {
           const salesByProduct = await this.fetchSalesByProduct(siblings.map((s) => s.id));
-          // Zero real sales everywhere degrades naturally to publishedAt desc.
           const ranked = this.rankBySales(siblings, salesByProduct);
           return {
             source: "DB",
@@ -102,8 +124,7 @@ export class RecommendationsService {
       // DB-down: resilient demo fallback below
     }
 
-    // DB-down, product not found, product without category, or empty category
-    return { source: "FALLBACK", items: this.relatedFromDemo(productId, effectiveLimit) };
+    return { source: "FALLBACK", items: this.relatedFromDemo(productIdOrSlug, effectiveLimit) };
   }
 
   // ── 2) Popular: global ranking by total sold quantity ──
@@ -113,10 +134,7 @@ export class RecommendationsService {
     try {
       const published = await this.prisma.product.findMany({
         where: { status: "PUBLISHED" },
-        include: {
-          category: true,
-          variants: { where: { status: "ACTIVE" }, include: { inventoryLevels: true } },
-        },
+        include: PRODUCT_REC_INCLUDE,
       });
 
       if (published.length > 0) {
@@ -131,7 +149,6 @@ export class RecommendationsService {
       // DB-down: resilient demo fallback below
     }
 
-    // Curated demo order — DEMO_FALLBACK_PRODUCTS kept as-is
     return {
       source: "FALLBACK",
       items: (DEMO_FALLBACK_PRODUCTS as DemoProduct[])
@@ -143,7 +160,6 @@ export class RecommendationsService {
   // ── 3) For-you: session interest events → top products of interested categories ──
   async forYou(sessionIdInput: string | undefined, limit?: number): Promise<RecommendationsResponse> {
     const effectiveLimit = clampLimit(limit, 6);
-    // sessionId only — the single allowed signal, never any PII (ADR-006)
     const sessionId = (sessionIdInput ?? "").trim().slice(0, 64);
 
     try {
@@ -151,7 +167,6 @@ export class RecommendationsService {
       if (personalized) {
         return personalized;
       }
-      // No session signal (or nothing usable) → degrade to popular, still from DB
     } catch {
       // DB-down: resilient demo fallback below
     }
@@ -185,10 +200,7 @@ export class RecommendationsService {
 
     const viewedProducts = await this.prisma.product.findMany({
       where: { slug: { in: viewedSlugs }, status: "PUBLISHED" },
-      include: {
-        category: true,
-        variants: { where: { status: "ACTIVE" }, include: { inventoryLevels: true } },
-      },
+      include: PRODUCT_REC_INCLUDE,
     });
 
     const categoryIds = [
@@ -203,7 +215,6 @@ export class RecommendationsService {
       return null;
     }
 
-    // Exclude the products the session already saw — recommend what's new to them
     const viewedIds = [...viewedProducts.map((p) => p.id)];
 
     const candidates = await this.prisma.product.findMany({
@@ -212,10 +223,7 @@ export class RecommendationsService {
         status: "PUBLISHED",
         id: { notIn: viewedIds },
       },
-      include: {
-        category: true,
-        variants: { where: { status: "ACTIVE" }, include: { inventoryLevels: true } },
-      },
+      include: PRODUCT_REC_INCLUDE,
     });
 
     if (candidates.length === 0) {
@@ -277,6 +285,9 @@ export class RecommendationsService {
       slug: p.slug,
       title: p.titleFa,
       description: p.description,
+      image: p.media[0]?.url ?? null,
+      primaryVariantId: primaryVariant?.id ?? null,
+      primarySku: primaryVariant?.sku ?? null,
       category: p.category ? { slug: p.category.slug, titleFa: p.category.titleFa } : null,
       priceRials: price.toString(),
       priceTomans: (price / 10n).toString(),
@@ -293,6 +304,9 @@ export class RecommendationsService {
       slug: p.slug,
       title: p.title,
       description: p.description,
+      image: null,
+      primaryVariantId: null,
+      primarySku: null,
       category: { slug: p.category.slug, titleFa: p.category.titleFa },
       priceRials: price.toString(),
       priceTomans: (price / 10n).toString(),

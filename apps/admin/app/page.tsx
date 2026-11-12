@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DashboardOverview from "../components/DashboardOverview";
 import OrdersManager, { OrderItem, ReceiptItem } from "../components/OrdersManager";
 import CatalogPimManager from "../components/CatalogPimManager";
@@ -44,9 +44,12 @@ import {
   ADMIN_ROLES,
   clearAdminSession,
   readAdminSession,
+  authedFetch,
+  exportOrdersSepidarCsv,
   type AdminSessionUser,
+  type LiveCartSessionItem,
+  type LiveCartSummary,
 } from "../components/types";
-import { buildSepidarCsv } from "@commerce-os/finance";
 
 export type AdminTab =
   | "overview"
@@ -195,69 +198,84 @@ const TAB_METADATA: Record<AdminTab, TabMeta> = {
   },
 };
 
-const INITIAL_ORDERS: OrderItem[] = [
-  {
-    id: "ord_101",
-    orderNumber: "ORD-948210",
-    customerName: "سارا محمدی",
-    customerPhone: "09123456789",
-    status: "PAID",
-    totalAmountTomans: 950000,
-    paymentMethod: "زرین‌پال (شاپرک)",
-    // Demo timestamps are fixed: module-level Date.now() evaluates at different
-    // times on the server and the client and breaks hydration.
-    createdAt: "2026-11-02T13:45:00.000Z",
-  },
-  {
-    id: "ord_102",
-    orderNumber: "ORD-948211",
-    customerName: "امیرحسین رضایی",
-    customerPhone: "09351234567",
-    status: "PROCESSING",
-    totalAmountTomans: 1650000,
-    paymentMethod: "کارت‌به‌کارت بانکی",
-    createdAt: "2026-11-02T12:45:00.000Z",
-  },
-  {
-    id: "ord_103",
-    orderNumber: "ORD-948212",
-    customerName: "مریم حسینی",
-    customerPhone: "09197654321",
-    status: "SHIPPED",
-    totalAmountTomans: 450000,
-    paymentMethod: "زرین‌پال (شاپرک)",
-    createdAt: "2026-11-01T14:00:00.000Z",
-  },
-];
-
-const INITIAL_RECEIPTS: ReceiptItem[] = [
-  {
-    id: "rcp_201",
-    orderNumber: "ORD-948211",
-    referenceNumber: "۹۸۴۱۶۲۸۳",
-    payerCard: "۶۰۳۷-۹۹**-****-۴۴۵۵",
-    amountTomans: 1650000,
-    status: "PENDING_REVIEW",
-    createdAt: "2026-11-02T13:45:00.000Z",
-  },
-  {
-    id: "rcp_202",
-    orderNumber: "ORD-948195",
-    referenceNumber: "۷۷۲۱۰۵۴۹",
-    payerCard: "۶۲۱۹-۸۶**-****-۱۲۳۴",
-    amountTomans: 780000,
-    status: "APPROVED",
-    createdAt: "2026-11-01T18:00:00.000Z",
-  },
-];
-
 export default function AdminDashboardPage() {
   const [session, setSession] = useState<{ token: string; user: AdminSessionUser } | null>(null);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [userRole, setUserRole] = useState<AdminUserRole>("SUPER_ADMIN");
-  const [orders, setOrders] = useState<OrderItem[]>(INITIAL_ORDERS);
-  const [receipts, setReceipts] = useState<ReceiptItem[]>(INITIAL_RECEIPTS);
+  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [receipts, setReceipts] = useState<ReceiptItem[]>([]);
+  const [liveCarts, setLiveCarts] = useState<LiveCartSessionItem[]>([]);
+  const [cartSummary, setCartSummary] = useState<LiveCartSummary | null>(null);
+  const [lowStockCount, setLowStockCount] = useState<number>(0);
+
+  const loadOrders = useCallback(async () => {
+    setOrdersLoading(true);
+    try {
+      const [ordersRes, receiptsRes, cartsRes, inventoryRes] = await Promise.allSettled([
+        authedFetch("/v1/orders/admin"),
+        authedFetch("/v1/orders/admin/receipts"),
+        authedFetch("/v1/cart/admin/sessions"),
+        authedFetch("/v1/inventory/admin"),
+      ]);
+
+      if (ordersRes.status === "fulfilled" && ordersRes.value.ok) {
+        const payload = await ordersRes.value.json();
+        if (Array.isArray(payload?.items)) {
+          setOrders(payload.items);
+        }
+      }
+
+      if (receiptsRes.status === "fulfilled" && receiptsRes.value.ok) {
+        const payload = await receiptsRes.value.json();
+        if (Array.isArray(payload?.items)) {
+          setReceipts(
+            payload.items.map((r: any) => ({
+              id: r.id,
+              orderNumber: r.orderNumber,
+              referenceNumber: r.referenceNumber,
+              payerCard: r.payerCardNumber || "****",
+              amountTomans: Number(r.amountTomans || 0),
+              status: r.status,
+              createdAt: r.submittedAt || r.createdAt || new Date().toISOString(),
+            })),
+          );
+        }
+      }
+
+      if (cartsRes.status === "fulfilled" && cartsRes.value.ok) {
+        const payload = await cartsRes.value.json();
+        if (Array.isArray(payload?.items)) {
+          setLiveCarts(payload.items);
+        }
+        if (payload?.summary) {
+          setCartSummary(payload.summary);
+        }
+      }
+
+      if (inventoryRes.status === "fulfilled" && inventoryRes.value.ok) {
+        const payload = await inventoryRes.value.json();
+        if (typeof payload?.summary?.lowStockCount === "number") {
+          setLowStockCount(payload.summary.lowStockCount);
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to load live ERP state from DB:", err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadOrders();
+    const timer = setInterval(() => {
+      if (typeof document !== "undefined" && !document.hidden) {
+        loadOrders();
+      }
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [loadOrders]);
 
   // Restore the OTP session after hydration (localStorage is client-only).
   useEffect(() => {
@@ -276,12 +294,12 @@ export default function AdminDashboardPage() {
   };
 
   const pendingReceiptCount = receipts.filter((r) => r.status === "PENDING_REVIEW").length;
-  const lowStockCount = 1; // 1 critical low-stock SKU
 
   const handleUpdateOrderStatus = (orderId: string, newStatus: OrderItem["status"]) => {
     setOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+      prev.map((o) => (o.id === orderId || o.orderNumber === orderId ? { ...o, status: newStatus } : o))
     );
+    loadOrders();
   };
 
   const handleApproveReceipt = (id: string) => {
@@ -298,57 +316,12 @@ export default function AdminDashboardPage() {
 
   const canExportSepidar = userRole === "SUPER_ADMIN" || userRole === "ACCOUNTANT";
 
-  const handleDownloadSepidarCsv = () => {
+  const handleDownloadSepidarCsv = async () => {
     if (!canExportSepidar) {
       alert("خطای دسترسی تفکیک وظایف (SoD): خروجی اسناد رسمی سپیدار صرفاً با دسترسی حسابدار یا مدیر ارشد مجاز است.");
       return;
     }
-    const rows = orders.flatMap((o) => {
-      const debitRials = BigInt(o.totalAmountTomans) * 10n;
-      return [
-        {
-          entryNumber: `JRN-SALE-${o.orderNumber}`,
-          jalaliDate: "1405/08/07",
-          isoDate: o.createdAt,
-          fiscalPeriod: "1405",
-          accountCode: "1010",
-          accountName: "موجودی نزد درگاه‌های پرداخت شتاب",
-          entryDescription: `دریافت وجه سفارش ${o.orderNumber}`,
-          lineDescription: `واریز مشتری ${o.customerName}`,
-          debit: debitRials.toString(),
-          credit: "0",
-          currency: "IRR",
-          referenceType: "ORDER",
-          referenceId: o.orderNumber,
-          status: "POSTED",
-        },
-        {
-          entryNumber: `JRN-SALE-${o.orderNumber}`,
-          jalaliDate: "1405/08/07",
-          isoDate: o.createdAt,
-          fiscalPeriod: "1405",
-          accountCode: "4010",
-          accountName: "درآمد حاصل از فروش کالا",
-          entryDescription: `درآمد فروش سفارش ${o.orderNumber}`,
-          lineDescription: "فروش اقلام کاتالوگ",
-          debit: "0",
-          credit: debitRials.toString(),
-          currency: "IRR",
-          referenceType: "ORDER",
-          referenceId: o.orderNumber,
-          status: "POSTED",
-        },
-      ];
-    });
-
-    const csvContent = buildSepidarCsv(rows);
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `sepidar-export-${Date.now()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    await exportOrdersSepidarCsv(orders);
   };
 
   // Wait for the localStorage session check before rendering (avoids a
@@ -736,6 +709,8 @@ export default function AdminDashboardPage() {
             orders={orders}
             pendingReceiptCount={pendingReceiptCount}
             lowStockCount={lowStockCount}
+            liveCarts={liveCarts}
+            cartSummary={cartSummary}
             userRole={userRole}
             onNavigateTab={(tab) => setActiveTab(tab as AdminTab)}
           />
@@ -745,9 +720,13 @@ export default function AdminDashboardPage() {
           <OrdersManager
             orders={orders}
             receipts={receipts}
+            liveCarts={liveCarts}
+            cartSummary={cartSummary}
             onUpdateOrderStatus={handleUpdateOrderStatus}
             onApproveReceipt={handleApproveReceipt}
             onRejectReceipt={handleRejectReceipt}
+            onRefreshOrders={loadOrders}
+            isLoading={ordersLoading}
             userRole={userRole}
           />
         )}
@@ -768,7 +747,10 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === "inventory" && (
-          <InventoryWarehouseManager userRole={userRole} />
+          <InventoryWarehouseManager
+            userRole={userRole}
+            onLowStockCountChange={setLowStockCount}
+          />
         )}
 
         {activeTab === "coupons" && (

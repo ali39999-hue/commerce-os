@@ -1,3 +1,10 @@
+import {
+  resolveProductImage,
+  resolveVariant,
+  type CategoryDto,
+  type Product,
+} from './catalog';
+
 export interface ShopProductItem {
   id: string;
   slug: string;
@@ -11,184 +18,72 @@ export interface ShopProductItem {
   badge: string;
   inStock: boolean;
   rating: number;
+  description?: string;
+  variantId?: string;
+  sku?: string;
+  brandName?: string;
+  brandSlug?: string;
 }
 
-export const SHOP_CATEGORIES = [
-  { key: 'all', label: 'همه دسته‌ها' },
-  { key: 'serum', label: 'آمپول و سرم تخصصی' },
-  { key: 'hydrator', label: 'آبرسان و مرطوب‌کننده' },
-  { key: 'brightening', label: 'ضدلک و روشن‌کننده' },
-  { key: 'hair', label: 'تقویت کننده پوست سر و مو' },
-  { key: 'body', label: 'بهداشت شخصی و بادی اسپلش' },
-] as const;
+export interface ShopCategoryOption {
+  key: string;
+  label: string;
+  count?: number;
+}
 
-export const INITIAL_SHOP_PRODUCTS: ShopProductItem[] = [
-  {
-    id: 'prod_shop_dokdo_1025',
-    slug: 'dokdo-1025',
-    title: 'آمپول آبرسان راند لب مدل Dokdo 1025',
-    category: 'آمپول و سرم تخصصی',
-    categoryKey: 'serum',
-    price: 3940000,
-    originalPrice: 4230000,
-    discountPercent: 15,
-    image: '/assets/rupak/shop/dokdo-1025.png',
-    badge: '-۱۵٪',
-    inStock: true,
-    rating: 4.9,
-  },
-  {
-    id: 'prod_shop_centella_hyalu_cica',
-    slug: 'centella-hyalu-cica',
-    title: 'آمپول آبرسان و حجم‌دهنده هیالوتکا سنتلا اسکین ۱۰۰۴',
-    category: 'آمپول و سرم تخصصی',
-    categoryKey: 'serum',
-    price: 3610000,
-    originalPrice: 4140000,
-    discountPercent: 17,
-    image: '/assets/rupak/shop/centella-hyalu-cica.png',
-    badge: '-۱۷٪',
-    inStock: true,
-    rating: 4.8,
-  },
-  {
-    id: 'prod_shop_farmstay_gold_collagen',
-    slug: 'farmstay-gold-collagen',
-    title: 'آمپول تغذیه کننده کلاژن و طلا فارم استی مدل Gold Collagen',
-    category: 'آمپول و سرم تخصصی',
-    categoryKey: 'serum',
-    price: 3130000,
-    originalPrice: 3790000,
-    discountPercent: 16,
-    image: '/assets/rupak/shop/farmstay-gold-collagen.png',
-    badge: '-۱۶٪',
-    inStock: true,
-    rating: 4.9,
-  },
-  {
-    id: 'prod_shop_rosemary_root',
-    slug: 'rosemary-root-ampoule',
-    title: 'آمپول حجم دهنده و تقویت کننده پوست سر رزماری',
-    category: 'تقویت کننده پوست سر و مو',
-    categoryKey: 'hair',
-    price: 4380000,
-    originalPrice: 5150000,
-    discountPercent: 15,
-    image: '/assets/rupak/shop/rosemary-root-ampoule.png',
-    badge: '-۱۵٪',
-    inStock: true,
-    rating: 5.0,
-  },
-  {
-    id: 'prod_shop_sunol_glow',
-    slug: 'sunol-glow-ampoule',
-    title: 'آمپول روشن کننده و بهبود دهنده خطوط سنول گلو مدل',
-    category: 'ضدلک و روشن‌کننده',
-    categoryKey: 'brightening',
-    price: 3880000,
-    originalPrice: 4340000,
-    discountPercent: 20,
-    image: '/assets/rupak/shop/sunol-glow-ampoule.png',
-    badge: '-۲۰٪',
-    inStock: true,
-    rating: 4.7,
-  },
-  {
-    id: 'prod_shop_dr_melaxin',
-    slug: 'dr-melaxin-astaxanthin',
-    title: 'آمپول روشن کننده و ضدلک آستاگزانتین دکتر ملاکسین',
-    category: 'ضدلک و روشن‌کننده',
-    categoryKey: 'brightening',
-    price: 3580000,
-    originalPrice: 4190000,
-    discountPercent: 18,
-    image: '/assets/rupak/shop/dr-melaxin-astaxanthin.png',
-    badge: '-۱۸٪',
-    inStock: true,
-    rating: 4.9,
-  },
-  {
-    id: 'prod_shop_centella_niacinamide',
-    slug: 'centella-niacinamide',
-    title: 'آمپول روشن کننده و ضدلک نیاسینامید ۱۰٪ سنتلا',
-    category: 'ضدلک و روشن‌کننده',
-    categoryKey: 'brightening',
-    price: 3390000,
-    originalPrice: 4530000,
-    discountPercent: 25,
-    image: '/assets/rupak/shop/centella-niacinamide.png',
-    badge: '-۲۵٪',
-    inStock: true,
-    rating: 5.0,
-  },
-  {
-    id: 'prod_shop_cellmazing_vitc',
-    slug: 'cellmazing-vitamin-c',
-    title: 'آمپول روشن کننده ویتامین سی توریدن مدل Cellmazing',
-    category: 'ضدلک و روشن‌کننده',
-    categoryKey: 'brightening',
-    price: 4090000,
-    originalPrice: 4890000,
-    discountPercent: 17,
-    image: '/assets/rupak/shop/cellmazing-vitamin-c.png',
-    badge: '-۱۷٪',
-    inStock: true,
-    rating: 4.8,
-  },
-  {
-    id: 'prod_shop_perfect_in_pink',
-    slug: 'perfect-in-pink',
-    title: 'اسپری اکلیلی بث اند بادی مدل Perfect In pink',
-    category: 'بهداشت شخصی و بادی اسپلش',
-    categoryKey: 'body',
-    price: 2350000,
-    originalPrice: 2810000,
-    discountPercent: 16,
-    image: '/assets/rupak/products/perfect-in-pink.png',
-    badge: '-۱۶٪',
-    inStock: true,
-    rating: 5.0,
-  },
-  {
-    id: 'prod_shop_carboxygel',
-    slug: 'carboxygel',
-    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel',
-    category: 'آمپول و سرم تخصصی',
-    categoryKey: 'serum',
-    price: 4850000,
-    originalPrice: 5600000,
-    discountPercent: 13,
-    image: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
-    badge: '-۱۳٪',
-    inStock: true,
-    rating: 5.0,
-  },
-  {
-    id: 'prod_shop_cicalfate',
-    slug: 'avene-cicalfate-plus-cream',
-    title: 'کرم ترمیم کننده اون مدل Cicalfate Plus',
-    category: 'آبرسان و مرطوب‌کننده',
-    categoryKey: 'hydrator',
-    price: 1080000,
-    originalPrice: 1280000,
-    discountPercent: 15,
-    image: '/assets/rupak/offers/prod-cicalfate.jpg',
-    badge: '-۱۵٪',
-    inStock: true,
-    rating: 4.9,
-  },
-  {
-    id: 'prod_shop_alpecin',
-    slug: 'alpecin-c1-caffeine-shampoo',
-    title: 'شامپو ضد ریزش آلپسین مدل C1 کافئین',
-    category: 'تقویت کننده پوست سر و مو',
-    categoryKey: 'hair',
-    price: 750000,
-    originalPrice: 890000,
-    discountPercent: 16,
-    image: '/assets/rupak/offers/prod-alpecin.jpg',
-    badge: '-۱۶٪',
-    inStock: true,
-    rating: 4.8,
-  },
-];
+/**
+ * تبدیل دسته‌بندی‌های دریافت‌شده از دیتابیس به فهرست فیلترهای فروشگاه
+ */
+export function toShopCategoryOptions(categories: CategoryDto[]): ShopCategoryOption[] {
+  const mapped = categories
+    .filter((c) => c.slug !== 'reeskin' && c.slug !== 'reemed')
+    .map((c) => ({
+      key: c.slug,
+      label: c.titleFa,
+      count: c.productCount,
+    }));
+  return [{ key: 'all', label: 'همه دسته‌ها' }, ...mapped];
+}
+
+/**
+ * نگاشت محصول دریافت‌شده از API بک‌اند به کارت فروشگاهی ShopProductItem
+ */
+export function mapApiProductToShopItem(product: Product): ShopProductItem {
+  const variant = resolveVariant(product);
+  const priceRials = BigInt(variant?.priceAmount ?? '0');
+  const originalRials = variant?.originalPriceAmount
+    ? BigInt(variant.originalPriceAmount)
+    : priceRials;
+
+  const priceTomans = Number(priceRials / 10n);
+  const originalTomans = Number(originalRials / 10n);
+
+  const computedDiscount =
+    typeof variant?.discountPercent === 'number'
+      ? variant.discountPercent
+      : originalTomans > priceTomans && originalTomans > 0
+      ? Math.round(((originalTomans - priceTomans) * 100) / originalTomans)
+      : 0;
+
+  return {
+    id: product.id,
+    slug: product.slug,
+    title: product.titleFa || product.title,
+    category: product.category?.titleFa || 'مراقبت پوست',
+    categoryKey: product.category?.slug || 'skincare',
+    price: priceTomans,
+    originalPrice: originalTomans > 0 ? originalTomans : priceTomans,
+    discountPercent: computedDiscount,
+    image: resolveProductImage(product),
+    badge:
+      product.badge ||
+      (computedDiscount > 0 ? `${computedDiscount}٪ تخفیف` : ''),
+    inStock: Boolean(variant?.inStock),
+    rating: Number(product.ratingValue ?? 4.8),
+    description: product.subtitleFa || product.description || undefined,
+    variantId: variant?.id,
+    sku: variant?.sku,
+    brandName: product.brand?.name,
+    brandSlug: product.brand?.slug,
+  };
+}

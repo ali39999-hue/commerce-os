@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../cart';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
+import { getProduct, resolveProductImage, resolveVariant } from '../../lib/catalog';
 
 export interface DirectProductOrderProps {
   productId: string;
   variantId: string;
+  productSlug?: string;
   sku: string;
   title: string;
   volume: string;
@@ -23,6 +25,7 @@ export interface DirectProductOrderProps {
 export function DirectProductOrder({
   productId,
   variantId,
+  productSlug,
   sku,
   title,
   volume,
@@ -38,19 +41,69 @@ export function DirectProductOrder({
   const { formatToman } = useLocalizedFormatter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [liveState, setLiveState] = useState({
+    productId,
+    variantId,
+    sku,
+    title,
+    priceAmount,
+    originalPriceAmount,
+    discountPercent,
+    inStock,
+    image,
+  });
 
-  const priceBigInt = BigInt(priceAmount);
+  useEffect(() => {
+    setLiveState({
+      productId,
+      variantId,
+      sku,
+      title,
+      priceAmount,
+      originalPriceAmount,
+      discountPercent,
+      inStock,
+      image,
+    });
+  }, [productId, variantId, sku, title, priceAmount, originalPriceAmount, discountPercent, inStock, image]);
+
+  useEffect(() => {
+    if (liveState.variantId || !productSlug) return;
+    let mounted = true;
+    getProduct(productSlug).then((prod) => {
+      if (!mounted || !prod) return;
+      const v = resolveVariant(prod, sku ? [sku] : undefined);
+      if (!v) return;
+      setLiveState({
+        productId: prod.id,
+        variantId: v.id,
+        sku: v.sku,
+        title: prod.title,
+        priceAmount: v.priceAmount,
+        originalPriceAmount: v.originalPriceAmount ?? undefined,
+        discountPercent: v.discountPercent ?? undefined,
+        inStock: v.inStock,
+        image: resolveProductImage(prod, image),
+      });
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [liveState.variantId, productSlug, sku, image]);
+
+  const priceBigInt = BigInt(liveState.priceAmount || '0');
   const totalRials = priceBigInt * BigInt(qty);
 
   const handleAddToCart = () => {
+    if (!liveState.variantId || !liveState.productId) return;
     addItem(
       {
-        variantId,
-        productId,
-        title,
-        sku,
-        priceAmount,
-        image,
+        variantId: liveState.variantId,
+        productId: liveState.productId,
+        title: liveState.title,
+        sku: liveState.sku,
+        priceAmount: liveState.priceAmount,
+        image: liveState.image,
       },
       qty
     );
@@ -75,16 +128,16 @@ export function DirectProductOrder({
       <div className="cp-price-display-row">
         <div>
           <span className={`cp-price-main ${theme}`}>
-            {formatToman(totalRials)}
+            {priceBigInt > 0n ? formatToman(totalRials) : 'استعلام قیمت'}
           </span>
-          {originalPriceAmount && (
+          {liveState.originalPriceAmount && liveState.originalPriceAmount !== liveState.priceAmount && (
             <span className="cp-price-original">
-              {formatToman(BigInt(originalPriceAmount) * BigInt(qty))}
+              {formatToman(BigInt(liveState.originalPriceAmount) * BigInt(qty))}
             </span>
           )}
         </div>
-        {discountPercent ? (
-          <span className="cp-discount-badge">{discountPercent}٪ تخفیف کلینیکی</span>
+        {liveState.discountPercent ? (
+          <span className="cp-discount-badge">{liveState.discountPercent}٪ تخفیف کلینیکی</span>
         ) : null}
       </div>
 
@@ -112,7 +165,7 @@ export function DirectProductOrder({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={!inStock}
+          disabled={!liveState.inStock || !liveState.variantId}
           className={`cp-btn-add-cart ${theme} ${added ? 'added' : ''}`}
         >
           {added ? (
@@ -120,7 +173,7 @@ export function DirectProductOrder({
               <span>✓</span>
               <span>به سبد اضافه شد (باز کردن سبد)</span>
             </>
-          ) : inStock ? (
+          ) : liveState.inStock ? (
             <>
               <span>🛒</span>
               <span>سفارش آنی {volume}</span>

@@ -13,6 +13,7 @@
     "@commerce-os/ui": "workspace:*",
     "@types/leaflet": "^1.9.22",
     "leaflet": "^1.9.4",
+    "lenis": "^1.3.27",
     "lucide-react": "^1.66.0",
     "next": "^16.2.0",
     "pg": "^8.16.0",

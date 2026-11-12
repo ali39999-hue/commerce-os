@@ -70,7 +70,7 @@ export function RupakAboutSection({ onConsultationSubmit }: RupakAboutSectionPro
     <section
       dir="rtl"
       className="rupak-about-section-root"
-      aria-label="بخش بنرهای ویژه، درباره روپاک شاپ و مشاوره رایگان"
+      aria-label="بخش بنرهای ویژه، درباره dermavia و مشاوره رایگان"
     >
       <div className="rupak-about-container">
         {/* ==================================================================
@@ -127,14 +127,14 @@ export function RupakAboutSection({ onConsultationSubmit }: RupakAboutSectionPro
         </div>
 
         {/* ==================================================================
-            2. "کمی درباره ی روپاک شاپ" (ABOUT RUPAK SHOP 3-COLUMN SHOWCASE)
+            2. "کمی درباره ی dermavia" (ABOUT RUPAK SHOP 3-COLUMN SHOWCASE)
             ================================================================== */}
         <div className="rupak-about-main-block">
           <div className="rupak-about-grid">
             {/* Column 1 (Right in RTL): Brand Story & Action Buttons */}
             <div className="rupak-about-col-content">
               <div className="rupak-about-title-wrapper">
-                <h2 className="rupak-about-heading">کمی درباره ی روپاک شاپ</h2>
+                <h2 className="rupak-about-heading">کمی درباره ی dermavia</h2>
                 {/* Decorative Green Wave / Zigzag Underline from design */}
                 <svg
                   className="rupak-about-wave-svg"
@@ -154,7 +154,7 @@ export function RupakAboutSection({ onConsultationSubmit }: RupakAboutSectionPro
               </div>
 
               <p className="rupak-about-description">
-                روپاک مقصدی منحصر به فرد برای علاقه مندان به محصولات آرایشی و مراقبت
+                dermavia مقصدی منحصر به فرد برای علاقه مندان به محصولات آرایشی و مراقبت
                 از پوست است. ما برندهای معتبر و با کیفیت را با دقت انتخاب کرده ایم
                 تا به شما در زیبایی و سلامتی کمک کنیم. مأموریت ما ارائه محصولات اصل
                 و با کیفیت برای ایجاد تجربه ای مطمئن و لذت بخش است. با انتخاب های
@@ -177,7 +177,7 @@ export function RupakAboutSection({ onConsultationSubmit }: RupakAboutSectionPro
               <div className="rupak-podium-card">
                 <img
                   src="/assets/rupak/about/about-podium.png"
-                  alt="محصولات مراقبت از پوست روپاک بر روی پدیوم سبز گیاهی"
+                  alt="محصولات مراقبت از پوست dermavia بر روی پدیوم سبز گیاهی"
                   className="rupak-podium-img"
                   loading="lazy"
                 />
@@ -270,7 +270,7 @@ export function RupakAboutSection({ onConsultationSubmit }: RupakAboutSectionPro
           {submitStatus === 'success' && (
             <div className="rupak-consultation-feedback success" role="alert">
               <CheckCircle2 className="w-4 h-4 ml-1.5 inline" />
-              درخواست شما با موفقیت ثبت گردید. کارشناسان روپاک به زودی با شما تماس خواهند گرفت.
+              درخواست شما با موفقیت ثبت گردید. کارشناسان dermavia به زودی با شما تماس خواهند گرفت.
             </div>
           )}
 

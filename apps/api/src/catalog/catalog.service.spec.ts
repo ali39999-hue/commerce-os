@@ -81,6 +81,20 @@ describe('CatalogService', () => {
       expect(product.variants[0].sku).toBe('CBG-PRO-500ML');
     });
 
+    it('throws NotFoundException when active DB store has no matching published product', async () => {
+      prisma.store.findFirst.mockResolvedValue({
+        id: 'store-1',
+        tenantId: 'tenant-1',
+        slug: 'demo',
+        name: 'Demo Store',
+      });
+      prisma.product.findMany.mockResolvedValue([]);
+
+      await expect(service.getPublished('demo', 'carboxygel')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
     it('throws NotFoundException for non-existent product slug', async () => {
       prisma.store.findFirst.mockRejectedValue(new Error('DB unreachable'));
 

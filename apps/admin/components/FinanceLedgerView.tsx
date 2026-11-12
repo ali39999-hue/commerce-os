@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CHART_OF_ACCOUNTS, buildSepidarCsv } from "@commerce-os/finance";
+import { CHART_OF_ACCOUNTS } from "@commerce-os/finance";
 import { formatJalaliDateTime } from "@commerce-os/localization";
-import { faNumber } from "./types";
+import { faNumber, exportOrdersSepidarCsv } from "./types";
 
 interface LedgerOrder {
   id: string;
@@ -33,58 +33,17 @@ export default function FinanceLedgerView({
   const isBalanced = totalDebitRials === totalCreditRials;
   const floatDiscrepancy = 0n;
 
-  const handleDownloadSepidarCsv = () => {
+  const handleDownloadSepidarCsv = async () => {
     if (!canExportSepidar) {
       setFeedback("خطای دسترسی تفکیک وظایف (SoD): استخراج اسناد سپیدار فقط توسط حسابدار ارشد یا مدیر ارشد مجاز است.");
       return;
     }
-    const rows = orders.flatMap((o) => {
-      const debitRials = BigInt(o.totalAmountTomans) * 10n;
-      return [
-        {
-          entryNumber: `JRN-SALE-${o.orderNumber}`,
-          jalaliDate: "1405/08/07",
-          isoDate: o.createdAt,
-          fiscalPeriod: "1405",
-          accountCode: "1010",
-          accountName: "موجودی نزد درگاه‌های پرداخت شتاب",
-          entryDescription: `دریافت وجه سفارش ${o.orderNumber}`,
-          lineDescription: `واریز مشتری ${o.customerName}`,
-          debit: debitRials.toString(),
-          credit: "0",
-          currency: "IRR",
-          referenceType: "ORDER",
-          referenceId: o.orderNumber,
-          status: "POSTED",
-        },
-        {
-          entryNumber: `JRN-SALE-${o.orderNumber}`,
-          jalaliDate: "1405/08/07",
-          isoDate: o.createdAt,
-          fiscalPeriod: "1405",
-          accountCode: "4010",
-          accountName: "درآمد حاصل از فروش کالا",
-          entryDescription: `درآمد فروش سفارش ${o.orderNumber}`,
-          lineDescription: "فروش اقلام کاتالوگ",
-          debit: "0",
-          credit: debitRials.toString(),
-          currency: "IRR",
-          referenceType: "ORDER",
-          referenceId: o.orderNumber,
-          status: "POSTED",
-        },
-      ];
-    });
-
-    const csvContent = buildSepidarCsv(rows);
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `sepidar-export-${Date.now()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setFeedback("فایل خروجی استاندارد سپیدار سیستم (CSV + BOM) با موفقیت تولید و دانلود شد.");
+    const { source } = await exportOrdersSepidarCsv(orders);
+    setFeedback(
+      source === "LEDGER_DB"
+        ? "فایل رسمی اسناد دفتر کل سپیدار سیستم (CSV + BOM) مستقیماً از پایگاه‌داده دریافت و دانلود شد."
+        : "فایل خروجی استاندارد سپیدار سیستم (CSV + BOM) با تاریخ شمسی پویا تولید و دانلود شد.",
+    );
   };
 
   return (

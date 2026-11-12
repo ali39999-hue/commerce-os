@@ -76,6 +76,7 @@
 }
 
 .rupak-offers-title {
+  font-family: 'MyBaby', 'MyBaby Chubby', sans-serif !important;
   font-size: 32px;
   font-weight: 900;
   line-height: 1.25;
@@ -175,6 +176,48 @@
   position: relative;
 }
 
+/* Floating Swipe Buttons for Special Offers Carousel */
+.rupak-offers-carousel-wrap .rupak-carousel-swipe-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  color: #ea580c;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: none;
+}
+
+.rupak-offers-carousel-wrap .rupak-carousel-swipe-btn:hover:not(.disabled) {
+  background-color: #ffedd5;
+  color: #c2410c;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
+}
+
+.rupak-offers-carousel-wrap .rupak-carousel-swipe-btn.swipe-left {
+  left: 6px;
+}
+
+.rupak-offers-carousel-wrap .rupak-carousel-swipe-btn.swipe-right {
+  right: 6px;
+}
+
+.rupak-offers-carousel-wrap .rupak-carousel-swipe-btn.disabled {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.8);
+}
+
 .rupak-offers-carousel {
   display: flex;
   gap: 16px;
@@ -183,10 +226,25 @@
   padding: 6px 4px 14px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.rupak-offers-carousel.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
 }
 
 .rupak-offers-carousel::-webkit-scrollbar {
   display: none;
+}
+
+.rupak-offer-card img {
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .rupak-offer-card {
@@ -510,6 +568,19 @@
   .rupak-offers-box {
     padding: 20px 16px;
     border-radius: 24px;
+  }
+
+  .rupak-offers-carousel-wrap .rupak-carousel-swipe-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .rupak-offers-carousel-wrap .rupak-carousel-swipe-btn.swipe-left {
+    left: 2px;
+  }
+
+  .rupak-offers-carousel-wrap .rupak-carousel-swipe-btn.swipe-right {
+    right: 2px;
   }
 
   .rupak-offer-card {

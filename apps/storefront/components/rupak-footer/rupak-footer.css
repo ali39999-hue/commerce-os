@@ -1,412 +1,643 @@
 /* ==========================================================================
    RUPAK OFFICIAL STOREFRONT FOOTER STYLES
-   Pixel-accurate matching the uploaded reference design with #77B091 & #FFD098
+   Pixel-accurate matching the uploaded reference design (Desktop & Mobile)
+   Color Palette: Deep Forest Green (#364F37), Gold Accent (#F9B233), Clean Off-White (#F4F6F4)
    ========================================================================== */
 
-.rupak-footer-root {
+.rupak-goldoni-footer-root {
   width: 100%;
   position: relative;
-  margin-top: 60px;
-  font-family: inherit;
-  direction: rtl;
+  background-color: #364f37;
   color: #ffffff;
-}
-
-/* ── Top Curve & Floating Scroll-to-Top Button ── */
-.rupak-footer-top-curve {
-  position: relative;
-  width: 100%;
-  height: 48px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.rupak-footer-scroll-top-btn {
-  pointer-events: auto;
-  width: 56px;
-  height: 56px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
-  margin-bottom: -24px;
-}
-
-.rupak-footer-scroll-top-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.rupak-footer-scroll-top-btn:active {
-  transform: translateY(0);
-}
-
-.rupak-footer-scroll-top-icon {
-  width: 24px;
-  height: 24px;
-  color: #64748b;
-  transition: color 0.2s ease;
-}
-
-.rupak-footer-scroll-top-btn:hover .rupak-footer-scroll-top-icon {
-  color: #77B091;
-}
-
-/* ── Main Footer Body (Sage Green with Watermark) ── */
-.rupak-footer-main {
-  background-color: #77B091;
-  background-image: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 20px, transparent 20px, transparent 40px);
-  border-top-left-radius: 36px;
-  border-top-right-radius: 36px;
-  padding: 48px 24px 36px 24px;
-  position: relative;
+  direction: rtl;
+  font-family: inherit;
+  margin-top: 60px;
   overflow: hidden;
 }
 
-.rupak-footer-container {
+/* ─────────────────────────────────────────────────────────────
+   1. TOP NEWSLETTER BAR (Deep Forest Green)
+   ───────────────────────────────────────────────────────────── */
+.footer-newsletter-section {
+  width: 100%;
+  padding: 36px 24px 34px;
+}
+
+.footer-newsletter-inner {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-/* ── 1. Top Contact / Info 3-Column Bar ── */
-.rupak-footer-contact-row {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  gap: 24px;
 }
 
-.rupak-footer-contact-item {
-  flex: 1;
+.newsletter-text-block {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 6px;
   text-align: right;
 }
 
-.rupak-footer-contact-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: #FFD098;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-}
-
-.rupak-footer-contact-icon {
-  width: 20px;
-  height: 20px;
-  color: #5c3813;
-}
-
-.rupak-footer-contact-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.rupak-footer-contact-label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-}
-
-.rupak-footer-contact-value {
-  font-size: 14.5px;
+.newsletter-main-heading {
+  font-size: 1.45rem;
   font-weight: 800;
   color: #ffffff;
-  font-feature-settings: 'tnum';
+  margin: 0;
   letter-spacing: -0.01em;
 }
 
-.rupak-footer-contact-divider {
-  width: 1px;
-  height: 38px;
-  background-color: rgba(255, 255, 255, 0.22);
+.newsletter-sub-desc {
+  font-size: 0.95rem;
+  color: #e2ebe2;
+  margin: 0;
+  font-weight: 400;
+  opacity: 0.95;
 }
 
-/* ── 2. Middle Row: Nav Pill (Right) + Socials Pill (Left) ── */
-.rupak-footer-nav-social-row {
+/* Newsletter Input Form */
+.newsletter-form-box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  padding: 4px;
+  width: 420px;
+  max-width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Nav Pill (Right in RTL) */
-.rupak-footer-nav-pill {
+.newsletter-form-box:focus-within {
+  border-color: #f9b233;
+  box-shadow: 0 0 0 3px rgba(249, 178, 51, 0.25);
+}
+
+.newsletter-email-input {
   flex: 1;
-  background-color: #ffffff;
-  border-radius: 9999px;
-  padding: 10px 32px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  text-align: right;
+  direction: rtl;
+}
+
+.newsletter-email-input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.newsletter-submit-btn {
+  background-color: #f9b233;
+  color: #213322;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 10px 26px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.newsletter-submit-btn:hover {
+  background-color: #f7a61a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 178, 51, 0.35);
+}
+
+.newsletter-submit-btn:active {
+  transform: scale(0.97);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   2. MAIN CURVED CARD WITH GOLDEN ACCENT
+   ───────────────────────────────────────────────────────────── */
+.footer-card-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px 24px;
+}
+
+.footer-main-curved-card {
+  background-color: #f4f6f4;
+  border-top: 4px solid #f9b233;
+  border-radius: 36px;
+  padding: 44px 48px 36px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.14);
+  color: #364f37;
+}
+
+/* ── Top 4 Columns Grid (Desktop) ── */
+.footer-top-columns-grid {
+  display: grid;
+  grid-template-columns: 2.1fr 1fr 1fr 1.35fr;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+/* ── Column 1: Brand Logo & About ── */
+.botanical-brand-wrap {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 32px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
-.rupak-footer-nav-link {
-  font-size: 14px;
-  font-weight: 700;
-  color: #334155;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  position: relative;
+.botanical-logo-text-group {
+  display: flex;
+  flex-direction: column;
 }
 
-.rupak-footer-nav-link:hover {
-  color: #77B091;
+.botanical-brand-name {
+  font-size: 26px;
+  font-weight: 900;
+  color: #364f37;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-.rupak-footer-nav-link.active {
-  color: #d97706;
+.botanical-brand-tagline {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6a7c6a;
+  margin-top: 2px;
+}
+
+.botanical-pot-svg {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.botanical-brand-wrap:hover .botanical-pot-svg {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.footer-brand-about-paragraph {
+  font-size: 0.85rem;
+  line-height: 1.85;
+  color: #556655;
+  margin: 0;
+  max-width: 440px;
+  text-align: justify;
+}
+
+/* ── Column 2 & 3: Link Lists ── */
+.footer-col-title {
+  font-size: 1.05rem;
   font-weight: 800;
+  color: #364f37;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
 }
 
-/* Socials Pill (Left in RTL) */
-.rupak-footer-social-pill {
-  background-color: rgba(255, 255, 255, 0.22);
-  border-radius: 9999px;
-  padding: 7px 16px;
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links-list li a {
+  color: #556655;
+  font-size: 0.88rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.18s ease;
+  display: inline-block;
+}
+
+.footer-links-list li a:hover {
+  color: #364f37;
+  font-weight: 700;
+  transform: translateX(-4px);
+}
+
+/* ── Column 4: Contact Items ── */
+.footer-contact-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  text-align: right;
+}
+
+.footer-contact-row .contact-text {
+  color: #556655;
+  font-size: 0.86rem;
+  font-weight: 500;
+  font-feature-settings: "tnum";
+}
+
+.footer-contact-row .contact-icon-wrap {
+  color: #4a5c4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  flex-shrink: 0;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-contact-row:hover .contact-icon-wrap {
+  color: #364f37;
+  transform: scale(1.15);
+}
+
+.footer-mobile-divider {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3. LOWER INTERACTIVE ROW: SOCIALS, APPS & TRUST
+   ───────────────────────────────────────────────────────────── */
+.footer-bottom-interactive-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 36px;
+  gap: 24px;
+  border-top: 1px solid rgba(54, 79, 55, 0.08);
+  margin-top: 36px;
+}
+
+.footer-sub-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #364f37;
+  margin: 0 0 12px 0;
+}
+
+/* ── Social Media Block (Right in RTL) ── */
+.footer-social-block {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.footer-social-icons-group {
   display: flex;
   align-items: center;
   gap: 10px;
-  backdrop-filter: blur(6px);
-  flex-shrink: 0;
 }
 
-.rupak-footer-social-btn {
-  width: 34px;
-  height: 34px;
+.social-icon-btn {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background-color: #FFD098;
+  border: 1.5px solid #364f37;
+  color: #364f37;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5c3813;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  background: transparent;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 
-.rupak-footer-social-btn:hover {
+.social-icon-btn:hover {
+  background-color: #364f37;
+  color: #ffffff;
   transform: translateY(-2px);
-  background-color: #ffe1b8;
+  box-shadow: 0 6px 14px rgba(54, 79, 55, 0.25);
 }
 
-.rupak-footer-social-icon {
-  width: 17px;
-  height: 17px;
-  color: #ffffff;
+.social-icon-btn:active {
+  transform: scale(0.92);
 }
 
-/* ── 3. Bottom Cards: About Box (Right) + Enamad Trust Box (Left) ── */
-.rupak-footer-content-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  gap: 20px;
-  align-items: stretch;
-}
-
-/* Right in RTL: About Card */
-.rupak-footer-about-card {
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 26px 32px;
+/* ── App Store Download Badges (Center) ── */
+.footer-app-download-block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+  align-items: center;
+  text-align: center;
+}
+
+.footer-app-badges-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-app-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #dbe2db;
+  border-radius: 8px;
+  padding: 6px 14px;
+  text-decoration: none;
+  height: 44px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.footer-app-badge:hover {
+  border-color: #364f37;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(54, 79, 55, 0.12);
+}
+
+.app-badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-badge-text {
+  display: flex;
+  flex-direction: column;
   text-align: right;
+  line-height: 1.25;
 }
 
-.rupak-footer-about-title {
-  font-size: 17px;
+.app-badge-sub {
+  font-size: 0.65rem;
+  color: #718271;
+  font-weight: 500;
+}
+
+.app-badge-name {
+  font-size: 0.8rem;
   font-weight: 800;
-  color: #d97706;
-  margin: 0;
+  color: #1e293b;
 }
 
-.rupak-footer-about-text {
-  font-size: 13.5px;
-  line-height: 2.1;
-  color: #475569;
-  margin: 0;
-  text-align: justify;
-  text-justify: inter-word;
-}
-
-/* Left in RTL: Enamad Trust Card */
-.rupak-footer-trust-card {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 20px 20px;
+/* ── Trust Certificates (Left in RTL) ── */
+.footer-trust-certs-block {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+}
+
+.footer-trust-certs-group {
+  display: flex;
+  align-items: center;
   gap: 12px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.rupak-footer-trust-title {
-  font-size: 14.5px;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0;
-  align-self: flex-start;
-}
-
-.rupak-footer-enamad-badge {
-  background-color: #ffffff;
-  border-radius: 14px;
-  padding: 12px 18px;
+.footer-trust-badge {
+  background: #ffffff;
+  border: 1px solid #dbe2db;
+  border-radius: 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  width: 100%;
-  max-width: 160px;
+  text-align: center;
+  width: 105px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
 }
 
-.rupak-enamad-logo {
-  width: 48px;
-  height: 48px;
-  display: block;
+.footer-trust-badge:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
-.rupak-enamad-brand {
-  font-size: 12px;
+.enamad-icon-wrap,
+.union-icon-wrap {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 2px;
+}
+
+.enamad-e-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.union-hexagon-mark {
+  width: 34px;
+  height: 34px;
+}
+
+.enamad-brand-label,
+.union-brand-label {
+  font-size: 0.72rem;
   font-weight: 800;
   color: #1e3a8a;
-  direction: ltr;
-  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 
-.rupak-enamad-stars {
-  display: flex;
-  gap: 2px;
-  font-size: 10px;
+.union-brand-label {
+  color: #0369a1;
 }
 
-.rupak-enamad-sub {
-  font-size: 9.5px;
-  color: #94a3b8;
-  font-weight: 600;
+.enamad-five-stars {
+  color: #f59e0b;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  margin: 1px 0;
 }
 
-/* ── 4. Very Bottom Copyright Bar ── */
-.rupak-footer-copyright-bar {
-  background-color: #FFD098;
-  padding: 13px 20px;
+.enamad-sub-desc,
+.union-sub-desc {
+  font-size: 0.58rem;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   4. BOTTOM COPYRIGHT BAR (Deep Forest Green)
+   ───────────────────────────────────────────────────────────── */
+.footer-copyright-bottom-bar {
+  padding: 22px 20px 28px;
   text-align: center;
-  box-sizing: border-box;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.rupak-footer-copyright-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  font-size: 13px;
-  font-weight: 700;
-  color: #452b11;
-  letter-spacing: -0.01em;
+.copyright-text {
+  font-size: 0.88rem;
+  color: #e2ebe2;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
-/* ── Responsive Reflow ── */
-@media (max-width: 960px) {
-  .rupak-footer-contact-row {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
+/* ─────────────────────────────────────────────────────────────
+   5. RESPONSIVE BREAKPOINTS (Mobile & Tablet Reflow)
+   Matches Reference Screenshot: media_1794291005129_d8c4f63c.png
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .footer-top-columns-grid {
+    grid-template-columns: 1.8fr 1fr 1fr 1.3fr;
+    gap: 24px;
   }
-
-  .rupak-footer-contact-divider {
-    display: none;
+  .footer-main-curved-card {
+    padding: 36px 32px 30px;
   }
+}
 
-  .rupak-footer-contact-item {
-    min-width: 220px;
-  }
-
-  .rupak-footer-nav-social-row {
+@media (max-width: 860px) {
+  .footer-newsletter-inner {
     flex-direction: column;
     align-items: stretch;
+    text-align: center;
+  }
+  .newsletter-text-block {
+    text-align: center;
+  }
+  .newsletter-form-box {
+    width: 100%;
   }
 
-  .rupak-footer-nav-pill {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 10px 18px;
-    border-radius: 16px;
+  /* Two-row grid for top section */
+  .footer-top-columns-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .footer-col-brand {
+    grid-column: 1 / -1;
+  }
+  .footer-col-contact {
+    grid-column: 1 / -1;
   }
 
-  .rupak-footer-social-pill {
-    align-self: center;
-  }
-
-  .rupak-footer-content-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .rupak-footer-trust-card {
+  .footer-bottom-interactive-row {
+    flex-direction: column;
     align-items: center;
+    gap: 28px;
+    text-align: center;
   }
-
-  .rupak-footer-trust-title {
-    align-self: center;
+  .footer-social-block {
+    align-items: center;
+    text-align: center;
   }
 }
 
-@media (max-width: 600px) {
-  .rupak-footer-main {
-    padding: 40px 16px 28px 16px;
-    border-top-left-radius: 28px;
-    border-top-right-radius: 28px;
+@media (max-width: 640px) {
+  .footer-newsletter-section {
+    padding: 28px 16px 24px;
+  }
+  .newsletter-main-heading {
+    font-size: 1.25rem;
+  }
+  .newsletter-sub-desc {
+    font-size: 0.88rem;
   }
 
-  .rupak-footer-contact-item {
-    width: 100%;
-    justify-content: flex-start;
+  .footer-card-container {
+    padding: 0 12px 20px;
   }
 
-  .rupak-footer-about-card {
-    padding: 20px 18px;
+  .footer-main-curved-card {
+    border-radius: 28px;
+    padding: 28px 20px 24px;
   }
 
-  .rupak-footer-about-text {
-    font-size: 13px;
-    line-height: 2.0;
+  /* Top Section on Mobile */
+  .footer-top-columns-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
-  .rupak-footer-copyright-bar {
-    padding: 14px 16px;
-  }
-
-  .rupak-footer-copyright-inner {
-    font-size: 12px;
-    line-height: 1.8;
+  /* Column 1: Brand & About */
+  .botanical-brand-wrap {
+    justify-content: center;
     text-align: center;
+  }
+  .footer-brand-about-paragraph {
+    text-align: justify;
+    font-size: 0.84rem;
+    line-height: 1.8;
+  }
+
+  /* Column 2 & 3 side by side on mobile */
+  .footer-top-columns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .footer-col-brand {
+    grid-column: 1 / -1;
+  }
+  .footer-col-contact {
+    grid-column: 1 / -1;
+  }
+
+  .footer-contact-row {
+    justify-content: flex-end;
+  }
+
+  /* Mobile Divider */
+  .footer-mobile-divider {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: #e0e8e0;
+    margin: 24px 0;
+  }
+
+  /* Lower Interactive Row on Mobile */
+  .footer-bottom-interactive-row {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+  }
+
+  .footer-app-badges-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .footer-app-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Bottom Row with Socials & Trust side by side or stacked */
+  .footer-social-block,
+  .footer-trust-certs-block {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-social-icons-group {
+    justify-content: center;
+  }
+
+  .footer-trust-certs-group {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .copyright-text {
+    font-size: 0.82rem;
   }
 }

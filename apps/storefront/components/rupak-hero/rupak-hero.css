@@ -149,7 +149,7 @@
   margin: 0 auto;
   padding: 0 24px;
   box-sizing: border-box;
-  z-index: 999999 !important;
+  z-index: 900 !important;
   animation: rupakNavbarStickySlide 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   filter: drop-shadow(0 14px 34px rgba(15, 23, 42, 0.16));
 }
@@ -206,7 +206,7 @@
   left: 50%;
   top: -18px;
   transform: translateX(-50%);
-  width: 150px;
+  width: 170px;
   height: 104px;
   pointer-events: none;
   z-index: 1;
@@ -219,12 +219,24 @@
   transform: translate(-50%, -50%);
   z-index: 2;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   cursor: pointer;
   user-select: none;
+}
+
+.rupak-hero-brand-logo {
+  display: block;
+  height: 28px;
+  width: auto;
+  max-width: 136px;
+  object-fit: contain;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rupak-logo-container:hover .rupak-hero-brand-logo {
+  transform: scale(1.06);
 }
 
 .rupak-logo-mark {
@@ -548,7 +560,7 @@
 }
 
 .rupak-hero-desc {
-  font-size: 15px;
+  font-size: 16.5px;
   font-weight: 400;
   line-height: 1.85;
   color: rgba(255, 255, 255, 0.92);
@@ -883,21 +895,160 @@
   }
 }
 
-@media (max-width: 480px) {
+/* --------------------------------------------------------------------------
+   Responsive Mobile & Tablet Polish (Prevents logo bulge / cart collision)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .rupak-nav-actions {
+    position: relative;
+    z-index: 10;
+  }
+
+  .rupak-hero-heading br {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
   .rupak-navbar {
-    padding: 0 16px;
+    padding: 0 12px;
     height: 60px;
+    border-radius: 18px;
   }
 
   .rupak-logo-bulge-svg {
-    width: 120px;
-    height: 86px;
-    top: -14px;
+    width: 116px;
+    height: 72px;
+    top: -12px;
+  }
+
+  .rupak-hero-brand-logo {
+    height: 22px;
+    max-width: 96px;
+  }
+
+  .rupak-logo-mark svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .rupak-logo-text {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    margin-top: -3px;
+  }
+
+  .rupak-btn-cart {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rupak-navbar {
+    padding: 0 10px;
+    height: 58px;
+    border-radius: 16px;
+  }
+
+  .rupak-logo-bulge-svg {
+    width: 104px;
+    height: 68px;
+    top: -11px;
+  }
+
+  .rupak-hero-brand-logo {
+    height: 20px;
+    max-width: 86px;
+  }
+
+  .rupak-logo-mark svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .rupak-logo-text {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    margin-top: -3px;
+  }
+
+  .rupak-mobile-toggle {
+    padding: 4px;
+    margin-right: -2px;
+  }
+
+  .rupak-nav-actions {
+    position: relative;
+    z-index: 10;
+  }
+
+  .rupak-btn-cart {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    gap: 5px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  .rupak-cart-price-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .rupak-btn-cart .rupak-cart-icon-wrapper svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .rupak-btn-cart .rupak-cart-badge {
+    top: -6px;
+    right: -7px;
+    font-size: 9.5px;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    padding: 0 3px;
   }
 
   .rupak-hero-heading,
   .rupak-hero-content.centered-mode .rupak-hero-heading {
-    font-size: 24px;
+    font-size: 19px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .rupak-hero-desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    margin-bottom: 22px;
+    padding: 0 4px;
+  }
+
+  .rupak-eyebrow-badge {
+    font-size: 11px;
+    padding: 5px 12px;
+    margin-bottom: 14px;
+  }
+
+  .rupak-cta-row {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    gap: 10px;
+  }
+
+  .rupak-btn-primary,
+  .rupak-btn-secondary {
+    width: 100%;
+    text-align: center;
+    padding: 12px 18px;
+    justify-content: center;
+    font-size: 13.5px;
   }
 
   .rupak-btn-login {
@@ -905,13 +1056,41 @@
   }
 
   .rupak-scroll-btn {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
+    margin-top: 24px;
   }
 
   .rupak-scroll-arrow {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 370px) {
+  .rupak-navbar {
+    padding: 0 8px;
+  }
+
+  .rupak-logo-bulge-svg {
+    width: 92px;
+    height: 62px;
+    top: -10px;
+  }
+
+  .rupak-hero-brand-logo {
+    height: 18px;
+    max-width: 76px;
+  }
+
+  .rupak-btn-cart {
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .rupak-cart-currency {
+    display: none;
   }
 }
 
@@ -919,6 +1098,112 @@
    RUPAK CATEGORY WAVE SECTION (Directly Under Hero Scroll Button)
    Staggered cards, peach gradient background & top center notch
    ========================================================================== */
+/* --------------------------------------------------------------------------
+   Custom Display Font: MyBaby (EXCLUSIVELY Scoped to Category Section)
+   STRICT PROTOCOL: Do not use outside of .rupak-category-section
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MyBaby Chubby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby Chubby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby Chubby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby Chubby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MyBaby Chubby';
+  src: url('/fonts/mybaby/mybaby-chubby.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Strict Scoping: MyBaby Persian Display Font (ONLY for Notch Crown Badge) */
+.rupak-category-notch-badge,
+.rupak-category-notch-badge *,
+.rupak-category-section .rupak-notch-title,
+.rupak-category-section .rupak-notch-count {
+  font-family: 'MyBaby', 'MyBaby Chubby', 'MyBaby-Chubby', cursive, sans-serif !important;
+}
+
+/* Category cards explicitly use standard clean Vazirmatn font */
+.rupak-category-title,
+.rupak-category-btn,
+.rupak-category-card,
+.rupak-category-card * {
+  font-family: var(--font-vazirmatn), system-ui, -apple-system, sans-serif !important;
+}
+
 .rupak-category-section {
   position: relative;
   background-color: #ffffff;
@@ -946,18 +1231,83 @@
   box-shadow: 0 12px 35px -5px rgba(251, 213, 166, 0.35);
 }
 
-/* Cutout / Notch below hero scroll button */
-.rupak-category-notch {
+/* --------------------------------------------------------------------------
+   Center SVG Notch & Luxury Typography Badge Crown
+   -------------------------------------------------------------------------- */
+.rupak-category-notch-wrapper {
   position: absolute;
-  top: -34px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 170px;
-  height: 70px;
-  background-color: #ffffff;
-  border-radius: 9999px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   pointer-events: none;
-  z-index: 1;
+  z-index: 5;
+}
+
+.rupak-notch-svg {
+  width: 290px;
+  height: 56px;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(251, 213, 166, 0.25));
+}
+
+.rupak-category-notch-badge {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(230, 160, 90, 0.22), 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  pointer-events: auto;
+  white-space: nowrap;
+  user-select: none;
+  animation: notchBadgeGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes notchBadgeGlow {
+  0% {
+    box-shadow: 0 4px 16px rgba(230, 160, 90, 0.22), 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  100% {
+    box-shadow: 0 6px 22px rgba(217, 130, 43, 0.32), 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.rupak-notch-sparkle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d97706;
+}
+
+.rupak-notch-title {
+  font-family: 'MyBaby', 'MyBaby Chubby', 'MyBaby-Chubby', cursive, sans-serif !important;
+  font-size: 17px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.rupak-notch-count {
+  font-family: 'MyBaby', 'MyBaby Chubby', 'MyBaby-Chubby', cursive, sans-serif !important;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  display: inline-block;
+  line-height: 1.25;
 }
 
 /* Desktop Grid Layout (Staggered Wave) */
@@ -1120,10 +1470,26 @@
     border-radius: 28px;
   }
 
-  .rupak-category-notch {
-    width: 130px;
-    height: 55px;
-    top: -26px;
+  .rupak-notch-svg {
+    width: 250px;
+    height: 48px;
+  }
+
+  .rupak-category-notch-badge {
+    top: 7px;
+    padding: 5px 13px;
+    gap: 6px;
+  }
+
+  .rupak-notch-title {
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .rupak-notch-count {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
   }
 
   .rupak-category-grid {
@@ -1153,7 +1519,29 @@
   }
 
   .rupak-category-title {
-    font-size: 13px;
+    font-size: 12.5px;
+  }
+
+  .rupak-notch-svg {
+    width: 215px;
+    height: 42px;
+  }
+
+  .rupak-category-notch-badge {
+    top: 5px;
+    padding: 4px 10px;
+    gap: 5px;
+  }
+
+  .rupak-notch-title {
+    font-size: 12.5px;
+    font-weight: 900;
+  }
+
+  .rupak-notch-count {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
   }
 }
 
@@ -1433,4 +1821,12 @@
 }
 .rupak-dropdown-item-logout:hover .rupak-dropdown-item-title {
   color: #b91c1c;
+}
+
+/* When cart drawer or modal is open, prevent sticky navbar interference */
+.rupak-navbar-wrapper.drawer-is-open {
+  pointer-events: none;
+}
+body:has(.cart-drawer-overlay) .rupak-navbar-wrapper.is-sticky {
+  pointer-events: none;
 }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "../../components/cart";
+import { readStoredCustomerAuth } from "../../lib/cart";
 import { apiBase, storeSlug } from "../../lib/catalog";
 import { useLocalizedFormatter } from "../../lib/use-localized-formatter";
 import {
@@ -69,9 +70,36 @@ export const IRAN_PROVINCES: ProvinceCityMap = {
 };
 
 export default function CheckoutPage() {
-  const { items, clearCart, isReady, calculations, shippingMethod, setShippingMethod, appliedCoupon } = useCart();
+  const {
+    items,
+    clearCart,
+    isReady,
+    calculations,
+    shippingMethod,
+    setShippingMethod,
+    appliedCoupon,
+    appliedCouponRule,
+    applyCoupon,
+    removeCoupon,
+    cartSessionId,
+    customerType,
+    setCustomerType,
+    clinicName,
+    setClinicName,
+    medicalLicenseNumber,
+    setMedicalLicenseNumber,
+    setBuyerPhone,
+    syncStage,
+  } = useCart();
   const { formatToman, formatMoney } = useLocalizedFormatter();
   const router = useRouter();
+
+  const [sidebarCouponInput, setSidebarCouponInput] = useState("");
+  const [sidebarCouponBusy, setSidebarCouponBusy] = useState(false);
+  const [sidebarCouponMsg, setSidebarCouponMsg] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Active step: 1 (Contact & Address & Tax), 2 (Shipping & Cold-Chain), 3 (Payment & Place Order)
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
@@ -354,7 +382,17 @@ export default function CheckoutPage() {
       currency: "IRR",
     }));
 
+    const normalizedBuyerPhone = toAsciiDigits(customerPhone).trim();
+    if (normalizedBuyerPhone) {
+      setBuyerPhone(normalizedBuyerPhone);
+    }
+
     if (currentStep === 1) {
+      syncStage("CHECKOUT_STARTED", {
+        customerName,
+        customerPhone: normalizedBuyerPhone || undefined,
+        customerType,
+      });
       trackBeginCheckout(
         analyticsItems,
         Number(calculations.totalRials) || 0,
@@ -362,19 +400,42 @@ export default function CheckoutPage() {
         "IRR"
       );
     } else if (currentStep === 2) {
+      syncStage("SHIPPING_SELECTED", {
+        customerName,
+        customerPhone: normalizedBuyerPhone || undefined,
+        customerType,
+      });
       trackAddShippingInfo(
         shippingMethod,
         Number(calculations.totalRials) || 0,
         "IRR"
       );
     } else if (currentStep === 3) {
+      syncStage("PAYMENT_INITIATED", {
+        customerName,
+        customerPhone: normalizedBuyerPhone || undefined,
+        customerType,
+      });
       trackAddPaymentInfo(
         paymentCategory,
         Number(calculations.totalRials) || 0,
         "IRR"
       );
     }
-  }, [currentStep, isReady, items, calculations.totalRials, appliedCoupon, shippingMethod, paymentCategory]);
+  }, [
+    currentStep,
+    isReady,
+    items,
+    calculations.totalRials,
+    appliedCoupon,
+    shippingMethod,
+    paymentCategory,
+    customerName,
+    customerPhone,
+    customerType,
+    syncStage,
+    setBuyerPhone,
+  ]);
 
   const goToNextStep = () => {
     if (currentStep === 1) {
@@ -413,9 +474,14 @@ export default function CheckoutPage() {
     }
 
     const payload = {
-      storeId,
+      ...(storeId && storeId !== "demo-store" ? { storeId } : { storeSlug }),
+      cartSessionId: cartSessionId !== "ssr-session" ? cartSessionId : undefined,
       customerName,
       customerPhone: toAsciiDigits(customerPhone),
+      customerType,
+      clinicName: customerType === "B2B_CLINIC" ? clinicName.trim() || undefined : undefined,
+      medicalLicenseNumber:
+        customerType === "B2B_CLINIC" ? medicalLicenseNumber.trim() || undefined : undefined,
       address: {
         province,
         city,
@@ -465,17 +531,25 @@ export default function CheckoutPage() {
 
     try {
       const apiHost = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const customerAuth = readStoredCustomerAuth();
+      const authHeaders: Record<string, string> = customerAuth.token
+        ? { Authorization: `Bearer ${customerAuth.token}` }
+        : {};
 
       const sessionRes = await fetch(`${apiHost}/v1/checkout/session`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders,
+        },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(6000),
+        signal: AbortSignal.timeout(8000),
       });
 
       if (!sessionRes.ok) {
         const errJson = await sessionRes.json().catch(() => ({}));
-        throw new Error(errJson.message || "خطا در ایجاد جلسه تسویه‌حساب سرور");
+        const msg = Array.isArray(errJson.message) ? errJson.message[0] : errJson.message;
+        throw new Error(msg || "خطا در ایجاد جلسه تسویه‌حساب سرور");
       }
 
       const sessionData = await sessionRes.json();
@@ -485,22 +559,44 @@ export default function CheckoutPage() {
         headers: {
           "Content-Type": "application/json",
           "x-idempotency-key": idempotencyKeyRef.current,
+          ...authHeaders,
         },
         body: JSON.stringify({
           sessionId: sessionData.sessionId,
           paymentMethod: backendPaymentMethod,
         }),
-        signal: AbortSignal.timeout(6000),
+        signal: AbortSignal.timeout(8000),
       });
 
       if (!placeRes.ok) {
         const errJson = await placeRes.json().catch(() => ({}));
-        throw new Error(errJson.message || "خطا در ثبت قطعی سفارش");
+        const msg = Array.isArray(errJson.message) ? errJson.message[0] : errJson.message;
+        throw new Error(msg || "خطا در ثبت قطعی سفارش");
       }
 
       const orderResult = await placeRes.json();
       const confirmedOrderNumber = orderResult.orderNumber || orderNumberGenerated;
       orderSnapshot.orderNumber = confirmedOrderNumber;
+
+      // If Card-to-Card receipt tracking code was supplied on Step 3, persist receipt immediately to ERP review queue
+      if (
+        backendPaymentMethod === "CARD_TO_CARD" &&
+        orderResult.paymentIntentId &&
+        c2cTrackingCode.trim()
+      ) {
+        await fetch(`${apiHost}/v1/payments/${orderResult.paymentIntentId}/receipt`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            referenceNumber: toAsciiDigits(c2cTrackingCode.trim()),
+            payerCardNumber: c2cCardNumber.trim()
+              ? toAsciiDigits(c2cCardNumber.trim())
+              : undefined,
+            receiptImageUrl: c2cReceiptPreview || undefined,
+          }),
+          signal: AbortSignal.timeout(6000),
+        }).catch(() => {});
+      }
 
       trackPurchase({
         transactionId: confirmedOrderNumber,
@@ -563,73 +659,15 @@ export default function CheckoutPage() {
         console.error("Order storage error:", e);
       }
 
-      clearCart();
+      clearCart(true);
+      idempotencyKeyRef.current = crypto.randomUUID();
       setConfirmedOrder(orderSnapshot);
-    } catch {
-      // Offline / fallback mode: Guarantee reliable completion
-      trackPurchase({
-        transactionId: orderNumberGenerated,
-        value: Number(calculations.totalRials) || 0,
-        currency: "IRR",
-        tax: Number(calculations.vatRials) || 0,
-        shipping: Number(calculations.shippingRials) || 0,
-        coupon: appliedCoupon || undefined,
-        items: items.map((i) => ({
-          item_id: i.productId,
-          item_name: i.title,
-          item_variant: i.variantId,
-          sku: i.sku,
-          price: Number(i.priceAmount) || 0,
-          quantity: i.qty,
-          currency: "IRR",
-        })),
-      });
-
-      try {
-        const orderHistoryItem = {
-          orderNumber: orderSnapshot.orderNumber,
-          status: paymentCategory === "WALLET" ? "PAID" : "PROCESSING",
-          totalTomans: String(orderSnapshot.totalTomans || "0"),
-          totalRials: String(orderSnapshot.totalRials || "0"),
-          method: orderSnapshot.paymentMethod,
-          ref: `REF-${Date.now().toString().slice(-8)}`,
-          placedAt: orderSnapshot.placedAt,
-          customerName: orderSnapshot.customerName,
-          customerPhone: orderSnapshot.customerPhone,
-          nationalCode: orderSnapshot.nationalCode || null,
-          address: orderSnapshot.address,
-          shippingMethod: orderSnapshot.shippingMethod,
-          deliverySlot: orderSnapshot.deliverySlot,
-          trackingCode: orderSnapshot.trackingCode,
-          items: (orderSnapshot.items || []).map((it) => ({
-            id: it.sku || `item_${Math.random()}`,
-            title: it.title,
-            subtitle: "فرمولاسیون بالینی و مراقبت تخصصی",
-            quantity: it.qty,
-            priceTomans: String(BigInt(it.priceAmount || "0") / 10n),
-            image: it.sku?.includes("differin")
-              ? "/rupak-hero/prod-differin.jpg"
-              : it.sku?.includes("cicalfate") || it.sku?.includes("healene")
-              ? "/rupak-hero/prod-cicalfate.jpg"
-              : "/2-azel-170-hydrapod.webp",
-            category: "سفارش بالینی",
-          })),
-        };
-
-        localStorage.setItem("commerce_os.checkout.lastOrder", JSON.stringify(orderHistoryItem));
-        const existingRaw = localStorage.getItem("commerce_os.account.orders.v1");
-        const existing = existingRaw ? JSON.parse(existingRaw) : [];
-        localStorage.setItem(
-          "commerce_os.account.orders.v1",
-          JSON.stringify([orderHistoryItem, ...existing])
-        );
-        window.dispatchEvent(new Event("commerce_os:order_placed"));
-      } catch (e) {
-        console.error("Order storage fallback error:", e);
-      }
-
-      clearCart();
-      setConfirmedOrder(orderSnapshot);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : "ثبت قطعی سفارش با خطا مواجه شد. لطفاً اطلاعات سبد، کد تخفیف یا شماره تماس را بررسی کرده و مجدداً تلاش کنید.";
+      setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -1099,6 +1137,98 @@ export default function CheckoutPage() {
                 </div>
               </div>
             )}
+
+            {/* Buyer Channel Selector (B2C Retail vs B2B Clinic) */}
+            <div
+              style={{
+                marginBottom: "20px",
+                padding: "16px 18px",
+                background: customerType === "B2B_CLINIC" ? "#f5f3ff" : "#f8fafc",
+                border: customerType === "B2B_CLINIC" ? "1.5px solid #c4b5fd" : "1px solid #e2e8f0",
+                borderRadius: "14px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  gap: "10px",
+                  marginBottom: customerType === "B2B_CLINIC" ? "12px" : "0",
+                }}
+              >
+                <div>
+                  <strong style={{ fontSize: "0.92rem", color: "#0f172a", display: "block" }}>
+                    نوع حساب سفارش (B2C / کلینیکی B2B)
+                  </strong>
+                  <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
+                    برای اعمال سهمیه‌ها و کدهای تخفیف قراردادی کلینیک‌ها، گزینه B2B را انتخاب کنید
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setCustomerType("B2C")}
+                    style={{
+                      padding: "7px 14px",
+                      borderRadius: "10px",
+                      border: customerType === "B2C" ? "1.5px solid #0d9488" : "1px solid #cbd5e1",
+                      background: customerType === "B2C" ? "#f0fdfa" : "#ffffff",
+                      color: customerType === "B2C" ? "#0f766e" : "#475569",
+                      fontWeight: 700,
+                      fontSize: "0.82rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    مشتری شخصی (B2C)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCustomerType("B2B_CLINIC")}
+                    style={{
+                      padding: "7px 14px",
+                      borderRadius: "10px",
+                      border:
+                        customerType === "B2B_CLINIC" ? "1.5px solid #7c3aed" : "1px solid #cbd5e1",
+                      background: customerType === "B2B_CLINIC" ? "#ffffff" : "#ffffff",
+                      color: customerType === "B2B_CLINIC" ? "#6d28d9" : "#475569",
+                      fontWeight: 700,
+                      fontSize: "0.82rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    کلینیک / مرکز درمانی (B2B)
+                  </button>
+                </div>
+              </div>
+
+              {customerType === "B2B_CLINIC" && (
+                <div className="form-grid" style={{ marginTop: "10px" }}>
+                  <label className="form-field">
+                    <span>نام کلینیک یا مطب پزشک</span>
+                    <input
+                      type="text"
+                      value={clinicName}
+                      onChange={(e) => setClinicName(e.target.value)}
+                      placeholder="مثال: کلینیک فوق تخصصی اکسیر ونک"
+                      className="input-text"
+                    />
+                  </label>
+                  <label className="form-field">
+                    <span>شماره نظام پزشکی / کد مجوز مرکز</span>
+                    <input
+                      type="text"
+                      value={medicalLicenseNumber}
+                      onChange={(e) => setMedicalLicenseNumber(e.target.value)}
+                      placeholder="مثال: MED-992140"
+                      dir="ltr"
+                      className="input-text"
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
 
             <div className="form-grid">
               <label className="form-field">
@@ -1717,6 +1847,104 @@ export default function CheckoutPage() {
           </div>
 
           <hr className="summary-divider" />
+
+          {/* Live Server Coupon Bar inside Checkout Summary */}
+          <div style={{ margin: "12px 0" }}>
+            <div style={{ display: "flex", gap: "6px" }}>
+              <input
+                type="text"
+                placeholder="کد تخفیف / ویزیتور / کلینیک"
+                value={appliedCoupon ? appliedCoupon : sidebarCouponInput}
+                onChange={(e) => setSidebarCouponInput(e.target.value)}
+                disabled={Boolean(appliedCoupon) || sidebarCouponBusy}
+                dir="ltr"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  padding: "7px 10px",
+                  borderRadius: "8px",
+                  border: "1px solid #cbd5e1",
+                  fontSize: "0.8rem",
+                  background: appliedCoupon ? "#f0fdf4" : "#ffffff",
+                  color: "#0f172a",
+                }}
+              />
+              {appliedCoupon ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    removeCoupon();
+                    setSidebarCouponInput("");
+                    setSidebarCouponMsg(null);
+                  }}
+                  style={{
+                    padding: "7px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #fecaca",
+                    background: "#fef2f2",
+                    color: "#dc2626",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  حذف
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={sidebarCouponBusy || !sidebarCouponInput.trim()}
+                  onClick={async () => {
+                    setSidebarCouponMsg(null);
+                    setSidebarCouponBusy(true);
+                    try {
+                      const res = await applyCoupon(sidebarCouponInput, {
+                        customerPhone: toAsciiDigits(customerPhone).trim() || undefined,
+                        customerType,
+                        medicalLicenseNumber: medicalLicenseNumber.trim() || undefined,
+                      });
+                      setSidebarCouponMsg({
+                        type: res.success ? "success" : "error",
+                        text: res.message,
+                      });
+                      if (res.success) setSidebarCouponInput("");
+                    } finally {
+                      setSidebarCouponBusy(false);
+                    }
+                  }}
+                  style={{
+                    padding: "7px 12px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#0f766e",
+                    color: "#ffffff",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  {sidebarCouponBusy ? "..." : "اعمال"}
+                </button>
+              )}
+            </div>
+            {sidebarCouponMsg && (
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  fontSize: "0.75rem",
+                  color: sidebarCouponMsg.type === "success" ? "#15803d" : "#dc2626",
+                  fontWeight: 600,
+                }}
+              >
+                {sidebarCouponMsg.text}
+              </p>
+            )}
+            {appliedCouponRule?.visitorName && (
+              <p style={{ margin: "4px 0 0", fontSize: "0.74rem", color: "#0369a1" }}>
+                معرف ویزیتور: {appliedCouponRule.visitorName}
+              </p>
+            )}
+          </div>
 
           {/* Pricing Breakdown */}
           <div className="summary-rows">

@@ -1,0 +1,534 @@
+/* Visia 3D Dermatological Audit - Enhanced Dynamic Slider CSS */
+
+.visia-slider-section {
+  padding: 60px 0 80px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #ffffff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.visia-slider-wrapper {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+.visia-slider-header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 36px;
+  direction: rtl;
+}
+
+.visia-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(13, 148, 136, 0.1);
+  border: 1px solid rgba(13, 148, 136, 0.3);
+  color: #0d9488;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+  direction: ltr;
+}
+
+.visia-main-title {
+  font-size: clamp(1.5rem, 2.7vw, 2.1rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 12px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.visia-lead-text {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Tabs */
+.visia-case-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  direction: rtl;
+}
+
+.visia-case-tab-btn {
+  background: #ffffff;
+  color: #475569;
+  border: 1.5px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.visia-case-tab-btn:hover {
+  border-color: #10b981;
+  color: #047857;
+  transform: translateY(-2px);
+}
+
+.visia-case-tab-btn.active {
+  background: #0f766e;
+  color: #ffffff;
+  border-color: #0f766e;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.3);
+}
+
+/* Main Grid Layout */
+.visia-interactive-container {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 36px;
+  align-items: stretch;
+  direction: rtl;
+}
+
+/* Comparison Stage Column */
+.visia-stage-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Comparison Stage Box */
+.visia-compare-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  cursor: ew-resize;
+  background: #070b12;
+}
+
+/* Layers: Both occupy full box with zero stretching */
+.visia-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.visia-layer.after {
+  z-index: 1;
+}
+
+.visia-layer.before {
+  z-index: 2;
+  will-change: clip-path;
+}
+
+/* Image */
+.visia-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* Special clinical filter presets for cases */
+.visia-img.rejuvenated {
+  filter: blur(0.8px) brightness(103%) contrast(97%) saturate(102%);
+}
+
+.visia-img.erythema-active {
+  filter: sepia(18%) hue-rotate(335deg) saturate(190%) contrast(108%);
+}
+
+/* Badges (Before / After) */
+.visia-tag-badge {
+  position: absolute;
+  bottom: 16px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.visia-tag-badge.after {
+  left: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  color: #34d399;
+}
+
+.visia-tag-badge.before {
+  right: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #f87171;
+}
+
+.visia-tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  display: inline-block;
+}
+
+.visia-tag-dot.red {
+  background: #f87171;
+}
+
+/* Divider Vertical Line */
+.visia-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6), 0 0 4px rgba(255, 255, 255, 0.9);
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Handle Knob */
+.visia-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #0f766e;
+  border: 3px solid #ffffff;
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(15, 118, 110, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ew-resize;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visia-compare-stage:hover .visia-knob {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: #0d9488;
+  box-shadow: 0 6px 22px rgba(13, 148, 136, 0.5), 0 0 0 6px rgba(13, 148, 136, 0.25);
+}
+
+/* Interactive Controls Bar Below Stage */
+.visia-controls-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Live Telemetry Bar */
+.visia-live-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.visia-hud-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.visia-hud-val {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #0f766e;
+  background: #f0fdf4;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.visia-hud-pos {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* Range input slider */
+.visia-range-slider {
+  width: 100%;
+  accent-color: #0f766e;
+  cursor: pointer;
+  height: 6px;
+  border-radius: 4px;
+}
+
+/* Action Buttons & Presets */
+.visia-presets-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.visia-preset-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.visia-preset-btn:hover {
+  background: #f1f5f9;
+  border-color: #0f766e;
+  color: #0f766e;
+}
+
+.visia-preset-btn.active {
+  background: #e6fffa;
+  border-color: #0d9488;
+  color: #0d9488;
+}
+
+.visia-autoplay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.visia-autoplay-btn:hover {
+  background: #115e59;
+}
+
+.visia-autoplay-btn.playing {
+  background: #f59e0b;
+}
+
+/* Clinical Case Details Side Panel */
+.visia-case-details-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vcd-badge-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vcd-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.vcd-pill.dark {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.vcd-pill.teal {
+  background: #e6fffa;
+  color: #0d9488;
+  border: 1px solid rgba(13, 148, 136, 0.3);
+}
+
+.vcd-title {
+  font-size: 1.18rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.vcd-patient-meta {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Stat card */
+.vcd-stat-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0fdfa;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.vcd-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vcd-stat-label {
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.vcd-stat-val {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #0f766e;
+  direction: ltr;
+}
+
+.vcd-desc {
+  font-size: 0.84rem;
+  color: #334155;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.vcd-protocol-box {
+  background: #f8fafc;
+  border-right: 3px solid #0f766e;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: #334155;
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vcd-notes {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.vcd-cta-btn {
+  background: #0f766e;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 12px 18px;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  margin-top: 6px;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+}
+
+.vcd-cta-btn:hover {
+  background: #115e59;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .visia-interactive-container {
+    grid-template-columns: 1fr;
+  }
+
+  .visia-case-details-panel {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .visia-slider-section {
+    padding: 40px 0 60px;
+  }
+
+  .visia-slider-wrapper {
+    padding: 0 16px;
+  }
+
+  .visia-compare-stage {
+    min-height: 280px;
+    border-radius: 16px;
+  }
+
+  .visia-tag-badge {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    bottom: 12px;
+  }
+
+  .visia-tag-badge.after {
+    left: 10px;
+  }
+
+  .visia-tag-badge.before {
+    right: 10px;
+  }
+
+  .visia-knob {
+    width: 38px;
+    height: 38px;
+  }
+
+  .visia-presets-row {
+    justify-content: center;
+  }
+}

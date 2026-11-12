@@ -3,69 +3,143 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ShoppingBag, Check } from 'lucide-react';
+import { useCart } from '../../components/cart';
 import './shop.css';
+import { listCategories, listProducts } from '../../lib/catalog';
+import { isBackendServiceError, reportBackendError } from '../../lib/backend-error';
 import {
-  INITIAL_SHOP_PRODUCTS,
-  SHOP_CATEGORIES,
-  ShopProductItem,
+  mapApiProductToShopItem,
+  toShopCategoryOptions,
+  type ShopCategoryOption,
+  type ShopProductItem,
 } from '../../lib/shop-catalog-data';
+
+export type SortOptionKey =
+  | 'relevant'
+  | 'popular'
+  | 'newest'
+  | 'bestselling'
+  | 'price-low'
+  | 'price-high'
+  | 'fast-shipping'
+  | 'rating'
+  | 'featured';
+
+interface SortOptionItem {
+  key: SortOptionKey;
+  label: string;
+}
+
+const SORT_OPTIONS: SortOptionItem[] = [
+  { key: 'relevant', label: 'مرتبط‌ترین' },
+  { key: 'popular', label: 'پربازدیدترین' },
+  { key: 'newest', label: 'جدیدترین' },
+  { key: 'bestselling', label: 'پرفروش‌ترین' },
+  { key: 'price-low', label: 'ارزان‌ترین' },
+  { key: 'price-high', label: 'گران‌ترین' },
+  { key: 'fast-shipping', label: 'سریع‌ترین ارسال' },
+  { key: 'rating', label: 'پیشنهاد خریداران' },
+  { key: 'featured', label: 'منتخب' },
+];
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat('fa-IR').format(num);
 }
 
 export default function ShopPage() {
+  const cart = useCart();
+  const [addedId, setAddedId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [maxPrice, setMaxPrice] = useState<number>(56210000);
-  const [sortBy, setSortBy] = useState<string>('default');
-  const [products, setProducts] = useState<ShopProductItem[]>(INITIAL_SHOP_PRODUCTS);
+  const [priceCap, setPriceCap] = useState<number>(200_000_000);
+  const [maxPrice, setMaxPrice] = useState<number>(200_000_000);
+  const [sortBy, setSortBy] = useState<SortOptionKey>('relevant');
+  const [categories, setCategories] = useState<ShopCategoryOption[]>([
+    { key: 'all', label: 'همه دسته‌ها' },
+  ]);
+  const [products, setProducts] = useState<ShopProductItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleAddToCart = (e: React.MouseEvent, prod: ShopProductItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!prod.variantId || !prod.inStock) {
+      return;
+    }
+
+    if (cart?.addItem) {
+      cart.addItem(
+        {
+          variantId: prod.variantId,
+          productId: prod.id,
+          title: prod.title,
+          sku: prod.sku || prod.slug.toUpperCase(),
+          priceAmount: (BigInt(prod.price) * 10n).toString(), // Tomans to Rials
+          image: prod.image,
+        },
+        1
+      );
+      setAddedId(prod.id);
+      setTimeout(() => setAddedId(null), 1800);
+    }
+  };
 
   useEffect(() => {
-    fetch('http://localhost:4000/v1/stores/demo/products')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((payload) => {
-        if (Array.isArray(payload?.data) && payload.data.length > 0) {
-          const apiItems: ShopProductItem[] = payload.data.map((p: any) => {
-            const variant = p.variants?.[0];
-            const priceTomans = variant ? Number(variant.priceAmount) / 10 : 2500000;
-            return {
-              id: p.id,
-              slug: p.slug,
-              title: p.titleFa || p.title,
-              category: p.category?.titleFa || 'آمپول و سرم تخصصی',
-              categoryKey: p.category?.slug || 'serum',
-              price: priceTomans,
-              originalPrice: Math.round(priceTomans * 1.15),
-              discountPercent: 15,
-              image: p.media?.[0]?.url || '/assets/drdermer/2025/07/carboxygel.png',
-              badge: p.brand?.name || 'ReeSkin Clinical',
-              inStock: variant?.inStock !== false,
-              rating: 4.9,
-            };
-          });
-          const apiSlugs = new Set(apiItems.map((i) => i.slug));
-          const rest = INITIAL_SHOP_PRODUCTS.filter((i) => !apiSlugs.has(i.slug));
-          setProducts([...apiItems, ...rest]);
+    if (typeof window !== 'undefined') {
+      const sp = new URLSearchParams(window.location.search);
+      const urlCat = sp.get('cat');
+      const urlSort = sp.get('sort');
+      if (urlCat) setSelectedCategory(urlCat);
+      if (urlSort === 'newest') setSortBy('newest');
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    Promise.all([listProducts({ limit: 100 }), listCategories()])
+      .then(([catalogRes, catRes]) => {
+        if (cancelled) return;
+        const apiItems = (catalogRes?.data ?? []).map(mapApiProductToShopItem);
+        setProducts(apiItems);
+        if (apiItems.length > 0) {
+          const highestPrice = Math.max(...apiItems.map((i) => i.price), 5_000_000);
+          setPriceCap(highestPrice);
+          setMaxPrice(highestPrice);
+        }
+        if (catRes.length > 0) {
+          setCategories(toShopCategoryOptions(catRes));
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        if (!cancelled && isBackendServiceError(err)) {
+          reportBackendError(err);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Filter & Sort Products
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter by Category
     if (selectedCategory !== 'all') {
       result = result.filter(
-        (p) => p.categoryKey === selectedCategory || p.category.includes(selectedCategory)
+        (p) =>
+          p.categoryKey === selectedCategory ||
+          p.brandSlug === selectedCategory ||
+          p.category.includes(selectedCategory)
       );
     }
 
-    // Filter by Price
     result = result.filter((p) => p.price <= maxPrice);
 
-    // Sort
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -73,19 +147,35 @@ export default function ShopPage() {
       case 'price-high':
         result.sort((a, b) => b.price - a.price);
         break;
-      case 'discount':
-        result.sort((a, b) => b.discountPercent - a.discountPercent);
-        break;
       case 'rating':
-        result.sort((a, b) => b.rating - a.rating);
+        result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
+      case 'bestselling':
+        result.sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+        break;
+      case 'popular':
+        result.sort(
+          (a, b) =>
+            (b.rating || 0) * (b.discountPercent || 1) -
+            (a.rating || 0) * (a.discountPercent || 1)
+        );
+        break;
+      case 'newest':
+        result.sort((a, b) => b.id.localeCompare(a.id));
+        break;
+      case 'fast-shipping':
+        result.sort((a, b) => (b.inStock ? 1 : 0) - (a.inStock ? 1 : 0));
+        break;
+      case 'featured':
+        result.sort((a, b) => (b.badge ? 1 : 0) - (a.badge ? 1 : 0));
+        break;
+      case 'relevant':
       default:
-        // Keep initial order from screenshot
         break;
     }
 
     return result;
-  }, [selectedCategory, maxPrice, sortBy]);
+  }, [selectedCategory, maxPrice, sortBy, products]);
 
   return (
     <div className="shop-page-container">
@@ -110,41 +200,11 @@ export default function ShopPage() {
                     /
                   </span>
                   <span className="shop-breadcrumb-active">
-                    {SHOP_CATEGORIES.find((c) => c.key === selectedCategory)?.label}
+                    {categories.find((c) => c.key === selectedCategory)?.label ?? selectedCategory}
                   </span>
                 </>
               )}
             </nav>
-
-            {/* Sorting Dropdown */}
-            <div className="shop-sort-wrapper">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="shop-sort-select"
-                aria-label="مرتب‌سازی محصولات"
-              >
-                <option value="default">مرتب‌سازی پیش‌فرض</option>
-                <option value="rating">مرتب‌سازی بر اساس محبوبیت</option>
-                <option value="discount">مرتب‌سازی بر اساس بیشترین تخفیف</option>
-                <option value="price-low">مرتب‌سازی بر اساس ارزان‌ترین</option>
-                <option value="price-high">مرتب‌سازی بر اساس گران‌ترین</option>
-              </select>
-              <svg
-                className="shop-sort-chevron"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
-            </div>
           </div>
         </header>
 
@@ -160,15 +220,15 @@ export default function ShopPage() {
                 <div
                   className="shop-price-slider-bar"
                   style={{
-                    width: `${Math.min(100, (maxPrice / 56210000) * 100)}%`,
+                    width: `${priceCap > 0 ? Math.min(100, (maxPrice / priceCap) * 100) : 100}%`,
                     right: 0,
                   }}
                 />
                 <input
                   type="range"
                   min="500000"
-                  max="56210000"
-                  step="200000"
+                  max={priceCap}
+                  step="500000"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(Number(e.target.value))}
                   className="shop-range-input"
@@ -207,7 +267,7 @@ export default function ShopPage() {
                   aria-label="انتخاب دسته محصولات"
                 >
                   <option value="all">یک دسته انتخاب نمایید</option>
-                  {SHOP_CATEGORIES.filter((c) => c.key !== 'all').map((cat) => (
+                  {categories.filter((c) => c.key !== 'all').map((cat) => (
                     <option key={cat.key} value={cat.key}>
                       {cat.label}
                     </option>
@@ -231,7 +291,7 @@ export default function ShopPage() {
 
               {/* Quick Pills */}
               <div className="shop-category-pills">
-                {SHOP_CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                   <button
                     key={cat.key}
                     type="button"
@@ -261,7 +321,55 @@ export default function ShopPage() {
 
           {/* ── Product Grid (Left Column in RTL) ── */}
           <main className="shop-catalog-main" id="shop-catalog-list">
-            {filteredProducts.length === 0 ? (
+            {/* ── Modern Digikala-style Horizontal Sort Bar ── */}
+            <div className="shop-sort-bar" role="toolbar" aria-label="مرتب‌سازی محصولات">
+              <div className="shop-sort-bar-header">
+                <svg
+                  className="shop-sort-bar-icon"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m3 16 4 4 4-4" />
+                  <path d="M7 20V4" />
+                  <path d="M11 4h10" />
+                  <path d="M11 9h7" />
+                  <path d="M11 14h4" />
+                </svg>
+                <span className="shop-sort-bar-title">مرتب‌سازی:</span>
+              </div>
+
+              <div className="shop-sort-bar-items">
+                {SORT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => setSortBy(opt.key)}
+                    className={`shop-sort-item-btn ${sortBy === opt.key ? 'active' : ''}`}
+                    aria-pressed={sortBy === opt.key}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="shop-sort-bar-count">
+                <span>{formatNumber(filteredProducts.length)} کالا</span>
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="shop-empty-state">
+                <h3>در حال بارگذاری کاتالوگ محصولات…</h3>
+                <p>در حال دریافت موجودی و قیمت‌های به‌روز از سرور.</p>
+              </div>
+            ) : filteredProducts.length === 0 ? (
               <div className="shop-empty-state">
                 <h3>هیچ محصولی با این فیلتر یافت نشد</h3>
                 <p>لطفاً بازه قیمت را تغییر داده یا دسته‌بندی دیگری انتخاب نمایید.</p>
@@ -269,7 +377,7 @@ export default function ShopPage() {
                   type="button"
                   onClick={() => {
                     setSelectedCategory('all');
-                    setMaxPrice(56210000);
+                    setMaxPrice(priceCap);
                   }}
                   className="shop-reset-btn"
                 >
@@ -279,41 +387,87 @@ export default function ShopPage() {
             ) : (
               <div className="shop-grid">
                 {filteredProducts.map((prod) => (
-                  <Link
+                  <div
                     key={prod.id}
-                    href={`/products/${prod.slug}`}
                     className="shop-card"
-                    title={prod.title}
                   >
                     {/* Discount Badge */}
                     {prod.badge && <span className="shop-badge-discount">{prod.badge}</span>}
 
                     {/* Bottle Image */}
-                    <div className="shop-card-image-box">
+                    <Link
+                      href={`/products/${prod.slug}`}
+                      className="shop-card-image-box"
+                      title={prod.title}
+                    >
                       <img
                         src={prod.image}
                         alt={prod.title}
                         className="shop-card-img"
                         loading="lazy"
                       />
-                    </div>
+                    </Link>
 
                     {/* Content */}
                     <div className="shop-card-content">
-                      <h3 className="shop-card-title">{prod.title}</h3>
+                      <Link
+                        href={`/products/${prod.slug}`}
+                        className="shop-card-title-link"
+                        title={prod.title}
+                      >
+                        <h3 className="shop-card-title">{prod.title}</h3>
+                      </Link>
+
+                      <div className="shop-card-meta">
+                        <span>{prod.category}</span>
+                        <span className="shop-card-dash">–</span>
+                        <span>{prod.brandName || 'درمر شاپ'}</span>
+                      </div>
+
+                      <p className="shop-card-desc">
+                        {prod.description || 'فرمولاسیون بالینی مراقبت پوست با استانداردهای درماتولوژی بریتانیا.'}
+                      </p>
 
                       <div className="shop-card-prices">
-                        {prod.originalPrice > prod.price && (
-                          <span className="shop-old-price">
-                            {formatNumber(prod.originalPrice)} تومان
+                        <div className="shop-price-stack">
+                          {prod.originalPrice > prod.price && (
+                            <span className="shop-old-price">
+                              {formatNumber(prod.originalPrice)} تومان
+                            </span>
+                          )}
+                          <span className="shop-current-price">
+                            {formatNumber(prod.price)} تومان
                           </span>
-                        )}
-                        <span className="shop-current-price">
-                          {formatNumber(prod.price)} تومان
-                        </span>
+                        </div>
+
+                        {/* Quick Cart Trigger */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleAddToCart(e, prod)}
+                          disabled={!prod.inStock || !prod.variantId}
+                          className={`shop-card-quick-add ${addedId === prod.id ? 'added' : ''}`}
+                          aria-label={`افزودن ${prod.title} به سبد خرید`}
+                          title={prod.inStock && prod.variantId ? 'افزودن سریع به سبد خرید' : 'ناموجود در انبار'}
+                        >
+                          {addedId === prod.id ? (
+                            <Check className="w-4 h-4 text-emerald-600" />
+                          ) : (
+                            <ShoppingBag className="w-4 h-4 text-slate-600" />
+                          )}
+                        </button>
                       </div>
+
+                      {/* Detail CTA Button Matching Reference Photo */}
+                      <Link
+                        href={`/products/${prod.slug}`}
+                        className="shop-card-detail-btn"
+                        title={`جزئیات بیشتر ${prod.title}`}
+                      >
+                        <span>جزئیات بیشتر</span>
+                        <span className="shop-card-arrow" aria-hidden="true">←</span>
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}

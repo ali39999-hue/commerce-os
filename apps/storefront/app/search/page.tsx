@@ -3,13 +3,28 @@
 import Link from 'next/link';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiBase, listProducts, type Product } from '../../lib/catalog';
+import {
+  apiBase,
+  listProducts,
+  resolveProductImage,
+  resolveVariant,
+  storeSlug,
+  type Product,
+} from '../../lib/catalog';
+import {
+  isBackendFailureStatus,
+  isBackendServiceError,
+  isIntentionalAbort,
+  normalizeNetworkError,
+  parseApiErrorPayload,
+  reportBackendError,
+} from '../../lib/backend-error';
 import { useLocalizedFormatter } from '../../lib/use-localized-formatter';
 import { WishlistButton } from '../../components/discovery/wishlist-button';
 import { CompareButton } from '../../components/discovery/compare-button';
 import { trackSearch, trackViewItemList } from '../../lib/analytics';
 import {
-  RECOMMENDED_CLINICAL_PRODUCTS,
+  toClinicalCatalogItem,
   getCanonicalProductHref,
   type CuratedProductItem,
 } from '../../lib/clinical-specs';
@@ -19,6 +34,7 @@ interface SearchItem {
   slug: string;
   title: string;
   description: string | null;
+  image?: string | null;
   category: { slug: string; titleFa: string } | null;
   brand?: { slug: string; name: string } | null;
   skinConcern?: string | null;
@@ -94,9 +110,16 @@ const FORMULATION_FACETS = [
 ];
 
 const CATEGORY_FACETS = [
+  { slug: 'reeskin', titleFa: 'لاین بالینی مراقبت پوست ReeSkin' },
+  { slug: 'reemed', titleFa: 'تجهیزات پزشکی و کلینیکال ReeMed' },
+  { slug: 'serum', titleFa: 'آمپول و سرم تخصصی' },
+  { slug: 'hydrator', titleFa: 'آبرسان و مرطوب‌کننده' },
+  { slug: 'brightening', titleFa: 'ضدلک و روشن‌کننده' },
+  { slug: 'repair', titleFa: 'جوانساز و ترمیم‌کننده' },
+  { slug: 'hair', titleFa: 'تقویت کننده پوست سر و مو' },
+  { slug: 'body', titleFa: 'بهداشت شخصی و بادی اسپلش' },
   { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' },
-  { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' },
-  { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' },
+  { slug: 'devices', titleFa: 'تجهیزات پزشکی و دستگاه‌های درمانی' },
 ];
 
 const PRODUCT_TYPE_FACETS = [
@@ -229,62 +252,26 @@ function normalizeSearchItem(entry: unknown): SearchItem {
   const title = typeof raw.title === 'string' ? raw.title : '';
 
   let brandObj: { slug: string; name: string } | null = null;
-  if (brandRaw && typeof brandRaw === 'object') {
-    const bSlug = String(brandRaw.slug || '').toLowerCase();
-    const bName = String(brandRaw.name || '');
-    if (bSlug.includes('reemed') || bName.includes('ReeMed') || bName.includes('ری‌مد')) {
-      brandObj = { slug: 'reemed', name: 'ReeMed Medical Pro' };
-    } else {
-      brandObj = { slug: 'reeskin', name: 'ReeSkin Clinical' };
-    }
+  if (brandRaw && typeof brandRaw === 'object' && typeof brandRaw.slug === 'string' && brandRaw.slug !== '') {
+    brandObj = {
+      slug: brandRaw.slug,
+      name: typeof brandRaw.name === 'string' && brandRaw.name !== '' ? brandRaw.name : brandRaw.slug,
+    };
+  } else if (slug.includes('reemed') || title.includes('ری‌مد') || slug === 'carbox' || slug === 'plasmax') {
+    brandObj = { slug: 'reemed', name: 'ReeMed Medical Pro' };
   }
 
-  if (!brandObj) {
-    if (
-      slug.includes('reemed') ||
-      title.includes('ری‌مد') ||
-      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
-      slug.includes('plasmax') ||
-      slug.includes('pod') ||
-      title.includes('پاد')
-    ) {
-      brandObj = { slug: 'reemed', name: 'ReeMed Medical Pro' };
-    } else {
-      brandObj = { slug: 'reeskin', name: 'ReeSkin Clinical' };
-    }
-  }
-
-  // Category mapping (Dr Dermer 1:1 categories: skincare, consumables, clinical-equipment)
   let categoryObj: { slug: string; titleFa: string } | null = null;
-  if (categoryRaw && typeof categoryRaw === 'object') {
-    const catSlug = typeof categoryRaw.slug === 'string' ? categoryRaw.slug : '';
-    if (catSlug === 'consumables' || catSlug === 'پد' || catSlug === 'ملزومات') {
-      categoryObj = { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' };
-    } else if (catSlug === 'clinical-equipment' || catSlug === 'دستگاه' || catSlug === 'تجهیزات') {
-      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
-    } else if (catSlug === 'skincare') {
-      categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
-    }
-  }
-  if (!categoryObj) {
-    if (
-      (slug.includes('carbox') && !slug.includes('carboxygel') && !slug.includes('carboxypod') && !slug.includes('carboxypad')) ||
-      slug.includes('plasmax') ||
-      title.includes('دستگاه') ||
-      title.includes('ایستگاه') ||
-      title.includes('تجهیزات پزشکی')
-    ) {
-      categoryObj = { slug: 'clinical-equipment', titleFa: 'تجهیزات و دستگاه‌های کلینیکال' };
-    } else if (
-      slug.includes('pod') ||
-      slug.includes('pad') ||
-      title.includes('پد') ||
-      title.includes('پاد')
-    ) {
-      categoryObj = { slug: 'consumables', titleFa: 'ملزومات و پدهای مصرفی' };
-    } else {
-      categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
-    }
+  if (categoryRaw && typeof categoryRaw === 'object' && typeof categoryRaw.slug === 'string' && categoryRaw.slug !== '') {
+    categoryObj = {
+      slug: categoryRaw.slug,
+      titleFa:
+        typeof categoryRaw.titleFa === 'string' && categoryRaw.titleFa !== ''
+          ? categoryRaw.titleFa
+          : categoryRaw.slug,
+    };
+  } else {
+    categoryObj = { slug: 'skincare', titleFa: 'مراقبت تخصصی پوست و کلینیکال' };
   }
 
   // Formulation mapping
@@ -364,6 +351,7 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     slug,
     title,
     description: typeof raw.description === 'string' ? raw.description : null,
+    image: typeof raw.image === 'string' ? raw.image : null,
     category: categoryObj,
     brand: brandObj,
     skinConcern: primaryConcern,
@@ -374,9 +362,24 @@ function normalizeSearchItem(entry: unknown): SearchItem {
     priceTomans: toRialsString(raw.priceTomans) || rialsToTomansString(priceRials),
     inStock: raw.inStock === true,
     availableQty: typeof raw.availableQty === 'number' ? raw.availableQty : 20,
-    sku: typeof raw.sku === 'string' ? raw.sku : null,
-    variantId: typeof raw.variantId === 'string' ? raw.variantId : null,
-    popularityScore: slug.includes('carboxy') ? 98 : slug.includes('healene') ? 94 : 85,
+    sku:
+      typeof raw.primarySku === 'string'
+        ? raw.primarySku
+        : typeof raw.sku === 'string'
+        ? raw.sku
+        : null,
+    variantId:
+      typeof raw.primaryVariantId === 'string'
+        ? raw.primaryVariantId
+        : typeof raw.variantId === 'string'
+        ? raw.variantId
+        : null,
+    popularityScore:
+      typeof raw.ratingValue === 'number'
+        ? Math.round(raw.ratingValue * 20)
+        : slug.includes('carboxy')
+        ? 98
+        : 85,
   };
 }
 
@@ -388,42 +391,22 @@ function normalizeSearchItems(raw: unknown): SearchItem[] {
 }
 
 function productToSearchItem(product: Product): SearchItem {
-  const variant = product.variants[0];
+  const variant = resolveVariant(product);
   const priceRials = toRialsString(variant?.priceAmount ?? '0');
   return normalizeSearchItem({
     id: product.id,
     slug: product.slug,
-    title: product.title,
+    title: product.titleFa || product.title,
     description: product.description,
+    image: resolveProductImage(product),
+    category: product.category ?? null,
+    brand: product.brand ?? null,
     priceRials,
     priceTomans: rialsToTomansString(priceRials),
     inStock: variant?.inStock ?? false,
-    sku: variant?.sku ?? null,
-    variantId: variant?.id ?? null,
-  });
-}
-
-function curatedToSearchItem(item: CuratedProductItem): SearchItem {
-  return normalizeSearchItem({
-    id: item.id,
-    slug: item.slug,
-    title: item.title,
-    description: item.description,
-    priceRials: item.priceAmount,
-    priceTomans: rialsToTomansString(item.priceAmount),
-    inStock: item.inStock,
-    sku: item.sku,
-    variantId: item.id,
-    category: {
-      slug: item.slug.includes('pod') || item.slug.includes('pad') ? 'consumables' : 'skincare',
-      titleFa: item.categoryTitleFa,
-    },
-    brand: {
-      slug: item.brand.toLowerCase().includes('reemed') ? 'reemed' : 'reeskin',
-      name: item.brand.toLowerCase().includes('reemed') ? 'ReeMed Medical Pro' : 'ReeSkin Clinical',
-    },
-    formulation: item.formulation,
-    skinConcern: item.concern,
+    primarySku: variant?.sku ?? null,
+    primaryVariantId: variant?.id ?? null,
+    ratingValue: product.ratingValue ?? undefined,
   });
 }
 
@@ -518,7 +501,20 @@ function SearchPageContent() {
     filters.max ? Number(filters.max) || 6000000 : 6000000
   );
   const [result, setResult] = useState<SearchState | null>(null);
+  const [recommendedProducts, setRecommendedProducts] = useState<CuratedProductItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    listProducts({ collection: 'featured', limit: 6 }).then((res) => {
+      if (!cancelled && res?.data) {
+        setRecommendedProducts(res.data.slice(0, 6).map(toClinicalCatalogItem));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // View Mode: grid vs list
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -622,36 +618,80 @@ function SearchPageContent() {
   // Fetch search results
   useEffect(() => {
     let cancelled = false;
+    let timedOut = false;
     const controller = new AbortController();
-    const abortTimer = window.setTimeout(() => controller.abort(), SEARCH_FETCH_TIMEOUT_MS);
+    const abortTimer = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, SEARCH_FETCH_TIMEOUT_MS);
 
     const debounceTimer = window.setTimeout(() => {
       const run = async () => {
         setLoading(true);
         const sp = new URLSearchParams(serialized);
+        const apiSp = new URLSearchParams();
+        apiSp.set('storeSlug', storeSlug);
+        apiSp.set('limit', '50');
+        if (filters.q.trim()) apiSp.set('q', filters.q.trim());
+        if (filters.category) apiSp.set('category', filters.category);
+        if (filters.brand) apiSp.set('brand', filters.brand);
+        if (filters.concern) apiSp.set('concern', filters.concern);
+        const minRials = tomanToRialsParam(filters.min);
+        const maxRials = tomanToRialsParam(filters.max);
+        if (minRials) apiSp.set('minPrice', minRials);
+        if (maxRials) apiSp.set('maxPrice', maxRials);
+        if (filters.stock) apiSp.set('inStock', 'true');
+        if (filters.sort) apiSp.set('sort', filters.sort);
+
+        const searchUrl = `${apiBase}/v1/search?${apiSp.toString()}`;
         try {
-          const response = await fetch(`${apiBase}/v1/search?${sp.toString()}`, {
+          const response = await fetch(searchUrl, {
             cache: 'no-store',
             headers: { accept: 'application/json' },
             signal: controller.signal,
           });
+          if (isBackendFailureStatus(response.status)) {
+            const backendErr = await parseApiErrorPayload(response, searchUrl);
+            if (!cancelled) reportBackendError(backendErr);
+            return;
+          }
           if (!response.ok) throw new Error(`search status ${response.status}`);
-          const payload = (await response.json()) as { items?: unknown; total?: unknown; facets?: unknown };
+          const payload = (await response.json()) as {
+            items?: unknown;
+            total?: unknown;
+            facets?: {
+              categories?: Array<{ slug: string; titleFa: string }>;
+              brands?: Array<{ slug: string; name: string }>;
+              concerns?: Array<{ slug: string; name: string }>;
+              inStockTotal?: number;
+            };
+          };
           if (cancelled) return;
           const rawItems = normalizeSearchItems(payload.items);
-          const combinedItems =
-            rawItems.length > 0 ? rawItems : RECOMMENDED_CLINICAL_PRODUCTS.map(curatedToSearchItem);
-          const filtered = applyLocalFilters(combinedItems, sp);
+          const filtered = rawItems.filter((item) => {
+            if (filters.type !== '' && item.productType !== filters.type) return false;
+            if (filters.formulation !== '' && item.formulation !== filters.formulation) return false;
+            return true;
+          });
+          const apiCats = payload.facets?.categories;
+          const apiBrands = payload.facets?.brands;
+          const apiConcerns = payload.facets?.concerns?.map((c) => ({
+            slug: c.slug,
+            label: c.name,
+          }));
           setResult({
             source: 'api',
             items: filtered,
             total: filtered.length,
             facets: {
-              categories: CATEGORY_FACETS,
-              brands: BRAND_FACETS,
-              concerns: CONCERN_FACETS,
+              categories: apiCats && apiCats.length > 0 ? apiCats : CATEGORY_FACETS,
+              brands: apiBrands && apiBrands.length > 0 ? apiBrands : BRAND_FACETS,
+              concerns: apiConcerns && apiConcerns.length > 0 ? apiConcerns : CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
-              inStockTotal: combinedItems.filter((item) => item.inStock).length,
+              inStockTotal:
+                typeof payload.facets?.inStockTotal === 'number'
+                  ? payload.facets.inStockTotal
+                  : filtered.filter((item) => item.inStock).length,
             },
           });
           if (filters.q) {
@@ -669,24 +709,42 @@ function SearchPageContent() {
               currency: 'IRR',
             }))
           );
-        } catch {
-          if (cancelled) return;
-          const catalog = await listProducts();
+        } catch (err) {
+          if (cancelled || isIntentionalAbort(err, timedOut)) return;
+          if (!(err instanceof Error && err.message.startsWith('search status '))) {
+            reportBackendError(
+              isBackendServiceError(err) ? err : normalizeNetworkError(err, searchUrl),
+            );
+            return;
+          }
+          let catalog: Awaited<ReturnType<typeof listProducts>>;
+          try {
+            catalog = await listProducts({ limit: 100 });
+          } catch (catalogErr) {
+            if (!cancelled && isBackendServiceError(catalogErr)) {
+              reportBackendError(catalogErr);
+            }
+            return;
+          }
           if (cancelled) return;
           const mappedCatalog = (catalog?.data ?? []).map(productToSearchItem);
-          const curatedItems = RECOMMENDED_CLINICAL_PRODUCTS.map(curatedToSearchItem);
-          const allPool = [...curatedItems, ...mappedCatalog.filter((c) => !curatedItems.some((m) => m.slug === c.slug))];
-          const filtered = applyLocalFilters(allPool, sp).slice(0, SEARCH_PAGE_SIZE);
+          const filtered = applyLocalFilters(mappedCatalog, sp).slice(0, SEARCH_PAGE_SIZE);
+          const dynamicCatMap = new Map<string, { slug: string; titleFa: string }>();
+          const dynamicBrandMap = new Map<string, { slug: string; name: string }>();
+          for (const item of mappedCatalog) {
+            if (item.category?.slug) dynamicCatMap.set(item.category.slug, item.category);
+            if (item.brand?.slug) dynamicBrandMap.set(item.brand.slug, item.brand);
+          }
           setResult({
             source: 'fallback',
             items: filtered,
             total: filtered.length,
             facets: {
-              categories: CATEGORY_FACETS,
-              brands: BRAND_FACETS,
+              categories: dynamicCatMap.size > 0 ? Array.from(dynamicCatMap.values()) : CATEGORY_FACETS,
+              brands: dynamicBrandMap.size > 0 ? Array.from(dynamicBrandMap.values()) : BRAND_FACETS,
               concerns: CONCERN_FACETS,
               formulations: FORMULATION_FACETS,
-              inStockTotal: allPool.filter((item) => item.inStock).length,
+              inStockTotal: mappedCatalog.filter((item) => item.inStock).length,
             },
           });
           if (filters.q) {
@@ -738,7 +796,9 @@ function SearchPageContent() {
       });
     }
     if (filters.category) {
-      const catObj = CATEGORY_FACETS.find((c) => c.slug === filters.category);
+      const catObj =
+        facets.categories.find((c) => c.slug === filters.category) ??
+        CATEGORY_FACETS.find((c) => c.slug === filters.category);
       list.push({
         id: 'category',
         label: `دسته: ${catObj ? catObj.titleFa : filters.category}`,
@@ -746,7 +806,9 @@ function SearchPageContent() {
       });
     }
     if (filters.brand) {
-      const bObj = BRAND_FACETS.find((b) => b.slug === filters.brand);
+      const bObj =
+        facets.brands.find((b) => b.slug === filters.brand) ??
+        BRAND_FACETS.find((b) => b.slug === filters.brand);
       list.push({
         id: 'brand',
         label: `برند: ${bObj ? bObj.name : filters.brand}`,
@@ -754,7 +816,9 @@ function SearchPageContent() {
       });
     }
     if (filters.concern) {
-      const cObj = CONCERN_FACETS.find((c) => c.slug === filters.concern);
+      const cObj =
+        facets.concerns.find((c) => c.slug === filters.concern) ??
+        CONCERN_FACETS.find((c) => c.slug === filters.concern);
       list.push({
         id: 'concern',
         label: `دغدغه: ${cObj ? cObj.label : filters.concern}`,
@@ -798,7 +862,7 @@ function SearchPageContent() {
       });
     }
     return list;
-  }, [filters, navigate]);
+  }, [filters, navigate, facets]);
 
   const activeFiltersCount = activeChips.length;
 
@@ -1344,12 +1408,17 @@ function SearchPageContent() {
                   <span>پیشنهادات پرطرفدار کلینیکال برای شما</span>
                 </h4>
                 <div className="empty-recommendations-grid">
-                  {RECOMMENDED_CLINICAL_PRODUCTS.map((rec) => {
+                  {recommendedProducts.map((rec) => {
                     const recHref = getCanonicalProductHref(rec.slug);
+                    const recVariantId = rec.variantId || rec.id;
                     return (
                       <article className="product-card" key={rec.id}>
                         <Link className="product-art" href={recHref} tabIndex={-1} aria-hidden="true">
-                          <span className="art-index">{rec.title.slice(0, 1)}</span>
+                          {rec.image ? (
+                            <img src={rec.image} alt={rec.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                          ) : (
+                            <span className="art-index">{rec.title.slice(0, 1)}</span>
+                          )}
                           <span className="art-caption">✓ موجود در انبار</span>
                         </Link>
                         <div className="product-copy">
@@ -1362,7 +1431,7 @@ function SearchPageContent() {
                             <strong className="product-card-toman">{formatToman(rec.priceAmount)}</strong>
                             <div className="rail-actions">
                               <WishlistButton
-                                variantId={rec.id}
+                                variantId={recVariantId}
                                 productId={rec.id}
                                 slug={rec.slug}
                                 title={rec.title}
@@ -1370,7 +1439,7 @@ function SearchPageContent() {
                                 priceAmount={rec.priceAmount}
                               />
                               <CompareButton
-                                variantId={rec.id}
+                                variantId={recVariantId}
                                 productId={rec.id}
                                 slug={rec.slug}
                                 title={rec.title}
@@ -1397,7 +1466,11 @@ function SearchPageContent() {
                 return (
                   <article className="product-card" key={item.id}>
                     <Link className="product-art" href={href} tabIndex={-1} aria-hidden="true">
-                      <span className="art-index">{item.title.slice(0, 1)}</span>
+                      {item.image ? (
+                        <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      ) : (
+                        <span className="art-index">{item.title.slice(0, 1)}</span>
+                      )}
                       <span className="art-caption">
                         {item.inStock ? '✓ موجود در انبار مرکزی' : 'ناموجود'}
                       </span>

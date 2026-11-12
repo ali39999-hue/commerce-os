@@ -9,7 +9,7 @@ import {
   maskNationalId,
   maskPostalAddress,
 } from "@commerce-os/localization";
-import { formatToman, apiBase } from "../../../lib/catalog";
+import { formatToman, apiBase, listProducts, resolveProductImage } from "../../../lib/catalog";
 import { useCart } from "../../../components/cart";
 
 interface OrderSnapshot {
@@ -46,62 +46,85 @@ export default function OrderPage() {
   const refParam = searchParams?.get("ref") || `REF-${Date.now().toString().slice(-8)}`;
 
   const [orderData, setOrderData] = useState<OrderSnapshot | null>(null);
+  const [orderLoading, setOrderLoading] = useState(true);
   const [copiedTracking, setCopiedTracking] = useState(false);
   const [reordered, setReordered] = useState(false);
 
-  // Load order data from local storage or server
+  // Load order data from local storage or authenticated backend API
   useEffect(() => {
-    try {
-      const lastRaw = localStorage.getItem("commerce_os.checkout.lastOrder");
-      if (lastRaw) {
-        const last = JSON.parse(lastRaw);
-        if (last.orderNumber === orderId) {
-          setOrderData(last);
-          return;
+    let mounted = true;
+    const load = async () => {
+      try {
+        const lastRaw = localStorage.getItem("commerce_os.checkout.lastOrder");
+        if (lastRaw) {
+          const last = JSON.parse(lastRaw);
+          if (last.orderNumber === orderId) {
+            if (mounted) {
+              setOrderData(last);
+              setOrderLoading(false);
+            }
+            return;
+          }
         }
-      }
-      const allRaw = localStorage.getItem("commerce_os.account.orders.v1");
-      if (allRaw) {
-        const list = JSON.parse(allRaw);
-        const found = list.find((o: OrderSnapshot) => o.orderNumber === orderId);
-        if (found) {
-          setOrderData(found);
-          return;
+        const allRaw = localStorage.getItem("commerce_os.account.orders.v1");
+        if (allRaw) {
+          const list = JSON.parse(allRaw);
+          const found = list.find((o: OrderSnapshot) => o.orderNumber === orderId);
+          if (found) {
+            if (mounted) {
+              setOrderData(found);
+              setOrderLoading(false);
+            }
+            return;
+          }
         }
-      }
-    } catch {
-      // ignore
-    }
 
-    // Default mock data if not in storage
-    setOrderData({
-      orderNumber: orderId,
-      status: statusParam,
-      totalTomans: "3200000",
-      method: statusParam === "PENDING_REVIEW" ? "کارت‌به‌کارت بانکی" : "درگاه الکترونیکی شاپرک",
-      ref: refParam,
-      placedAt: new Date().toISOString(),
-      customerName: "علی علوی",
-      customerPhone: "09121234567",
-      nationalCode: "0010312013",
-      address: "تهران، خیابان آزادی، خیابان حبیب‌الهی، پلاک ۱۲، واحد ۴",
-      shippingMethod: "POST_PISHTAZ",
-      deliverySlot: "فردا (روز کاری) - ساعت ۱۳ الی ۱۷",
-      items: [
-        {
-          title: "ژل تخصصی کربوکسی‌تراپی بالینی ReeSkin Carboxy CO2",
-          qty: 1,
-          priceAmount: "28500000",
-          sku: "RS-CARBOXY-PRO",
-        },
-        {
-          title: "پک ساشه اکتیواتور ترابافتی اسید میوه",
-          qty: 2,
-          priceAmount: "3500000",
-          sku: "RS-ACT-V2",
-        },
-      ],
-    });
+        const token =
+          localStorage.getItem("commerce_os_token") ||
+          localStorage.getItem("commerce_os.auth.token");
+        if (token) {
+          const res = await fetch(`${apiBase}/v1/orders/${encodeURIComponent(orderId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const payload = await res.json();
+            const order = payload?.data ?? payload;
+            if (order && mounted) {
+              setOrderData({
+                orderNumber: order.orderNumber || orderId,
+                status: order.status || statusParam,
+                totalTomans: order.totalAmount ? (BigInt(order.totalAmount) / 10n).toString() : "0",
+                method: order.paymentMethod || "درگاه الکترونیکی شاپرک",
+                ref: order.paymentRef || refParam,
+                placedAt: order.createdAt || new Date().toISOString(),
+                customerName: order.customerName,
+                customerPhone: order.customerPhone,
+                nationalCode: order.nationalCode,
+                address: order.shippingAddressText,
+                items: Array.isArray(order.items)
+                  ? order.items.map((it: Record<string, unknown>) => ({
+                      title: String(it.title ?? it.sku ?? "محصول"),
+                      qty: Number(it.qty ?? it.quantity ?? 1),
+                      priceAmount: String(it.unitPriceAmount ?? it.priceAmount ?? "0"),
+                      sku: String(it.sku ?? ""),
+                      variantId: typeof it.variantId === "string" ? it.variantId : undefined,
+                      productId: typeof it.productId === "string" ? it.productId : undefined,
+                    }))
+                  : [],
+              });
+            }
+          }
+        }
+      } catch {
+        // ignore storage/network errors
+      } finally {
+        if (mounted) setOrderLoading(false);
+      }
+    };
+    void load();
+    return () => {
+      mounted = false;
+    };
   }, [orderId, statusParam, refParam]);
 
   const isC2CReview = statusParam === "PENDING_REVIEW";
@@ -125,27 +148,87 @@ export default function OrderPage() {
     setTimeout(() => setCopiedTracking(false), 2000);
   };
 
-  const handleReorder = () => {
-    if (orderData?.items && orderData.items.length > 0) {
-      for (const it of orderData.items) {
-        addItem(
-          {
-            variantId: it.variantId || `var_${it.sku}`,
-            productId: it.productId || `prod_${it.sku}`,
-            title: it.title,
-            sku: it.sku,
-            priceAmount: it.priceAmount,
-          },
-          it.qty
-        );
+  const handleReorder = async () => {
+    if (!orderData?.items || orderData.items.length === 0) return;
+    const catalogRes = await listProducts({ limit: 100 });
+    const catalog = catalogRes?.data ?? [];
+    let addedCount = 0;
+
+    for (const it of orderData.items) {
+      let resolvedVariantId = it.variantId;
+      let resolvedProductId = it.productId;
+      let resolvedPrice = it.priceAmount;
+      let resolvedTitle = it.title;
+      let resolvedImage: string | undefined;
+
+      if (!resolvedVariantId || !resolvedProductId) {
+        for (const prod of catalog) {
+          const foundVar = prod.variants.find((v) => v.sku === it.sku);
+          if (foundVar) {
+            resolvedVariantId = foundVar.id;
+            resolvedProductId = prod.id;
+            resolvedPrice = foundVar.priceAmount;
+            resolvedTitle = `${prod.title} — ${foundVar.title}`;
+            resolvedImage = resolveProductImage(prod);
+            break;
+          }
+        }
       }
+
+      if (!resolvedVariantId || !resolvedProductId) continue;
+      addItem(
+        {
+          variantId: resolvedVariantId,
+          productId: resolvedProductId,
+          title: resolvedTitle,
+          sku: it.sku,
+          priceAmount: resolvedPrice,
+          image: resolvedImage,
+        },
+        it.qty
+      );
+      addedCount++;
+    }
+
+    if (addedCount > 0) {
       setReordered(true);
+      openDrawer();
       setTimeout(() => {
         setReordered(false);
-        openDrawer();
-      }, 1000);
+      }, 1500);
     }
   };
+
+  if (orderLoading) {
+    return (
+      <section className="order-receipt-layout">
+        <div className="receipt-card" style={{ textAlign: "center", padding: "48px 24px" }}>
+          <p>در حال بازیابی اطلاعات سفارش {orderId}...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!orderData) {
+    return (
+      <section className="order-receipt-layout">
+        <div className="receipt-card" style={{ textAlign: "center", padding: "48px 24px" }}>
+          <h1>سفارش {orderId} در نشست فعلی یافت نشد</h1>
+          <p style={{ marginTop: "8px", color: "#64748b" }}>
+            برای مشاهده جزئیات فاکتور و رهگیری مرسوله، ابتدا وارد حساب کاربری خود شوید یا از فروشگاه خرید جدید ثبت کنید.
+          </p>
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "20px" }}>
+            <Link href="/account" className="primary-link">
+              ورود به حساب کاربری ←
+            </Link>
+            <Link href="/shop" className="btn-reorder" style={{ textDecoration: "none" }}>
+              بازگشت به فروشگاه
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="order-receipt-layout">
@@ -269,13 +352,17 @@ export default function OrderPage() {
               JRN-SALE-{orderId}
             </strong>
           </div>
-          <div className="meta-box">
-            <span className="label">تحویل‌گیرنده و موبایل (محافظت حریم خصوصی):</span>
-            <strong className="value">
-              {orderData?.customerName || "علی علوی"} (
-              <span dir="ltr">{maskIranianMobile(orderData?.customerPhone || "09121234567")}</span>)
-            </strong>
-          </div>
+          {(orderData.customerName || orderData.customerPhone) && (
+            <div className="meta-box">
+              <span className="label">تحویل‌گیرنده و موبایل (محافظت حریم خصوصی):</span>
+              <strong className="value">
+                {orderData.customerName || "مشتری گرامی"}
+                {orderData.customerPhone && (
+                  <> (<span dir="ltr">{maskIranianMobile(orderData.customerPhone)}</span>)</>
+                )}
+              </strong>
+            </div>
+          )}
           {orderData?.nationalCode && (
             <div className="meta-box">
               <span className="label">کد ملی ثبت سامانه مودیان:</span>
@@ -284,13 +371,15 @@ export default function OrderPage() {
               </strong>
             </div>
           )}
-          <div className="meta-box full-span">
-            <span className="label">نشانی و بازه تحویل:</span>
-            <strong className="value">
-              {maskPostalAddress(orderData?.address || "تهران، خیابان آزادی، پلاک ۱۲")} | بازه:{" "}
-              {orderData?.deliverySlot || "ساعت ۱۳ الی ۱۷"}
-            </strong>
-          </div>
+          {orderData.address && (
+            <div className="meta-box full-span">
+              <span className="label">نشانی و بازه تحویل:</span>
+              <strong className="value">
+                {maskPostalAddress(orderData.address)}
+                {orderData.deliverySlot ? ` | بازه: ${orderData.deliverySlot}` : ""}
+              </strong>
+            </div>
+          )}
         </div>
 
         {/* Itemized Order List */}

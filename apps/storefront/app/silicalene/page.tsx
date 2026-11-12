@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { DirectProductOrder } from '../../components/interactive/direct-product-order';
 import { ClinicalPhotoShowcase } from '../../components/interactive/clinical-photo-showcase';
 import { SilicaleneInteractiveSection } from './silicalene-interactive-section';
+import { getProduct, resolveProductImage, resolveVariant } from '../../lib/catalog';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub | دکتر درمر انگلستان',
@@ -42,7 +45,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SilicalenePage() {
+export default async function SilicalenePage() {
+  const product = await getProduct('silicalene');
+  const primaryVariant = resolveVariant(product, ['DD-SIL-200ML']);
+  const primaryImage = resolveProductImage(
+    product,
+    '/assets/drdermer/2025/08/14silicalene-1200x1109.webp'
+  );
   const photoViews = [
     {
       id: 'primary',
@@ -138,18 +147,19 @@ export default function SilicalenePage() {
 
             {/* Direct Order Component */}
             <DirectProductOrder
-              productId="prod_drdermer_006"
-              variantId="var_sil_200ml"
-              sku="DD-SIL-200ML"
-              title="اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub"
-              volume="۲۰۰ میلی‌لیتر (تیوب)"
-              priceAmount="15500000"
-              originalPriceAmount="18000000"
-              discountPercent={14}
-              inStock={true}
+              productId={product?.id ?? ''}
+              variantId={primaryVariant?.id ?? ''}
+              productSlug="silicalene"
+              sku={primaryVariant?.sku ?? 'DD-SIL-200ML'}
+              title={product?.title ?? 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub'}
+              volume={primaryVariant?.sizeOrVolume ?? '۲۰۰ میلی‌لیتر (تیوب)'}
+              priceAmount={primaryVariant?.priceAmount ?? '0'}
+              originalPriceAmount={primaryVariant?.originalPriceAmount ?? undefined}
+              discountPercent={primaryVariant?.discountPercent ?? undefined}
+              inStock={primaryVariant?.inStock ?? true}
               theme="teal"
               badgeText="تضمین اصالت داروسازی دکتر درمر"
-              image="/assets/drdermer/2025/08/14silicalene-1200x1109.webp"
+              image={primaryImage}
             />
           </div>
 

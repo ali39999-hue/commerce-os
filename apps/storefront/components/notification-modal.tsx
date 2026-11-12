@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -80,8 +80,8 @@ const DEMO_NOTIFICATIONS = [
   },
   {
     id: "notif-2",
-    title: "کد تخفیف فصلی روپاک شاپ",
-    text: "کد تخفیف ۱۵٪ به مناسبت راه‌اندازی نسخه جدید با شناسه RUPAK15 در دسترس شماست.",
+    title: "کد تخفیف فصلی dermavia",
+    text: "کد تخفیف ۱۵٪ به مناسبت راه‌اندازی نسخه جدید با شناسه DERMAVIA15 در دسترس شماست.",
     time: "دیروز",
     unread: true,
   },
@@ -98,10 +98,21 @@ export function NotificationModal() {
   const router = useRouter();
   const cart = useCart();
   const [activeNotif, setActiveNotif] = useState<NotificationModalData | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Close helper
+  // Close helper with exit animation
+  const handleAnimatedClose = useCallback(() => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setActiveNotif(null);
+      setIsClosing(false);
+    }, 280);
+  }, []);
+
   const handleClose = useCallback(() => {
     setActiveNotif(null);
+    setIsClosing(false);
   }, []);
 
   // Listen to commerce_os:notify events
@@ -109,6 +120,7 @@ export function NotificationModal() {
     const handleEvent = (e: Event) => {
       const customEvent = e as CustomEvent<NotificationModalData>;
       if (customEvent.detail) {
+        setIsClosing(false);
         setActiveNotif(customEvent.detail);
       }
     };
@@ -117,21 +129,30 @@ export function NotificationModal() {
     return () => window.removeEventListener("commerce_os:notify", handleEvent);
   }, []);
 
+  // Auto-close for cart_add toast (4.5s)
+  useEffect(() => {
+    if (!activeNotif || activeNotif.type !== "cart_add" || isHovered) return;
+    const timer = setTimeout(() => {
+      handleAnimatedClose();
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [activeNotif, isHovered, handleAnimatedClose]);
+
   // ESC key listener
   useEffect(() => {
     if (!activeNotif) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        handleClose();
+        handleAnimatedClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeNotif, handleClose]);
+  }, [activeNotif, handleAnimatedClose]);
 
-  // Auto-close if requested
+  // Auto-close if requested by generic modal
   useEffect(() => {
-    if (!activeNotif?.autoCloseMs) return;
+    if (!activeNotif?.autoCloseMs || activeNotif.type === "cart_add") return;
     const timer = setTimeout(() => {
       handleClose();
     }, activeNotif.autoCloseMs);
@@ -152,12 +173,86 @@ export function NotificationModal() {
     secondaryAction,
   } = activeNotif;
 
-  const totalTomansFormatted =
-    cart?.calculations?.grandTotalTomans != null
-      ? `${cart.calculations.grandTotalTomans.toLocaleString("fa-IR")} تومان`
-      : "۰ تومان";
+  // ── SPECIAL FLOATING TOAST FOR CART_ADD (User Screenshot Match) ──
+  if (type === "cart_add") {
+    return (
+      <aside
+        className={`cart-add-toast-container ${isClosing ? "toast-exit" : "toast-enter"}`}
+        role="status"
+        aria-live="polite"
+        dir="rtl"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div
+          className="cart-add-toast-card"
+          onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.closest(".cart-add-toast-close")) return;
+            handleClose();
+            router.push("/cart");
+          }}
+          title="مشاهده سبد خرید"
+        >
+          {/* Right Side in RTL: Close X + Checkmark Icon + "کالا اضافه شد!" */}
+          <div className="cart-add-toast-right">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAnimatedClose();
+              }}
+              className="cart-add-toast-close"
+              aria-label="بستن اعلان"
+            >
+              <X size={17} />
+            </button>
+
+            <div className="cart-add-toast-check-wrap" aria-hidden="true">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="10" cy="10" r="10" fill="#16a34a" />
+                <path
+                  d="M6 10.2L8.7 13L14.2 7.5"
+                  stroke="#ffffff"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <span className="cart-add-toast-msg">کالا اضافه شد!</span>
+          </div>
+
+          {/* Left Side in RTL: "برو به سبد خرید <" Capsule Action Button */}
+          <Link
+            href="/cart"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClose();
+            }}
+            className="cart-add-toast-action"
+          >
+            <span>برو به سبد خرید</span>
+            <ChevronLeft size={16} />
+          </Link>
+        </div>
+      </aside>
+    );
+  }
 
   const totalItemCount = cart?.itemCount ?? 0;
+
+  const totalTomansFormatted =
+    totalItemCount > 0 && cart?.calculations?.grandTotalTomans != null && cart.calculations.grandTotalTomans > 0n
+      ? `${cart.calculations.grandTotalTomans.toLocaleString("fa-IR")} تومان`
+      : "۰ تومان";
 
   return (
     <div
@@ -185,7 +280,6 @@ export function NotificationModal() {
           {/* Header & Icon */}
           <div className="notif-header">
             <div className={`notif-icon-circle ${type}`}>
-              {type === "cart_add" && <CheckCircle2 size={26} />}
               {type === "success" && <CheckCircle2 size={26} />}
               {type === "order_status" && <Package size={25} />}
               {type === "center" && <Bell size={24} />}
@@ -201,80 +295,6 @@ export function NotificationModal() {
               {message && <p className="notif-subtitle">{message}</p>}
             </div>
           </div>
-
-          {/* Special View: Cart Item Added */}
-          {type === "cart_add" && (
-            <>
-              {item && (
-                <div className="notif-product-card">
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="notif-product-thumb"
-                    />
-                  ) : (
-                    <div className="notif-product-placeholder">
-                      <ShoppingBag size={24} />
-                    </div>
-                  )}
-
-                  <div className="notif-product-meta">
-                    <span className="notif-product-title">{item.title}</span>
-                    <div className="notif-product-price">
-                      {item.priceAmount != null && (
-                        <span>
-                          {Number(item.priceAmount).toLocaleString("fa-IR")} تومان
-                        </span>
-                      )}
-                      {item.qty && (
-                        <span className="notif-product-qty-badge">
-                          تعداد: {item.qty.toLocaleString("fa-IR")}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Cart Summary */}
-              <div className="notif-cart-summary">
-                <span>
-                  مجموع اقلام سبد: <strong>{totalItemCount.toLocaleString("fa-IR")} قلم</strong>
-                </span>
-                <span>
-                  مبلغ فعلی: <strong>{totalTomansFormatted}</strong>
-                </span>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="notif-actions">
-                <button
-                  type="button"
-                  className="notif-btn-primary"
-                  onClick={() => {
-                    handleClose();
-                    if (cart?.openDrawer) {
-                      cart.openDrawer();
-                    } else {
-                      router.push("/cart");
-                    }
-                  }}
-                >
-                  <ShoppingBag size={16} />
-                  <span>مشاهده سبد و تسویه</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="notif-btn-secondary"
-                  onClick={handleClose}
-                >
-                  <span>ادامه خرید در روپاک</span>
-                </button>
-              </div>
-            </>
-          )}
 
           {/* Special View: Notification Center */}
           {type === "center" && (
@@ -309,7 +329,7 @@ export function NotificationModal() {
           )}
 
           {/* Standard View: Success / Info / Warning / Error / Order Status */}
-          {type !== "cart_add" && type !== "center" && (
+          {type !== "center" && (
             <>
               {orderNumber && (
                 <div className="notif-cart-summary">

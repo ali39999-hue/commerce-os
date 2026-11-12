@@ -13,68 +13,71 @@ import {
   type CompareItem,
 } from '../../lib/compare';
 import {
+  listProducts,
+  resolveVariant,
+  type Product,
+} from '../../lib/catalog';
+import {
   getClinicalSpecs,
   getCanonicalProductHref,
-  RECOMMENDED_CLINICAL_PRODUCTS,
+  toClinicalCatalogItem,
 } from '../../lib/clinical-specs';
 
-export const DEFAULT_CLINICAL_COMPARE_ITEMS: CompareItem[] = [
-  {
-    variantId: 'prod_skin_001',
-    productId: 'prod_skin_001',
-    slug: 'carboxygel',
-    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
-    sku: 'CBG-PRO-500ML',
-    priceAmount: '48500000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-  },
-  {
-    variantId: 'prod_clinical_carboxypod',
-    productId: 'prod_clinical_carboxypod',
-    slug: 'carboxypod',
-    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
-    sku: 'RMD-CPD-005',
-    priceAmount: '12500000',
-    inStock: true,
-    categoryTitleFa: 'تجهیزات و ملزومات کلینیکال',
-  },
-  {
-    variantId: 'prod_skin_healene',
-    productId: 'prod_skin_healene',
-    slug: 'healene',
-    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
-    sku: 'DD-HEA-250ML',
-    priceAmount: '16000000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-  },
-  {
-    variantId: 'prod_skin_crystalene',
-    productId: 'prod_skin_crystalene',
-    slug: 'crystalene',
-    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
-    sku: 'DD-CRY-200ML',
-    priceAmount: '17500000',
-    inStock: true,
-    categoryTitleFa: 'مراقبت تخصصی پوست و کلینیکال',
-  },
-];
+const DEFAULT_COMPARE_SLUGS = ['carboxygel', 'carboxypod', 'healene', 'crystalene'];
+
+function toCompareItem(product: Product): CompareItem | null {
+  const variant = resolveVariant(product);
+  if (!variant) return null;
+  return {
+    variantId: variant.id,
+    productId: product.id,
+    slug: product.slug,
+    title: product.titleFa || product.title,
+    sku: variant.sku,
+    priceAmount: variant.priceAmount,
+    inStock: variant.inStock,
+    categoryTitleFa: product.category?.titleFa || 'مراقبت تخصصی پوست و کلینیکال',
+  };
+}
 
 export default function ComparePage() {
   const { addItem } = useCart();
   const { formatToman } = useLocalizedFormatter();
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
   const [items, setItems] = useState<CompareItem[] | null>(null);
   const [isDefaultMatrix, setIsDefaultMatrix] = useState(false);
   const [addedAll, setAddedAll] = useState(false);
   const [addedItemMap, setAddedItemMap] = useState<Record<string, boolean>>({});
   const [highlightDifferences, setHighlightDifferences] = useState(false);
 
+  const defaultCompareItems = useMemo(() => {
+    const preferred = DEFAULT_COMPARE_SLUGS
+      .map((s) => catalogProducts.find((p) => p.slug === s))
+      .filter((p): p is Product => Boolean(p));
+    const pool = preferred.length > 0 ? preferred : catalogProducts.slice(0, 4);
+    return pool.map(toCompareItem).filter((it): it is CompareItem => Boolean(it));
+  }, [catalogProducts]);
+
+  const recommendedCatalogItems = useMemo(
+    () => catalogProducts.slice(0, 8).map(toClinicalCatalogItem),
+    [catalogProducts],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    listProducts({ limit: 100 }).then((res) => {
+      if (!cancelled && res?.data) setCatalogProducts(res.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     const sync = () => {
       const stored = getCompare();
       if (stored.length === 0) {
-        setItems(DEFAULT_CLINICAL_COMPARE_ITEMS);
+        setItems(defaultCompareItems);
         setIsDefaultMatrix(true);
       } else {
         setItems(stored);
@@ -88,7 +91,7 @@ export default function ComparePage() {
       window.removeEventListener(COMPARE_CHANGED_EVENT, sync);
       window.removeEventListener('storage', sync);
     };
-  }, []);
+  }, [defaultCompareItems]);
 
   const handleRemove = (variantId: string) => {
     if (isDefaultMatrix) {
@@ -109,17 +112,20 @@ export default function ComparePage() {
       window.localStorage.removeItem(COMPARE_STORAGE_KEY);
       window.dispatchEvent(new CustomEvent(COMPARE_CHANGED_EVENT));
     }
-    setItems(DEFAULT_CLINICAL_COMPARE_ITEMS);
+    setItems(defaultCompareItems);
     setIsDefaultMatrix(true);
   };
 
   const itemsSpecs = useMemo(() => {
     if (!items) return [];
-    return items.map((it) => ({
-      ...it,
-      specs: getClinicalSpecs(it),
-    }));
-  }, [items]);
+    return items.map((it) => {
+      const product = catalogProducts.find((p) => p.slug === it.slug || p.id === it.productId) ?? null;
+      return {
+        ...it,
+        specs: getClinicalSpecs({ ...it, product }),
+      };
+    });
+  }, [items, catalogProducts]);
 
   if (items === null) {
     return (
@@ -160,7 +166,7 @@ export default function ComparePage() {
               <span>پیشنهاد مقایسه سریع ۴ محصول شاخص دکتر درمر</span>
             </h3>
             <div className="empty-recommendations-grid">
-              {DEFAULT_CLINICAL_COMPARE_ITEMS.map((rec) => (
+              {defaultCompareItems.map((rec) => (
                 <article className="product-card" key={rec.variantId}>
                   <Link className="product-art" href={`/products/${encodeURIComponent(rec.slug)}`}>
                     <span className="art-index">{rec.title.slice(0, 1)}</span>
@@ -462,14 +468,14 @@ export default function ComparePage() {
             افزودن محصولات مکمل جهت تکمیل مقایسه ۴تایی:
           </h4>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            {RECOMMENDED_CLINICAL_PRODUCTS.filter((r) => !items.some((i) => i.slug === r.slug)).map((rec) => (
+            {recommendedCatalogItems.filter((r) => !items.some((i) => i.slug === r.slug)).map((rec) => (
               <button
                 key={rec.id}
                 type="button"
                 className="btn-transfer"
                 onClick={() =>
                   addToCompare({
-                    variantId: rec.id,
+                    variantId: rec.variantId || rec.id,
                     productId: rec.id,
                     slug: rec.slug,
                     title: rec.title,

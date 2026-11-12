@@ -1,6 +1,13 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import {
+  listCategories,
+  listProducts,
+  resolveProductImage,
+  resolveVariant,
+} from '../../lib/catalog';
+import { getCanonicalProductHref } from '../../lib/clinical-specs';
 import { RupakHero } from '../../components/rupak-hero/rupak-hero';
 import { RupakCategoryWave } from '../../components/rupak-hero/rupak-category-wave';
 import { RupakSpecialOffers } from '../../components/rupak-hero/rupak-special-offers';
@@ -13,9 +20,10 @@ import {
   Star,
   ShoppingBag,
   ArrowRight,
-  Heart,
   Eye,
 } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'قالب فروشگاهی روپاک شاپ | هیرو سکشن مدرن وردپرس/ووکامرس فارسی',
@@ -23,114 +31,30 @@ export const metadata: Metadata = {
     'پیاده‌سازی کامپوننت هیرو سکشن قالب فروشگاهی روپاک شاپ با Next.js 16، ری‌اکت ۱۹ و استایل‌های سفارشی برآمدگی SVG نوبار، اسلایدر چندرسانه‌ای و منحنی انتهای صفحه.',
 };
 
-// Curated Showcase Products
-const FEATURED_PRODUCTS = [
-  {
-    id: 'prod-1',
-    slug: 'carboxygel',
-    title: 'ژل کربوکسی‌تراپی CarboxyGel Pro 1500ml',
-    category: 'درمان بالینی',
-    badge: 'پرفروش‌ترین',
-    badgeColor: 'bg-emerald-100 text-emerald-800',
-    image: '/assets/drdermer/2025/07/site-combo-carboxy-1.png',
-    priceTomans: '۴,۸۵۰,۰۰۰',
-    oldPriceTomans: '۵,۴۰۰,۰۰۰',
-    rating: '۴.۹',
-    reviewsCount: '۱۲۸',
-    indication: 'اکسیژن‌رسانی عمیق بافتی بر پایه اثر فیزیولوژیک بوهر (Bohr Effect)',
-  },
-  {
-    id: 'prod-2',
-    slug: 'crystalene',
-    title: 'خمیر پولیش ابریشمی Crystalene Microderm',
-    category: 'مراقبت پوست',
-    badge: 'ارگانیک',
-    badgeColor: 'bg-amber-100 text-amber-800',
-    image: '/assets/drdermer/2024/10/multi-170-vita-pod.webp',
-    priceTomans: '۱,۴۲۰,۰۰۰',
-    oldPriceTomans: '۱,۶۵۰,۰۰۰',
-    rating: '۴.۸',
-    reviewsCount: '۹۴',
-    indication: 'میکروکریستال‌های مدور آلومینا بدون خراش میکروسکوپی و نیاسینامید ۲٪',
-  },
-  {
-    id: 'prod-3',
-    slug: 'healene',
-    title: 'ژل ترمیم‌کننده سد دفاعی پوست Healene 150ml',
-    category: 'مراقبت پوست',
-    badge: 'توصیه پزشکان',
-    badgeColor: 'bg-blue-100 text-blue-800',
-    image: '/assets/drdermer/2024/10/2-azel-170-hydrapod.webp',
-    priceTomans: '۹۸۰,۰۰۰',
-    oldPriceTomans: '',
-    rating: '۵.۰',
-    reviewsCount: '۶۵',
-    indication: '۵٪ دکسپانتنول دارویی و ۳٪ سنتلا آسیاتیکا جهت ترمیم فوری سد پوستی',
-  },
-  {
-    id: 'prod-4',
-    slug: 'carboxypod',
-    title: 'پادهای فعال‌ساز صیقلی CarboxyPod™ (پک ۳ عددی)',
-    category: 'پادهای کپسولی',
-    badge: 'تکنولوژی اولتراسوند',
-    badgeColor: 'bg-teal-100 text-teal-800',
-    image: '/assets/drdermer/2024/10/glycolic-170-carbo-pod.webp',
-    priceTomans: '۱,۷۵۰,۰۰۰',
-    oldPriceTomans: '۱,۹۸۰,۰۰۰',
-    rating: '۴.۹',
-    reviewsCount: '۱۱۲',
-    indication: 'کوپلینگ فرکانس ۱۲۰ هرتز در سه مدل Vitamin C، Carbon و Hydra',
-  },
-  {
-    id: 'prod-5',
-    slug: 'plasmax',
-    title: 'کنسول جراحی و درمانی میکروپلاسما PlasmaX™',
-    category: 'دستگاه‌های پزشکی',
-    badge: 'استاندارد CE IIb',
-    badgeColor: 'bg-purple-100 text-purple-800',
-    image: '/assets/drdermer/2025/08/18plasmax.webp',
-    priceTomans: '۵۸,۰۰۰,۰۰۰',
-    oldPriceTomans: '۶۵,۰۰۰,۰۰۰',
-    rating: '۵.۰',
-    reviewsCount: '۴۲',
-    indication: '۳ مدالیته پلاسما: آرک پیوسته جراحی، جت سرد اتمسفری و تخلیه سد DBD',
-  },
-  {
-    id: 'prod-6',
-    slug: 'carbox',
-    title: 'ایستگاه بالینی کربوکسی‌تراپی CarboX™ Pro',
-    category: 'دستگاه‌های پزشکی',
-    badge: 'پلتفرم کلینیکال',
-    badgeColor: 'bg-indigo-100 text-indigo-800',
-    image: '/assets/drdermer/2025/08/19carbox.webp',
-    priceTomans: '۸۴,۰۰۰,۰۰۰',
-    oldPriceTomans: '',
-    rating: '۴.۹',
-    reviewsCount: '۳۱',
-    indication: 'مدالیته تزریق ساب‌کیوتنیوس و سونوفورز ترنس‌درمال با سنسور فشار دقیق',
-  },
-];
+export default async function RupakShowcasePage() {
+  const [catalog, categories] = await Promise.all([
+    listProducts({ limit: 100 }),
+    listCategories(),
+  ]);
+  const allProducts = catalog?.data ?? [];
+  const featuredProducts = (allProducts.filter((p) => p.isFeatured).length > 0
+    ? allProducts.filter((p) => p.isFeatured)
+    : allProducts
+  ).slice(0, 6);
 
-export default function RupakShowcasePage() {
   return (
     <div dir="rtl" className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      {/* ====================================================================
-          1. THE HERO SECTION (Rupak Theme)
-          ==================================================================== */}
       <RupakHero
         cartCount={0}
         cartTotalFormatted="۰ تومان"
         phoneNumber="۰۹۳۵۸۷۲۷۴۹۲"
       />
 
-      {/* CATEGORY WAVE SECTION */}
-      <RupakCategoryWave />
+      <RupakCategoryWave categories={categories} />
 
-      {/* SPECIAL OFFERS (پیشنهاد شگفت‌انگیز) & DUAL BANNERS */}
-      <RupakSpecialOffers />
+      <RupakSpecialOffers products={allProducts} />
 
-      {/* NEWEST PRODUCTS CAROUSEL (جدیدترین محصولات) */}
-      <RupakNewestProducts />
+      <RupakNewestProducts products={allProducts} />
 
       {/* ====================================================================
           2. TRUST & CREDIBILITY STRIP
@@ -206,119 +130,122 @@ export default function RupakShowcasePage() {
 
           {/* Quick Category Filter Pills */}
           <div className="flex items-center gap-2 mt-6 md:mt-0 overflow-x-auto pb-2 md:pb-0">
-            <button
-              type="button"
+            <Link
+              href="/shop"
               className="bg-[#66a884] text-white text-xs font-bold px-4 py-2 rounded-xl whitespace-nowrap shadow-sm"
             >
               همه محصولات
-            </button>
-            <button
-              type="button"
+            </Link>
+            <Link
+              href="/carboxygel"
               className="bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium px-4 py-2 rounded-xl border border-slate-200 whitespace-nowrap transition"
             >
               کربوکسی‌تراپی
-            </button>
-            <button
-              type="button"
+            </Link>
+            <Link
+              href="/shop?cat=serum"
               className="bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium px-4 py-2 rounded-xl border border-slate-200 whitespace-nowrap transition"
             >
               سرم و آبرسان
-            </button>
-            <button
-              type="button"
+            </Link>
+            <Link
+              href="/shop?cat=devices"
               className="bg-white hover:bg-slate-100 text-slate-700 text-xs font-medium px-4 py-2 rounded-xl border border-slate-200 whitespace-nowrap transition"
             >
               دستگاه‌های پزشکی
-            </button>
+            </Link>
           </div>
         </div>
 
         {/* Product Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {FEATURED_PRODUCTS.map((prod) => (
-            <div
-              key={prod.id}
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
-            >
-              {/* Product Card Top Badges & Image */}
-              <div className="relative bg-slate-50 p-6 flex items-center justify-center min-h-[220px] overflow-hidden">
-                <span
-                  className={`absolute top-4 right-4 text-[11px] font-extrabold px-3 py-1 rounded-lg ${prod.badgeColor}`}
-                >
-                  {prod.badge}
-                </span>
-
-                <div className="absolute top-4 left-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    type="button"
-                    className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-slate-600 hover:text-rose-500 transition"
-                    title="افزودن به علاقه‌مندی‌ها"
-                  >
-                    <Heart className="w-4 h-4" />
-                  </button>
-                  <Link
-                    href={`/${prod.slug}`}
-                    className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-slate-600 hover:text-emerald-600 transition"
-                    title="مشاهده جزئیات محصول"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Link>
-                </div>
-
-                <img
-                  src={prod.image}
-                  alt={prod.title}
-                  className="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-
-              {/* Product Info */}
-              <div className="p-6 flex flex-col flex-1">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
-                  <span>{prod.category}</span>
-                  <div className="flex items-center gap-1 text-amber-500 font-bold">
-                    <Star className="w-3.5 h-3.5 fill-current" />
-                    <span>{prod.rating}</span>
-                    <span className="text-slate-400">({prod.reviewsCount})</span>
-                  </div>
-                </div>
-
-                <Link
-                  href={`/${prod.slug}`}
-                  className="font-black text-slate-900 text-base mb-2 hover:text-[#66a884] transition-colors leading-snug line-clamp-2"
-                >
-                  {prod.title}
-                </Link>
-
-                <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
-                  {prod.indication}
-                </p>
-
-                {/* Price and Cart Action */}
-                <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div>
-                    {prod.oldPriceTomans && (
-                      <span className="block text-[11px] text-slate-400 line-through">
-                        {prod.oldPriceTomans} تومان
-                      </span>
-                    )}
-                    <span className="text-base font-black text-slate-900">
-                      {prod.priceTomans}{' '}
-                      <span className="text-xs font-bold text-slate-500">تومان</span>
+          {featuredProducts.map((prod) => {
+            const v = resolveVariant(prod);
+            const priceTomans = v ? Number(BigInt(v.priceAmount || '0') / 10n).toLocaleString('fa-IR') : '۰';
+            const oldTomans =
+              v?.originalPriceAmount && BigInt(v.originalPriceAmount) > BigInt(v.priceAmount || '0')
+                ? Number(BigInt(v.originalPriceAmount) / 10n).toLocaleString('fa-IR')
+                : '';
+            const href = getCanonicalProductHref(prod.slug);
+            const imgUrl = resolveProductImage(prod);
+            const titleFa = prod.titleFa || prod.title;
+            const ratingStr = Number(prod.ratingValue ?? 4.9).toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+            const reviewsStr = Number(prod.reviewCount ?? 0).toLocaleString('fa-IR');
+            return (
+              <div
+                key={prod.id}
+                className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
+              >
+                <div className="relative bg-slate-50 p-6 flex items-center justify-center min-h-[220px] overflow-hidden">
+                  {prod.badge && (
+                    <span className="absolute top-4 right-4 text-[11px] font-extrabold px-3 py-1 rounded-lg bg-amber-100 text-amber-800">
+                      {prod.badge}
                     </span>
+                  )}
+
+                  <div className="absolute top-4 left-4 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link
+                      href={href}
+                      className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center text-slate-600 hover:text-emerald-600 transition"
+                      title="مشاهده جزئیات محصول"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Link>
+                  </div>
+
+                  <img
+                    src={imgUrl}
+                    alt={titleFa}
+                    className="max-h-44 object-contain group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                    <span>{prod.category?.titleFa || 'مراقبت پوستی'}</span>
+                    <div className="flex items-center gap-1 text-amber-500 font-bold">
+                      <Star className="w-3.5 h-3.5 fill-current" />
+                      <span>{ratingStr}</span>
+                      <span className="text-slate-400">({reviewsStr})</span>
+                    </div>
                   </div>
 
                   <Link
-                    href={`/${prod.slug}`}
-                    className="bg-slate-900 hover:bg-[#66a884] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors shadow-sm"
+                    href={href}
+                    className="font-black text-slate-900 text-base mb-2 hover:text-[#66a884] transition-colors leading-snug line-clamp-2"
                   >
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                    <span>ثبت سفارش</span>
+                    {titleFa}
                   </Link>
+
+                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
+                    {prod.subtitleFa || prod.description}
+                  </p>
+
+                  <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      {oldTomans && (
+                        <span className="block text-[11px] text-slate-400 line-through">
+                          {oldTomans} تومان
+                        </span>
+                      )}
+                      <span className="text-base font-black text-slate-900">
+                        {priceTomans}{' '}
+                        <span className="text-xs font-bold text-slate-500">تومان</span>
+                      </span>
+                    </div>
+
+                    <Link
+                      href={href}
+                      className="bg-slate-900 hover:bg-[#66a884] text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 transition-colors shadow-sm"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <span>ثبت سفارش</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -334,7 +261,7 @@ export default function RupakShowcasePage() {
                   R
                 </div>
                 <div>
-                  <h3 className="font-black text-lg">روپاک شاپ | RUPAK</h3>
+                  <h3 className="font-black text-lg">فروشگاه تخصصی | dermavia</h3>
                   <span className="text-xs text-slate-400">
                     مرکز رسمی عرضه فرآورده‌های درماتولوژی
                   </span>

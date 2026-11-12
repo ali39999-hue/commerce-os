@@ -167,7 +167,7 @@ export function MedicalDevicesShowcase() {
             </svg>
             REEMED™ CLINICAL HARDWARE SHOWCASE
           </div>
-          <h2 id="devices-title" className="dev-main-title">
+          <h2 id="devices-title" className="dev-main-title" style={{ fontFamily: "'MyBaby', 'MyBaby Chubby', sans-serif" }}>
             تجهیزات پیشرفته درماتولوژی و پزشکی بازساختی: CarboX و PlasmaX
           </h2>
           <p className="dev-lead-text">

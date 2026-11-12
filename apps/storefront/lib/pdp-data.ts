@@ -1,3207 +1,418 @@
-import { ExtendedProductData } from './pdp-types';
+﻿import type { Product } from './catalog';
+import type {
+  ExtendedProductData,
+  HierarchicalSpecGroup,
+  MediaRole,
+  ProductVariantItem,
+} from './pdp-types';
 
-export const CLINICAL_SKINCARE_PRODUCTS: Record<string, ExtendedProductData> = {
-  'carboxygel-professional-therapy': {
-    id: 'prod_skin_001',
-    slug: 'carboxygel-professional-therapy',
-    brand: {
-      name: 'ReeSkin Clinical',
-      slug: 'reeskin',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'فرمولاسیون تخصصی کربوکسی‌تراپی غیرتهاجمی و اکسیژن‌رسانی عمقی بافت',
-    },
-    title: 'ژل کربوکسی تراپی تخصصی کلینیکال CarboxyGel Professional Therapy',
-    subtitleFa: 'ژل نوسازی سلولی با تحریک اثر بوهر (Bohr Effect) و اکسیژن‌رسانی مویرگی',
-    scientificName: 'Non-Invasive Transdermal CO2 Carboxy Therapy Matrix',
-    description:
-      'کربوکسی‌ژل ری‌اسکین (CarboxyGel) نسل نوین درمان غیرتهاجمی کربوکسی‌تراپی است که با رهایش کنترل‌شده دی‌اکسید کربن از طریق ماتریکس ژل فعال، پدیده طبیعی اثر بوهر (Bohr Effect) را در لایه‌های اپیدرم و درم فعال می‌سازد. این مکانیسم موجب تخلیه اشباع اکسیژن موضعی هموگلوبین به سلول‌ها، افزایش ریزجریان خون لنفاوی و تسریع چشمگیر ساخت فیبروبلاست و الاستین می‌گردد.',
-    formulation: 'ژل غلیظ ماتریکسی ۲ فاز همراه با پد فعال‌ساز حاوی اسید سیتریک میکروکپسوله',
-    skinTypes: ['انواع پوست', 'پوست‌های کدر و کم‌اکسیژن', 'پوست‌های مستعد افتادگی و چروک ریز', 'پوست‌های تحت درمان اسکار و منافذ'],
-    skinConcerns: ['کدری و تیرگی چهره', 'خطوط و افتادگی پوست', 'لک و هایپرپیگمنتیشن', 'کاهش الاستیسیته و اسکار آکنه'],
-    cleanBadges: [
-      'بدون تست حیوانی (Cruelty-Free)',
-      'فاقد پارابن و فرمالدئید',
-      'فرمولاسیون هیپوآلرژنیک کلینیکال',
-      'سازگار با میکروبیوم طبیعی پوست',
-      'فاقد عطر و اسانس مصنوعی',
-    ],
-    coldChainRequired: true,
-    media: [
-      {
-        id: 'med_cbg_hero',
-        url: '/assets/drdermer/2025/07/azelaic-acid-carboxygel.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'ژل کربوکسی تراپی غیرتهاجمی CarboxyGel دکتر درمر انگلستان',
-        caption: 'بسته‌بندی رسمی سیستم حرفه‌ای CarboxyGel CO2',
-      },
-      {
-        id: 'med_cbg_texture',
-        url: '/assets/drdermer/2025/07/dr-dermer-carboxy-gel-1-1024x835.png',
-        role: 'TEXTURE',
-        roleFa: 'بافت ژل و فرمولاسیون',
-        altText: 'نمای درشت بافت غنی ژل غلیظ شفاف با حباب‌های ریز فعال‌شونده گاز دی‌اکسید کربن',
-        caption: 'بافت ژل با ویسکوزیته کنترل‌شده برای نفوذ یکنواخت بدون هدررفت گاز',
-      },
-      {
-        id: 'med_cbg_clinic',
-        url: '/assets/drdermer/2025/07/glycolic-acid-150x150.png',
-        role: 'IN_CLINIC',
-        roleFa: 'کاربرد کلینیکی و پروتکل مطب',
-        altText: 'اجرای پروتکل کربوکسی‌تراپی بر روی پوست بیمار در محیط استریل کلینیک زیبایی',
-        caption: 'مورد استفاده در بیش از ۴۵۰ کلینیک تخصصی پوست و زیبایی انگلستان و خاورمیانه',
-      },
-      {
-        id: 'med_cbg_packaging',
-        url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
-        role: 'PACKAGING',
-        roleFa: 'بسته‌بندی و پلمپ اصالت',
-        altText: 'جعبه اصلی با هولوگرام امنیتی ری‌اسکین، بچ‌کد حک‌شده و سرنگ توزیع‌کننده میلی‌متری',
-        caption: 'بسته‌بندی مقاوم به نفوذ هوا همراه با برچسب اصالت و هولوگرام CE',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_skin_001_single',
-        sku: 'CBG-PRO-500ML',
-        title: 'پک حرفه‌ای کلینیکال ۵۰۰ میلی‌لیتر (همراه با ۲۰ ماسک)',
-        sizeOrVolume: '500ml کلینیکال',
-        priceAmount: '48500000', // 4,850,000 Tomans
-        originalPriceAmount: '56000000',
-        discountPercent: 13,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 18,
-        mediaRoleMatch: 'PACKAGING',
-      },
-      {
-        id: 'var_skin_001_home',
-        sku: 'CBG-HOME-5X',
-        title: 'کیت خانگی ۵ عددی (۵ تیوب ۲۵ میلی‌لیتر + ۵ ماسک)',
-        sizeOrVolume: 'باکس ۵ عددی هوم‌کر',
-        priceAmount: '19500000', // 1,950,000 Tomans
-        originalPriceAmount: '23000000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 32,
-        mediaRoleMatch: 'HERO',
-      },
-      {
-        id: 'var_skin_001_50ml',
-        sku: 'CBG-TUBE-50ML',
-        title: 'تیوب ۵۰ میلی‌لیتر تک‌نفره (۲ جلسه‌ای)',
-        sizeOrVolume: '50ml',
-        priceAmount: '8900000', // 890,000 Tomans
-        originalPriceAmount: '10500000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 45,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی و پدیده اثر بوهر (Bohr Effect)',
-      summary:
-        'با قرارگیری ژل غنی از بی‌کربنات سدیم و اعمال پد فیبری غنی از اسید سیتریک، واکنش هم‌افزا با آزادسازی گاز CO2 در غلظت دقیق تشکیل می‌شود. جذب موضعی CO2 منجر به اسیدی‌شدن میکرومحیط عروقی و شیفت منحنی تفکیک اکسی‌هموگلوبین به سمت راست می‌گردد؛ در نتیجه اکسیژن اشباع موجود در مویرگ‌ها با شدت مضاعف در اختیار میتوکندری‌های سلول‌های اپیدرمی قرار می‌گیرد.',
-      bohrEffectExplanation:
-        'افزایش غلظت یون هیدروژن و دی‌اکسید کربن در سطح بافت، تمایل هموگلوبین به اکسیژن را به‌صورت فیزیولوژیک کاهش داده و آزادسازی اکسیژن آزاد (O2) را به بافت زنده القا می‌کند. این فرآیند باعث سوخت‌وساز درون‌سلولی، دفع متابولیت‌های سمی و فعال‌سازی کلاژن نوع ۱ و ۳ می‌شود.',
-      clinicalBenefits: [
-        'افزایش ۳ برابری جریان ریزگردش خون (Microcirculation) طی ۱۰ دقیقه پس از مصرف',
-        'کاهش عمق خطوط ریز اطراف چشم و خط لبخند پس از دوره ۴ هفته‌ای',
-        'روشن‌سازی مشهود تنالیته پوست و تسریع بازجذب لک‌های التهابی پس از جوش (PIH)',
-        'استحکام‌بخشی به لایه کلاژنی و جمع‌شدن منافذ باز پوست صورت',
-        'افزایش نفوذپذیری ترکیبات سرم‌های مراقبتی بعدی تا ۶۵ درصد',
-      ],
-      studyReference: 'برگرفته از کارآزمایی بالینی دو سو کور آزمایشگاه‌های درماتولوژی Dr Dermer لندن (۲۰۲۴).',
-    },
-    ingredients: [
-      {
-        nameFa: 'کمپلکس فعال‌ساز CO2 (سدیم بی‌کربنات + سیتریک اسید)',
-        inciName: 'Sodium Bicarbonate, Citric Acid Micro-Complex',
-        percentage: '8.5%',
-        purity: '۹۹.۹٪ فارماکوپه اروپا (Ph. Eur.)',
-        cirRating: 'Safe as Used (CIR Expert Panel 2023)',
-        casNumber: '144-55-8 / 77-92-9',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'آزادسازی گاز کربن دی‌اکسید خالص و القای اثر بوهر',
-        molecularMechanism:
-          'پروتون‌دار شدن یون بی‌کربنات توسط کربوکسیلیک اسید آلی در ماتریکس ژل، میکروحباب‌های اشباع شده CO2 با فشار تبادل بافتی ۶۵ میلی‌متر جیوه را آزاد می‌کند. شیفت فوری منحنی تفکیک اکسی‌هموگلوبین به راست موجب تخلیه فورانی اکسیژن درون‌زا (O2) به میتوکندری‌های سلول‌های درمیس می‌گردد.',
-        isKeyActive: true,
-        description: 'ایجاد حباب‌های کربنی بدون ایجاد تحریک سوزش شیمیایی.',
-      },
-      {
-        nameFa: 'عصاره سنتلا آسیاتیکا (مادکاسوساید ۴۰٪)',
-        inciName: 'Centella Asiatica (Gotu Kola) Leaf Extract',
-        percentage: '5.0%',
-        purity: '۹۵.۵٪ تیتر تری‌ترپنوئید فعال استاندارد',
-        cirRating: 'Safe, Non-Sensitizing (CIR Grade A)',
-        casNumber: '84696-21-9',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'ترمیم‌کننده و ضدالتهاب',
-        molecularMechanism:
-          'تحریک سیگنالینگ TGF-beta و فاکتور رشد فیبروبلاستی (FGF-2)، مهار سنتز آنزیم کلاژناز نوع ۱ و ارتقای چشمگیر اپیتلیالیزاسیون سد پوستی همراه با مهار سایتوکین‌های پیش‌التهابی TNF-alpha و IL-6.',
-        isKeyActive: true,
-        description: 'تسکین‌دهنده قوی التهاب و تسریع روند بازسازی اپیدرم.',
-      },
-      {
-        nameFa: 'نیاسینامید خالص (ویتامین B3)',
-        inciName: 'Niacinamide (Cosmetic Grade 99.8%)',
-        percentage: '4.0%',
-        purity: '۹۹.۸٪ گرید درماتولوژیک با اسید نیکوتینیک آزاد زیر ۱۰ پی‌پی‌ام',
-        cirRating: 'Safe as Used (CIR Panel Consensus)',
-        casNumber: '98-92-0',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'تقویت سد دفاعی پوست، یکنواخت‌سازی تناژ و کنترل سبوم',
-        molecularMechanism:
-          'افزایش کوآنزیم‌های درون‌سلولی NAD+ و NADPH، تحریک بیان ژن سنتز سرامیدها، اسیدهای چرب آزاد و کلسترول در استراتوم کورنئوم؛ مهار انتقال ملانوزوم از ملانوسیت‌ها به کراتینوسیت‌ها تا ۶۸٪.',
-        isKeyActive: true,
-        description: 'مهار انتقال ملانوزوم‌ها و کاهش لکه‌های ناشی از آفتاب و آکنه.',
-      },
-      {
-        nameFa: 'هیالورونیک اسید با سه وزن مولکولی',
-        inciName: 'Sodium Hyaluronate Multi-Molecular Complex',
-        percentage: '2.0%',
-        purity: 'گرید زیست‌تخمیر مدیکال بیوتکنولوژی',
-        cirRating: 'Safe as Used (CIR Monograph)',
-        casNumber: '9067-32-7',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'آبرسانی چندلایه از سطح اپیدرم تا اعماق درم',
-        molecularMechanism:
-          'پیوند هیدروژنی با ۱۰۰۰ برابر وزن خود آب؛ کسر ۵۰ کیلودالتون گیرنده‌های CD44 درم را برای تحریک ساخت اسید هیالورونیک درون‌زاد فعال کرده و وزن مولکولی بالا شبکه ژلی الاستیک رطوبت را روی اپیدرم شکل می‌دهد.',
-        isKeyActive: true,
-        description: 'مولکول‌های ریز برای تحریک ساخت کلاژن و مولکول‌های بزرگ برای حفظ رطوبت سطحی.',
-      },
-      {
-        nameFa: 'آب دیونیزه گرید دارویی',
-        inciName: 'Aqua / Purified Water Pharmacopoeia Grade',
-        purity: 'USP Purified Water < 0.1 µS/cm',
-        cirRating: 'Safe (Universal Solvent)',
-        casNumber: '7732-18-5',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'پایه حلال استریل با خلوص بالا',
-        molecularMechanism: 'رسانش هیدراته بدون ایجاد بار یونی مزاحم در واکنش گاز کربن دی‌اکسید.',
-        isKeyActive: false,
-      },
-      {
-        nameFa: 'گلیسیرین گیاهی گرید دارویی',
-        inciName: 'Glycerin (Plant Origin 99.7%)',
-        percentage: '3.0%',
-        purity: '۹۹.۷٪ گرید دارویی گیاهی USP/BP',
-        cirRating: 'Safe, GRAS Certified',
-        casNumber: '56-81-5',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'هومکتانت طبیعی و بهبود ویسکوزیته',
-        molecularMechanism: 'بهبود سیالیت ترنس‌اپیدرمال و فعال‌سازی کانال‌های آکواپورین-۳ (AQP3) سلولی.',
-        isKeyActive: false,
-      },
-      {
-        nameFa: 'آلانتوئین تسکین‌دهنده',
-        inciName: 'Allantoin',
-        percentage: '0.5%',
-        purity: '۹۹.۰٪ خلوص کریستالی USP',
-        cirRating: 'Safe (FDA OTC Skin Protectant)',
-        casNumber: '97-59-6',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'کاهش سوزش اولیه ناشی از آزادسازی گاز و نرم‌کننده پوست',
-        molecularMechanism: 'تسکین گیرنده‌های حسی موضعی و کراتولیتیک ملایم تکثیر سلولی اپیتلیال.',
-        isKeyActive: false,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'پروتکل مطبی / هوم‌کر عصرانه (هفته‌ای ۱ الی ۲ بار)',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'پاکسازی عمقی و خشک‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم شسته و کاملاً خشک نمایید. هیچ‌گونه چربی یا رطوبت نباید بر سطح پوست باقی بماند.',
-          frequency: 'پیش از اجرا',
-        },
-        {
-          stepNumber: 2,
-          title: 'توزیع یکنواخت ژل CarboxyGel',
-          instruction: 'محتویات یک سرنگ استریل (۲۵ میلی‌لیتر) را با ضخامت حداقل ۱ تا ۲ میلی‌متر بر تمام صورت به جز دور لب و دور چشم بمالید.',
-          frequency: 'حین اجرا',
-        },
-        {
-          stepNumber: 3,
-          title: 'اعمال پد اکتیواتور و ماساژ ضربه‌ای',
-          instruction: 'پد مخصوص فعال‌ساز را روی صورت قرار دهید و با نوک انگشتان ضربات ملایم بزنید. صدای جلزولز گاز CO2 شنیده شده و گرما و سوزش مطبوعی احساس می‌شود.',
-          frequency: '۲۰ الی ۲۵ دقیقه مکث',
-          warning: 'سوزش خفیف تا ۵ دقیقه اولیه طبیعی بوده و نشانه آزادسازی گاز و جریان خون است.',
-        },
-        {
-          stepNumber: 4,
-          title: 'برداشتن پد و پاکسازی با آب ولرم',
-          instruction: 'پد را برداشته و باقی‌مانده ژل را با دستمال مرطوب نرم پاک کنید، سپس با آب ولرم آبکشی نمایید.',
-          frequency: 'پایان درمان',
-        },
-        {
-          stepNumber: 5,
-          title: 'استفاده از سرم ترمیم‌کننده و ضدآفتاب',
-          instruction: 'بلافاصله از سرم سیکا یا هیالورونیک اسید استفاده نمایید؛ نفوذپذیری پوست در این لحظه در اوج قرار دارد.',
-          frequency: 'مراقبت پس از عمل',
-        },
-      ],
-      preProcedure: '۴۸ ساعت قبل از استفاده از لایه‌بردارهای شیمیایی قوی (AHA/BHA با غلظت بالای ۱۰٪) و رتینوئیدهای خوراکی یا موضعی خودداری شود.',
-      postProcedureCare: 'تا ۱۲ ساعت از آرایش غلیظ و سونا یا ورزش سنگین خودداری کنید. استفاده روزانه از کرم ضدآفتاب SPF 50+ با تمدید مرتب الزامی است.',
-      warnings: [
-        'از مصرف روی زخم‌های باز، اگزمای حاد و نواحی ملتهب آفتاب‌سوخته اجتناب شود.',
-        'در صورت ورود تصادفی ژل به داخل چشم، با آب سرد فراوان شستشو داده شود.',
-        'فقط جهت استعمال خارجی، دور از دسترس اطفال نگهداری شود.',
-      ],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی استاندارد تجهیزات پزشکی اروپا CE 0123',
-          issuer: 'TÜV SÜD Product Service GmbH',
-          certificateCode: 'CE-MED-2023-88194',
-          description: 'تأیید ایمنی بیولوژیکی و زیست‌سازگاری طبق مقررات MDR اتحادیه اروپا.',
-          verified: true,
-        },
-        {
-          title: 'استاندارد مدیریت کیفیت ISO 13485:2016',
-          issuer: 'BSI Group UK',
-          certificateCode: 'FM 704128',
-          description: 'سیستم جامع مدیریت کیفیت تولید ملزومات درماتولوژی و کلینیکال.',
-          verified: true,
-        },
-        {
-          title: 'تأییدیه عدم سمیت سلولی ISO 10993-5',
-          issuer: 'NAMSA Clinical Laboratories',
-          certificateCode: 'CYTO-PASS-UK-2024',
-          description: 'ارزیابی آزمایشگاهی زیست‌پذیری سلولی و عدم اثر سمیت ژنتیکی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'هر بسته دارای بچ‌کد حک‌شده لیزری و بارکد دو بعدی قابل استعلام در سامانه اصالت درمر با پیش‌شماره REE-CBG-XXXX می‌باشد.',
-      storageConditions: 'در دمای ۱۵ الی ۲۵ درجه سانتی‌گراد، در جای خشک و خنک و دور از تابش مستقیم نور خورشید نگهداری شود. از یخ‌زدگی محافظت گردد.',
-      shelfLifeAfterOpening: '۶ ماه پس از باز شدن پلمپ اولیه تیوب (PAO: 6M)',
-      ceIsoStandards: ['CE Medical Class I', 'ISO 13485:2016', 'ISO 22716 GMP', 'CPNP Registered UK/EU'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_cbg_01',
-        patientAge: 38,
-        patientGender: 'خانم',
-        condition: 'هایپرپیگمنتیشن عمیق، لک‌های ملاسما و افتادگی الاستیسیته درم',
-        protocolDescription: 'پروتکل ۵ جلسه‌ای CarboxyGel با پد فیبری CarboxyPod فعال (هفته‌ای یک جلسه ۲۰ دقیقه)',
-        durationWeeks: 4,
-        sessionsCount: 5,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: 'جلسه ۰ (پیش از شروع درمان)',
-        afterLabel: 'جلسه ۵ (هفته ۴ ریکاوری)',
-        visiaMetrics: [
-          {
-            id: 'visia_m1',
-            labelFa: 'اشباع اکسیژن بافتی اپیدرم (TcPO2)',
-            baseline: '۳۸ mmHg',
-            week4Result: '۷۱ mmHg',
-            percentageChange: '+۸۶٪',
-            isImprovement: true,
-            description: 'ارزیابی مانیتورینگ گازهای ترنس‌کوتانئوس پس از تحریک اثر بوهر',
-          },
-          {
-            id: 'visia_m2',
-            labelFa: 'تراکم ملانین و لکه‌های فرابنفش (VISIA UV Spots)',
-            baseline: '۷۴ امتیاز تجمع لک',
-            week4Result: '۳۹ امتیاز تجمع لک',
-            percentageChange: '-۴۷٪',
-            isImprovement: true,
-            description: 'اسکن چندطیفی سیستم آنالیز ویزیا (Canfield Scientific)',
-          },
-          {
-            id: 'visia_m3',
-            labelFa: 'عمق چروک‌های پری‌اربیتال و خط خنده',
-            baseline: '۱۴۲ میکرومتر',
-            week4Result: '۹۱ میکرومتر',
-            percentageChange: '-۳۶٪',
-            isImprovement: true,
-            description: 'پروفایلومتری نوری بازسازی فیبروبلاست‌های کلاژن الاستین',
-          },
-          {
-            id: 'visia_m4',
-            labelFa: 'یکدستی و درخشندگی تن پوست (Skin Radiance Index)',
-            baseline: '۵۲ / ۱۰۰',
-            week4Result: '۸۹ / ۱۰۰',
-            percentageChange: '+۷۱٪',
-            isImprovement: true,
-            description: 'سنجش شاخص لومینسانس و فلورسانس طبیعی پوست',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر الناز ستوده',
-          doctorTitleFa: 'متخصص پوست، مو و زیبایی و بورد تخصصی درماتولوژی بالینی',
-          medicalLicenseNo: 'نظام پزشکی: ۹۸۳۱۴',
-          clinicName: 'کلینیک تخصصی درماتولوژی و لیزر لوتوس ونک',
-          quote:
-            'نتایج تصویربرداری چندطیفی VISIA در بیمار نشان داد که القای اثر بوهر توسط CarboxyGel سرعت گردش خون لنفاوی و اکسیژن‌رسانی را بدون تحریک و ادم ارتقا داده است. تراکم پیگمان‌های لک پس از ۴ هفته نزدیک به نصف کاهش یافته و بافت کروماتیک پوست یکدستی بی‌نظیری پیدا کرده است.',
-          verifiedBadge: 'تأییدیه رسمی انجمن متخصصین پوست و موی ایران',
-        },
-      },
-      {
-        id: 'study_cbg_02',
-        patientAge: 45,
-        patientGender: 'آقا',
-        condition: 'اسکار آتروفیک آکنه و منافذ فراخ با هیپوکسی پوستی ناشی از دخانیات',
-        protocolDescription: 'ترکیب CarboxyGel با ژل تسکین‌بخش Healene و اسکراب دتوکس Silicalene',
-        durationWeeks: 6,
-        sessionsCount: 6,
-        beforeImageUrl: '/assets/drdermer/2025/09/scar-removal.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/scar-removal-1024x474.webp',
-        beforeLabel: 'خط پایه (پیش از درمان)',
-        afterLabel: 'پایان دوره ۶ هفته‌ای',
-        visiaMetrics: [
-          {
-            id: 'visia_m5',
-            labelFa: 'حجم و عمق ناهمواری‌های منافذ (Pore Volume)',
-            baseline: '۸۹ امتیاز',
-            week4Result: '۴۶ امتیاز',
-            percentageChange: '-۴۸٪',
-            isImprovement: true,
-            description: 'کاهش سایز دیافراگم منافذ از طریق تحریک کلاژن اطراف فولیکولی',
-          },
-          {
-            id: 'visia_m6',
-            labelFa: 'جریان ریزگردش موضعی خون (Laser Doppler Flowmetry)',
-            baseline: '۲۲ BPU',
-            week4Result: '۶۴ BPU',
-            percentageChange: '+۱۹۰٪',
-            isImprovement: true,
-            description: 'افزایش خون‌رسانی و احیای بافت اسکار کهنه',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر محمدرضا امانیان',
-          doctorTitleFa: 'فلوشیپ درماتوپاتولوژی و لیزر درمانی پیشرفته',
-          medicalLicenseNo: 'نظام پزشکی: ۷۴۲۱۰',
-          clinicName: 'مرکز تحقیقات علوم پوست و درماتولوژی هارلی‌استریت لندن',
-          quote:
-            'ترکیب پد فیبری بارگذاری‌شده با سیتریک و ژل بی‌کربنات غلیظ موجب پر شدن تدریجی حفرات آتروفیک اسکار شده است. این پروتکل ایمن‌ترین آلترناتیو برای مراجعینی است که به دلیل تیپ پوستی تیره کاندیدای مناسب لیزر فرکشنال نیستند.',
-          verifiedBadge: 'Verified Clinical Investigator - ReeSkin Scientific Board',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'تفاوت کربوکسی‌تراپی غیرتهاجمی با تزریق زیرجلدی گاز CO2 چیست؟',
-        answer: 'در این سیستم نیازی به سوزن، درد یا کبودی ناشی از تزریق تهاجمی نیست. گاز CO2 از طریق واکنش سطح پوست تولید شده و به کمک اثر بوهر مستقیماً اکسیژن‌رسانی درونی بافت را تحریک می‌کند.',
-      },
-      {
-        question: 'آیا احساس گرما و سوزش در حین گذاشتن پد طبیعی است؟',
-        answer: 'بله، سوزش خفیف و قرمزی موقت در ۳ الی ۵ دقیقه اول نشان‌دهنده گشاد شدن عروق خونی و آغاز جریان اکسیژن است که ظرف ۲۰ دقیقه پس از شستشو برطرف می‌شود.',
-      },
-      {
-        question: 'چند جلسه درمان برای مشاهده نتایج شفافیت و لیفت توصیه می‌شود؟',
-        answer: 'بهترین نتیجه در یک دوره ۵ جلسه‌ای (هفته‌ای یک جلسه) مشاهده می‌شود؛ با این حال افزایش شفافیت و درخشندگی پوست از همان جلسه اول قابل لمس است.',
-      },
-      {
-        question: 'آیا افراد دارای پوست حساس یا روزاسه می‌توانند از این محصول استفاده کنند؟',
-        answer: 'برای پوست‌های مستعد روزاسه فعال استفاده توصیه نمی‌شود. در پوست‌های حساس تست پچ ۲۴ ساعت پیش از جلسه اصلی در ناحیه زاویه فک الزامی است.',
-      },
-    ],
-    bundleRecommendation: {
-      bundleTitle: 'کیت تخصصی نوسازی سلولی Carboxy Complete Kit',
-      bundleDescription: 'ترکیب سیستم کربوکسی‌ژل با پدهای یدک CarboxyPod و کرم سد دفاعی برای بالاترین اثربخشی بالینی و ۱۵٪ صرفه‌جویی اقتصادی',
-      savingsText: '۱۵٪ تخفیف روی باندل کامل',
-      items: [
-        {
-          id: 'bundle_cbg_gel',
-          slug: 'carboxygel-professional-therapy',
-          title: 'ژل کربوکسی‌تراپی CarboxyGel (کیت خانگی ۵ عددی)',
-          brand: 'ReeSkin',
-          subtitle: 'ژل پایه القای اثر بوهر',
-          priceAmount: '19500000',
-          originalPriceAmount: '23000000',
-          discountBadge: '۱۵٪ تخفیف',
-          roleInRoutine: 'گام ۱: اکسیژن‌رسانی عمیق',
-          inStock: true,
-        },
-        {
-          id: 'bundle_cpd_pod',
-          slug: 'carboxypod-activation-pads',
-          title: 'پک پدهای فیبری فعال‌ساز CarboxyPod (بسته ۵ عددی)',
-          brand: 'ReeMed',
-          subtitle: 'پد اسید سیتریک میکروکپسوله',
-          priceAmount: '12500000',
-          originalPriceAmount: '14800000',
-          discountBadge: '۱۵٪ تخفیف',
-          roleInRoutine: 'گام ۲: فعال‌ساز واکنش CO2',
-          inStock: true,
-        },
-        {
-          id: 'bundle_cca_serum',
-          slug: 'barrier-recovery-cream',
-          title: 'کرم ترمیم‌کننده و آرام‌بخش بریر پوست ReeSkin',
-          brand: 'ReeSkin',
-          subtitle: 'مادکاسوساید ۹۵٪ و لیپیدهای لاملار',
-          priceAmount: '14800000',
-          originalPriceAmount: '17500000',
-          discountBadge: '۱۵٪ تخفیف',
-          roleInRoutine: 'گام ۳: تقویت سد دفاعی',
-          inStock: true,
-        },
-        {
-          id: 'bundle_reemed_cica',
-          slug: 'reemed-cica-barrier-serum',
-          title: 'سرم ترمیم‌کننده و آرام‌بخش سیکا بریر ReeMed',
-          brand: 'ReeMed',
-          subtitle: 'سنتلا آسیاتیکا ۴۰٪ و سرامید NP',
-          priceAmount: '22000000',
-          originalPriceAmount: '26000000',
-          discountBadge: '۱۵٪ تخفیف',
-          roleInRoutine: 'گام ۳: سوتینگ و تقویت سد دفاعی',
-          inStock: true,
-        },
-      ],
-    },
-    ratingSummary: {
-      ratingValue: 4.9,
-      reviewCount: 38,
-    },
-  },
-
-  'carboxypod-activation-pads': {
-    id: 'prod_clinical_carboxypod',
-    slug: 'carboxypod-activation-pads',
-    brand: {
-      name: 'ReeMed Medical Pro',
-      slug: 'reemed',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'تجهیزات مصرفی استاندارد کلینیک‌های پوست و زیبایی',
-    },
-    title: 'پدهای فعال‌ساز فیبری CarboxyPod ری‌مد (بسته ۵ عددی)',
-    subtitleFa: 'پد پیشرفته غنی از اسید سیتریک میکروکپسوله برای فعال‌سازی آنی گاز CO2',
-    scientificName: 'Micro-Encapsulated Citric Fiber Activation Pads',
-    description:
-      'پدهای فعال‌ساز CarboxyPod ری‌مد به‌طور اختصاصی برای ترکیب با ژل کربوکسی طراحی شده‌اند. فیبر نبافته استاندارد مدیکال با توزیع همگن اسید سیتریک میکروکپسوله، رهایش پایدار گاز دی‌اکسید کربن را در تمام سطح صورت تضمین می‌کند و از تبخیر زودهنگام جلوگیری می‌نماید.',
-    formulation: 'پد نبافته متخلخل گرید درماتولوژیک با اشباع کریستالی اسیدهای میوه‌ای تثبیت‌شده',
-    skinTypes: ['انواع پوست', 'سازگار با پروتکل‌های کلینیکال'],
-    skinConcerns: ['کدری', 'منافذ باز', 'نیاز به اکسیژن‌رسانی عمقی'],
-    cleanBadges: ['استریل شده با پرتو گاما', 'فاقد الیاف مصنوعی بازیافتی', 'بدون لاتکس و پرز'],
-    media: [
-      {
-        id: 'med_cpd_hero',
-        url: '/assets/drdermer/2025/07/carbon-carboxypod-1.png',
-        role: 'HERO',
-        roleFa: 'تصویر پکیج پدها',
-        altText: 'بسته پدهای فعال‌ساز CarboxyPod ری‌مد شامل ۵ ساشه وکیوم استریل',
-        caption: 'پک استریل ۵ عددی پدهای صورت و گردن',
-      },
-      {
-        id: 'med_cpd_texture',
-        url: '/assets/drdermer/2025/07/1-vitapod-1-1-2.png',
-        role: 'TEXTURE',
-        roleFa: 'بافت فیبر متخلخل',
-        altText: 'نمای میکروسکوپی الیاف نبافته پد فعال‌ساز حاوی دانه‌های فعال',
-        caption: 'الیاف با ساختار مشبک برای جذب حداکثری و جلوگیری از چکه ژل',
-      },
-      {
-        id: 'med_cpd_clinic',
-        url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
-        role: 'IN_CLINIC',
-        roleFa: 'آماده‌سازی روی صورت',
-        altText: 'قرار دادن پد ارگونومیک بر روی صورت مشتری در کلینیک',
-        caption: 'برش ارگونومیک پوشش کامل پیشانی، گونه‌ها، بینی و خط فک',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_cpd_box5',
-        sku: 'RMD-CPD-005',
-        title: 'بسته ۵ ساشه وکیوم (صورت و گردن)',
-        sizeOrVolume: 'باکس ۵ ساشه',
-        priceAmount: '12500000', // 1,250,000 Tomans
-        originalPriceAmount: '14800000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 30,
-        mediaRoleMatch: 'HERO',
-      },
-      {
-        id: 'var_cpd_box20',
-        sku: 'RMD-CPD-020',
-        title: 'بسته کلینیکال ۲۰ ساشه (ویژه مراکز درمانی)',
-        sizeOrVolume: 'باکس ۲۰ ساشه مطبی',
-        priceAmount: '44000000', // 4,400,000 Tomans
-        originalPriceAmount: '52000000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 15,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'فناوری فعال‌سازی کاتالیزوری همگن',
-      summary:
-        'پدهای CarboxyPod با فناوری بارگذاری خشک اسید سیتریک بر روی الیاف زیست‌تخریب‌پذیر تولید می‌شوند. به محض تماس با فاز مرطوب ژل قلیایی، واکنش تبادل یونی آغاز شده و حباب‌های میکرو-نانو گاز دی‌اکسید کربن در سطح تماس متولد می‌شوند.',
-      bohrEffectExplanation:
-        'به دام انداختن گاز توسط ساختار فشرده پد مانع فرار CO2 به محیط پیرامون شده و فشار نسبی pCO2 را در سطح بافت بالا می‌برد که راندمان اثر بوهر را تا ۴۰ درصد نسبت به پدهای سنتی ارتقا می‌دهد.',
-      clinicalBenefits: [
-        'پوشش یکنواخت تمام زوایای آناتومیک صورت بدون ایجاد فاصله هوایی',
-        'رهایش یکنواخت گاز بدون تمرکز نقطه‌ای و به حداقل رساندن حس ناراحتی',
-        'جذب مایعات مازاد و حفظ رطوبت در طول مدت درمان ۲۵ دقیقه‌ای',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'الیاف سلولزی زیست‌سازگار دارویی',
-        inciName: 'Medical Grade Cellulose Fiber Web',
-        percentage: '88.0%',
-        purity: '۱۰۰٪ گرید مدیکال استریل پرتو گاما',
-        cirRating: 'Safe as Used (CIR Monograph)',
-        casNumber: '9004-34-6',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'ماتریکس نگهدارنده استریل بدون ایجاد آلرژی',
-        molecularMechanism: 'به دام انداختن گاز CO2 آزادشده در حفرات میکروفیبر و جلوگیری از تبخیر گاز به هوا جهت اعمال فشار به بافت.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'اسید سیتریک بدون آب میکروکپسوله',
-        inciName: 'Citric Acid Anhydrous Coated',
-        percentage: '12.0%',
-        purity: '۹۹.۸٪ گرید دارویی Ph. Eur. / USP',
-        cirRating: 'Safe as Used (CIR Expert Panel)',
-        casNumber: '77-92-9',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'واکنش فوری با بی‌کربنات سدیم ژل و تولید CO2',
-        molecularMechanism: 'واکنش اسید-باز همگن با سدیم بی‌کربنات ژل و رهایش کنترل‌شده مولکول‌های گاز دی‌اکسید کربن در سطح اپیدرم.',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'همگام با سیستم ژل کربوکسی در کلینیک یا هوم‌کر',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'باز کردن ساشه در لحظه مصرف',
-          instruction: 'ساشه را دقیقاً پیش از قرار دادن روی صورت باز کنید تا الیاف در معرض رطوبت محیط قرار نگیرند.',
-          frequency: 'هفته‌ای ۱ الی ۲ بار',
-        },
-        {
-          stepNumber: 2,
-          title: 'فیکس کردن یکنواخت روی ژل',
-          instruction: 'پد را از پیشانی آغاز کرده و به آرامی به سمت چانه و گردن فیکس کنید تا هیچ حباب هوایی زیر پد باقی نماند.',
-        },
-        {
-          stepNumber: 3,
-          title: 'اعمال فشار ملایم کف دست',
-          instruction: 'با کف دست تمیز به مدت ۲ الی ۳ دقیقه به آرامی روی پد فشار وارد کنید تا صدای واکنش جوشش گاز شنیده شده و گاز به داخل بافت نفوذ کند.',
-        },
-        {
-          stepNumber: 4,
-          title: 'اتمام زمان درمان و برداشتن پد',
-          instruction: 'پس از ۲۰ دقیقه پد را از پایین به بالا بردارید و پوست را با آب ولرم یا اسفنج مرطوب تمیز نمایید.',
-        },
-      ],
-      preProcedure: 'اطمینان حاصل شود که لایه ژل به ضخامت کافی روی صورت پخش شده باشد.',
-      postProcedureCare: 'پد یک‌بار مصرف است؛ پس از مصرف دور انداخته شود و ژل تسکین‌بخش هیلین اعمال گردد.',
-      warnings: ['غیرقابل استفاده مجدد (Single-use only)', 'در صورت آسیب به بسته‌بندی ساشه مصرف نشود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'CE Certificate Class I Medical Device',
-          issuer: 'BSI UK',
-          certificateCode: 'CE-99214',
-          description: 'دارای رده تجهیزات پزشکی غیرتهاجمی استریل.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'کد بچ و تاریخ انقضا بر روی لبه هر ساشه درج شده است.',
-      storageConditions: 'در محیط خشک و دمای زیر ۳۰ درجه سانتی‌گراد.',
-      shelfLifeAfterOpening: 'بلافاصله پس از باز شدن مصرف شود.',
-      ceIsoStandards: ['CE Class I', 'ISO 13485'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_cpd_01',
-        patientAge: 41,
-        patientGender: 'خانم',
-        condition: 'منافذ باز گونه‌ها و کدری بافت ناشی از رادیکال‌های آزاد آلودگی شهری',
-        protocolDescription: 'استفاده از پدهای فعال‌ساز CarboxyPod همراه با ژل CarboxyGel در پروتکل ۴ جلسه‌ای',
-        durationWeeks: 4,
-        sessionsCount: 4,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: 'پیش از پروتکل پاد',
-        afterLabel: 'پس از جلسه ۴ فعال‌سازی CO2',
-        visiaMetrics: [
-          {
-            id: 'visia_cpd_1',
-            labelFa: 'بهبود تراکم ساختار الاستین درمیس',
-            baseline: '۴۲٪',
-            week4Result: '۷۶٪',
-            percentageChange: '+۸۱٪',
-            isImprovement: true,
-            description: 'ارزیابی اولتراسوند فرکانس بالای پوست',
-          },
-          {
-            id: 'visia_cpd_2',
-            labelFa: 'کاهش کدری و تیرگی سطح پوست',
-            baseline: '۶۸ شاخص پیگمانتاسیون',
-            week4Result: '۳۵ شاخص پیگمانتاسیون',
-            percentageChange: '-۴۹٪',
-            isImprovement: true,
-            description: 'آنالیز اسپکتروفتومتری بازتاب نور اپیدرم',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر هدی رضایی',
-          doctorTitleFa: 'متخصص درماتولوژی کلینیکال و فلوشیپ استتیک',
-          medicalLicenseNo: 'نظام پزشکی: ۸۵۱۲۳',
-          clinicName: 'کلینیک پوست و لیزر سپهر',
-          quote:
-            'پدهای فعال‌ساز CarboxyPod توزیع گاز را کاملاً همگن نگه می‌دارند؛ عدم فرار گاز باعث می‌شود غلظت بالای ۱۰۰۰ پی‌پی‌ام در سطح درم محقق شده و اثربخشی درمان دوچندان گردد.',
-          verifiedBadge: 'عضو انجمن درماتولوژی بریتانیا (BAD)',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'آیا می‌توان بدون ژل CarboxyGel از این پدها استفاده کرد؟',
-        answer: 'خیر، این پدها اکتیواتور هستند و حتماً باید بر روی ژل قلیایی غنی از سدیم بی‌کربنات قرار گیرند تا واکنش تولید گاز آغاز شود.',
-      },
-      {
-        question: 'تفاوت CarboxyPod با CarboxyPad در چیست؟',
-        answer: 'پدهای CarboxyPod به صورت کپسول‌ها و پدهای متراکم ترابافتی با غلظت بالاتر اسید سیتریک جهت رهایش پرفشار گاز طراحی شده‌اند؛ در حالی که CarboxyPad شیت‌های گسترده صورت و گردن برای پوشش یکپارچه هستند.',
-      },
-      {
-        question: 'آیا احساس سوزش در حین فعال‌سازی طبیعی است؟',
-        answer: 'بله، احساس گرمای ملایم و سوزن‌سوزن‌شدن در ۳ دقیقه اول کاملاً ناشی از واکنش جوشش گاز و گشادشدن مویرگ‌ها به دنبال اثر بوهر است و بعد از ۵ دقیقه برطرف می‌شود.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 4.8,
-      reviewCount: 19,
-    },
-  },
-
-  'crystalene': {
-    id: 'prod_drdermer_004',
-    slug: 'crystalene',
-    brand: {
-      name: 'ReeSkin Clinical',
-      slug: 'reeskin',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'خمیر پولیش و لایه‌بردار کریستالی با آلومینای فوق‌ریز',
-    },
-    title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene Polish Paste',
-    subtitleFa: 'پولیش میکرودرم ملایم با کریستال‌های آلومینا، نیاسینامید، لاکتیک اسید و روغن آرگان',
-    scientificName: 'Ultra-fine Alumina Microcrystal Resurfacing Paste',
-    description:
-      'کریستالین (Crystalene Polish Paste) یک خمیر لایه‌بردار و پولیش با درجه حرفه‌ای است که با عملکرد بلورهای آلومینای میکرونی، سلول‌های مرده را بدون خراش‌های میکروسکوپی پاکسازی می‌کند. فرمول منحصربه‌فرد آن حاوی نیاسینامید، لاکتیک اسید، زینک PCA، کره شی‌باتر، روغن آرگان و شیرین‌بیان است.',
-    formulation: 'خمیر کرمی پولیش غنی‌شده با ریزکریستال‌های بیواینرت آلومینا و اسید لاکتیک',
-    skinTypes: ['انواع پوست بجز آکنه فعال التهابی', 'پوست‌های کدر و دارای لک'],
-    skinConcerns: ['کدری و زبری پوست', 'لکه‌های پوستی و ناهماهنگی تن چهره', 'منافذ مسدود'],
-    cleanBadges: [
-      'بدون تست حیوانی (Cruelty-Free)',
-      'فاقد ذرات پلاستیکی ساینده',
-      'فرمولاسیون هایپوآلرژنیک',
-    ],
-    media: [
-      {
-        id: 'med_cry_hero',
-        url: '/assets/drdermer/2025/08/15crystalene-1200x1109.webp',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی کریستالین',
-        altText: 'خمیر پولیش کریستالین دکتر درمر Crystalene Polish Paste',
-        caption: 'بسته‌بندی رسمی Crystalene Polish Paste ۲۰۰ میلی‌لیتر',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_cry_200ml',
-        sku: 'DD-CRY-200ML',
-        title: 'تیوب ۲۰۰ میلی‌لیتر سالنی',
-        sizeOrVolume: '200ml تیوب سالنی',
-        priceAmount: '17500000',
-        originalPriceAmount: '20500000',
-        discountPercent: 14,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 35,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بازسازی پوست با سایش فوق‌ریز کریستالی',
-      summary:
-        'کریستال‌های آلومینای خالص سلول‌های مرده سطح شاخی اپیدرم را با دقت میکرونی برداشته و جذب مواد مؤثره را به حداکثر می‌رسانند.',
-      bohrEffectExplanation:
-        'حذف لایه کراتینی فرسوده باعث تسریع متابولیسم موضعی و نفوذ ترکیبات بیواکتیو به لایه‌های زنده زیرین می‌گردد.',
-      clinicalBenefits: [
-        'روشن‌سازی آنی تن پوست و یکدست‌کردن بافت چهره',
-        'پاکسازی کومدون‌های سرسیاه و سلول‌های کراتینه کدر',
-        'تحریک سنتز فیبروبلاست و نوسازی لایه‌های اپیدرم',
-      ],
-      studyReference: 'Cambridge Dermatology Resurfacing Protocol Bulletin 2024.',
-    },
-    ingredients: [
-      {
-        nameFa: 'میکروکریستال‌های خالص اکسید آلومینیوم (کروندوم مدیکال)',
-        inciName: 'Alumina Microcrystals (Pharmaceutical Grade)',
-        percentage: '12.00%',
-        purity: '۹۹.۹٪ کریستال‌های کروی بدون زاویه تیز USP',
-        cirRating: 'Safe as Used (CIR Expert Panel)',
-        casNumber: '1344-28-1',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'پولیش فیزیکی ابریشمی بدون آسیب به اتصالات اپیدرم',
-        molecularMechanism: 'جداسازی پیوندهای کورنئودسموزومی سلول‌های مرده با سایش میکرونی یکنواخت و آماده‌سازی برای نفوذ اکتیوها.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'نیاسینامید خالص و ال-لاکتیک اسید',
-        inciName: 'Niacinamide, L-Lactic Acid Complex',
-        percentage: '5.00%',
-        purity: '۹۹.۸٪ گرید درماتولوژیک با pH تنظیم‌شده ۴.۲',
-        cirRating: 'Safe as Used (CIR Consensus)',
-        casNumber: '98-92-0 / 79-33-4',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'لایه‌برداری شیمیایی ملایم، روشن‌کنندگی و آبرسانی عمقی',
-        molecularMechanism: 'حل کردن سیمان بین‌سلولی، مهار انتقال بسته‌های ملانین و تحریک سنتز سرامیدهای اندوژنوس.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'کمپلکس بیولیپید آرگان و شی‌باتر',
-        inciName: 'Argania Spinosa Kernel Oil, Butyrospermum Parkii Butter',
-        percentage: '3.50%',
-        purity: 'روغن‌های پرس سرد ارگانیک تصفیه‌شده',
-        cirRating: 'Safe as Used',
-        casNumber: '223747-87-3 / 194043-92-0',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'تسکین فوری و ممانعت از ایجاد خشکی یا التهاب سطحی',
-        isKeyActive: false,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'هفتگی ۱ الی ۲ بار در روتین شبانه روی پوست نم‌دار',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست و پاکسازی اولیه',
-          instruction: 'پوست را با شوینده ملایم شسته و ترجیحاً ۲ دقیقه کمپرس گرم روی صورت قرار دهید تا منافذ نرم شوند.',
-          frequency: 'هفتگی ۱ الی ۲ بار',
-        },
-        {
-          stepNumber: 2,
-          title: 'ماساژ ابریشمی با حرکات دورانی',
-          instruction: 'یک نخود از خمیر پولیش را روی گونه‌ها، پیشانی و چانه با حرکات دایره‌ای ملایم به مدت ۶۰ تا ۹۰ ثانیه ماساژ دهید.',
-        },
-        {
-          stepNumber: 3,
-          title: 'آبکشی با آب ولرم',
-          instruction: 'با آب ولرم و پد اسفنجی پوست را کاملاً آبکشی کنید تا کلیه کریستال‌ها پاک شوند.',
-        },
-        {
-          stepNumber: 4,
-          title: 'آرام‌بخشی و تغذیه سد دفاعی',
-          instruction: 'بلافاصله ژل هیلین یا کربوکسی‌ژل را اعمال نمایید تا مواد فعال بیشترین میزان جذب را داشته باشند.',
-        },
-      ],
-      preProcedure: 'روی پوست بدون آرایش و ترجیحاً پس از حمام گرم استفاده شود.',
-      postProcedureCare: 'استفاده از ضدآفتاب طی دوره مصرف کریستالین در طول روز الزامی است.',
-      warnings: ['روی جوش‌های فعال ملتهب و چرکی استفاده نشود.', 'از مالش شدید اطراف چشم خودداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'CE Medical Class I',
-          issuer: 'BSI Group Netherlands',
-          certificateCode: 'CE-CRY-2024',
-          description: 'انطباق کامل با استانداردهای درموسوتیکال اروپا.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'کد اصالت لیزری در انتهای تیوب درج شده است.',
-      storageConditions: 'در دمای معتدل و دور از تابش مستقیم خورشید.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب.',
-      ceIsoStandards: ['CE Class I', 'ISO 22716 GMP'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_cry_01',
-        patientAge: 34,
-        patientGender: 'خانم',
-        condition: 'زبری و ناهمواری بافت صورت، سلول‌های کدر مرده و عدم جذب کرم‌های پوستی',
-        protocolDescription: 'پولیش میکرودرم ۲ بار در هفته با Crystalene به مدت ۳ هفته متوالی',
-        durationWeeks: 3,
-        sessionsCount: 6,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: 'قبل از پولیش کریستالین',
-        afterLabel: 'پس از ۶ جلسه پولیش',
-        visiaMetrics: [
-          {
-            id: 'visia_cry_1',
-            labelFa: 'یکدستی و همواری میکرونی بافت (Skin Smoothness)',
-            baseline: '۵۳٪',
-            week4Result: '۸۹٪',
-            percentageChange: '+۶۸٪',
-            isImprovement: true,
-            description: 'آنالیز رافنس اپیدرم توسط دوربین کانفیلد',
-          },
-          {
-            id: 'visia_cry_2',
-            labelFa: 'میزان نفوذپذیری ترکیبات سرم‌های موضعی',
-            baseline: '۳۲٪ جذب پایه',
-            week4Result: '۷۸٪ جذب بافتی',
-            percentageChange: '+۱۴۳٪',
-            isImprovement: true,
-            description: 'ارزیابی فلورسانس ترنس‌اپیدرمال',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر پریسا رضوانی',
-          doctorTitleFa: 'متخصص پوست و زیبایی، مشاور کلینیک‌های پوست لندن',
-          medicalLicenseNo: 'نظام پزشکی: ۷۹۰۲۱',
-          clinicName: 'مرکز درمان‌های پیشرفته پوست پاسداران',
-          quote:
-            'برخلاف اسکراب‌های زبر سنتی که شیارهای میکروسکوپی در استراتوم کورنئوم ایجاد می‌کنند، ذرات آلومینای کریستالین کروی بوده و سایش فوق‌العاده ظریفی ایجاد می‌نمایند که جذب مواد بعدی را چند برابر می‌کند.',
-          verifiedBadge: 'تأییدیه آکادمی پوست انگلستان',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'تفاوت کریستالین با اسکراب‌های دانه‌دار معمولی چیست؟',
-        answer: 'کریستالین از آلومینای فوق‌ریز گرید مدیکال بهره می‌برد که لبه‌های تیز ندارد و باعث ایجاد خراش میکروسکوپی روی پوست نمی‌شود.',
-      },
-      {
-        question: 'آیا کریستالین برای پوست‌های خشک نیز قابل استفاده است؟',
-        answer: 'بله، وجود شی‌باتر، روغن آرگان و اسید لاکتیک در پایه این محصول مانع از خشکی پوست شده و رطوبت طبیعی بافت را حفظ می‌نماید.',
-      },
-      {
-        question: 'آیا می‌توان پیش از کربوکسی‌تراپی از این خمیر استفاده کرد؟',
-        answer: 'بله، پولیش پوست با کریستالین پیش از اجرای ژل کربوکسی لایه مرده شاخی را حذف کرده و نفوذ گاز CO2 و اکسیژن‌رسانی اثر بوهر را تا دو برابر تقویت می‌کند.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 4.9,
-      reviewCount: 32,
-    },
-  },
-
-  'healene': {
-    id: 'prod_drdermer_005',
-    slug: 'healene',
-    brand: {
-      name: 'ReeSkin Clinical',
-      slug: 'reeskin',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'ژل خنک‌کننده، آبرسان و ترمیم‌کننده پس از درمان‌های تهاجمی',
-    },
-    title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene Soothing Gel',
-    subtitleFa: 'ژل ترمیم سد دفاعی حاوی نیاسینامید، پانتنول، هیالورونیک اسید و عصاره‌های گیاهی',
-    scientificName: 'Post-Treatment Dermal Soothing & Calming Gel',
-    description:
-      'ژل التیام‌بخش هیلین (Healene Soothing Gel) اختصاصاً برای آرامش‌بخشی، هیدراتاسیون فوق‌العاده و رفع سوزش و قرمزی پوست فرموله شده است. این ژل سبک بر پایه نیاسینامید، پروویتامین B5 (پانتنول)، هیالورونیک اسید، آلانتوئین، سدیم PCA و کمپلکس عصاره‌های میموزا، آلوئه‌ورا، کالاندولا، سنتلا آسیاتیکا و بابونه تولید شده است.',
-    formulation: 'ژل کریستالی آکوا با جذب فوری و بدون چربی',
-    skinTypes: ['پوست‌های بسیار حساس', 'پوست تحت درمان لیزر، میکرونیدلینگ و پیلینگ', 'پوست آسیب‌دیده'],
-    skinConcerns: ['التهاب و قرمزی اریتما', 'سوزش پس از درمان', 'کم‌آبی شدید و آسیب سد دفاعی'],
-    cleanBadges: [
-      'بدون چربی (Oil-Free)',
-      'فاقد عطر و رنگ مصنوعی',
-      'تسکین فوری و خنک‌کننده',
-    ],
-    media: [
-      {
-        id: 'med_hea_hero',
-        url: '/assets/drdermer/2025/08/16healene-1200x1109.webp',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی هیلین',
-        altText: 'ژل تسکین‌بخش و التیام‌دهنده هیلین دکتر درمر Healene Soothing Gel',
-        caption: 'Healene Soothing Gel ۲۵۰ میلی‌لیتر پمپی',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_hea_250ml',
-        sku: 'DD-HEA-250ML',
-        title: 'بطری پمپی ۲۵۰ میلی‌لیتر',
-        sizeOrVolume: '250ml بطری پمپی',
-        priceAmount: '16000000',
-        originalPriceAmount: '18500000',
-        discountPercent: 13,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 50,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'تسکین مسیرهای التهابی و بازسازی اپیدرم',
-      summary:
-        'مهار ترشح اینترلوکین‌های التهابی و سنتز سریع هیالورونیک اسید بومی پوست برای رفع اریتما و گرگرفتگی ناشی از مداخلات کلینیکی.',
-      bohrEffectExplanation:
-        'به‌عنوان مکمل کلیدی بعد از کربوکسی‌تراپی، بافت هیدراته و اکسیژن‌گرفته را تغذیه و آرام می‌سازد.',
-      clinicalBenefits: [
-        'کاهش ۶۱ درصدی قرمزی پوست در ۳۰ دقیقه اول',
-        'ترمیم لایه‌های چربی میان‌سلولی و کاهش تبخیر آب ترنس‌اپیدرمال (TEWL)',
-        'حس خنکی آنی و کاهش سوزش و خارش پوستی',
-      ],
-      studyReference: 'Post-Laser and Post-Carboxy Recovery Trials UK, 2024.',
-    },
-    ingredients: [
-      {
-        nameFa: 'پانتنول (پروویتامین B5) و آلانتوئین دارویی',
-        inciName: 'Panthenol, Allantoin',
-        percentage: '5.00%',
-        purity: '۹۹.۵٪ Ph. Eur. گرید فارماسیوتیکال',
-        cirRating: 'Safe as Used (CIR Expert Panel)',
-        casNumber: '81-13-0 / 97-59-6',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'تسریع ترمیم بافت پوست و رفع سوزش و گرگرفتگی',
-        molecularMechanism: 'تبدیل درون‌سلولی به کوآنزیم A، تحریک تکثیر کراتینوسیت‌ها و تسریع سنتز لیپیدهای لایه شاخی.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'کمپلکس ۷ عصاره گیاهی تسکین‌بخش (سنتلا، میموزا، کالاندولا)',
-        inciName: 'Centella Asiatica, Mimosa Tenuiflora, Calendula Officinalis, Chamomilla Extract',
-        percentage: '6.50%',
-        purity: 'عصاره‌های استانداردشده با تیتراسیون فلاونوئید بالا',
-        cirRating: 'Safe as Used (CIR Consensus)',
-        casNumber: '84696-21-9 / 93384-35-1 / 84776-23-8',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'کاهش سریع فاکتورهای التهابی و مهار اریتما',
-        molecularMechanism: 'مهار مسیرهای آنزیمی COX-2 و نیتریک اکسید سنتاز القایی، مهار ترشح اینترلوکین ۱ و کاهش قرمزی عروقی.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'هیالورونیک اسید بیوتکنولوژیک چندوزنی',
-        inciName: 'Sodium Hyaluronate Multi-Molecular Complex',
-        percentage: '2.00%',
-        purity: 'گرید دارویی تخمیری بدون اندوتوکسین',
-        cirRating: 'Safe as Used',
-        casNumber: '9067-32-7',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'آبرسانی فوری اپیدرم و افزایش انعطاف‌پذیری لایه شاخی',
-        isKeyActive: true,
-      },
-    ],
-    coldChainRequired: true,
-    usageProtocol: {
-      routineTime: 'روزانه و بلافاصله پس از درمان‌های کلینیکی (لیزر، پیلینگ، کربوکسی)',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'پاکسازی و خشک کردن موضع',
-          instruction: 'پوست را از باقیمانده ژل کربوکسی یا ژل‌های سونوگرافی و لیزر پاک کنید.',
-          frequency: 'بلافاصله پس از پروسیجر',
-        },
-        {
-          stepNumber: 2,
-          title: 'اپلیکیشن ژل خنک هیلین',
-          instruction: 'لایه نازک و یکنواختی از ژل را روی سراسر صورت و گردن پخش نمایید (ماساژ ملایم بدون فشار).',
-        },
-        {
-          stepNumber: 3,
-          title: 'جذب فعال و ایجاد سد رطوبتی',
-          instruction: 'اجازه دهید ژل به مدت ۳ الی ۵ دقیقه خودبه‌خود جذب شود؛ نیازی به شستشو ندارد.',
-        },
-        {
-          stepNumber: 4,
-          title: 'تکرار مصرف در فاز التیام',
-          instruction: 'طی ۴۸ ساعت نخست پس از درمان‌های تهاجمی، هر ۴ ساعت یک‌بار مصرف را تکرار کنید.',
-        },
-      ],
-      preProcedure: 'می‌توان پیش از مصرف برای خنک‌کنندگی مضاعف در یخچال در دمای ۴ درجه سانتی‌گراد قرار داد.',
-      postProcedureCare: 'در طول دوره ترمیم روزها از ضدآفتاب مینرال با SPF بالا استفاده فرمایید.',
-      warnings: ['فقط جهت استعمال موضعی خارجی.', 'در صورت ورود به چشم با آب فراوان شستشو داده شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'CE Medical Class I',
-          issuer: 'TÜV SÜD Germany',
-          certificateCode: 'CE-HEA-2024',
-          description: 'تاییدیه سازگاری با پوست‌های حساس و تحت درمان لیزر.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی بر روی بدنه بطری درج گردیده است.',
-      storageConditions: 'در دمای زیر ۲۵ درجه سانتی‌گراد یا یخچال نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن.',
-      ceIsoStandards: ['CE Class I', 'ISO 13485:2016'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_hea_01',
-        patientAge: 29,
-        patientGender: 'خانم',
-        condition: 'اریتما و التهاب حاد پوست صورت پس از لیزر فرکشنال CO2',
-        protocolDescription: 'مصرف ژل هیلین هر ۴ ساعت به مدت ۳ روز متوالی پس از لیزر',
-        durationWeeks: 1,
-        sessionsCount: 3,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: '۲ ساعت پس از لیزر (التهاب و قرمزی شدید)',
-        afterLabel: '۴۸ ساعت پس از ژل هیلین (فروکش کامل اریتما)',
-        visiaMetrics: [
-          {
-            id: 'visia_hea_1',
-            labelFa: 'شاخص قرمزی واسکولار (VISIA Red Areas)',
-            baseline: '۸۴ امتیاز التهاب',
-            week4Result: '۲۱ امتیاز التهاب',
-            percentageChange: '-۷۵٪',
-            isImprovement: true,
-            description: 'سنجش کاهش هموگلوبین سطحی و اتساع مویرگ‌های درم',
-          },
-          {
-            id: 'visia_hea_2',
-            labelFa: 'کاهش تبخیر آب ترنس‌اپیدرمال (TEWL)',
-            baseline: '۳۸ g/m²/h',
-            week4Result: '۱۴ g/m²/h',
-            percentageChange: '-۶۳٪',
-            isImprovement: true,
-            description: 'ترمیم سد دفاعی لیپیدی پوست با پروویتامین B5 و آلانتوئین',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر کامران شفیعی',
-          doctorTitleFa: 'فلوشیپ لیزر و درماتولوژی، مدرس آکادمی پوست انگلستان',
-          medicalLicenseNo: 'نظام پزشکی: ۶۱۴۰۲',
-          clinicName: 'کلینیک پوست و جراحی آرا',
-          quote:
-            'سرعت رفع اریتمای بیماران پس از پیلینگ و لیزرهای تخریبی با ژل هیلین شگفت‌انگیز است. فاقد چربی بودن آن مانع انسداد منافذ شده و پوست را خنک و آرام نگه می‌دارد.',
-          verifiedBadge: 'تأییدیه درماتولوژی کلینیکال انگلستان',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'آیا برای آفتاب‌سوختگی هم مناسب است؟',
-        answer: 'بله، فرمولاسیون هیلین به علت دارا بودن آلوئه‌ورا، میموزا و پانتنول بهترین التیام‌بخش برای آفتاب‌سوختگی و لیزر است.',
-      },
-      {
-        question: 'آیا هیلین با سایر کرم‌ها و ضدآفتاب تداخل دارد؟',
-        answer: 'خیر، هیلین بر پایه ژل آکوا سبک و بدون چربی فرموله شده و پس از جذب کامل، بستر مناسبی برای کرم‌های ترمیم‌کننده و ضدآفتاب ایجاد می‌کند.',
-      },
-      {
-        question: 'آیا بعد از جلسات مزوتراپی یا میکرونیدلینگ هم می‌توان از آن استفاده کرد؟',
-        answer: 'بله، هیلین به دلیل استانداردهای دارویی و بافت استریل، جهت آرام‌سازی بافت سوراخ‌شده در میکرونیدلینگ و مزونیدلینگ بسیار ایده‌آل است.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 4.9,
-      reviewCount: 41,
-    },
-  },
-
-  'silicalene': {
-    id: 'prod_drdermer_006',
-    slug: 'silicalene',
-    brand: {
-      name: 'ReeSkin Clinical',
-      slug: 'reeskin',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'اسکراب دتوکس روزانه با کره‌های سیلیکای گرد و کربن فعال',
-    },
-    title: 'اسکراب دتوکس سیلیکالین Silicalene Mild Silica Scrub',
-    subtitleFa: 'پاکسازی عمقی منافذ، رفع جوش‌های سرسیاه و کنترل چربی با سیلیکا و AHA/BHA',
-    scientificName: 'Ultra-smooth Silica Spheres Detox & Pore Purifying Scrub',
-    description:
-      'اسکراب سیلیکالین (Silicalene Scrub) با بهره‌گیری از میکروسفرهای کاملاً کروی سیلیکا، سلول‌های کدر سطح پوست را بدون ایجاد کوچکترین خراش فیزیکی پاکسازی می‌کند. فرمولاسیون حاوی کربن فعال، اسید گلیکولیک و سالیسیلیک (BHA)، زینک PCA و عصاره بابونه پوست را تمیز، روشن و متعادل می‌سازد.',
-    formulation: 'ژل اسکراب حاوی کره‌های سیلیکای کروی و زغال فعال',
-    skinTypes: ['پوست‌های چرب، مختلط و مستعد آکنه', 'پوست‌های با منافذ بسته'],
-    skinConcerns: ['کومدون‌های سرسیاه', 'چربی اضافه و براقی پوست', 'تیرگی موضعی'],
-    cleanBadges: [
-      'فاقد دانه‌های پلاستیکی (Microplastic-free)',
-      'تنظیم‌کننده pH فیزیولوژیک',
-      'ضد انسداد منافذ (Non-Comedogenic)',
-    ],
-    media: [
-      {
-        id: 'med_sil_hero',
-        url: '/assets/drdermer/2025/08/14silicalene-1200x1109.webp',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی سیلیکالین',
-        altText: 'اسکراب دتوکس سیلیکالین دکتر درمر Silicalene Mild Scrub',
-        caption: 'Silicalene Mild Scrub ۲۰۰ میلی‌لیتر',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_sil_200ml',
-        sku: 'DD-SIL-200ML',
-        title: 'تیوب ۲۰۰ میلی‌لیتر',
-        sizeOrVolume: '200ml تیوب',
-        priceAmount: '15500000',
-        originalPriceAmount: '18000000',
-        discountPercent: 14,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 40,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'لایروبی بیومکانیکی منافذ و سم‌زدایی سطحی',
-      summary:
-        'ترکیب ذرات متخلخل کربن فعال با کره‌های ژئودینامیک سیلیکا، بدون سایش زبر، چربی اکسیدشده و آلودگی‌های شهری را به خود جذب می‌کند.',
-      bohrEffectExplanation:
-        'پاکسازی مجاری منافذ اجازه جذب بهتر ترکیبات فعال و تنفس سلولی را فراهم می‌آورد.',
-      clinicalBenefits: [
-        'پاکسازی عمیق جوش‌های سرسیاه بدون گشادشدن منافذ',
-        'مات‌کنندگی بافت چهره و کاهش ترشح سبوم تا ۸ ساعت',
-      ],
-      studyReference: 'Pore Clearance and Sebum Metrics, Cambridge Lab 2024.',
-    },
-    ingredients: [
-      {
-        nameFa: 'کره‌های سیلیکای گرد ژئودینامیک و کربن فعال بامبو',
-        inciName: 'Hydrated Silica Spheres, Activated Bamboo Charcoal',
-        percentage: '6.00%',
-        purity: '۱۰۰٪ گرید مدیکال، ذرات با قطر ۵۰ میکرومتر کاملاً صیقلی',
-        cirRating: 'Safe as Used (CIR Expert Panel)',
-        casNumber: '112926-00-8 / 7440-44-0',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'لایروبی عمیق منافذ پوست بدون آسیب به سد دفاعی',
-        molecularMechanism: 'جذب سطحی آلاینده‌های هیدروفوبیک، سبوم اکسیدشده و سلول‌های کراتینه کدر بدون خراش میکروسکوپی در بافت.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'اسید سالیسیلیک لیپوفیلیک (BHA) و زینک PCA',
-        inciName: 'Salicylic Acid USP, Zinc PCA',
-        percentage: '2.50%',
-        purity: '۹۹.۵٪ گرید دارویی با نفوذپذیری سبوم بالا',
-        cirRating: 'Safe with Concentration Limits (CIR 2023)',
-        casNumber: '69-72-7 / 15454-75-8',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'حل‌کردن چربی داخل منافذ، آنتی‌باکتریال و کنترل آکنه',
-        molecularMechanism: 'شکستن پیوندهای دسموزومی داخل فولیکول، مهار آنزیم ۵-آلفاردوکتاز و جلوگیری از اکسیداسیون چربی سرسیاه.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'عصاره گل بابونه و گلیسیرین گیاهی',
-        inciName: 'Chamomilla Recutita Flower Extract, Glycerin',
-        percentage: '3.00%',
-        purity: 'عصاره خالص فاقد آلرژن',
-        cirRating: 'Safe as Used',
-        casNumber: '84082-60-0 / 56-81-5',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'پیشگیری از خشکی و احساس کشیدگی پس از شستشو',
-        isKeyActive: false,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'هفته‌ای ۲ تا ۳ بار در روتین شبانه',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'مرطوب‌سازی چهره با آب ولرم',
-          instruction: 'پوست را با آب ولرم مرطوب کنید تا منافذ باز شده و پوست آماده پذیرش بافت ژلی شود.',
-          frequency: 'هفته‌ای ۲ تا ۳ بار',
-        },
-        {
-          stepNumber: 2,
-          title: 'ماساژ ملایم روی نواحی T-Zone',
-          instruction: 'به مقدار یک بند انگشت از ژل اسکراب را روی پیشانی، بینی و چانه به مدت ۶۰ ثانیه با حرکات دورانی آرام ماساژ دهید.',
-        },
-        {
-          stepNumber: 3,
-          title: 'پاکسازی عمیق با آب ولرم',
-          instruction: 'پوست را کاملاً با آب ولرم شستشو دهید تا ذرات کربن فعال و سیلیکا پاک شوند.',
-        },
-        {
-          stepNumber: 4,
-          title: 'تثبیت و آبرسانی با ژل هیلین',
-          instruction: 'پس از خشک کردن ملایم، از ژل تسکین‌بخش هیلین جهت تنظیم pH و تعادل سد دفاعی استفاده نمایید.',
-        },
-      ],
-      preProcedure: 'پوست را از هرگونه آرایش پاک کنید.',
-      postProcedureCare: 'از مرطوب‌کننده غیرکومدون‌زا یا ژل هیلین استفاده نمایید.',
-      warnings: ['از تماس با پوست حساس اطراف چشم خودداری شود.', 'روی پوست دارای زخم باز یا اگزما استفاده نشود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'ISO 22716 Cosmetics GMP',
-          issuer: 'BSI UK',
-          certificateCode: 'GMP-SIL-2024',
-          description: 'استاندارد عملیات خوب تولید دارویی و آرایشی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'کد بچ روی درز تیوب درج شده است.',
-      storageConditions: 'در محیط خشک و دور از گرمای مستقیم.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن.',
-      ceIsoStandards: ['ISO 22716', 'CE Compliant'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_sil_01',
-        patientAge: 26,
-        patientGender: 'آقا',
-        condition: 'کومدون‌های سرسیاه متراکم بینی و گونه، چربی اضافه و براقی صورت',
-        protocolDescription: 'اسکراب دتوکس سیلیکالین ۳ نوبت در هفته به مدت ۴ هفته متوالی',
-        durationWeeks: 4,
-        sessionsCount: 12,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: 'قبل از شروع دوره دتوکس',
-        afterLabel: 'پس از ۴ هفته مصرف منظم',
-        visiaMetrics: [
-          {
-            id: 'visia_sil_1',
-            labelFa: 'کاهش تراکم جوش‌های سرسیاه بینی (Blackhead Density)',
-            baseline: '۱۱۲ عدد در سانتی‌متر مربع',
-            week4Result: '۲۸ عدد در سانتی‌متر مربع',
-            percentageChange: '-۷۵٪',
-            isImprovement: true,
-            description: 'آنالیز درماتوسکوپی کانفیلد ویزیا از منافذ بینی',
-          },
-          {
-            id: 'visia_sil_2',
-            labelFa: 'کنترل ترشح سبوم و چربی پوست (Sebum Metric)',
-            baseline: '۱۹۸ µg/cm²',
-            week4Result: '۹۲ µg/cm²',
-            percentageChange: '-۵۳٪',
-            isImprovement: true,
-            description: 'سبوم‌متری سطحی با زینک PCA و BHA',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر افشین مهرآرا',
-          doctorTitleFa: 'متخصص درماتولوژی، عضو انجمن پوست اروپا (EADV)',
-          medicalLicenseNo: 'نظام پزشکی: ۸۳۹۰۱',
-          clinicName: 'مرکز سلامت و زیبایی پوست فرشته',
-          quote:
-            'میکروسفرهای سیلیکا در مقایسه با پوست گردو یا میکروپلاستیک‌های معمولی، اصطکاک روان هیدرودینامیک دارند و بدون تحریک التهابی جوش، چربی اکسیدشده را تخلیه می‌کنند.',
-          verifiedBadge: 'تأییدیه کلینیکال بین‌المللی',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'تفاوت سیلیکالین با کریستالین چیست؟',
-        answer: 'سیلیکالین اسکراب ژلی حاوی کره‌های سیلیکا و کربن فعال با BHA برای کنترل چربی و منافذ است؛ در حالی که کریستالین خمیر پولیش آلومینا برای شفاف‌سازی و لایه‌برداری ریز است.',
-      },
-      {
-        question: 'آیا دانه‌های سیلیکالین به محیط زیست آسیب می‌زنند؟',
-        answer: 'خیر، سیلیکالین ۱۰۰٪ فاقد میکروپلاستیک (Microplastic-free) بوده و از مواد معدنی طبیعی و تجزیه‌پذیر هیدراته تولید شده است.',
-      },
-      {
-        question: 'آیا برای پوست‌های دارای آکنه فعال مناسب است؟',
-        answer: 'به دلیل حضور سالیسیلیک اسید و زینک PCA برای آکنه‌های غیرملتهب و کومدون‌ها بسیار عالی است؛ اما بر روی آکنه‌های چرکی ملتهب باید با احتیاط و بدون مالش شدید استفاده شود.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 4.7,
-      reviewCount: 28,
-    },
-  },
-
-  'carbox': {
-    id: 'prod_drdermer_007',
-    slug: 'carbox',
-    brand: {
-      name: 'ReeMed Medical Pro',
-      slug: 'reemed',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'ایستگاه تخصصی مدیکال تزریق گاز CO2 و کربوکسی‌پاد',
-    },
-    title: 'دستگاه تخصصی تزریق گاز CO2 و کربوکسی‌پاد کلینیکال CarboX',
-    subtitleFa: 'سیستم دوگانه کربوکسی‌تراپی تهاجمی و غیرتهاجمی با کنترل دیجیتال فشار و دوز',
-    scientificName: 'Dual Precise CO2 Gas Injection & Transdermal Carboxy Pod Station',
-    description:
-      'دستگاه کربوکس (ReeMed CarboX) سیستم پیشرفته کلینیکال و پزشکی است که برای اولین بار دو مدالیته درمانی را تلفیق می‌کند: ۱) تزریق زیرجلدی گاز CO2 با تنظیم دقیق میکرودوز، فشار و دما، ۲) مدالیته غیرتهاجمی با هندپیس مخصوص فعال‌سازی CarboxyPod بر سطح CarboxyGel. این سیستم به پزشکان بالاترین درجه آزادی عمل و کنترل ایمنی را می‌دهد.',
-    formulation: 'دستگاه پزشکی الکترومکانیکال کالیبره‌شده با استانداردهای اتحادیه اروپا',
-    skinTypes: ['کلینیک‌های پوست، مو و زیبایی', 'پزشکان متخصص پوست و جراحان زیبایی'],
-    skinConcerns: ['سلولیت و چربی موضعی', 'اسکارهای عمیق و استریا', 'تیرگی دور چشم و شلی پوست'],
-    cleanBadges: [
-      'دارای مدیکال CE اتحادیه اروپا',
-      'تاییدیه کالیبراسیون دقیق گاز پزشکی',
-      'سیستم گرمایش هوشمند گاز جهت کاهش درد تزریق',
-    ],
-    media: [
-      {
-        id: 'med_cbx_hero',
-        url: '/assets/drdermer/2025/08/01Reeskin-scaled.webp',
-        role: 'HERO',
-        roleFa: 'دستگاه کاربوکس مدیکال',
-        altText: 'دستگاه پزشکی کربوکسی تراپی CarboX ری‌مد انگلستان',
-        caption: 'ایستگاه کاری CarboX با کنترل میکروپروسسوری فشار گاز و هندپیس اولتراسونیک',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_cbx_station',
-        sku: 'RM-DEV-CARBOX-PRO',
-        title: 'دستگاه کامل CarboX به همراه هندپیس‌های تخصصی و گارانتی رسمی',
-        sizeOrVolume: 'کنسول پرتابل مدیکال با ترولی',
-        priceAmount: '450000000', // 45,000,000 Tomans
-        originalPriceAmount: '500000000',
-        discountPercent: 10,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 8,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'تنظیم دقیق میکرودوز و اثر بوهر مافوق بحرانی',
-      summary:
-        'کنترل پیوسته سرعت تزریق از ۱۰ تا ۱۰۰ سی‌سی در دقیقه همراه با گرمایش گاز تا ۳۶ درجه سانتی‌گراد جهت حداقل‌کردن ناراحتی بیمار و بیشینه‌سازی رهایش اکسیژن.',
-      bohrEffectExplanation:
-        'تزریق مستقیم CO2 خالص پزشکی باعث تحریک فوری رگ‌زایی عروقی (Angiogenesis) و لیپولیز اکسیداتیو چربی‌های موضعی می‌شود.',
-      clinicalBenefits: [
-        'درمان قطعی تیرگی دور چشم و افتادگی پلک تحتانی',
-        'کاهش سایز و بهبود ظاهر سلولیت در نواحی بدن',
-        'تحریک تولید الاستین و بازسازی استریاهای پوستی',
-      ],
-      studyReference: 'Journal of Aesthetic Surgery and Clinical Carboxytherapy 2024.',
-    },
-    ingredients: [
-      {
-        nameFa: 'گاز دی‌اکسید کربن با گرید پزشکی فوق‌خالص ۹۹.۹۹۹٪',
-        inciName: 'Carbon Dioxide (Medical Grade USP / Ph. Eur. 99.999%)',
-        percentage: '99.999%',
-        purity: 'خلوص دارویی فاقد مونوکسید کربن و بخارات هیدروکربنی',
-        cirRating: 'Safe as Used (FDA Approved Medical Device Gas)',
-        casNumber: '124-38-9',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'القای رگ‌زایی عروقی، اثر بوهر مافوق بحرانی و لیپولیز بافتی',
-        molecularMechanism: 'اتساع فوری اسفنکترهای پیش‌مویرگی از طریق تحریک گیرنده‌های نیتریک اکسید و آزاد شدن همزمان اکسیژن از هموگلوبین.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'فیلتر هیدروفوبیک آنتی‌باکتریال تفلون (PTFE 0.22µm)',
-        inciName: 'Polytetrafluoroethylene (PTFE) Sterilization Matrix',
-        purity: 'فیلتراسیون استریل ۱۰۰٪ باکتری و پاتوژن‌ها مطابق USP 797',
-        cirRating: 'Safe Medical Grade Non-Toxic',
-        casNumber: '9002-84-0',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'جلوگیری از ورود هرگونه ذره میکرونی به مسیر تزریق گاز به بافت',
-        molecularMechanism: 'جداسازی بار منفی و غشای متخلخل جهت تضمین گاز ورودی استریل در دمای فیزیولوژیک.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'تیتانیم گرید ۵ و آلیاژ استیل مدیکال 316L',
-        inciName: 'Surgical Stainless Steel 316L & Titanium Grade 5 Handpiece',
-        purity: 'زیست‌سازگار کامل با استاندارد ISO 10993',
-        cirRating: 'Biocompatible Implant Grade',
-        casNumber: '12597-68-1 / 7440-32-6',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'انتقال بدون رسوب گاز گرم و ارتعاش فعال‌ساز CarboxyPod',
-        molecularMechanism: 'عدم ایجاد خوردگی در مجاورت فازهای اسیدی و قلیایی تبادل گاز CO2.',
-        isKeyActive: false,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'پروتکل کلینیکال زیر نظر پزشک متخصص پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'روشن‌کردن و کالیبراسیون سنسور گاز',
-          instruction: 'کنسول CarboX را روشن کرده، فشار خروجی کپسول پزشکی را روی ۵ بار تنظیم نموده و تست خودکار نشتی مدار را آغاز کنید.',
-          frequency: 'هر جلسه درمانی',
-        },
-        {
-          stepNumber: 2,
-          title: 'تنظیم پارامترهای دوز و دمای گاز',
-          instruction: 'دمای گاز را روی ۳۶ درجه سانتی‌گراد و دبی خروجی را متناسب با اندیکاسیون (دور چشم: ۱۰-۱۵ cc/min، بدن: ۵۰-۸۰ cc/min) تنظیم نمایید.',
-        },
-        {
-          stepNumber: 3,
-          title: 'تزریق میکرودوز زیرجلدی با سرسوزن 30G',
-          instruction: 'پس از استریل با زاویه ۱۵ الی ۳۰ درجه گاز به لایه هایپودرم یا درم تزریق شده و اتساع ملایم بدون درد بافت مشاهده می‌گردد.',
-        },
-        {
-          stepNumber: 4,
-          title: 'اعمال هندپیس CarboxyPod و ماساژ تسکینی',
-          instruction: 'بلافاصله پس از تزریق، هندپیس اولتراسونیک CarboxyPod بر سطح ژل اعمال شده و ژل هیلین برای تسکین استفاده می‌شود.',
-        },
-      ],
-      preProcedure: 'ضدعفونی دقیق موضع با بتادین یا کلرهگزیدین و بررسی عدم وجود سابقه ترومبوفلبیت فعال.',
-      postProcedureCare: 'کمپرس خنک، خودداری از استحمام گرم تا ۲۴ ساعت و استفاده از ژل تسکین‌بخش هیلین.',
-      warnings: ['صرفاً جهت استفاده پزشکان و اپراتورهای دارای گواهی معتبر آموزش آکادمی دکتر درمر.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'CE Medical Class IIb Certified',
-          issuer: 'TÜV Rheinland Germany',
-          certificateCode: 'CE-MED-CARBOX-991',
-          description: 'تأییدیه تجهیزات درمانی تهاجمی پزشکی اتحادیه اروپا.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'شماره سریال حک‌شده روی بدنه با پلاک مهندسی استاندارد.',
-      storageConditions: 'در محیط تمیز کلینیک و تهویه استاندارد کپسول‌های گاز مدیکال.',
-      shelfLifeAfterOpening: 'گارانتی رسمی ۲۴ ماهه و ۱۰ سال خدمات پس از فروش.',
-      ceIsoStandards: ['CE Class IIb', 'ISO 13485:2016', 'IEC 60601-1 Medical Safety'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_cbx_01',
-        patientAge: 46,
-        patientGender: 'خانم',
-        condition: 'تیرگی شدید اطراف چشم (پری‌اربیتال هایپرپیگمنتیشن) و افتادگی پلک تحتانی',
-        protocolDescription: 'تزریق کربوکسی‌تراپی CarboX با گاز گرم (۲۰ سی‌سی در دقیقه) طی ۴ جلسه به فاصله دو هفته',
-        durationWeeks: 8,
-        sessionsCount: 4,
-        beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-        beforeLabel: 'جلسه ۱ (تیرگی و رکود عروقی زیر چشم)',
-        afterLabel: 'جلسه ۴ (بهبود درناژ لنفاوی و روشن شدن پوست)',
-        visiaMetrics: [
-          {
-            id: 'visia_cbx_1',
-            labelFa: 'کاهش تیرگی و هموگلوبین راکد پری‌اربیتال',
-            baseline: '۷۹ شاخص احتقان عروقی',
-            week4Result: '۲۴ شاخص احتقان عروقی',
-            percentageChange: '-۶۹٪',
-            isImprovement: true,
-            description: 'ارزیابی اسپکتروسکوپی جریان اکسیژن بافت زیر چشم',
-          },
-          {
-            id: 'visia_cbx_2',
-            labelFa: 'افزایش ضخامت کلاژن درمیس پلک تحتانی',
-            baseline: '۰.۴۲ میلی‌متر',
-            week4Result: '۰.۷۱ میلی‌متر',
-            percentageChange: '+۶۹٪',
-            isImprovement: true,
-            description: 'سونوگرافی با رزولوشن بالای ۲۰ مگاهرتز',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'پروفسور جیمز هندرسون',
-          doctorTitleFa: 'فوق‌تخصص جراحی پلاستیک و درماتولوژی کلینیکال هارلی‌استریت',
-          medicalLicenseNo: 'GMC Reg: 4192083',
-          clinicName: 'The London Aesthetic & Carboxy Research Institute',
-          quote:
-            'دستگاه CarboX با گرمایش گاز CO2 تا دمای بدن، درد تزریق را به صفر رسانده و ریسک اسپاسم عروقی را حذف کرده است. نتایج کیس‌های تیرگی دور چشم و استریا در کنگره IMCAS پاریس با تحسین همراه شد.',
-          verifiedBadge: 'گواهی بورد جراحی زیبایی انگلستان',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'گارانتی و آموزش کار با دستگاه چگونه ارائه می‌شود؟',
-        answer: 'تمامی دستگاه‌های CarboX شامل ۲ سال گارانتی تعویض قطعات، آموزش رایگان پزشک و پرسنل با اعطای سرتیفیکیت معتبر آکادمی دکتر درمر بریتانیا می‌باشند.',
-      },
-      {
-        question: 'تفاوت دستگاه CarboX با دستگاه‌های کربوکسی سنتی چیست؟',
-        answer: 'دستگاه CarboX مجهز به سیستم گرمایش اتوماتیک گاز جهت به حداقل رساندن درد، تنظیم پیوسته دوز دیجیتال، و هندپیس دوگانه ترکیبی فعال‌سازی پادهای CarboxyPod بر سطح ژل می‌باشد.',
-      },
-      {
-        question: 'اندیکاسیون‌های اصلی درمانی CarboX کدامند؟',
-        answer: 'تیرگی و چروک دور چشم، استریا و ترک‌های پوستی ناشی از چاقی و بارداری، سلولیت، لیپولیز غبغب و جوان‌سازی صورت و گردن.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 5.0,
-      reviewCount: 16,
-    },
-  },
-
-  'plasmax': {
-    id: 'prod_drdermer_008',
-    slug: 'plasmax',
-    brand: {
-      name: 'ReeMed Medical Pro',
-      slug: 'reemed',
-      originCountry: 'انگلستان (United Kingdom)',
-      tagline: 'تکنولوژی پیشرفته جت پلاسمای سرد و تخلیه مداوم پلاسما',
-    },
-    title: 'دستگاه پیشرفته انرژی پلاسما و جت پلاسمای سرد PlasmaX',
-    subtitleFa: 'ترکیب پلاسمای تخلیه پیوسته، جت پلاسمای سرد آرگون/هلیوم و DBD پلاسما',
-    scientificName: 'Dynamic Continuous Discharge & Cold Argon/Helium Plasma Jet System',
-    description:
-      'پلاسماکس (ReeMed PlasmaX) قوی‌ترین و ایمن‌ترین سیستم پلاسمای پزشکی در جهان است که به پزشک امکان کنترل ولتاژ، فرکانس، عمق نفوذ و انرژی را می‌دهد. فناوری Cold Plasma Jet این دستگاه با گازهای آرگون و هلیوم برای ترمیم زخم، ضدعفونی سطحی باکتریایی، بیواستیمولیشن سلولی و بهبود جای اسکار بدون سوختگی به کار می‌رود.',
-    formulation: 'سیستم مولد انرژی پلاسمای مدیکال با ژنراتور فرکانس بالا',
-    skinTypes: ['مراکز جراحی محدود و کلینیک‌های پوست'],
-    skinConcerns: ['بلفاروپلاستی غیرجراحی', 'اسکار آکنه و جراحی', 'عفونت‌های پوستی و ضایعات خوش‌خیم'],
-    cleanBadges: [
-      'پلاسمای سرد غیرحرارتی بدون سوختگی بافت',
-      'تکنولوژی DBD بیورزونانت با نفوذ کنترل‌شده',
-      'دارای مدیکال CE اتحادیه اروپا',
-    ],
-    media: [
-      {
-        id: 'med_plx_hero',
-        url: '/assets/drdermer/2025/08/18plasmax-181x300.webp',
-        role: 'HERO',
-        roleFa: 'کنسول پلاسماکس',
-        altText: 'دستگاه پزشکی پلاسماکس PlasmaX دکتر درمر انگلستان',
-        caption: 'کنسول PlasmaX با پروب‌های اختصاصی جراحی و جت سرد آرگون',
-      },
-      {
-        id: 'med_plx_clinic',
-        url: '/assets/drdermer/2025/09/scar-removal.webp',
-        role: 'IN_CLINIC',
-        roleFa: 'ترمیم اسکار با جت سرد',
-        altText: 'پروتکل رفع اسکار با پلاسمای سرد پلاسماکس',
-        caption: 'نتایج بالینی ترمیم بافت اسکار و سنتز الاستین',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_plx_station',
-        sku: 'RM-DEV-PLASMAX-PRO',
-        title: 'دستگاه کامل PlasmaX با پروب‌های جراحی و Cold Jet',
-        sizeOrVolume: 'کنسول ایستاده کلینیکال',
-        priceAmount: '580000000', // 58,000,000 Tomans
-        originalPriceAmount: '640000000',
-        discountPercent: 9,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 5,
-        mediaRoleMatch: 'HERO',
-      },
-    ],
-    scienceMechanism: {
-      heading: 'پلاسمای سرد غیرحرارتی و یونیزاسیون گازهای نجیب',
-      summary:
-        'تولید گونه‌های فعال اکسیژن و نیتروژن (RONS) بدون ایجاد آسیب حرارتی به درم، که منجر به تحریک فیبروبلاست‌ها و حذف ۹۹.۹٪ باکتری‌های مولد آکنه می‌گردد.',
-      bohrEffectExplanation:
-        'مکمل فوق‌العاده در درمان‌های ترکیبی برای تسریع ترمیم پس از پیلینگ و لیزرهای فرکشنال.',
-      clinicalBenefits: [
-        'بلفاروپلاستی غیرتهاجمی پلک بدون اسکار و برش جراحی',
-        'ضدعفونی عمقی و بهبود سریع زخم‌ها و اسکارهای آکنه',
-      ],
-      studyReference: 'European Journal of Medical Plasma Physics, Vol 19, 2024.',
-    },
-    ingredients: [
-      {
-        nameFa: 'گاز آرگون پزشکی فوق‌خالص ۹۹.۹۹۹٪ (گرید ۵.۰)',
-        inciName: 'High-Purity Argon Gas Grade 5.0 Ph. Eur. / USP',
-        percentage: '99.999%',
-        purity: 'خلوص بیوتکنولوژی فوق‌العاده با خلوص طیفی ۹۹.۹۹۹٪',
-        cirRating: 'Safe Noble Gas for Medical Use',
-        casNumber: '7440-37-1',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'یونیزاسیون سرد، تولید گونه‌های فعال ROS/RNS و حذف پاتوژن‌ها',
-        molecularMechanism: 'برانگیختگی الکترونی گاز آرگون و تولید جریان پلاسمای غیرحرارتی (زیر ۳۸ درجه) جهت ضدعفونی سطحی و بیواستیمولیشن.',
-        isKeyActive: true,
-      },
-      {
-        nameFa: 'گاز هلیوم دارویی جهت پایدارسازی جت پلاسما',
-        inciName: 'Medical Helium Gas Carrier Stream',
-        percentage: '99.99%',
-        purity: 'فاقد رطوبت و اکسیژن آزاد Ph. Eur.',
-        cirRating: 'Safe Medical Inert Gas',
-        casNumber: '7440-59-7',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'تثبیت قوس تخلیه الکتریکی و جلوگیری از ایجاد جرقه حرارتی',
-        molecularMechanism: 'افزایش هدایت گرمایی و کاهش دمای تخلیه سطحی روی سلول‌های حساس اپیدرم.',
-        isKeyActive: false,
-      },
-      {
-        nameFa: 'سرسوزن جراحی تنگستن غیرقابل اکسیداسیون',
-        inciName: 'Non-Oxidizing Surgical Tungsten Micro-Needle',
-        purity: 'آلیاژ تنگستن با نقطه ذوب ۳۴۲۲ درجه سانتی‌گراد',
-        cirRating: 'Biocompatible Surgical Electrode',
-        casNumber: '7440-33-7',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'تخلیه متمرکز بار الکتریکی بدون سایش یا سوختگی بافت',
-        isKeyActive: false,
-      },
-      {
-        nameFa: 'تیوب دی‌الکتریک رزونانت کوارتز خالص (DBD Jet)',
-        inciName: 'Fused Quartz Dielectric Resonator Tube',
-        purity: 'کوارتز نوری با مقاومت دی‌الکتریک ۱۰۰ کیلوولت بر میلی‌متر',
-        cirRating: 'Inert Biocompatible Material',
-        casNumber: '14808-60-7',
-        ewgScore: 1,
-        comedogenicRating: 0,
-        purpose: 'ایجاد پلاسمای سد دی‌الکتریک بدون پرتاب جرقه',
-        isKeyActive: false,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'پروتکل مطب و اتاق عمل سرپایی درماتولوژی',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'اتصال کپسول گاز آرگون و کالیبراسیون دبی',
-          instruction: 'کپسول گاز آرگون ۹۹.۹۹۹٪ را به پنل پشتی متصل کرده، رگلاتور را روی فشار ۳ بار تنظیم و دبی خروجی را بررسی فرمایید.',
-          frequency: 'پیش از شروع پروسیجر',
-        },
-        {
-          stepNumber: 2,
-          title: 'انتخاب مدالیته درمانی (Continuous, Cold Jet, DBD)',
-          instruction: 'برای بلفاروپلاستی مد Continuous با توان ۴ الی ۶ وات و برای ترمیم اسکار و ضدعفونی مد Cold Plasma Jet را از منوی لمسی انتخاب کنید.',
-        },
-        {
-          stepNumber: 3,
-          title: 'اجرای اسکن غیرتماسی روی بافت',
-          instruction: 'نازل جت سرد را با فاصله ۱ الی ۳ میلی‌متر از سطح پوست به صورت جاروبی حرکت دهید تا گونه‌های فعال نیتروژن و اکسیژن بافت را تحریک کنند.',
-        },
-        {
-          stepNumber: 4,
-          title: 'پانسمان محافظتی با ژل هیلین',
-          instruction: 'بلافاصله موضع تحت درمان را با لایه سخاوتمندانه‌ای از ژل تسکین‌بخش هیلین پوشش دهید.',
-        },
-      ],
-      preProcedure: 'تمیزکردن موضع با مواد غیرالکلی و اطمینان از خشک بودن کامل سطح پوست.',
-      postProcedureCare: 'استفاده از ژل تسکین‌بخش هیلین و محافظت کامل در برابر نور آفتاب با ضدآفتاب مینرال.',
-      warnings: ['استفاده از عینک محافظ چشمی مخصوص پلاسما هم برای پزشک و هم برای بیمار الزامی است.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'CE Medical Device Class IIb',
-          issuer: 'BSI Netherlands',
-          certificateCode: 'CE-PLX-9941',
-          description: 'انطباق ایمنی با استانداردهای تجهیزات پلاسمای جراحی اروپا.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'شماره سریال حکاکی‌شده لیزری با تاییدیه تست عایق ولتاژ بالا.',
-      storageConditions: 'در محیط سرپوشیده با دمای ۱۰ تا ۳۰ درجه سانتی‌گراد.',
-      shelfLifeAfterOpening: '۲۴ ماه گارانتی بی‌قیدوشرط کنسول و هندپیس‌ها.',
-      ceIsoStandards: ['CE Medical IIb', 'ISO 13485', 'IEC 60601-2-2'],
-    },
-    clinicalCaseStudies: [
-      {
-        id: 'study_plx_01',
-        patientAge: 52,
-        patientGender: 'خانم',
-        condition: 'افتادگی پوست پلک فوقانی (Dermatochalasis) و خطوط پنجه‌کلاغی مقاوم',
-        protocolDescription: 'بلفاروپلاستی غیرتهاجمی با PlasmaX همراه با ۱ نوبت جت سرد آرگون برای تسریع التیام',
-        durationWeeks: 4,
-        sessionsCount: 2,
-        beforeImageUrl: '/assets/drdermer/2025/09/wrinkle-removal.webp',
-        afterImageUrl: '/assets/drdermer/2025/09/wrinkle-removal-876x1024.webp',
-        beforeLabel: 'قبل از بلفاروپلاستی پلاسماکس',
-        afterLabel: '۳۰ روز پس از جلسه دوم',
-        visiaMetrics: [
-          {
-            id: 'visia_plx_1',
-            labelFa: 'میزان انقباض و جمع‌شدگی بافت اضافه پلک',
-            baseline: '۴.۲ میلی‌متر پوست مازاد',
-            week4Result: '۱.۱ میلی‌متر پوست مازاد',
-            percentageChange: '-۷۴٪',
-            isImprovement: true,
-            description: 'اندازه‌گیری فاصله شیار پلکی تا لبه مژه‌ها با آنالایزر دقیق',
-          },
-          {
-            id: 'visia_plx_2',
-            labelFa: 'سرعت بازسازی بافت بدون اسکار فیبروتیک',
-            baseline: '۰٪ بافت سالم',
-            week4Result: '۱۰۰٪ اپیتلیالیزاسیون کامل',
-            percentageChange: '+۱۰۰٪',
-            isImprovement: true,
-            description: 'بررسی درموسکوپی عدم تشکیل اسکار کلوییدی با Cold Jet',
-          },
-        ],
-        dermatologistReview: {
-          doctorName: 'دکتر آرش دانشور',
-          doctorTitleFa: 'جراح و متخصص چشم، فلوشیپ اکولوپلاستی و جراحی ترمیمی پلک',
-          medicalLicenseNo: 'نظام پزشکی: ۵۳۸۱۹',
-          clinicName: 'مرکز فوق تخصصی چشم و زیبایی نور',
-          quote:
-            'فناوری دوگانه PlasmaX تحولی در بلفاروپلاستی غیرجراحی ایجاد کرده است. افزودن جت سرد آرگون سبب شده دلمه و اسکار سوختگی ایجاد نشود و دوره نقاهت بیمار از دو هفته به ۴۸ ساعت کاهش یابد.',
-          verifiedBadge: 'عضو انجمن جراحان پلاستیک چشم اروپا (ESOPRS)',
-        },
-      },
-    ],
-    faqs: [
-      {
-        question: 'آیا پلاسماکس باعث ایجاد لک یا PIH می‌شود؟',
-        answer: 'به دلیل بهره‌گیری از فناوری پلاسمای سرد غیرحرارتی و کنترل میکروپروسسوری، خطر ایجاد لک‌های التهابی پس از درمان (PIH) حتی در پوست‌های با فتوتیپ تیره به حداقل رسیده است.',
-      },
-      {
-        question: 'تفاوت PlasmaX با پلاسماپن‌های معمولی چیست؟',
-        answer: 'پلاسماپن‌های متفرقه تنها یک جرقه حرارتی ساده تولید می‌کنند که پوست را می‌سوزاند؛ در حالی که PlasmaX یک سیستم پزشکی کلاس IIb با جت پلاسمای سرد آرگون و هلیوم و کنترل پیوسته انرژی بدون سوختگی است.',
-      },
-      {
-        question: 'دوره نقاهت بیمار پس از بلفاروپلاستی با PlasmaX چند روز است؟',
-        answer: 'به لطف تکنولوژی Cold Jet، بیمار تنها ۲۴ تا ۴۸ ساعت التهاب خفیف خواهد داشت و نیازی به استراحت طولانی یا مراقبت‌های تهاجمی اتاق عمل ندارد.',
-      },
-    ],
-    ratingSummary: {
-      ratingValue: 5.0,
-      reviewCount: 12,
-    },
-  },
-
-  'dokdo-1025': {
-    id: 'prod_dokdo_1025',
-    slug: 'dokdo-1025',
-    brand: {
-      name: 'راند لب (Round Lab)',
-      slug: 'round-lab',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول آبرسان راند لب مدل Dokdo 1025',
-    subtitleFa: 'سرم آبرسان عمقی و تسکین‌دهنده پوست‌های دهیدراته و حساس',
-    scientificName: 'Round Lab 1025 Dokdo Hydrating Deep Ampoule',
-    description: 'آمپول آبرسان قوی راند لب ۱۰۲۵ با ۷۲ نوع ماده معدنی طبیعی استخراج‌شده از آب‌های عمیق دریایی اولئونگ‌دو، تعادل رطوبتی لایه‌های اپیدرم را برقرار ساخته و سد دفاعی پوست را تحکیم می‌بخشد.',
-    formulation: 'آمپول فلوئیدی سبک با جذب سریع',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_dokdo-1025_hero',
-        url: '/assets/rupak/shop/dokdo-1025.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول آبرسان راند لب مدل Dokdo 1025',
-        caption: 'آمپول آبرسان راند لب مدل Dokdo 1025',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_dokdo-1025_main',
-        sku: 'SKU-DOKDO-1025',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '39400000',
-        originalPriceAmount: '42300000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'آمپول آبرسان قوی راند لب ۱۰۲۵ با ۷۲ نوع ماده معدنی طبیعی استخراج‌شده از آب‌های عمیق دریایی اولئونگ‌دو، تعادل رطوبتی لایه...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'تأییدیه لابراتوار درماتولوژی سئول',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-DOKDO-1025-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول ۱۰۲۵ دوکدو راند لب بافتی سبک، کمی غلیظ و در عین حال آبکی دارد که به‌سرعت جذب پوست می‌شود و بدون ایجاد حس چسبندگی، رطوبت مورد نیاز پوست را تأمین می‌کند. این محصول با هدف آبرسانی عمیق، حفظ تعادل رطوبت و ایجاد حس طراوت در پوست طراحی شده و برای استفاده روزانه مناسب است.',
-        'فرمول این آمپول از آب دریای عمیق اولئونگدو که با فناوری اختصاصی فیلتراسیون غشایی فرآوری شده، بهره می‌برد. این آب سرشار از ۷۲ نوع ماده معدنی طبیعی از جمله منیزیم، کلسیم و روی است که به حفظ تعادل رطوبت پوست کمک می‌کنند. همچنین وجود پانتنول، بتائین و DPG به آرامش پوست و کاهش احساس خشکی و ناراحتی کمک کرده و رطوبت پوست را برای مدت بیشتری حفظ می‌کند.',
-        'هیالورونیک اسید هیدرولیز شده با وزن مولکولی پایین، رطوبت را به لایه‌های پوست منتقل کرده و به افزایش لطافت و شادابی آن کمک می‌کند، در حالی که سرامید NP با تقویت سد دفاعی پوست، از تبخیر رطوبت جلوگیری کرده و به حفظ سلامت و استحکام پوست کمک می‌کند. این آمپول بدون رایحه بوده و برای انواع پوست، به‌ویژه پوست‌های حساس، قابل استفاده است.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'آبرسانی عمیق',
-        'حفظ تعادل رطوبت پوست',
-        'کمک به تسکین پوست و کاهش احساس خشکی',
-        'تقویت سد دفاعی پوست',
-        'مناسب انواع پوست، به‌ویژه پوست‌های حساس',
-        'بدون ایجاد حس چسبندگی',
-        'بافت سبک، آبکی و زودجذب',
-        'قابل استفاده به‌صورت لایه‌ای برای افزایش آبرسانی',
-        'قابل ترکیب با مرطوب‌کننده برای حفظ رطوبت بیشتر',
-        'حجم: ۴۵ گرم',
-        'ساخت: کره',
-        'تاریخ انقضا: ۲۰۲۷/۱۰',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'هیالورونیک اسید هیدرولیزشده',
-          description: 'با اندازه مولکولی کوچک‌تر، رطوبت را بهتر جذب کرده و به حفظ نرمی و شادابی پوست کمک می‌کند.',
-        },
-        {
-          name: 'سرامید NP',
-          description: 'سد دفاعی پوست را تقویت کرده و مانع از دست رفتن رطوبت می‌شود تا پوست مرطوب و متعادل باقی بماند.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'پس از تونر، چند قطره از آمپول را روی پوست صورت پخش کرده و به‌آرامی ضربه بزنید تا جذب شود.',
-    },
-  },
-
-  'centella-hyalu-cica': {
-    id: 'prod_centella_hyalu_cica',
-    slug: 'centella-hyalu-cica',
-    brand: {
-      name: 'اسکین ۱۰۰۴ (Skin1004)',
-      slug: 'skin1004',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول آبرسان و حجم‌دهنده هیالوتکا سنتلا اسکین ۱۰۰۴',
-    subtitleFa: 'سرم هیالورونیک و سنتلا ماداگاسکار برای پر شدن خطوط و آبرسانی ژرف',
-    scientificName: 'Skin1004 Madagascar Centella Hyalu-Cica First Ampoule',
-    description: 'ترکیب انحصاری هیالورونیک اسید چندوزنی با عصاره سنتلا ماداگاسکار برای آبرسانی فوری، تسکین بافت آسیب‌دیده و بازیابی شادابی طبیعی چهره.',
-    formulation: 'سرم آب‌پایه ژلی با ۵ وزن مولکولی هیالورونیک اسید',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_centella-hyalu-cica_hero',
-        url: '/assets/rupak/shop/centella-hyalu-cica.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول آبرسان و حجم‌دهنده هیالوتکا سنتلا اسکین ۱۰۰۴',
-        caption: 'آمپول آبرسان و حجم‌دهنده هیالوتکا سنتلا اسکین ۱۰۰۴',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_centella-hyalu-cica_main',
-        sku: 'SKU-CENTELLA-HYALU-CICA',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '36100000',
-        originalPriceAmount: '41400000',
-        discountPercent: 17,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'ترکیب انحصاری هیالورونیک اسید چندوزنی با عصاره سنتلا ماداگاسکار برای آبرسانی فوری، تسکین بافت آسیب‌دیده و بازیابی شادابی...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی ارگانیک ماداگاسکار اسکین ۱۰۰۴',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-CENTELLA-HYALU-CICA-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول آبرسان هیالو-سیکا سنتلا اسکین ۱۰۰۴ ترکیبی منحصر‌به‌فرد از عصاره خالص سنتلا آسیاتیکا ماداگاسکار و پنج لایه اسید هیالورونیک است که به سرعت به اعماق لایه‌های اپیدرم نفوذ کرده و رطوبت پایدار را فراهم می‌سازد.',
-        'این فرمولاسیون اختصاصی علاوه بر آبرسانی شدید، سد دفاعی پوست‌های دهیدراته و حساس را ترمیم کرده و التهابات و قرمزی‌های پوستی ناشی از عوامل محیطی را تسکین می‌دهد. بافت ژلی بسیار سبک و غیرچسبنده آن حس سبکی و طراوت بی‌نظیری ایجاد می‌کند.',
-        'حضور نیاسینامید و پانتنول در کنار کمپلکس هیالو-سیکا، شفافیت و یکدستی رنگ پوست را افزایش داده و از تبخیر رطوبت لایه‌های زیرین پوست جلوگیری می‌نماید.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'آبرسانی چندلایه و ماندگار با ۵ وزن مولکولی هیالورونیک اسید',
-        'تسکین‌دهنده سریع التهاب و قرمزی پوست با سنتلا ماداگاسکار',
-        'ترمیم و بازسازی سد دفاعی پوست‌های دهیدراته و حساس',
-        'بافت ژلی-آبی بسیار سبک و زودجذب بدون چربی و سنگینی',
-        'فاقد الکل، پارابن، اسانس و رنگ‌های مصنوعی',
-        'حفظ شادابی و طراوت چهره در تمام طول روز',
-        'حجم: ۱۰۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۱۱',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'عصاره سنتلا آسیاتیکا خالص ماداگاسکار',
-          description: 'تسکین فوری التهاب، تسریع روند ریکاوری پوست و تحریک تولید کلاژن طبیعی.',
-        },
-        {
-          name: 'کمپلکس هیالو-سیکا (۵ نوع هیالورونیک اسید)',
-          description: 'نفوذ عمیق به تمامی لایه‌های اپیدرم و ممانعت از تبخیر سطحی رطوبت.',
-        },
-        {
-          name: 'نیاسینامید دارویی (ویتامین B3)',
-          description: 'شفاف‌کننده تناژ پوست، تقویت الاستیسیته و کاهش ناهماهنگی‌های رنگی چهره.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'صبح و شب پس از شستشوی کامل صورت و استفاده از تونر، مقدار ۲ تا ۳ قطره از سرم را روی پوست صورت و گردن پخش نموده و به آرامی ضربه بزنید تا کاملاً جذب شود.',
-    },
-  },
-
-  'farmstay-gold-collagen': {
-    id: 'prod_farmstay_gold_collagen',
-    slug: 'farmstay-gold-collagen',
-    brand: {
-      name: 'فارم استی (Farm Stay)',
-      slug: 'farm-stay',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول تغذیه کننده کلاژن و طلا فارم استی مدل Gold Collagen',
-    subtitleFa: 'آمپول ضد پیری و سفت‌کننده پوست با ذرات میکرو طلای ۲۴ عیار و کلاژن هیدرولیزشده',
-    scientificName: 'Farm Stay 24K Gold & Collagen Super Nutrition Ampoule',
-    description: 'آمپول مغذی چندمنظوره با کلاژن غلیظ دریایی و طلای خالص برای سفت کردن خطوط فک و گونه، تحریک گردش خون و روشن کردن لک‌های خستگی صورت.',
-    formulation: 'آمپول غلیظ طلایی حاوی میکروپارتیکل‌های طلا',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_farmstay-gold-collagen_hero',
-        url: '/assets/rupak/shop/farmstay-gold-collagen.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول تغذیه کننده کلاژن و طلا فارم استی مدل Gold Collagen',
-        caption: 'آمپول تغذیه کننده کلاژن و طلا فارم استی مدل Gold Collagen',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_farmstay-gold-collagen_main',
-        sku: 'SKU-FARMSTAY-GOLD-COLLAGEN',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '31300000',
-        originalPriceAmount: '37900000',
-        discountPercent: 16,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'آمپول مغذی چندمنظوره با کلاژن غلیظ دریایی و طلای خالص برای سفت کردن خطوط فک و گونه، تحریک گردش خون و روشن کردن لک‌های خس...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی تست عدم تحریک پوستی',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-FARMSTAY-GOLD-COLLAGEN-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول همه‌کاره کلاژن و طلا فارم استی محصولی لوکس و غنی‌شده با ذرات طلای ۲۴ عیار و کلاژن هیدرولیزشده دریایی است که خاصیت ارتجاعی و انعطاف‌پذیری پوست را به طرز چشمگیری احیا می‌کند.',
-        'این آمپول با بهره‌مندی از حجم اقتصادی ۲۵۰ میلی‌لیتر، به عنوان یک درمان کامل ضدپیری و سفت‌کننده برای پوست صورت، گردن و دکلته عمل می‌کند. دانه‌های میکرو طلا به محض تماس با گرمای پوست ذوب شده و مواد فعال را به عمق اپیدرم می‌رسانند.',
-        'ترکیب کلاژن هیدرولیزشده با آدنوزین خطوط ریز و چروک‌های اولیه پوست را پر کرده و سدی مقاوم در برابر افتادگی و پیری زودرس بافت چهره می‌سازد.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'حاوی ذرات خالص طلای ۲۴ عیار و کلاژن دریایی هیدرولیزشده',
-        'افزایش چشمگیر استحکام، الاستیسیته و لیفتینگ طبیعی پوست',
-        'کاهش خطوط ریز، تیرگی و رفع افتادگی لایه‌های میانی اپیدرم',
-        'مغذی عمقی با بافت ژل کریستالی و جذب سریع و بی‌نقص',
-        'فاقد چربی مازاد و بدون مسدود کردن منافذ پوستی',
-        'حجم استثنایی و اقتصادی: ۲۵۰ میلی‌لیتر (مگا سایز)',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۰۹',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'طلای ۲۴ عیار نانو',
-          description: 'بهبود گردش خون موضعی، تسریع اکسیژن‌رسانی به کراتینوسیت‌ها و درخشش فوق‌العاده پوست.',
-        },
-        {
-          name: 'کلاژن هیدرولیزشده دریایی',
-          description: 'افزایش چگالی فیبرهای کلاژن و الاستین و جلوگیری از شل شدگی بافت چهره.',
-        },
-        {
-          name: 'آدنوزین و نیاسینامید',
-          description: 'تقویت عملکرد ضدچروک، شفاف‌کنندگی و بازسازی بافت همبند پوست.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'با استفاده از قاشقک بهداشتی موجود در جعبه، مقدار مناسبی از ژل آمپول را برداشته و روی کل پوست صورت و گردن ماساژ دهید تا دانه‌های طلا کاملاً جذب بافت پوست شوند.',
-    },
-  },
-
-  'rosemary-root-ampoule': {
-    id: 'prod_rosemary_root',
-    slug: 'rosemary-root-ampoule',
-    brand: {
-      name: 'آروماتیکا (Aromatica)',
-      slug: 'aromatica',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول حجم دهنده و تقویت کننده پوست سر رزماری',
-    subtitleFa: 'تونیک و آمپول فعال‌کننده فولیکول مو با عصاره غلیظ برگ رزماری و سالیسیلیک اسید',
-    scientificName: 'Aromatica Rosemary Root Scalp Enhancing Active Ampoule',
-    description: 'درمان تخصصی ریزش و نازک شدن تار مو؛ این آمپول با پاکسازی چربی زائد کف سر و خون‌رسانی مویرگی، فولیکول‌های خفته مو را احیا و ضخامت تارهای مو را افزایش می‌دهد.',
-    formulation: 'محلول غلیظ تقویت ریشه با اسانس طبیعی رزماری',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_rosemary-root-ampoule_hero',
-        url: '/assets/rupak/shop/rosemary-root-ampoule.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول حجم دهنده و تقویت کننده پوست سر رزماری',
-        caption: 'آمپول حجم دهنده و تقویت کننده پوست سر رزماری',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_rosemary-root-ampoule_main',
-        sku: 'SKU-ROSEMARY-ROOT-AMPOULE',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '43800000',
-        originalPriceAmount: '51500000',
-        discountPercent: 15,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'درمان تخصصی ریزش و نازک شدن تار مو؛ این آمپول با پاکسازی چربی زائد کف سر و خون‌رسانی مویرگی، فولیکول‌های خفته مو را احیا...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'تأییدیه وگان و EWG Verified',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-ROSEMARY-ROOT-AMPOULE-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول تقویت‌کننده و حجم‌دهنده ریشه رزماری محصولی تخصصی برای مراقبت پیشرفته از پوست سر و فولیکول‌های مو است که با عصاره خالص برگ و ریشه رزماری ارگانیک فرموله شده است.',
-        'این سرم فلوئیدی با پاکسازی عمقی چربی‌های انباشته و سلول‌های مرده کف سر، جریان خون مویرگی را در اطراف ریشه‌های مو تقویت کرده و محیطی ایده‌آل برای رشد موهایی سالم‌تر، ضخیم‌تر و پرپشت‌تر فراهم می‌آورد.',
-        'وجود بیوتین، کافئین و ویتامین‌های گروه B از نازک شدن موها جلوگیری کرده و خارش، شوره و خشکی آزاردهنده پوست سر را به طور ریشه‌ای درمان می‌کند.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'تقویت چشمگیر گردش خون موضعی در فولیکول‌های ریشه مو',
-        'مهار ریزش مو و تحریک رشد تارهای جدید و ضخیم‌تر',
-        'پاکسازی ملایم کف سر و تعادل ترشح سبوم اضافی',
-        'رفع خارش، التهاب و خشکی پوست سر با ایجاد حس خنکی دلپذیر',
-        'بدون ایجاد حس چربی و سنگینی روی ریشه و ساقه موها',
-        'فاقد سیلیکون، سولفات و ترکیبات آسیب‌رسان به ریشه',
-        'حجم: ۱۰۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۱۲',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'عصاره تقطیرشده ریشه و برگ رزماری',
-          description: 'محرک قوی گردش خون مویرگی، تغذیه پیاز مو و مهارکننده مسیرهای ریزش ارثی و هورمونی.',
-        },
-        {
-          name: 'بیوتین و کمپلکس ویتامین B5',
-          description: 'افزایش استحکام ساقه مو و تقویت پیوندهای کراتینی ریشه.',
-        },
-        {
-          name: 'سالیسیلیک اسید ملایم (BHA)',
-          description: 'پاکسازی منافذ فولیکولی کف سر و جلوگیری از تجمع چربی اکسیدشده.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'پس از شستشوی موها و خشک کردن نسبی، با قطره‌چکان چند قطره از سرم را مستقیماً روی بخش‌های کم‌پشت پوست سر ریخته و با نوک انگشتان ۲ الی ۳ دقیقه به آرامی ماساژ دهید. نیاز به آبکشی ندارد.',
-    },
-  },
-
-  'sunol-glow-ampoule': {
-    id: 'prod_sunol_glow',
-    slug: 'sunol-glow-ampoule',
-    brand: {
-      name: 'سام بای می (Some By Mi)',
-      slug: 'some-by-mi',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول روشن کننده و بهبود دهنده خطوط سنول گلو مدل',
-    subtitleFa: 'آمپول روشن‌کننده ضدلک و شاداب‌کننده قوی حاوی گلوتاتیون و نیاسینامید',
-    scientificName: 'Some By Mi Yuja Niacin / Sunol Glow Blemish Care Ampoule',
-    description: 'ترکیب غلیظ نیاسینامید ۵٪، گلوتاتیون و عصاره مرکبات ارگانیک جهت برطرف کردن لک‌های جای جوش، تیرگی‌های ناشی از اشعه UV و بازگرداندن شفافیت مخملی پوست.',
-    formulation: 'آمپول سرمی با رایحه طبیعی مرکبات بدون رنگ مصنوعی',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_sunol-glow-ampoule_hero',
-        url: '/assets/rupak/shop/sunol-glow-ampoule.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول روشن کننده و بهبود دهنده خطوط سنول گلو مدل',
-        caption: 'آمپول روشن کننده و بهبود دهنده خطوط سنول گلو مدل',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_sunol-glow-ampoule_main',
-        sku: 'SKU-SUNOL-GLOW-AMPOULE',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '38800000',
-        originalPriceAmount: '43400000',
-        discountPercent: 20,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'ترکیب غلیظ نیاسینامید ۵٪، گلوتاتیون و عصاره مرکبات ارگانیک جهت برطرف کردن لک‌های جای جوش، تیرگی‌های ناشی از اشعه UV و با...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی استاندارد روشن‌کنندگی بالینی',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-SUNOL-GLOW-AMPOULE-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول روشن‌کننده و جوان‌ساز سانول گلو با فرمولاسیونی درخشان و سبک، ترکیبی قوی از پپتیدهای ضدپیری و آنتی‌اکسیدان‌های گیاهی را در اختیار پوست قرار می‌دهد.',
-        'این محصول به طور هدفمند خطوط سطحی دور چشم، خط خنده و پیشانی را پر کرده و کدر بودن پوست را با افزایش انعکاس نور و درخشش طبیعی از بین می‌برد.',
-        'بافت سرمی با جذب فوری بدون ایجاد چربی و چسبندگی، پوست را نرم، یکدست و آماده پذیرش سایر مراحل مراقبتی روزانه می‌کند.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'ایجاد درخشش آنی و شفافیت طبیعی (Glow Finish) در چهره',
-        'بهبود و محو تدریجی خطوط پنجه کلاغی و خطوط ریز صورت',
-        'تقویت بافت همبند پوست با پپتیدهای محرک کلاژن‌سازی',
-        'آنتی‌اکسیدان قوی برای محافظت در برابر اشعه‌های مخرب و آلودگی',
-        'بافت بسیار سبک، ابریشمی و مناسب زیرساز بی‌نقص آرایش',
-        'حجم: ۳۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۱۰',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'کمپلکس چندپپتیدی بیواکتیو',
-          description: 'تحریک سنتر فیبروبلاست‌ها و پر کردن عمقی خطوط ریز و چین و چروک‌های اولیه.',
-        },
-        {
-          name: 'نیاسینامید ۵٪ با خلوص بالا',
-          description: 'کنترل تولید سبوم، روشن‌سازی لک‌های سطحی و افزایش یکنواختی رنگ صورت.',
-        },
-        {
-          name: 'ویتامین C تثبیت‌شده لیپوزومال',
-          description: 'درخشان‌کننده پرقدرت و خنثی‌کننده اکسیداسیون سلولی پوست.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'روزانه ۲ بار در روتین صبح و عصر، پس از پاکسازی، ۳ قطره از سرم را روی پوست صورت ماساژ دهید و اجازه دهید جذب گردد.',
-    },
-  },
-
-  'dr-melaxin-astaxanthin': {
-    id: 'prod_dr_melaxin',
-    slug: 'dr-melaxin-astaxanthin',
-    brand: {
-      name: 'دکتر ملاکسین (Dr. Melaxin)',
-      slug: 'dr-melaxin',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول روشن کننده و ضدلک آستاگزانتین دکتر ملاکسین',
-    subtitleFa: 'آنتی‌اکسیدان فوق‌پیشرفته ۶۰۰۰ برابر قوی‌تر از ویتامین C برای مهار کامل لک',
-    scientificName: 'Dr. Melaxin BP Astaxanthin Whitening Deep Ampoule',
-    description: 'آمپول کلینیکی دکتر ملاکسین با غلظت بالای آستاگزانتین طبیعی، قوی‌ترین کاروتنوئید کشف‌شده در طبیعت است که سرسخت‌ترین لک‌های هورمونی و بارداری را مهار و محو می‌سازد.',
-    formulation: 'آمپول فلوئید نانو کپسوله به رنگ طبیعی مرجانی ملایم',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_dr-melaxin-astaxanthin_hero',
-        url: '/assets/rupak/shop/dr-melaxin-astaxanthin.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول روشن کننده و ضدلک آستاگزانتین دکتر ملاکسین',
-        caption: 'آمپول روشن کننده و ضدلک آستاگزانتین دکتر ملاکسین',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_dr-melaxin-astaxanthin_main',
-        sku: 'SKU-DR-MELAXIN-ASTAXANTHIN',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '35800000',
-        originalPriceAmount: '41900000',
-        discountPercent: 18,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'آمپول کلینیکی دکتر ملاکسین با غلظت بالای آستاگزانتین طبیعی، قوی‌ترین کاروتنوئید کشف‌شده در طبیعت است که سرسخت‌ترین لک‌ها...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'تأییدیه بالینی کاهش ملاسما',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-DR-MELAXIN-ASTAXANTHIN-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول بالینی آستاگزانتین دکتر ملاکسین پیشرفته‌ترین محصول تخصصی ضدلک و ضدتیرگی بر پایه آستاگزانتین خالص، قوی‌ترین آنتی‌اکسیدان شناخته‌شده در طبیعت است.',
-        'آستاگزانتین قدرتی ۶۰۰۰ برابر بیشتر از ویتامین C و ۸۰۰ برابر بیشتر از کوآنزیم Q10 دارد. این سرم مستقیماً به لایه بازال پوست نفوذ کرده و تولید ملانین را در ریشه مهار می‌کند.',
-        'این آمپول مقاوم‌ترین لکه‌های ملاسما، لک‌های ناشی از آفتاب و کک‌ومک‌های مزمن را به مرور زمان کمرنگ کرده و پوست را تا چندین درجه شفاف و یکدست می‌سازد.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'حاوی آستاگزانتین خالص با قدرت آنتی‌اکسیدانی ۶۰۰۰ برابری نسبت به ویتامین C',
-        'مهار قطعی فرآیند ملانوژنز و رفع لک‌های ملاسما و پیری',
-        'یکدست‌کننده قدرتمند تناژ ناهمگون پوست و شفاف‌کننده عمیق',
-        'دارای نتایج اثبات‌شده بالینی در آزمایشگاه‌های درماتولوژی کره',
-        'فرمولاسیون ایمن، بدون حساسیت به نور و بدون پوسته‌ریزی',
-        'حجم: ۳۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۸/۰۱',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'آستاگزانتین طبیعی کپسوله‌شده',
-          description: 'قوی‌ترین آنتی‌اکسیدان بیولوژیک جهت متوقف ساختن اکسیداسیون رنگدانه‌ها و تیرگی.',
-        },
-        {
-          name: 'ترانگزامیک اسید ۳٪',
-          description: 'مهار فاکتورهای التهابی تولید ملانین و کاهش لکه‌های ملاسما و لک‌های ناشی از جوش.',
-        },
-        {
-          name: 'گلوتاتیون خالص',
-          description: 'روشن‌سازی فوق‌العاده سلول‌های پوست و سم‌زدایی از ماتریکس خارج سلولی.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'هر شب پس از تمیز کردن صورت و تونر، مقدار ۳ تا ۴ قطره را روی نواحی دارای لک یا کل صورت قرار داده و با ضربات آرام ماساژ دهید تا جذب کامل رخ دهد. در طول روز حتماً از ضدآفتاب استفاده نمایید.',
-    },
-  },
-
-  'centella-niacinamide': {
-    id: 'prod_centella_niacinamide',
-    slug: 'centella-niacinamide',
-    brand: {
-      name: 'اسکین ۱۰۰۴ (Skin1004)',
-      slug: 'skin1004',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول روشن کننده و ضدلک نیاسینامید ۱۰٪ سنتلا',
-    subtitleFa: 'آمپول درمانی مهار منافذ باز، کنترل چربی و یکدست‌کننده رنگ پوست',
-    scientificName: 'Skin1004 Madagascar Centella Tone Brightening Capsule Ampoule',
-    description: 'آمپول کپسولی تون برایتنینگ اسکین ۱۰۰۴ حاوی میکروکپسول‌های نیاسینامید، ترانگزامیک اسید و ۳-O-اتیل آسکوربیک اسید؛ بافتی سبک که منافذ را منقبض کرده و پوست را کریستالی می‌سازد.',
-    formulation: 'آمپول شفاف حاوی گرانول‌های سفید نانوکپسوله',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_centella-niacinamide_hero',
-        url: '/assets/rupak/shop/centella-niacinamide.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول روشن کننده و ضدلک نیاسینامید ۱۰٪ سنتلا',
-        caption: 'آمپول روشن کننده و ضدلک نیاسینامید ۱۰٪ سنتلا',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_centella-niacinamide_main',
-        sku: 'SKU-CENTELLA-NIACINAMIDE',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '33900000',
-        originalPriceAmount: '45300000',
-        discountPercent: 25,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'آمپول کپسولی تون برایتنینگ اسکین ۱۰۰۴ حاوی میکروکپسول‌های نیاسینامید، ترانگزامیک اسید و ۳-O-اتیل آسکوربیک اسید؛ بافتی سب...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'تأییدیه غیرکومدون‌زا بودن',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-CENTELLA-NIACINAMIDE-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول حرفه‌ای نیاسینامید ۱۰٪ سنتلا با غلظت درمانی بالا فرموله شده تا به طور همزمان با منافذ باز، چربی بیش از حد و لک‌های به‌جامانده از جای جوش و آکنه مبارزه کند.',
-        'وجود ۱۰ درصد نیاسینامید پزشکی در کنار عصاره آرامش‌بخش سنتلا آسیاتیکا، از بروز هرگونه خشکی، تحریک یا قرمزی پوستی که معمولاً در سرم‌های غلیظ رخ می‌دهد، پیشگیری می‌کند.',
-        'این سرم فلوئیدی سبک دیواره‌های منافذ پوستی را محکم کرده و ظاهری مات، صاف و بدون برجستگی به پوست می‌بخشد.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'غلظت درمانی بهینه ۱۰٪ نیاسینامید دارویی با حداکثر خلوص',
-        'کوچک‌کننده منافذ متسع و کنترل‌کننده پایدار ترشح چربی',
-        'محوکننده لک‌های تیره پس از آکنه (PIH) و جای جوش',
-        'تسکین‌دهنده التهابات فعال پوستی با عصاره گیاه سنتلا',
-        'بافت بسیار سبک با جذب در کمتر از ۲۰ ثانیه',
-        'فاقد چربی، غیرکومدون‌زا و ایده‌آل برای پوست‌های مختلط و مستعد جوش',
-        'حجم: ۳۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۰۸',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'نیاسینامید دارویی ۱۰٪ (Vitamin B3)',
-          description: 'اصلاح‌کننده قطر منافذ، تنظیم ترشح سبوم و محوکننده تیرگی‌های پس از جوش.',
-        },
-        {
-          name: 'عصاره با غلظت بالای سنتلا آسیاتیکا',
-          description: 'پیشگیری از التهاب و سوزش و تقویت سد دفاعی محافظتی پوست.',
-        },
-        {
-          name: 'زینک PCA',
-          description: 'خاصیت آنتی‌باکتریال و مات‌کنندگی پوست و کاهش احتمال بروز آکنه‌های جدید.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'صبح و شب پس از شستشوی صورت، ۲ الی ۳ قطره از سرم را روی پوست مالیده و به آرامی ضربه بزنید. سپس از مرطوب‌کننده سبک استفاده کنید.',
-    },
-  },
-
-  'cellmazing-vitamin-c': {
-    id: 'prod_cellmazing_vitc',
-    slug: 'cellmazing-vitamin-c',
-    brand: {
-      name: 'توریدن (Torriden)',
-      slug: 'torriden',
-      originCountry: 'کره جنوبی (South Korea)',
-      tagline: 'فرمولاسیون بالینی تخصصی مراقبت پوست',
-    },
-    title: 'آمپول روشن کننده ویتامین سی توریدن مدل Cellmazing',
-    subtitleFa: 'سرم شفاف‌کننده و کلاژن‌ساز با فرم تثبیت‌شده ویتامین C بدون سوزش پوست',
-    scientificName: 'Torriden Cellmazing Brightening Vitamin C Ampoule',
-    description: 'آمپول پیشرفته سل‌مِیزینگ توریدن با مشتقات چندگانه ویتامین C بافرشده و گلوکزیدها، بدون ایجاد حس سوزش یا قرمزی، لک‌های تازه را پاکسازی کرده و درخششی شیشه‌ای به پوست می‌بخشد.',
-    formulation: 'فلوئید زرد کمرنگ طبیعی با ۵ فرم ویتامین C پایدار',
-    skinTypes: ['انواع پوست', 'پوست‌های حساس و آسیب‌پذیر'],
-    skinConcerns: ['بهبود سد دفاعی', 'شادابی و شفافیت', 'آبرسانی و جوانسازی'],
-    cleanBadges: ['فاقد پارابن', 'هایپوآلرژنیک', 'ضمانت ۱۰۰٪ اصالت کالا'],
-    media: [
-      {
-        id: 'med_cellmazing-vitamin-c_hero',
-        url: '/assets/rupak/shop/cellmazing-vitamin-c.png',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: 'آمپول روشن کننده ویتامین سی توریدن مدل Cellmazing',
-        caption: 'آمپول روشن کننده ویتامین سی توریدن مدل Cellmazing',
-      },
-    ],
-    variants: [
-      {
-        id: 'var_cellmazing-vitamin-c_main',
-        sku: 'SKU-CELLMAZING-VITAMIN-C',
-        title: 'سایز استاندارد اورجینال',
-        sizeOrVolume: 'سایز اصلی',
-        priceAmount: '40900000',
-        originalPriceAmount: '48900000',
-        discountPercent: 17,
-        currency: 'IRR',
-        inStock: true,
-        inventoryQty: 20,
-      },
-    ],
-    scienceMechanism: {
-      heading: 'مکانیسم بیوشیمیایی اثرگذاری سلولی',
-      summary: 'آمپول پیشرفته سل‌مِیزینگ توریدن با مشتقات چندگانه ویتامین C بافرشده و گلوکزیدها، بدون ایجاد حس سوزش یا قرمزی، لک‌های تاز...',
-      bohrEffectExplanation: 'تسهیل اکسیژن‌رسانی به کراتینوسیت‌ها و تقویت متابولیسم میتوکندریایی سلول‌های پوست.',
-      clinicalBenefits: [
-        'جذب سریع بدون بر جای گذاشتن چربی اضافی',
-        'افزایش الاستیسیته و مقاومت اپیدرم',
-      ],
-    },
-    ingredients: [
-      {
-        nameFa: 'ترکیب فعال طبیعی خالص',
-        inciName: 'Purified Active Botanical Extract',
-        percentage: '۵٪',
-        purpose: 'آبرسانی و تقویت بافت اپیدرم',
-        isKeyActive: true,
-      },
-    ],
-    usageProtocol: {
-      routineTime: 'صبح و شب پس از شستشوی کامل پوست',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'آماده‌سازی پوست',
-          instruction: 'پوست صورت را با شوینده ملایم تمیز کرده و خشک نمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'استفاده از آمپول',
-          instruction: '۳ الی ۴ قطره از محصول را روی صورت قرار داده و با حرکات ملایم دورانی ماساژ دهید.',
-        },
-      ],
-      preProcedure: 'تست پچ حساسیت روی بازو پیش از مصرف توصیه می‌شود.',
-      postProcedureCare: 'پس از جذب کامل، از مرطوب‌کننده و در طول روز از ضد آفتاب استفاده نمایید.',
-      warnings: ['از تماس با چشم خودداری شود.', 'دور از تابش مستقیم آفتاب نگهداری شود.'],
-    },
-    clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی پایداری ویتامین C هیپوآلرژنیک',
-          issuer: 'KFDA & Global Dermatology Standards',
-          certificateCode: 'KFDA-CELLMAZING-VITAMIN-C-2026',
-          description: 'تأییدیه سلامت و اصالت محصول توسط آزمایشگاه‌های کنترل کیفی کره جنوبی.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی حک شده در انتهای بسته‌بندی کالا',
-      storageConditions: 'در جای خشک و خنک (۱۵ تا ۲۵ درجه سانتی‌گراد) نگهداری شود.',
-      shelfLifeAfterOpening: '۱۲ ماه پس از باز شدن درب محصول',
-      ceIsoStandards: ['ISO 22716 Good Manufacturing Practice', 'CPNP Registered'],
-    },
-    faqs: [
-      {
-        question: 'روش مصرف این محصول چگونه است؟',
-        answer: 'روزانه ۳ الی ۴ قطره روی پوست تمیز استفاده شود و به آرامی ماساژ داده شود.',
-      },
-      {
-        question: 'آیا این کالا دارای ضمانت اصالت است؟',
-        answer: 'بله، تمامی محصولات روپاک شاپ دارای ضمانت ۱۰۰٪ اصالت و بچ‌کد قابل استعلام هستند.',
-      },
-    ],
-    ratingSummary: { ratingValue: 4.9, reviewCount: 35 },
-    detailedOverview: {
-      introParagraphs: [
-        'آمپول ویتامین سی توریدن سری CellMazing با به‌کارگیری تکنولوژی ۵ بعدی کپسولاسیون ویتامین C، محصولی نوآورانه و فوق‌العاده پایدار برای روشن‌سازی بدون سوزش پوست است.',
-        'برخلاف سرم‌های ویتامین C متداول که به سرعت در معرض هوا اکسید می‌شوند، این فرمول پایدار تا آخرین قطره بدون تغییر رنگ باقی مانده و لکه‌های تیره، تیرگی‌های مزمن و آثار خستگی چهره را محو می‌کند.',
-        'حضور اسیدهای آمینه ضروری و هیالورونیک اسید، پوست را نرم و ابریشمی کرده و خاصیت ارتجاعی و شفافیت آن را دوچندان می‌سازد.',
-      ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'کمپلکس پیشرفته ۵ بعدی ویتامین C با پایداری حداکثری',
-        'شفاف‌کننده و روشن‌کننده خیره‌کننده پوست‌های کدر و بی‌روح',
-        'تحریک و تقویت سنتز فیبرهای الاستین و کلاژن طبیعی',
-        'فرمول هایپوآلرژنیک بدون ایجاد خارش، قرمزی یا سوزش',
-        'بافت شفاف و فلوئیدی با رایحه ملایم مرکباتی طبیعی',
-        'حجم: ۳۰ میلی‌لیتر',
-        'ساخت: کره جنوبی',
-        'تاریخ انقضا: ۲۰۲۷/۱۰',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'کمپلکس ویتامین C پنج‌بعدی پایدار',
-          description: 'محافظت آنتی‌اکسیدانی قوی، خنثی‌سازی رادیکال‌های آزاد و محوکننده تیرگی چهره.',
-        },
-        {
-          name: 'آلانتوئین و پانتنول خالص',
-          description: 'آرامش‌بخش بافت پوست و برطرف‌کننده هرگونه التهاب احتمالی.',
-        },
-        {
-          name: 'اسید فرولیک گیاهی',
-          description: 'تقویت‌کننده قدرت جذب و اثرگذاری ویتامین C در لایه‌های اپیدرم.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'روزانه ۳ قطره روی پوست تمیز صورت پخش نمایید و به آرامی ماساژ دهید تا جذب شود. توصیه می‌شود در طول روز با یک لایه کرم ضدآفتاب همراه گردد.',
-    },
-  },
+const MEDIA_ROLE_LABELS: Record<string, string> = {
+  HERO: 'نمای اصلی محصول',
+  GALLERY: 'نمای تکمیلی محصول',
+  TEXTURE: 'بافت و ساختار فرمولاسیون',
+  IN_CLINIC: 'نمای کاربرد بالینی',
+  PACKAGING: 'بسته‌بندی و پلمپ اصالت',
+  HOW_TO: 'راهنمای استفاده مرحله‌به‌مرحله',
+  CERTIFICATE: 'گواهی استاندارد و کنترل کیفیت',
 };
 
-// Aliases for short and official slugs
-CLINICAL_SKINCARE_PRODUCTS['carboxygel'] = CLINICAL_SKINCARE_PRODUCTS['carboxygel-professional-therapy'];
-CLINICAL_SKINCARE_PRODUCTS['carboxypod'] = CLINICAL_SKINCARE_PRODUCTS['carboxypod-activation-pads'];
-CLINICAL_SKINCARE_PRODUCTS['carboxypad'] = {
-  ...CLINICAL_SKINCARE_PRODUCTS['carboxypod-activation-pads'],
-  id: 'prod_drdermer_003',
-  slug: 'carboxypad',
-  title: 'پدهای فعال‌ساز آلکالاین صورت و گردن CarboxyPad',
-  subtitleFa: 'شیت‌های فیبری یکپارچه صورت و گردن جهت القای حداکثر تبادل گازی بر سطح ژل',
-  description:
-    'شیت‌های فیبری میکروپرمنبران CarboxyPad به‌طور آناتومیک برای فیکس شدن روی کل صورت و گردن پیش‌برش خورده‌اند. این پدها با ایجاد پوشش کیپ بدون روزنه، حداکثر فشار موضعی CO2 را محقق کرده و برای لیفتینگ خط فک و گردن ایده‌آل هستند.',
-  media: [
-    {
-      id: 'med_cpad_hero',
-      url: '/assets/drdermer/2025/07/carboxypad-1024x198.png',
-      role: 'HERO',
-      roleFa: 'تصویر پد صورت و گردن',
-      altText: 'پد فعال‌ساز آلکالاین صورت و گردن دکتر درمر',
-      caption: 'CarboxyPad مخصوص صورت و گردن با برش آناتومیک',
-    },
-  ],
-  clinicalCaseStudies: [
-    {
-      id: 'study_cpad_01',
-      patientAge: 44,
-      patientGender: 'خانم',
-      condition: 'افتادگی خط فک و غبغب، خطوط افقی گردن (Venus Rings) و شلی اپیدرم',
-      protocolDescription: 'استفاده از شیت یکپارچه CarboxyPad صورت و گردن با CarboxyGel طی ۵ جلسه',
-      durationWeeks: 5,
-      sessionsCount: 5,
-      beforeImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation.webp',
-      afterImageUrl: '/assets/drdermer/2025/09/skin-rejuvenation-1024x598.webp',
-      beforeLabel: 'جلسه اول (شلی پوست گردن و خط فک)',
-      afterLabel: 'جلسه پنجم (بهبود کانتورینگ و سفتی بافت)',
-      visiaMetrics: [
-        {
-          id: 'visia_cpad_1',
-          labelFa: 'شاخص استحکام بافتی گردن (Skin Firmness Index)',
-          baseline: '۴۱ / ۱۰۰',
-          week4Result: '۷۹ / ۱۰۰',
-          percentageChange: '+۹۲٪',
-          isImprovement: true,
-          description: 'الاستومتری مکشی با پروب کاتیومتری اختصاصی درم',
-        },
-        {
-          id: 'visia_cpad_2',
-          labelFa: 'کاهش عمق خطوط افقی گردن',
-          baseline: '۱۶۵ میکرومتر',
-          week4Result: '۸۸ میکرومتر',
-          percentageChange: '-۴۶٪',
-          isImprovement: true,
-          description: 'پروفایلومتری نوری خطوط استاتیک گردن',
-        },
-      ],
-      dermatologistReview: {
-        doctorName: 'دکتر بهاره موحدی',
-        doctorTitleFa: 'متخصص درماتولوژی، بورد تخصصی پوست و زیبایی',
-        medicalLicenseNo: 'نظام پزشکی: ۸۷۲۱۴',
-        clinicName: 'کلینیک تخصصی درماتولوژی فرمانیه',
-        quote:
-          'پدهای CarboxyPad به دلیل دربرگیری کامل زاویه فک و گردن، پاسخ درمانی فوق‌العاده‌ای در جمع‌شدن پوست افتاده و رفع تیرگی گردن بدون هیچ‌گونه عوارض تهاجمی ارائه می‌دهند.',
-        verifiedBadge: 'تأییدیه درماتولوژی کلینیکال انگلستان',
-      },
-    },
-  ],
-};
-
-// Aliases for equipment slugs
-CLINICAL_SKINCARE_PRODUCTS['carbox-station'] = {
-  ...CLINICAL_SKINCARE_PRODUCTS['carbox'],
-  slug: 'carbox-station',
-};
-
-CLINICAL_SKINCARE_PRODUCTS['plasmax-pro'] = {
-  ...CLINICAL_SKINCARE_PRODUCTS['plasmax'],
-  slug: 'plasmax-pro',
-};
+function normalizeMediaRole(role?: string): MediaRole {
+  const upper = (role ?? 'HERO').toUpperCase();
+  if (
+    upper === 'HERO' ||
+    upper === 'GALLERY' ||
+    upper === 'TEXTURE' ||
+    upper === 'IN_CLINIC' ||
+    upper === 'PACKAGING' ||
+    upper === 'HOW_TO' ||
+    upper === 'CERTIFICATE'
+  ) {
+    return upper;
+  }
+  return 'GALLERY';
+}
 
 /**
- * Creates extended clinical/e-commerce product information for standard products
- * so that any catalog product also renders
- * high-fidelity specifications, rich tabs, warranty & authenticity certificates.
+ * تبدیل محصول دریافت‌شده از API بک‌اند به مدل جامع صفحه محصول (ExtendedProductData)
+ * تمام فیلدهای رابطه‌ای (variants, media, ingredients, claims, usageSteps, brand, category, skinConcerns)
+ * و داده‌های غنی clinicalData مستقیماً از PostgreSQL خوانده می‌شوند.
  */
-export function buildExtendedProductData(baseProduct: {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  variants: Array<{
-    id: string;
-    sku: string;
-    title: string;
-    priceAmount: string;
-    currency: string;
-    inStock: boolean;
-  }>;
-}): ExtendedProductData {
-  if (CLINICAL_SKINCARE_PRODUCTS[baseProduct.slug]) {
-    return CLINICAL_SKINCARE_PRODUCTS[baseProduct.slug];
-  }
+export function buildExtendedProductData(baseProduct: Product): ExtendedProductData {
+  const cd =
+    baseProduct.clinicalData && typeof baseProduct.clinicalData === 'object'
+      ? baseProduct.clinicalData
+      : {};
 
-  const primaryVariant = baseProduct.variants[0];
-  const priceNum = BigInt(primaryVariant?.priceAmount ?? '10000000');
-  const discountRials = (priceNum * 15n) / 100n;
-  const originalPriceRials = (priceNum + discountRials).toString();
+  const variants: ProductVariantItem[] = (baseProduct.variants ?? []).map((v, idx) => ({
+    id: v.id,
+    sku: v.sku,
+    title: v.titleFa || v.title,
+    sizeOrVolume:
+      v.sizeOrVolume ||
+      (idx === 0 && typeof cd.sizeOrVolume === 'string' ? cd.sizeOrVolume : v.title) ||
+      'بسته استاندارد',
+    priceAmount: String(v.priceAmount ?? '0'),
+    originalPriceAmount: v.originalPriceAmount ? String(v.originalPriceAmount) : undefined,
+    discountPercent: typeof v.discountPercent === 'number' ? v.discountPercent : undefined,
+    currency: v.currency || 'IRR',
+    inStock: Boolean(v.inStock),
+    inventoryQty: typeof v.inventoryQty === 'number' ? v.inventoryQty : v.inStock ? 20 : 0,
+    mediaRoleMatch: v.mediaRoleMatch ?? undefined,
+  }));
 
-  const variants: ExtendedProductData['variants'] = baseProduct.variants.map((v, idx) => {
-    const vPrice = BigInt(v.priceAmount);
-    const vOriginal = (vPrice * 115n) / 100n;
+  const dbMedia = (baseProduct.media ?? []).map((m, idx) => {
+    const role = normalizeMediaRole(m.role);
     return {
-      id: v.id,
-      sku: v.sku,
-      title: v.title,
-      sizeOrVolume: idx === 0 ? 'بسته استاندارد' : `سایز / مدل ${idx + 1}`,
-      priceAmount: v.priceAmount,
-      originalPriceAmount: vOriginal.toString(),
-      discountPercent: 15,
-      currency: v.currency,
-      inStock: v.inStock,
-      inventoryQty: v.inStock ? 25 - idx * 5 : 0,
+      id: m.id || `med_${baseProduct.id}_${idx}`,
+      url: m.url,
+      role,
+      roleFa: MEDIA_ROLE_LABELS[role] || 'تصویر محصول',
+      altText: m.altText || `${baseProduct.titleFa || baseProduct.title}`,
+      width: m.width ?? undefined,
+      height: m.height ?? undefined,
     };
   });
+
+  if (dbMedia.length === 0 && typeof cd.image === 'string' && cd.image.length > 0) {
+    dbMedia.push({
+      id: `med_${baseProduct.id}_hero`,
+      url: cd.image,
+      role: 'HERO',
+      roleFa: MEDIA_ROLE_LABELS.HERO,
+      altText: baseProduct.titleFa || baseProduct.title,
+      width: undefined,
+      height: undefined,
+    });
+  }
+
+  const extendedIngredients = Array.isArray(cd.extendedIngredients) && cd.extendedIngredients.length > 0
+    ? cd.extendedIngredients
+    : (baseProduct.ingredients ?? []).map((ing) => ({
+        nameFa: ing.name,
+        inciName: ing.inciName || ing.name,
+        percentage: ing.concentrationPercent ?? undefined,
+        purpose: ing.purpose || 'ترکیب موثره فرمولاسیون',
+        isKeyActive: ing.isKeyIngredient ?? true,
+        description: ing.description ?? undefined,
+      }));
+
+  const dbUsageSteps =
+    Array.isArray(cd.usageProtocol?.steps) && cd.usageProtocol.steps.length > 0
+      ? cd.usageProtocol.steps
+      : (baseProduct.usageSteps ?? []).map((s) => ({
+          stepNumber: s.stepNumber,
+          title: s.title,
+          instruction: s.instruction,
+        }));
+
+  const claimsBenefits =
+    Array.isArray(cd.scienceMechanism?.clinicalBenefits) && cd.scienceMechanism.clinicalBenefits.length > 0
+      ? cd.scienceMechanism.clinicalBenefits
+      : (baseProduct.claims ?? []).map((c) => c.evidenceSummary || c.claimText).filter(Boolean);
+
+  const brandName = baseProduct.brand?.name || 'Dr Dermer & Rupak Clinical';
+  const brandSlug = baseProduct.brand?.slug || 'dr-dermer';
+  const originCountry =
+    cd.brandOriginCountry || baseProduct.brand?.originCountry || 'تضمین اصالت استاندارد بین‌المللی';
+
+  const skinConcernNames =
+    Array.isArray(cd.skinConcerns) && cd.skinConcerns.length > 0
+      ? cd.skinConcerns
+      : (baseProduct.skinConcerns ?? []).map((c) => c.name);
+
+  const firstClaimRef = baseProduct.claims?.find((c) => c.studyReference)?.studyReference;
+  const firstClaimSummary = baseProduct.claims?.[0]?.evidenceSummary;
+  const primaryVariant = variants[0];
+  const displayTitle = baseProduct.titleFa || baseProduct.title;
+
+  const detailedOverview =
+    cd.detailedOverview && typeof cd.detailedOverview === 'object'
+      ? cd.detailedOverview
+      : {
+          introParagraphs: [
+            baseProduct.description ||
+              'مشخصات تخصصی، ترکیبات فعال و راهنمای مصرف این محصول مستقیماً از کاتالوگ تاییدشده کلینیکال بارگذاری شده است.',
+          ].filter(Boolean),
+          featuresTitle: 'ویژگی‌های شاخص فرمولاسیون',
+          features:
+            claimsBenefits.length > 0
+              ? claimsBenefits
+              : [
+                  'ثبت‌شده و همگام با کاتالوگ اصلی فروشگاه',
+                  'بسته‌بندی پلمپ و تضمین اصالت کالا',
+                  'کنترل موجودی لحظه‌ای پیش از ثبت سفارش',
+                ],
+          ingredientsTitle: 'ترکیبات موثره (INCI)',
+          keyIngredients: extendedIngredients.slice(0, 6).map((ing: any) => ({
+            name: ing.nameFa || ing.inciName,
+            description: ing.purpose || ing.description || ing.inciName,
+            iconType: 'droplet',
+          })),
+          usageTitle: 'نحوه مصرف',
+          usageInstructions:
+            dbUsageSteps.length > 0
+              ? dbUsageSteps.map((s: any) => `${s.title}: ${s.instruction}`).join(' ')
+              : 'مطابق دستورالعمل تخصصی و روتین مراقبتی توصیه‌شده مصرف شود.',
+          specs: {
+            volume: primaryVariant?.sizeOrVolume || primaryVariant?.title || 'استاندارد',
+            origin: originCountry,
+            expiration: 'دارای تاریخ انقضای معتبر و بچ‌کد قابل استعلام',
+            skinType:
+              Array.isArray(cd.skinTypes) && cd.skinTypes.length > 0
+                ? cd.skinTypes.join('، ')
+                : 'انواع پوست',
+            texture: baseProduct.formulation || cd.formulation || 'فرمولاسیون تخصصی',
+          },
+        };
 
   return {
     id: baseProduct.id,
     slug: baseProduct.slug,
     brand: {
-      name: 'ReeSkin & Dr Dermer Labs',
-      slug: 'dr-dermer',
-      originCountry: 'انگلستان / تولید استاندارد بین‌المللی',
-      tagline: 'تضمین اصالت کالا و تضمین کیفیت و استانداردهای جهانی',
+      name: brandName,
+      slug: brandSlug,
+      originCountry,
+      tagline:
+        cd.brandTagline ||
+        baseProduct.brand?.description ||
+        'تضمین اصالت کالا و استانداردهای کنترل کیفیت بالینی',
     },
-    title: baseProduct.title,
-    subtitleFa: 'کیفیت برتر با بسته‌بندی استریل و ضمانت بازگشت وجه ۷ روزه',
+    title: displayTitle,
+    subtitleFa:
+      baseProduct.subtitleFa ||
+      cd.subtitleFa ||
+      baseProduct.category?.titleFa ||
+      'محصول تخصصی مراقبت پوست با کنترل کیفیت بالینی',
+    scientificName: baseProduct.scientificName || cd.scientificName || undefined,
     description: baseProduct.description,
-    formulation: 'استاندارد ممتاز با تاییدیه کنترل کیفیت و اصالت سنجی',
-    skinTypes: ['سازگار با کاربرد عمومی و کلینیکی'],
-    skinConcerns: ['کیفیت بالا', 'طول عمر طولانی', 'ضمانت اصالت'],
-    cleanBadges: [
-      'ضمانت اصالت ۱۰۰٪ کالا',
-      'گواهی کنترل کیفیت اختصاصی',
-      'بسته‌بندی ایمن و بهداشتی',
-      '۷ روز ضمانت بازگشت',
-    ],
-    media: [
-      {
-        id: `med_${baseProduct.id}_hero`,
-        url: '',
-        role: 'HERO',
-        roleFa: 'تصویر اصلی محصول',
-        altText: `${baseProduct.title} - تصویر اصلی کالا با نمای باکیفیت`,
-        caption: 'نمای اصلی محصول با بسته‌بندی رسمی',
-      },
-      {
-        id: `med_${baseProduct.id}_texture`,
-        url: '',
-        role: 'TEXTURE',
-        roleFa: 'کیفیت و بافت متریال',
-        altText: `${baseProduct.title} - بافت و ساختار دقیق محصول`,
-        caption: 'جزئیات متریال و ساختار فیزیکی مرغوب',
-      },
-      {
-        id: `med_${baseProduct.id}_clinic`,
-        url: '',
-        role: 'IN_CLINIC',
-        roleFa: 'نمای کاربردی',
-        altText: `${baseProduct.title} - حالت استفاده واقعی و حرفه‌ای`,
-        caption: 'آماده‌سازی و تجربه کاربری در شرایط واقعی',
-      },
-      {
-        id: `med_${baseProduct.id}_packaging`,
-        url: '',
-        role: 'PACKAGING',
-        roleFa: 'بسته‌بندی و اصالت',
-        altText: `${baseProduct.title} - برچسب اصالت و پلمپ فابریک`,
-        caption: 'پلمپ شرکتی همراه با هولوگرام ضد جعل',
-      },
-    ],
+    formulation:
+      baseProduct.formulation || cd.formulation || 'فرمولاسیون استاندارد و کنترل‌کیفیت شده',
+    skinTypes:
+      Array.isArray(cd.skinTypes) && cd.skinTypes.length > 0
+        ? cd.skinTypes
+        : ['انواع پوست'],
+    skinConcerns:
+      skinConcernNames.length > 0
+        ? skinConcernNames
+        : [baseProduct.category?.titleFa || 'مراقبت تخصصی پوست'],
+    cleanBadges:
+      Array.isArray(cd.cleanBadges) && cd.cleanBadges.length > 0
+        ? cd.cleanBadges
+        : ['تضمین اصالت ۱۰۰٪ کالا', 'بسته‌بندی پلمپ شرکتی', 'کنترل موجودی زنده'],
+    coldChainRequired: Boolean(baseProduct.coldChainRequired),
+    media: dbMedia,
     variants,
     scienceMechanism: {
-      heading: 'مشخصات فنی و استانداردهای ساختاری',
+      heading: cd.scienceMechanism?.heading || 'مکانیسم اثر و شواهد علمی',
       summary:
-        'تمامی اقلام تحت نظارت فرآیندهای تضمین کیفیت بین‌المللی و با مواد اولیه درجه‌یک تولید و بسته‌بندی شده‌اند تا عملکردی بی‌نقص و طول عمر بهینه را ارائه دهند.',
+        cd.scienceMechanism?.summary ||
+        firstClaimSummary ||
+        baseProduct.description ||
+        'اطلاعات علمی و عملکردی محصول از بانک داده بالینی بارگذاری شده است.',
       bohrEffectExplanation:
-        'بهینه‌سازی شده برای بالاترین کارایی با استانداردهای فیزیکی و شیمیایی سازگار با محیط زیست و سلامت انسان.',
-      clinicalBenefits: [
-        'طراحی ارگونومیک و تست‌شده در شرایط سخت مصرفی',
-        'مواد اولیه با خلوص بالا و عاری از هرگونه آلودگی ثانویه',
-        'طول عمر بالا و مقاومت فیزیکی در برابر تغییرات دما و رطوبت',
-        'سازگاری کامل با استانداردهای ملی و بین‌المللی کالا',
-      ],
-      studyReference: 'برگرفته از تاییدیه‌های فنی آزمایشگاه مرکزی دکتر درمر و کامرس او اس.',
+        cd.scienceMechanism?.bohrEffectExplanation ||
+        'طراحی‌شده بر پایه ترکیبات هم‌افزا برای حداکثر زیست‌دسترس‌پذیری و سازگاری پوستی.',
+      clinicalBenefits:
+        claimsBenefits.length > 0
+          ? claimsBenefits
+          : ['بازسازی و تقویت سد دفاعی اپیدرم', 'سازگاری تاییدشده برای روتین تخصصی'],
+      studyReference: cd.scienceMechanism?.studyReference || firstClaimRef || undefined,
     },
-    ingredients: [
-      {
-        nameFa: 'متریال خالص با گرید کیفی A+',
-        inciName: 'High-Grade Certified Composition',
-        percentage: '100%',
-        purpose: 'ساختار اصلی و پایداری کالا',
-        isKeyActive: true,
-        description: 'تست‌شده در آزمایشگاه و بدون ناخالصی.',
-      },
-      {
-        nameFa: 'پوشش محافظتی نانو',
-        inciName: 'Nano-Barrier Protective Coating',
-        purpose: 'افزایش مقاومت در برابر سایش و عوامل محیطی',
-        isKeyActive: true,
-      },
-    ],
+    ingredients: extendedIngredients,
     usageProtocol: {
-      routineTime: 'دستورالعمل استاندارد استفاده و نگهداری',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'بررسی سلامت بسته‌بندی و پلمپ',
-          instruction: 'پیش از باز کردن، از سلامت پلمپ هولوگرام و عدم مخدوش بودن شماره سریال اطمینان حاصل فرمایید.',
-        },
-        {
-          stepNumber: 2,
-          title: 'راه‌اندازی و استفاده طبق راهنما',
-          instruction: 'کالا را طبق دفترچه راهنمای فارسی موجود در جعبه آماده نموده و در شرایط استاندارد به کار گیرید.',
-        },
-        {
-          stepNumber: 3,
-          title: 'نگهداری بهینه پس از مصرف',
-          instruction: 'محصول را در دمای متعادل و دور از رطوبت مستقیم و تابش مداوم نور خورشید نگهداری نمایید.',
-        },
-      ],
-      preProcedure: 'پیش از استفاده دفترچه مشخصات را مطالعه نمایید.',
-      postProcedureCare: 'در صورت نیاز به خدمات پس از فروش، با شماره پشتیبانی ۲۴ ساعته تماس حاصل فرمایید.',
-      warnings: ['دور از دسترس کودکان خردسال نگهداری شود.', 'از اعمال ضربه شدید و مواد شوینده اسیدی خودداری گردد.'],
+      routineTime: cd.usageProtocol?.routineTime || 'روتین مراقبتی روزانه / کلینیکال',
+      steps:
+        dbUsageSteps.length > 0
+          ? dbUsageSteps
+          : [
+              {
+                stepNumber: 1,
+                title: 'آماده‌سازی پوست',
+                instruction: 'پیش از مصرف، پوست را به‌طور کامل تمیز و خشک نمایید.',
+              },
+              {
+                stepNumber: 2,
+                title: 'استفاده منظم',
+                instruction: 'مقدار مناسب از محصول را طبق راهنما بر ناحیه هدف اعمال کنید.',
+              },
+            ],
+      preProcedure:
+        cd.usageProtocol?.preProcedure ||
+        'پیش از استفاده بر پوست تمیز و فاقد زخم باز اعمال شود.',
+      postProcedureCare:
+        cd.usageProtocol?.postProcedureCare ||
+        'در مصرف روزانه، استفاده منظم از ضدآفتاب مناسب توصیه می‌شود.',
+      warnings:
+        Array.isArray(cd.usageProtocol?.warnings) && cd.usageProtocol.warnings.length > 0
+          ? cd.usageProtocol.warnings
+          : ['دور از دسترس کودکان نگهداری شود.', 'فقط جهت استعمال خارجی.'],
     },
     clinicalOrigin: {
-      certifications: [
-        {
-          title: 'گواهی کنترل کیفیت استاندارد QC Passed',
-          issuer: 'Dr Dermer Quality Control Bureau',
-          certificateCode: 'QC-2024-IR99',
-          description: 'تأییدیه سلامت فیزیکی و شیمیایی کالا پیش از خروج از انبار مرکزی.',
-          verified: true,
-        },
-        {
-          title: 'گواهی اصالت زنجیره تأمین اورجینال',
-          issuer: 'Commerce OS Supply Chain Integrity',
-          certificateCode: 'SCI-AUTH-8820',
-          description: 'تضمین تأمین مستقیم بدون واسطه با بارکد قابل استعلام.',
-          verified: true,
-        },
-      ],
-      batchCodeVerificationInfo: 'بچ‌کد اختصاصی بر روی بدنه و جعبه محصول درج شده و از طریق سامانه استعلام اصالت قابل بررسی است.',
-      storageConditions: 'در محیط خشک، خنک و با تهویه مناسب نگهداری شود.',
-      shelfLifeAfterOpening: '۳۶ ماه پایداری در شرایط ایده‌آل نگهداری.',
-      ceIsoStandards: ['ISO 9001:2015', 'CE Certified', 'RoHS / REACH Compliant'],
+      certifications:
+        Array.isArray(cd.clinicalOrigin?.certifications) &&
+        cd.clinicalOrigin.certifications.length > 0
+          ? cd.clinicalOrigin.certifications
+          : [
+              {
+                title: 'کنترل کیفیت و اصالت زنجیره تامین',
+                issuer: 'Commerce OS Clinical QA',
+                certificateCode: primaryVariant?.sku || 'QA-VERIFIED',
+                description: 'کالای اصلی ثبت‌شده در سیستم کاتالوگ رسمی فروشگاه.',
+                verified: true,
+              },
+            ],
+      batchCodeVerificationInfo:
+        cd.clinicalOrigin?.batchCodeVerificationInfo ||
+        'اصالت و سری ساخت این محصول بر روی بسته‌بندی و در فاکتور رسمی قابل پیگیری است.',
+      storageConditions:
+        cd.clinicalOrigin?.storageConditions || 'در محیط خشک، خنک و دور از تابش مستقیم آفتاب نگهداری شود.',
+      shelfLifeAfterOpening:
+        cd.clinicalOrigin?.shelfLifeAfterOpening || 'مطابق تاریخ درج‌شده روی بسته‌بندی',
+      ceIsoStandards:
+        Array.isArray(cd.clinicalOrigin?.ceIsoStandards) && cd.clinicalOrigin.ceIsoStandards.length > 0
+          ? cd.clinicalOrigin.ceIsoStandards
+          : ['GMP Compliant', 'Dermatologically Tested'],
     },
-    faqs: [
-      {
-        question: 'آیا این محصول دارای گارانتی و اصالت است؟',
-        answer: 'بله، تمامی محصولات دارای ضمانت ۱۰۰٪ اصالت کالا، تست سلامت فیزیکی و امکان بازگشت ۷ روزه می‌باشند.',
-      },
-      {
-        question: 'مدت زمان ارسال چقدر است؟',
-        answer: 'سفارش‌های تهران در همان روز یا حداکثر ۲۴ ساعت و شهرستان‌ها از طریق تیپاکس و پست پیشتاز طی ۲ الی ۳ روز کاری تحویل می‌گردند.',
-      },
-      {
-        question: 'روش‌های پرداخت به چه صورت است؟',
-        answer: 'امکان پرداخت آنلاین شاپرک با کلیه کارت‌های عضو شتاب، کارت‌به‌کارت با ثبت فیش، و کیف پول کاربری مهیا است.',
-      },
-    ],
-    bundleRecommendation: {
-      bundleTitle: 'پک پیشنهادی پروتکل درمانی دکتر درمر',
-      bundleDescription: 'ترکیب این محصول با ژل آرامش‌بخش هیلین و خمیر پولیش کریستالین جهت اثرگذاری حداکثری',
-      savingsText: '۱۵٪ تخفیف مازاد روی پکیج',
-      items: [
-        {
-          id: 'bnd_1',
-          slug: 'healene',
-          title: 'ژل تسکین‌بخش و التیام‌دهنده هیلین Healene',
-          brand: 'ReeSkin Clinical',
-          subtitle: 'ترمیم سریع سد دفاعی و کاهش قرمزی پس از درمان',
-          priceAmount: '16000000',
-          originalPriceAmount: '18500000',
-          discountBadge: '۱۳٪ تخفیف',
-          roleInRoutine: 'تسکین و ریکاوری بافت',
-          inStock: true,
-        },
-        {
-          id: 'bnd_2',
-          slug: 'crystalene',
-          title: 'خمیر پولیش و لایه‌بردار کریستالین Crystalene',
-          brand: 'ReeSkin Clinical',
-          subtitle: 'میکرودرم ابریشمی با کریستال‌های آلومینا',
-          priceAmount: '17500000',
-          originalPriceAmount: '20500000',
-          discountBadge: '۱۴٪ تخفیف',
-          roleInRoutine: 'پولیش و یکدستی پوست',
-          inStock: true,
-        },
-      ],
-    },
+    clinicalCaseStudies: Array.isArray(cd.clinicalCaseStudies) ? cd.clinicalCaseStudies : undefined,
+    faqs:
+      Array.isArray(cd.faqs) && cd.faqs.length > 0
+        ? cd.faqs
+        : [
+            {
+              question: 'آیا این محصول دارای ضمانت اصالت و بچ‌کد معتبر است؟',
+              answer:
+                'بله، تمامی محصولات عرضه‌شده از کاتالوگ رسمی فروشگاه با ضمانت اصالت ۱۰۰٪، تاریخ معتبر و امکان استعلام عرضه می‌شوند.',
+            },
+          ],
+    bundleRecommendation: cd.bundleRecommendation ?? undefined,
     ratingSummary: {
-      ratingValue: 4.8,
-      reviewCount: 24,
+      ratingValue: Number(baseProduct.ratingValue ?? cd.ratingSummary?.ratingValue ?? 4.8),
+      reviewCount: Number(baseProduct.reviewCount ?? cd.ratingSummary?.reviewCount ?? 0),
     },
-    detailedOverview: {
-      introParagraphs: [
-        baseProduct.description || 'توضیحات تکمیلی و مشخصات فنی این کالا با بالاترین استانداردهای تضمین کیفیت تهیه گردیده است.',
-        'فرمولاسیون و متریال ساخت این محصول در شرایط استاندارد بین‌المللی تولید شده و تحت بازرسی‌های مکرر کنترل کیفیت قرار گرفته است تا بالاترین سطح رضایت و اثربخشی را ارائه نماید.',
-        'تمامی محصولات دارای ضمانت اصالت ۱۰۰٪، بسته‌بندی پلمپ شرکتی و پشتیبانی ۲۴ ساعته فروشگاه می‌باشند.',
+    detailedOverview,
+  };
+}
+
+/**
+ * محاسبه جدول مشخصات ۴ گروهی محصول از روی داده‌های ساختاریافته API
+ */
+export function getProductHierarchicalSpecs(
+  productData: ExtendedProductData,
+  selectedVariant?: ProductVariantItem,
+): HierarchicalSpecGroup[] {
+  const custom = productData.detailedOverview?.hierarchicalSpecs;
+  if (custom && custom.length > 0) return custom;
+
+  const specs = productData.detailedOverview?.specs;
+  const brandName = productData.brand?.name || 'Dr Dermer Clinical';
+  const origin = specs?.origin || productData.brand?.originCountry || 'استاندارد بین‌المللی';
+  const volume =
+    specs?.volume || selectedVariant?.sizeOrVolume || productData.variants[0]?.sizeOrVolume || 'استاندارد';
+  const texture = specs?.texture || productData.formulation || 'سبک و زودجذب';
+  const skinType = specs?.skinType || productData.skinTypes?.join('، ') || 'انواع پوست';
+  const expiration = specs?.expiration || productData.clinicalOrigin?.shelfLifeAfterOpening || 'معتبر';
+
+  return [
+    {
+      id: 'general',
+      groupTitle: 'مشخصات هویتی و اصالت کالا',
+      groupIcon: '🏢',
+      items: [
+        { label: 'برند سازنده', value: brandName },
+        { label: 'کشور مبدأ فرمولاسیون', value: origin },
+        { label: 'حجم / وزن خالص', value: volume },
+        { label: 'ضمانت اصالت', value: '۱۰۰٪ اورجینال با هولوگرام شرکتی' },
       ],
-      featuresTitle: 'ویژگی ها:',
-      features: [
-        'تضمین اصالت ۱۰۰٪ با کد رهگیری و هولوگرام شرکتی',
-        'طراحی ارگونومیک و تست‌شده در شرایط سخت مصرفی',
-        'فاقد مواد حساسیت‌زا و بدون ایجاد هرگونه تحریک پوستی',
-        'سازگاری کامل با استانداردهای ملی و بین‌المللی کالا',
-        '۷ روز ضمانت بازگشت وجه در صورت عدم رضایت',
-        'تاریخ انقضای معتبر و بسته‌بندی کامپکت و بهداشتی',
-      ],
-      ingredientsTitle: 'ترکیبات کلیدی:',
-      keyIngredients: [
-        {
-          name: 'مواد اولیه با گرید دارویی و استانداردهای جهانی',
-          description: 'تست‌شده در آزمایشگاه مرکزی و فاقد ناخالصی‌های شیمیایی.',
-        },
-        {
-          name: 'ماتریکس پایدار و محافظت‌کننده فیزیولوژیک',
-          description: 'افزایش طول عمر کالا و حفظ بالاترین میزان کارایی در طول زمان.',
-        },
-      ],
-      usageTitle: 'نحوه ی مصرف:',
-      usageInstructions: 'پیش از استفاده دفترچه راهنما یا بروشور محصول را به دقت مطالعه فرمایید. در جای خشک و خنک و به دور از تابش مستقیم خورشید نگهداری شود.',
     },
+    {
+      id: 'physical',
+      groupTitle: 'مشخصات بافتی و فیزیکی',
+      groupIcon: '🧴',
+      items: [
+        { label: 'بافت فرمولاسیون', value: texture },
+        { label: 'کد کالا (SKU)', value: selectedVariant?.sku || productData.variants[0]?.sku || '—' },
+        { label: 'زنجیره سرد', value: productData.coldChainRequired ? 'نیازمند حمل خنک کلینیکال' : 'نگهداری استاندارد محیطی' },
+        { label: 'قابلیت لایه‌بندی', value: 'سازگار با روتین مراقبت پوست' },
+      ],
+    },
+    {
+      id: 'clinical',
+      groupTitle: 'اندیکاسیون‌ها و مشخصات پوستی',
+      groupIcon: '🩺',
+      items: [
+        { label: 'نوع پوست سازگار', value: skinType },
+        { label: 'عملکرد اصلی', value: productData.subtitleFa || 'مراقبت و تقویت سد دفاعی پوست' },
+        { label: 'نگرانی‌های هدف', value: productData.skinConcerns?.join('، ') || 'بهبود کیفیت پوست' },
+        { label: 'مکانیسم اثر', value: productData.scienceMechanism?.heading || 'فرمولاسیون تخصصی' },
+      ],
+    },
+    {
+      id: 'safety',
+      groupTitle: 'استانداردها، ایمنی و نگهداری',
+      groupIcon: '🛡️',
+      items: [
+        { label: 'پایداری و انقضا', value: expiration },
+        { label: 'استانداردهای کیفی', value: productData.clinicalOrigin?.ceIsoStandards?.join(' · ') || 'Derm-Tested' },
+        { label: 'نشان‌های ایمنی', value: productData.cleanBadges?.join(' · ') || 'فرمولاسیون ایمن' },
+        {
+          label: 'شرایط نگهداری',
+          value: productData.clinicalOrigin?.storageConditions || 'دمای ۱۵ تا ۲۵ درجه دور از نور مستقیم خورشید',
+        },
+      ],
+    },
+  ];
+}
+
+const CATEGORY_HREF_BY_SLUG: Record<string, string> = {
+  serum: '/shop?cat=serum',
+  hydrator: '/shop?cat=hydrator',
+  brightening: '/shop?cat=brightening',
+  repair: '/shop?cat=repair',
+  hair: '/shop?cat=hair',
+  body: '/shop?cat=body',
+  skincare: '/shop?cat=skincare',
+  devices: '/shop?cat=devices',
+  reeskin: '/reeskin',
+  reemed: '/reemed',
+};
+
+/**
+ * محاسبه مسیر دسته‌بندی سلسله‌مراتبی (Breadcrumb) محصول
+ */
+export function getProductCategoryHierarchy(
+  productData: ExtendedProductData,
+  category?: { slug: string; titleFa: string } | null,
+) {
+  let subcategory: { title: string; href: string };
+
+  if (category?.slug && category?.titleFa) {
+    subcategory = {
+      title: category.titleFa,
+      href: CATEGORY_HREF_BY_SLUG[category.slug] || `/shop?cat=${encodeURIComponent(category.slug)}`,
+    };
+  } else {
+    const title = (productData.title || '').toLowerCase();
+    const slug = (productData.slug || '').toLowerCase();
+    subcategory = { title: 'آمپول و سرم تخصصی', href: '/shop?cat=serum' };
+
+    if (slug.includes('cicalfate') || title.includes('ترمیم') || slug.includes('healene') || slug.includes('repair')) {
+      subcategory = { title: 'جوانساز و ترمیم‌کننده', href: '/shop?cat=repair' };
+    } else if (slug.includes('dokdo') || slug.includes('centella') || title.includes('آبرسان') || slug.includes('hydrat')) {
+      subcategory = { title: 'آبرسان و مرطوب‌کننده', href: '/shop?cat=hydrator' };
+    } else if (title.includes('روشن') || title.includes('ضدلک') || slug.includes('bright') || slug.includes('vitamin-c')) {
+      subcategory = { title: 'ضدلک و روشن‌کننده', href: '/shop?cat=brightening' };
+    } else if (title.includes('مو') || slug.includes('hair')) {
+      subcategory = { title: 'تقویت پوست سر و مو', href: '/shop?cat=hair' };
+    } else if (slug.includes('carboxy') || title.includes('کربوکسی')) {
+      subcategory = { title: 'کربوکسی و مراقبت کلینیکال', href: '/carboxygel' };
+    }
+  }
+
+  return {
+    root: { title: 'صفحه اصلی', href: '/' },
+    shop: { title: 'فروشگاه', href: '/shop' },
+    parent: { title: 'مراقبت از پوست و تجهیزات', href: '/shop' },
+    sub: subcategory,
+    current: { title: productData.title },
   };
 }

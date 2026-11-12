@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./cart";
+import { getProduct, resolveProductImage, type Product } from "../lib/catalog";
+import { useLocalizedFormatter } from "../lib/use-localized-formatter";
 
 interface DiagnosticDrawerProps {
   isOpen: boolean;
@@ -18,6 +20,8 @@ interface StepOption {
 
 export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps) {
   const { addItem, openDrawer: openCartDrawer } = useCart();
+  const { formatToman } = useLocalizedFormatter();
+  const [carboxygelProduct, setCarboxygelProduct] = useState<Product | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [skinType, setSkinType] = useState<string>("");
   const [concern, setConcern] = useState<string>("");
@@ -25,6 +29,17 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen || carboxygelProduct) return;
+    let mounted = true;
+    getProduct("carboxygel").then((prod) => {
+      if (mounted && prod) setCarboxygelProduct(prod);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [isOpen, carboxygelProduct]);
 
   if (!isOpen) return null;
 
@@ -175,9 +190,19 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
     setAddedToCart(false);
   };
 
-  // Prescription matching logic
+  const resolveRxVariant = (preferredSku: string) => {
+    if (!carboxygelProduct) return null;
+    return (
+      carboxygelProduct.variants.find((v) => v.sku === preferredSku) ||
+      carboxygelProduct.variants[0] ||
+      null
+    );
+  };
+
+  // Prescription matching logic backed by PostgreSQL product variants
   const getPrescription = () => {
     if (concern === "blemish_clarity" || skinType === "pigmented_dull") {
+      const dbVariant = resolveRxVariant("CBG-AZL-200ML");
       return {
         gelName: "کربوکسی‌ژل اسید آزالائیک (Azelaic Acid CarboxyGel)",
         gelSub: "ReeSkin™ Targeted Depigmenting Formula · pH 4.0",
@@ -186,13 +211,16 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
         frequency: "هفته‌ای ۱ الی ۲ بار بعد از شستشوی ملایم",
         bohrSurge: "+۳۱۰٪ رهاسازی اکسیژن بافتی",
         expectedWeeks: "۴ هفته تا کاهش قابل لمس شاخص ملانین (-۴۸٪ Visia)",
-        image: "/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png",
-        variantId: "azelaic-gel-1",
-        price: 2450000,
-        sku: "RS-AZL-CG",
+        image:
+          resolveProductImage(carboxygelProduct, "/assets/drdermer/2025/07/azelaic-acid-carboxygel-207x300.png"),
+        productId: carboxygelProduct?.id ?? "",
+        variantId: dbVariant?.id ?? "",
+        priceAmount: dbVariant?.priceAmount ?? "0",
+        sku: dbVariant?.sku ?? "CBG-AZL-200ML",
       };
     }
     if (concern === "firming_collagen" || skinType === "mature_laxity") {
+      const dbVariant = resolveRxVariant("CBG-GLY-200ML");
       return {
         gelName: "کربوکسی‌ژل اسید گلیکولیک بازسازی‌کننده (Glycolic CarboxyGel)",
         gelSub: "ReeSkin™ Epidermal Resurfacing & Neocollagenesis · pH 3.5",
@@ -201,13 +229,15 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
         frequency: "هر ۵ الی ۷ روز یک جلسه (ترجیحاً عصرها)",
         bohrSurge: "+۳۴۰٪ اشباع اکسیژن مویرگی",
         expectedWeeks: "۳ هفته تا بازگشت قوام درم (-۴۲٪ عمق شیارها)",
-        image: "/assets/drdermer/2025/07/glycolic-acid-carboxygel-207x300.png",
-        variantId: "glycolic-gel-1",
-        price: 2680000,
-        sku: "RS-GLY-CG",
+        image:
+          resolveProductImage(carboxygelProduct, "/assets/drdermer/2025/07/glycolic-acid-carboxygel-207x300.png"),
+        productId: carboxygelProduct?.id ?? "",
+        variantId: dbVariant?.id ?? "",
+        priceAmount: dbVariant?.priceAmount ?? "0",
+        sku: dbVariant?.sku ?? "CBG-GLY-200ML",
       };
     }
-    // Default / Sensitive / Multi-Active
+    const dbVariant = resolveRxVariant("CBG-MLT-200ML");
     return {
       gelName: "کربوکسی‌ژل مولتی‌اکتیو و ترمیم سد دفاعی (Multi-Active CarboxyGel)",
       gelSub: "ReeSkin™ Biomimetic Peptides & Barrier Complex · pH 3.8",
@@ -216,25 +246,29 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
       frequency: "هفته‌ای ۱ بار (بسیار ایمن حتی برای پوست‌های ملتهب و روزاسه)",
       bohrSurge: "+۲۸۰٪ افزایش پرفیوژن خونی",
       expectedWeeks: "۲ هفته تا التیام کامل سد دفاعی و کاهش اریتم (-۶۱٪)",
-      image: "/assets/drdermer/2025/07/multi-active-carboxygel-207x300.png",
-      variantId: "multi-gel-1",
-      price: 2550000,
-      sku: "RS-MLT-CG",
+      image:
+        resolveProductImage(carboxygelProduct, "/assets/drdermer/2025/07/multi-active-carboxygel-207x300.png"),
+      productId: carboxygelProduct?.id ?? "",
+      variantId: dbVariant?.id ?? "",
+      priceAmount: dbVariant?.priceAmount ?? "0",
+      sku: dbVariant?.sku ?? "CBG-MLT-200ML",
     };
   };
 
   const rx = getPrescription();
 
   const handleAddToCart = () => {
+    if (!rx.variantId || !rx.productId) return;
     addItem({
       variantId: rx.variantId,
-      productId: "rx-" + rx.variantId,
+      productId: rx.productId,
       title: rx.gelName,
       sku: rx.sku,
-      priceAmount: (BigInt(rx.price) * 10n).toString(),
+      priceAmount: rx.priceAmount,
       image: rx.image,
     }, 1);
     setAddedToCart(true);
+    openCartDrawer();
     setTimeout(() => {
       onClose();
     }, 900);
@@ -476,7 +510,7 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
                   type="button"
                   className={`diag-add-cart-btn ${addedToCart ? "success" : ""}`}
                   onClick={handleAddToCart}
-                  disabled={addedToCart}
+                  disabled={addedToCart || !rx.variantId}
                 >
                   {addedToCart ? (
                     <>
@@ -492,7 +526,9 @@ export function SkinDiagnosticDrawer({ isOpen, onClose }: DiagnosticDrawerProps)
                         <line x1="3" y1="6" x2="21" y2="6" />
                         <path d="M16 10a4 4 0 0 1-8 0" />
                       </svg>
-                      افزودن پروتکل کامل به سبد نسخه ({rx.price.toLocaleString("fa-IR")} تومان)
+                      {rx.variantId
+                        ? `افزودن پروتکل کامل به سبد نسخه (${formatToman(rx.priceAmount)})`
+                        : "در حال استعلام قیمت از کاتالوگ..."}
                     </>
                   )}
                 </button>

@@ -1,6 +1,68 @@
+import {
+  buildSepidarCsv,
+  formatAccountingJalaliDate,
+  getFiscalYear,
+  type AccountingExportRow,
+} from "@commerce-os/finance";
+import {
+  isBackendFailureStatus,
+  isIntentionalAbort,
+  isOptionalRedisOnly503,
+  normalizeNetworkError,
+  parseApiErrorPayload,
+  reportAdminBackendError,
+} from "../lib/backend-error";
+
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export const ADMIN_API_KEY = "commerce-os-admin-secret-key-2026";
+export const ADMIN_API_KEY =
+  process.env.NEXT_PUBLIC_ADMIN_API_KEY || "commerce-os-admin-secret-key-2026";
+
+export interface LiveCartLineItem {
+  id: string;
+  variantId: string;
+  qty: number;
+  titleFa: string;
+  sku: string;
+  unitPriceTomans: number;
+}
+
+export interface LiveCartSessionItem {
+  id: string;
+  sessionId: string | null;
+  customerName: string;
+  customerPhone: string | null;
+  customerType: "B2C" | "B2B_CLINIC";
+  stage:
+    | "BROWSING"
+    | "CART_REVIEW"
+    | "CHECKOUT_STARTED"
+    | "SHIPPING_SELECTED"
+    | "PAYMENT_INITIATED"
+    | "ORDER_PLACED"
+    | "ABANDONED";
+  stageLabelFa: string;
+  couponCode: string | null;
+  shippingMethod: string | null;
+  subtotalTomans: number;
+  discountTomans: number;
+  totalTomans: number;
+  convertedOrderId: string | null;
+  convertedOrderNumber: string | null;
+  itemsCount: number;
+  lines: LiveCartLineItem[];
+  lastActivityAt: string;
+  createdAt: string;
+}
+
+export interface LiveCartSummary {
+  totalSessions: number;
+  activeBrowsing: number;
+  inCheckout: number;
+  paymentInitiated: number;
+  convertedOrders: number;
+  potentialRevenueTomans: number;
+}
 
 export const TENANT_HEADERS: Record<string, string> = {
   "x-tenant-id": "955982e7-9a09-4bf7-b2f5-a3f2e3bc3291",
@@ -55,11 +117,29 @@ export const authedFetch = async (
   if (session?.token) {
     headers.set("authorization", `Bearer ${session.token}`);
   }
-  return fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers,
-    signal: init.signal ?? AbortSignal.timeout(6000),
-  });
+  const url = `${API_BASE}${path}`;
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...init,
+      headers,
+      signal: init.signal ?? AbortSignal.timeout(6000),
+    });
+  } catch (err) {
+    if (!isIntentionalAbort(err)) {
+      reportAdminBackendError(normalizeNetworkError(err, url));
+    }
+    throw err;
+  }
+
+  if (
+    isBackendFailureStatus(response.status) &&
+    !(await isOptionalRedisOnly503(response, url))
+  ) {
+    reportAdminBackendError(await parseApiErrorPayload(response, url));
+  }
+
+  return response;
 };
 
 export interface PostResult {
@@ -74,9 +154,10 @@ export const postTenantJson = async (
   body: unknown,
   method = "POST"
 ): Promise<PostResult> => {
+  const url = `${API_BASE}${path}`;
   try {
     const session = readAdminSession();
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(url, {
       method,
       headers: {
         "content-type": "application/json",
@@ -86,6 +167,12 @@ export const postTenantJson = async (
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(6000),
     });
+    if (
+      isBackendFailureStatus(res.status) &&
+      !(await isOptionalRedisOnly503(res, url))
+    ) {
+      reportAdminBackendError(await parseApiErrorPayload(res, url));
+    }
     let data: unknown = null;
     try {
       data = await res.json();
@@ -101,6 +188,9 @@ export const postTenantJson = async (
     }
     return { ok: true, status: res.status, data };
   } catch (err: unknown) {
+    if (!isIntentionalAbort(err)) {
+      reportAdminBackendError(normalizeNetworkError(err, url));
+    }
     const msg = err instanceof Error ? err.message : "خطای شبکه";
     return { ok: false, status: 0, data: null, message: msg };
   }
@@ -141,4 +231,92 @@ export const formatRialAsTomans = (value: unknown): string => {
   } catch {
     return "—";
   }
+};
+
+export interface SepidarOrderInput {
+  orderNumber: string;
+  customerName: string;
+  totalAmountTomans: number;
+  createdAt: string;
+}
+
+const triggerCsvDownload = (csvContent: string, filename: string): void => {
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+/**
+ * Downloads official Sepidar UTF-8 BOM CSV from backend double-entry ledger when populated,
+ * falling back to dynamic Jalali/fiscal-year order journal rows without hardcoded dates.
+ */
+export const exportOrdersSepidarCsv = async (
+  orders: SepidarOrderInput[],
+): Promise<{ source: "LEDGER_DB" | "ORDERS_DYNAMIC" }> => {
+  try {
+    const res = await authedFetch("/v1/ledger/export/sepidar");
+    if (res.ok) {
+      const csvText = await res.text();
+      const nonEmptyLines = csvText
+        .replace(/^\uFEFF/, "")
+        .split(/\r?\n/)
+        .filter((line) => line.trim().length > 0);
+      if (nonEmptyLines.length > 1) {
+        triggerCsvDownload(csvText, `sepidar-journal-export-${Date.now()}.csv`);
+        return { source: "LEDGER_DB" };
+      }
+    }
+  } catch {
+    // Fallback cleanly to order list using dynamic Jalali calendar calculation
+  }
+
+  const rows: AccountingExportRow[] = orders.flatMap((o) => {
+    const debitRials = BigInt(o.totalAmountTomans) * 10n;
+    const rawDate = o.createdAt ? new Date(o.createdAt) : new Date();
+    const entryDate = Number.isNaN(rawDate.getTime()) ? new Date() : rawDate;
+    const jalaliDate = formatAccountingJalaliDate(entryDate);
+    const fiscalPeriod = getFiscalYear(entryDate);
+
+    return [
+      {
+        entryNumber: `JRN-SALE-${o.orderNumber}`,
+        jalaliDate,
+        isoDate: entryDate.toISOString(),
+        fiscalPeriod,
+        accountCode: "1010",
+        accountName: "موجودی نزد درگاه‌های پرداخت شتاب",
+        entryDescription: `دریافت وجه سفارش ${o.orderNumber}`,
+        lineDescription: `واریز مشتری ${o.customerName}`,
+        debit: debitRials.toString(),
+        credit: "0",
+        currency: "IRR",
+        referenceType: "ORDER",
+        referenceId: o.orderNumber,
+        status: "POSTED",
+      },
+      {
+        entryNumber: `JRN-SALE-${o.orderNumber}`,
+        jalaliDate,
+        isoDate: entryDate.toISOString(),
+        fiscalPeriod,
+        accountCode: "4010",
+        accountName: "درآمد حاصل از فروش کالا",
+        entryDescription: `درآمد فروش سفارش ${o.orderNumber}`,
+        lineDescription: "فروش اقلام کاتالوگ",
+        debit: "0",
+        credit: debitRials.toString(),
+        currency: "IRR",
+        referenceType: "ORDER",
+        referenceId: o.orderNumber,
+        status: "POSTED",
+      },
+    ];
+  });
+
+  triggerCsvDownload(buildSepidarCsv(rows), `sepidar-export-${Date.now()}.csv`);
+  return { source: "ORDERS_DYNAMIC" };
 };

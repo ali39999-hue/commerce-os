@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProduct } from '../../../lib/catalog';
-import { buildExtendedProductData } from '../../../lib/pdp-data';
+import { buildExtendedProductData, getProductCategoryHierarchy } from '../../../lib/pdp-data';
 import { RupakPdpSection } from '../../../components/pdp/rupak-pdp-section';
 import { ProductReviews } from '../../../components/product-reviews';
 import { ProductRail } from '../../../components/discovery/product-rail';
@@ -128,15 +128,19 @@ export default async function ProductPage({ params }: Props) {
     },
   };
 
+  const hierarchy = getProductCategoryHierarchy(extendedData, product.category);
+
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'صفحه اصلی', item: `${SITE_URL}/` },
-      { '@type': 'ListItem', position: 2, name: 'محصولات و کاتالوگ', item: `${SITE_URL}/search` },
+      { '@type': 'ListItem', position: 1, name: hierarchy.root.title, item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: hierarchy.shop.title, item: `${SITE_URL}/shop` },
+      { '@type': 'ListItem', position: 3, name: hierarchy.parent.title, item: `${SITE_URL}/shop` },
+      { '@type': 'ListItem', position: 4, name: hierarchy.sub.title, item: `${SITE_URL}${hierarchy.sub.href}` },
       {
         '@type': 'ListItem',
-        position: 3,
+        position: 5,
         name: extendedData.title,
         item: `${SITE_URL}/products/${encodeURIComponent(product.slug)}`,
       },
@@ -155,12 +159,16 @@ export default async function ProductPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      {/* Accessible Breadcrumbs Navigation */}
-      <nav className="breadcrumbs-nav" aria-label="موقعیت فعلی در سایت">
+      {/* Accessible Hierarchical Breadcrumbs Navigation */}
+      <nav className="breadcrumbs-nav" aria-label="سلسله‌مراتب دسته‌بندی و موقعیت فعلی در سایت">
         <Link href="/">صفحه اصلی</Link>
-        <span aria-hidden="true">/</span>
-        <Link href="/search">محصولات و تجهیزات</Link>
-        <span aria-hidden="true">/</span>
+        <span aria-hidden="true" className="breadcrumb-separator">/</span>
+        <Link href="/shop">فروشگاه</Link>
+        <span aria-hidden="true" className="breadcrumb-separator">/</span>
+        <Link href="/shop">مراقبت از پوست</Link>
+        <span aria-hidden="true" className="breadcrumb-separator">/</span>
+        <Link href={hierarchy.sub.href}>{hierarchy.sub.title}</Link>
+        <span aria-hidden="true" className="breadcrumb-separator">/</span>
         <span className="current-crumb" aria-current="page">{extendedData.title}</span>
       </nav>
 
@@ -184,7 +192,7 @@ export default async function ProductPage({ params }: Props) {
       {/* Recommended & Related Skincare Rail */}
       <div className="pdp-rail-container">
         <ProductRail
-          endpoint={`/recommendations/products/${product.id}?limit=6`}
+          endpoint={`/v1/recommendations/products/${product.id}?limit=6`}
           titleFa="محصولات مکمل و پروتکل‌های مرتبط"
         />
       </div>

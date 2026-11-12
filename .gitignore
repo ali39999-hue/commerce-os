@@ -15,6 +15,7 @@ apps/api/prisma/diff-err.txt
 
 # Embedded PostgreSQL data directory (scripts/embedded-postgres.mjs)
 .pgdata/
+.pglite-data/
 
 # Playwright test artifacts
 playwright-report/

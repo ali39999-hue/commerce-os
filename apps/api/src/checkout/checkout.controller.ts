@@ -22,7 +22,9 @@ export class CheckoutController {
     // customers; guests pass their own phone as before.
     return this.checkoutService.startCheckout({
       ...body,
+      customerId: customer?.id,
       customerPhone: customer?.phone ?? body.customerPhone,
+      customerName: customer?.fullName || body.customerName,
     });
   }
 

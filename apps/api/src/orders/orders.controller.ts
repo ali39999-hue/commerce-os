@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Query, Body, Res, UseGuards, UnauthorizedException } from "@nestjs/common";
 import { AdminGuard } from "../common/guards/admin.guard";
-import { CurrentCustomer } from "../common/guards/current-tenant.decorator";
+import { CurrentCustomer, CurrentTenant } from "../common/guards/current-tenant.decorator";
 import { SessionUserGuard, SessionCustomer } from "../common/guards/session-user.guard";
 import { OrderTransitionDto } from "../common/dto/resource-writes.dto";
 import { OrdersService } from "./orders.service";
@@ -11,6 +11,42 @@ import type { Response } from "express";
 @UseGuards(SessionUserGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
+
+  // GET /v1/orders/admin — full tenant-wide order queue for operations and ERP (AUTH-002)
+  // Declared BEFORE the :id catch-all so "admin" is never swallowed as an order id.
+  @Get("admin")
+  @UseGuards(AdminGuard)
+  async listAdminOrders(
+    @CurrentTenant() tenantId: string,
+    @Query("status") status?: OrderStatus,
+    @Query("storeId") storeId?: string,
+    @Query("limit") limit?: string,
+    @Query("offset") offset?: string
+  ) {
+    return this.ordersService.listAdminOrders({
+      tenantId,
+      storeId,
+      status,
+      limit: limit ? parseInt(limit, 10) : 50,
+      offset: offset ? parseInt(offset, 10) : 0,
+    });
+  }
+
+  // GET /v1/orders/admin/receipts — real DB Card-to-Card receipts queue for Admin SoD review
+  // Declared BEFORE the :id catch-all so "admin" is never swallowed as an order id.
+  @Get("admin/receipts")
+  @UseGuards(AdminGuard)
+  async listAdminReceipts(
+    @CurrentTenant() tenantId: string,
+    @Query("status") status?: string,
+    @Query("limit") limit?: string
+  ) {
+    return this.ordersService.listAdminReceipts({
+      tenantId,
+      status,
+      limit: limit ? parseInt(limit, 10) : 50,
+    });
+  }
 
   // GET /v1/orders/my — session-bound (AUTH-002 step 6): the customer phone
   // comes from the OTP session, never a client parameter. Declared BEFORE the
